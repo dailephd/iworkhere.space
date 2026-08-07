@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState, useEffect } from "react"
+import { useMemo, useState, useEffect } from "react"
 import type { ToolComponentProp } from "../type"
 import { trackEvent } from "@/module/observability"
 
@@ -32,32 +32,27 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
     const [value, setValue] = useState<string>("1")
     const [fromUnit, setFromUnit] = useState<LengthUnit>("m")
     const [toUnit, setToUnit] = useState<LengthUnit>("ft")
-    const [result, setResult] = useState<string>("")
 
     useEffect(() => {
         trackEvent("tool_opened", { toolId, slug: "length-converter" })
     }, [toolId])
 
-    const convert = useCallback(() => {
+    const result = useMemo(() => {
         const num = parseFloat(value)
         if (isNaN(num)) {
-            setResult("Invalid input")
-            return
+            return "Invalid input"
         }
 
         const meters = num * TO_METERS[fromUnit]
         const converted = meters / TO_METERS[toUnit]
 
         // Format nicely: up to 6 decimal places, remove trailing zeros
-        const formatted = Number(converted.toFixed(6)).toString()
-        setResult(formatted)
-
-        trackEvent("tool_executed", { toolId, slug: "length-converter" })
-    }, [value, fromUnit, toUnit, toolId])
+        return Number(converted.toFixed(6)).toString()
+    }, [value, fromUnit, toUnit])
 
     useEffect(() => {
-        convert()
-    }, [convert])
+        trackEvent("tool_executed", { toolId, slug: "length-converter" })
+    }, [value, fromUnit, toUnit, toolId])
 
     return (
         <div className="space-y-4">

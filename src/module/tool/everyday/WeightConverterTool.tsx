@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState, useEffect } from "react"
+import { useMemo, useState, useEffect } from "react"
 import type { ToolComponentProp } from "../type"
 import { trackEvent } from "@/module/observability"
 
@@ -24,32 +24,27 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
     const [value, setValue] = useState<string>("1")
     const [fromUnit, setFromUnit] = useState<WeightUnit>("kg")
     const [toUnit, setToUnit] = useState<WeightUnit>("lb")
-    const [result, setResult] = useState<string>("")
 
     useEffect(() => {
         trackEvent("tool_opened", { toolId, slug: "weight-converter" })
     }, [toolId])
 
-    const convert = useCallback(() => {
+    const result = useMemo(() => {
         const num = parseFloat(value)
         if (isNaN(num)) {
-            setResult("Invalid input")
-            return
+            return "Invalid input"
         }
 
         const grams = num * TO_GRAMS[fromUnit]
         const converted = grams / TO_GRAMS[toUnit]
 
         // Format nicely: up to 6 decimal places, remove trailing zeros
-        const formatted = Number(converted.toFixed(6)).toString()
-        setResult(formatted)
-
-        trackEvent("tool_executed", { toolId, slug: "weight-converter" })
-    }, [value, fromUnit, toUnit, toolId])
+        return Number(converted.toFixed(6)).toString()
+    }, [value, fromUnit, toUnit])
 
     useEffect(() => {
-        convert()
-    }, [convert])
+        trackEvent("tool_executed", { toolId, slug: "weight-converter" })
+    }, [value, fromUnit, toUnit, toolId])
 
     return (
         <div className="space-y-4">

@@ -18,7 +18,7 @@ export function logEvent(message: string, meta?: Record<string, unknown>): void 
 /**
  * Captures an error, logs it, and optionally tracks an analytics event.
  */
-export function captureError(error: Error | unknown, meta?: Record<string, unknown>, trackAsEvent?: { name: AnalyticEventName, prop: any }): void {
+export function captureError<E extends AnalyticEventName>(error: Error | unknown, meta?: Record<string, unknown>, trackAsEvent?: { name: E, prop: AnalyticEventProp[E] }): void {
     const message = error instanceof Error ? error.message : String(error);
     const stack = error instanceof Error ? error.stack : undefined;
 
