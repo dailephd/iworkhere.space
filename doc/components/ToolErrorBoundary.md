@@ -1,33 +1,25 @@
 # Component: ToolErrorBoundary
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/tool/ToolErrorBoundary.tsx` owns runtime-error containment and recovery presentation for registered tools.
 
-`src/component/tool/ToolErrorBoundary.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+The class component receives `children` and `toolId`. It reports caught errors through `captureError` and resets only its local error state when “Try again” is activated.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/component/tool/ToolErrorBoundary.tsx` [implementation]
+The fallback is a solid, bounded danger-semantic state with concise copy and a clearly styled recovery action.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/component/tool/ToolErrorBoundary.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (ToolErrorBoundary)
-- path-segment: components
-- Derived from single-file merged unit "ToolErrorBoundary".
-- Merge signals: single-file-unit
+The fallback uses `role="alert"`, a meaningful heading, semantic button behavior, visible focus, and theme tokens. State is not communicated by color alone.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Do not change capture metadata, reset behavior, tool ownership, or introduce a direct provider call.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 17, 18, 25, and 30.

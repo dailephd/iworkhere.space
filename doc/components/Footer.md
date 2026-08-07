@@ -1,33 +1,25 @@
 # Component: Footer
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/layout/Footer.tsx` owns the existing copyright and client-side-processing statements in the shared shell.
 
-`src/component/layout/Footer.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`Footer()` accepts no props and renders only the established copy.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/component/layout/Footer.tsx` [implementation]
+The footer uses a quiet solid surface and compact secondary text, stacking on narrow screens and aligning horizontally when space permits.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/component/layout/Footer.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (Footer)
-- path-segment: components
-- Derived from single-file merged unit "Footer".
-- Merge signals: single-file-unit
+Text remains readable at the secondary-body scale and uses semantic secondary or muted text tokens.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Do not add destinations, promotional copy, product claims, or behavior.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 11, 12, 15, 24, and 27.

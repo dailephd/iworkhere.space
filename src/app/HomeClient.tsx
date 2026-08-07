@@ -20,7 +20,7 @@ export default function HomeClient(props: HomeClientProps) {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <ToolSearch item={toolItem} onOpen={handleOpen} />
             {children ? children : null}
         </div>

@@ -1,22 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import AppShell from "@/component/layout/AppShell"
+import { AdBannerHorizontal } from "@/component/layout/AdBannerHorizontal"
+import { AdBannerVertical } from "@/component/layout/AdBannerVertical"
 import { ServiceWorkerRegister } from "@/component/layout/ServiceWorkerRegister"
 import { ThemeProvider } from "@/component/common/ThemeProvider"
 import { defaultNavItem } from "./navData"
 import "./global.css";
 import "./scroll.css";
-import {ReactNode} from "react";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "iworkhere.space — Utility Tool Platform",
@@ -42,24 +33,16 @@ export default function RootLayout({
             <AppShell
                 navItem={defaultNavItem}
                 headerBannerSlot={
-                    <div className="text-sm text-[var(--text-muted)]">
-                        Header banner
-                    </div>
+                    <AdBannerHorizontal label="Header advertising placeholder" isPlaceholder />
                 }
                 footerBannerSlot={
-                    <div className="text-sm text-[var(--text-muted)]">
-                        Footer banner
-                    </div>
+                    <AdBannerHorizontal label="Footer advertising placeholder" isPlaceholder />
                 }
                 leftBannerSlot={
-                    <div className="text-sm text-[var(--text-muted)]">
-                        Left banner
-                    </div>
+                    <AdBannerVertical label="Left advertising placeholder" isPlaceholder />
                 }
                 rightBannerSlot={
-                    <div className="text-sm text-[var(--text-muted)]">
-                        Right banner
-                    </div>
+                    <AdBannerVertical label="Right advertising placeholder" isPlaceholder />
                 }
             >
                 {children}

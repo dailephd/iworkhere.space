@@ -1,31 +1,25 @@
 # Module: Button
 
-**Kind:** Module
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/common/Button.tsx` owns the reusable button primitive and its visual variants.
 
-`src/component/common/Button.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`ButtonProps` extends native button attributes and accepts `variant: "primary" | "secondary" | "ghost" | "danger"`, defaulting to `primary`. Native semantics, events, disabled state, and refs are preserved.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/component/common/Button.tsx` [implementation]
+Buttons use 40–44px comfortable height, 10px radius, semibold labels, and the canonical primary, secondary, ghost, or danger treatments. They do not scale.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/component/common/Button.tsx
-- file-role: shared-core
-- path-segment: common
-- Derived from single-file merged unit "Button".
-- Merge signals: single-file-unit
+Native keyboard behavior, disabled behavior, and cyan focus treatment are preserved. All colors use semantic variables.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+The primitive adds no business logic, navigation, analytics, persistence, or provider access.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 10, 13, 17, 23, 25, and 29.

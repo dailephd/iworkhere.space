@@ -30,11 +30,10 @@ function isThemeId(x: unknown): x is ThemeId
   (id/label/optional description); `listThemes()` is the only accessor.
 - `isThemeId()` is a runtime type guard used by `themeStorage.loadTheme()` to
   validate values read back from `storage` before trusting them as `ThemeId`.
-- `doc/styling.md` documents only a Light/Dark theme policy; the six
-  additional named themes (onedark, vscode-modern, dracula, amethyst-haze,
-  mercury-fog, plus system) are implemented but have no per-theme token
-  specification in any tracked document. Recorded as an open documentation
-  gap in the Architecture Assimilation Report, not fixed in this pass.
+- `doc/DESIGN.md` defines the shared eight-theme policy. Light and dark own the
+  canonical default palettes; the alternate named presets preserve their
+  established color identities while inheriting the shared typography,
+  spacing, shape, component, layout, motion, and accessibility rules.
 
 <!-- section-id: member-files -->
 ## Member Files

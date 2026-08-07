@@ -816,13 +816,13 @@ The application currently supports these theme selections:
 * amethyst-haze
 * mercury-fog
 
-The theme implementation is functional, but the non-Light/Dark palette intent is not fully captured in canonical styling documentation.
+The theme implementation is functional, and `doc/DESIGN.md` now captures the shared eight-theme visual policy while preserving alternate preset identities.
 
 This is documentation/specification debt rather than an identified runtime feature defect.
 
 Required rule:
 
-> Complete the canonical token/design specification before future theme or styling behavior is changed.
+> Keep `doc/DESIGN.md` and the affected component/module specifications current before future theme or styling behavior is changed.
 
 No standalone product version is assigned to this work at present.
 

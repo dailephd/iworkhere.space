@@ -52,6 +52,9 @@ expansion.
   modes
 - Project documentation updated (architecture, styling, design, code generation
   guidelines)
+- Canonical design authority consolidated into `doc/DESIGN.md`; shared tokens,
+  AppShell surfaces, reusable controls, tool cards, and implemented public
+  routes follow the unified visual contract without changing product behavior
 
 ### Tools implemented
 - **Slugify Text** (`/tool/slugify`) — text category

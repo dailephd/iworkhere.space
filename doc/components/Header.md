@@ -1,33 +1,29 @@
 # Component: Header
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/layout/Header.tsx` owns the shared product identity row, existing search control presentation, and `ThemeToggle` placement.
 
-`src/component/layout/Header.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`Header()` accepts no props and renders the existing home link, search control, and theme picker.
 
-<!-- section-id: member-files -->
-## Member Files
+## Current behavior
 
-- `src/component/layout/Header.tsx` [implementation]
+The product name links to `/`; the search field remains presentation-only; theme selection is delegated to `ThemeToggle`.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Visual and responsive role
 
-- Representative file: src/component/layout/Header.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (Header)
-- path-segment: components
-- Derived from single-file merged unit "Header".
-- Merge signals: single-file-unit
+The header targets 64px height with restrained solid chrome. It preserves compact mobile density and only shows the existing search control where current responsive behavior allows.
 
-<!-- section-id: notes -->
-## Notes
+## Accessibility and theme interaction
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+The search control has an associated programmatic label, the home link and picker have visible focus states, and all color comes from semantic tokens.
+
+## Invariants
+
+Do not add search behavior, navigation destinations, providers, storage access, or a mobile navigation mechanism.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 15–17, 24, 25, and 27.

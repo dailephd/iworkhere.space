@@ -1,33 +1,29 @@
 # Component: VerticalNav
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/layout/VerticalNav.tsx` owns rendering and active-state presentation for supplied `NavItem` values.
 
-`src/component/layout/VerticalNav.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`VerticalNav` receives `item: NavItem[]` and `ariaLabel: string`. Items with usable `href` values render as Next.js links; disabled or non-route items render as non-interactive spans.
 
-<!-- section-id: member-files -->
-## Member Files
+## Current behavior
 
-- `src/component/layout/VerticalNav.tsx` [implementation]
+`usePathname()` determines active state. Home matches exactly and other routes match by prefix.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Visual and responsive role
 
-- Representative file: src/component/layout/VerticalNav.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (VerticalNav)
-- path-segment: components
-- Derived from single-file merged unit "VerticalNav".
-- Merge signals: single-file-unit
+The component is the existing desktop navigation owner. Items use solid semantic states, 10px control radii, restrained spacing, and no decorative motion.
 
-<!-- section-id: notes -->
-## Notes
+## Accessibility and theme interaction
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+The navigation retains its accessible label, `aria-current="page"`, disabled semantics, and cyan focus treatment. Theme changes affect tokens only.
+
+## Invariants
+
+Do not change route matching, item data, link behavior, disabled behavior, or introduce another navigation architecture.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 15, 16, 23–25, and 28.

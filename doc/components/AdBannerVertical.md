@@ -1,33 +1,21 @@
 # Component: AdBannerVertical
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/layout/AdBannerVertical.tsx` owns vertical advertising-slot presentation without implementing an advertising provider.
 
-`src/component/layout/AdBannerVertical.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+Props are `label`, optional `children`, and optional `isPlaceholder`. Placeholder mode renders explicit reserved-space copy; otherwise children render unchanged.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual, responsive, accessibility, and theme role
 
-- `src/component/layout/AdBannerVertical.tsx` [implementation]
+The slot is a low-priority solid bordered panel with a 14px radius and reserved vertical height. Its `<aside>` keeps the supplied accessible label and uses semantic tokens in every theme.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Invariants
 
-- Representative file: src/component/layout/AdBannerVertical.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (AdBannerVertical)
-- path-segment: components
-- Derived from single-file merged unit "AdBannerVertical".
-- Merge signals: single-file-unit
+Do not fetch ads, masquerade as content, add provider behavior, or compete visually with tools.
 
-<!-- section-id: notes -->
-## Notes
+## Design requirements
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Follow `doc/DESIGN.md` sections 14, 17, 24, 25, and 30.

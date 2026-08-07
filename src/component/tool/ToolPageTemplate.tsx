@@ -9,10 +9,13 @@ export function ToolPageTemplate({
     toolUi: ReactNode;
 }) {
     return (
-        <section>
-            <h1>{tool.name}</h1>
-            <p>{tool.description}</p>
-            <div>{toolUi}</div>
+        <section className="page-stack">
+            <header>
+                <span className="metadata-label capitalize">{tool.category}</span>
+                <h1 className="page-title mt-3">{tool.name}</h1>
+                <p className="page-summary">{tool.description}</p>
+            </header>
+            <div className="tool-workspace">{toolUi}</div>
         </section>
     );
 }

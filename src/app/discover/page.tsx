@@ -20,12 +20,12 @@ export default function DiscoverPage() {
     }))
 
     return (
-        <div className="space-y-8">
-            <section className="space-y-2">
-                <h1 className="text-2xl font-semibold text-[var(--text)]">
+        <div className="page-stack">
+            <section>
+                <h1 className="page-title">
                     Discover Tool
                 </h1>
-                <p className="text-[var(--text-muted)]">
+                <p className="page-summary">
                     Browse all available utility tool by category.
                 </p>
             </section>

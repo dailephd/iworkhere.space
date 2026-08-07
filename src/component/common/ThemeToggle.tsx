@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Button } from "./Button";
 import { listThemes, type ThemeId } from "@/module/theme/themeRegistry";
 import { setTheme } from "@/module/theme/themeRuntime.client";
 import { loadTheme, storeTheme } from "@/module/theme/themeStorage";
@@ -68,7 +69,7 @@ export function ThemeToggle() {
         return (
             <button
                 type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-alt)]"
+                className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-border bg-surface-alt"
                 aria-label="Theme picker"
                 disabled
             />
@@ -77,22 +78,22 @@ export function ThemeToggle() {
 
     return (
         <div ref={containerRef} className="relative">
-            <button
-                type="button"
+            <Button
+                variant="secondary"
                 onClick={() => setOpen((prev) => !prev)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] text-[var(--text-muted)] hover:text-[var(--text)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] focus:outline-none"
+                className="h-11 min-h-11 w-11 px-0 text-text-secondary hover:text-text"
                 aria-label="Open theme picker"
                 aria-expanded={open}
                 aria-haspopup="listbox"
             >
                 <PaletteIcon />
-            </button>
+            </Button>
 
             {open && (
                 <div
                     role="listbox"
                     aria-label="Theme"
-                    className="absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-xl border border-[var(--border)] bg-[var(--surface)] py-1 shadow-md"
+                    className="absolute right-0 top-full z-50 mt-2 min-w-52 rounded-[14px] border border-border bg-elevated p-2 shadow-[var(--card-shadow)]"
                 >
                     {themes.map((theme) => (
                         <button
@@ -101,10 +102,10 @@ export function ThemeToggle() {
                             aria-selected={theme.id === activeTheme}
                             type="button"
                             onClick={() => handleSelect(theme.id)}
-                            className={`w-full px-4 py-2 text-left text-sm hover:bg-[var(--surface-alt)] ${
+                            className={`min-h-11 w-full rounded-[10px] px-3 py-2 text-left text-sm transition-colors duration-180 hover:bg-surface-alt ${
                                 theme.id === activeTheme
-                                    ? "font-medium text-[var(--accent)]"
-                                    : "text-[var(--text)]"
+                                    ? "bg-[color-mix(in_srgb,var(--brand-primary)_12%,transparent)] font-semibold text-[var(--brand-primary)]"
+                                    : "text-text"
                             }`}
                         >
                             {theme.label}

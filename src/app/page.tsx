@@ -30,12 +30,12 @@ export default function HomePage() {
   const categoryItem = Array.from(new Set(toolItem.map((one) => one.category))).filter(Boolean)
 
   return (
-      <div className="space-y-8">
-        <section className="space-y-2">
-          <h1 className="text-2xl font-semibold text-[var(--text)]">
+      <div className="page-stack">
+        <section className="page-intro">
+          <h1 className="page-title">
             Utility platform
           </h1>
-          <p className="text-[var(--text-muted)]">
+          <p className="page-summary">
             Simple tools for text, document, and everyday tasks.
           </p>
         </section>

@@ -198,13 +198,12 @@ Dynamic metadata is generated from ToolDefinition.seo.
 
 ## Styling Rules
 
-- Use Tailwind classes for styling
-- Use only existing CSS variable tokens
-- One accent hue only
-- Theme switch changes color only
-- Subtle shadow only
-- No surprise animations
-- Update styling documentation before style system changes
+- Read and update `doc/DESIGN.md` before changing the visual contract
+- Use Tailwind CSS 4 and the existing semantic CSS-variable system
+- Violet owns primary emphasis; cyan is limited to focus and system emphasis
+- Theme switching changes color only; layout and component structure stay shared
+- Use solid surfaces, restrained elevation, and the documented spacing/radius/motion scales
+- Do not introduce glassmorphism, decorative gradients, surprise animation, or a parallel styling system
 
 ## Testing Discipline (Mandatory)
 
@@ -266,7 +265,7 @@ Agents must assume CI will enforce all four.
 ## Documentation Discipline
 
 - Architecture changes require updating doc/architecture.md first
-- Style changes require updating doc/styling.md first
+- Visual-system changes require updating `doc/DESIGN.md` first
 - New abstractions require updating this file
 - Project status tracked in doc/project-status.md
 - Do not skip documentation when adding new tools

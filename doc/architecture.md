@@ -284,9 +284,10 @@ Server-side endpoint for client log events sent by `RustLogProvider`.
 The theme system is a multi-theme registry, not a binary light/dark switch.
 `ThemeId` (`themeRegistry.ts`) declares eight selectable themes: `system`,
 `light`, `dark`, `onedark`, `vscode-modern`, `dracula`, `amethyst-haze`, and
-`mercury-fog`. `doc/styling.md` currently documents only a Light/Dark toggle;
-that document is stale relative to this implementation and should be updated
-before further style work (see Uncertainties in the assimilation report).
+`mercury-fog`. `doc/DESIGN.md` is the canonical visual and token authority:
+light and dark define the default violet/cyan product identity, while the six
+additional presets retain their established color identities and share the
+same typography, spacing, shape, component, layout, and interaction system.
 
 ### Structure
 - `themeRegistry.ts` — declares `ThemeId`, the `theme_definition_list`

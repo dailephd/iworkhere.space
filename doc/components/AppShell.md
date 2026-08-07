@@ -1,33 +1,29 @@
 # Component: AppShell
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/layout/AppShell.tsx` owns the shared application frame, the single main landmark, desktop navigation placement, banner slots, scrolling region, header, and footer composition.
 
-`src/component/layout/AppShell.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`AppShellProps` accepts `children`, optional `NavItem[]`, and optional header, footer, left, and right banner slots. It does not own route data or banner content.
 
-<!-- section-id: member-files -->
-## Member Files
+## Current behavior
 
-- `src/component/layout/AppShell.tsx` [implementation]
+The shell uses a fixed viewport frame with an independently scrolling main region. `VerticalNav` appears at the existing desktop breakpoint; optional banner slots preserve their positions.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Visual and responsive role
 
-- Representative file: src/component/layout/AppShell.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (AppShell)
-- path-segment: components
-- Derived from single-file merged unit "AppShell".
-- Merge signals: single-file-unit
+The shell uses solid semantic surfaces, a 64px header, a 224–240px desktop navigation zone, and a centered main content container no wider than 1280px. Mobile remains single-column with 20px edge padding and does not introduce a new navigation mechanism.
 
-<!-- section-id: notes -->
-## Notes
+## Accessibility and theme interaction
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+The shell provides a keyboard-visible skip link to `#main-content`, exactly one `<main>` landmark, and theme-independent markup. Focus, surfaces, borders, and text use semantic tokens from `doc/DESIGN.md`.
+
+## Invariants
+
+Slot ownership, scrolling behavior, navigation ownership, routes, banner semantics, and child rendering must not change. No parallel layout or navigation system may be introduced.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 15, 16, 24, 25, 28, and 30.

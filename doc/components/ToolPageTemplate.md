@@ -1,33 +1,25 @@
 # Component: ToolPageTemplate
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/tool/ToolPageTemplate.tsx` owns tool-page presentation around a registry-owned `ToolDefinition` and supplied tool UI.
 
-`src/component/tool/ToolPageTemplate.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+Props are `tool: ToolDefinition` and `toolUi: ReactNode`. Registry data is rendered without duplication or mutation.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/component/tool/ToolPageTemplate.tsx` [implementation]
+The tool identity and existing description precede a solid elevated workspace. The workspace is the dominant content and remains responsive without introducing a per-tool layout system.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/component/tool/ToolPageTemplate.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (ToolPageTemplate)
-- path-segment: components
-- Derived from single-file merged unit "ToolPageTemplate".
-- Merge signals: single-file-unit
+The tool name is the page heading, description is readable secondary text, and workspace boundaries use semantic tokens in all themes.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Do not alter tool lifecycle, registry data, tool UI, URL state, SEO, analytics, validation, or error behavior.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 18, 22, 24, 25, and 30.

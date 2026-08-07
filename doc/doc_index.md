@@ -26,13 +26,14 @@ rendering.
 new modules or changing layer boundaries.
 **Relations:** Enforces the boundaries tested in `TESTING.md`.
 
-### design.md
-**Summary:** Outlines the core engineering values: clarity over cleverness,
-explicit over implicit, and boring over exciting. It establishes the philosophy
-for UI, performance, security, and abstraction.
-**When to read:** Before making architectural decisions or introducing new
-patterns.
-**Relations:** Sets the philosophical groundwork for `styling.md` and
+### DESIGN.md
+**Summary:** The single canonical authority for product identity, engineering
+design principles, semantic tokens, typography, spacing, shape, elevation,
+layout, navigation, components, route presentation, motion, responsive
+behavior, accessibility, performance, content, and UI change control.
+**When to read:** Before creating or modifying visual UI, theme tokens, layout,
+interaction presentation, or an affected component/module specification.
+**Relations:** Applies the project principles to `architecture.md` and
 `code-generation-guidelines.md`.
 
 ### SCHEMA.md
@@ -72,7 +73,7 @@ forbids speculative implementation, enforces singular naming, and mandates
 reading files before writing.
 **When to read:** Mandatory for coding agents. Useful for humans to understand
 the expected code quality.
-**Relations:** Enforces the philosophy in `design.md`.
+**Relations:** Enforces the engineering principles in `DESIGN.md`.
 
 ### CI_CD.md
 **Summary:** Defines the mandatory CI checks (typecheck, lint, test, build) that
@@ -97,13 +98,9 @@ accompanying tests as defined here.
 
 ## 5. Styling & Theming
 
-### styling.md
-**Summary:** Defines the visual design system, including color tokens, type
-scale, spacing, and component rules. It mandates a utility-first approach using
-Tailwind CSS.
-**When to read:** Before creating or modifying any UI component.
-**Relations:** Implements the "calm and predictable" UI philosophy from
-`design.md`.
+Visual design and styling are governed exclusively by `DESIGN.md`. The former
+split authorities were consolidated and removed so the project has no competing
+visual authority.
 
 ---
 
@@ -123,14 +120,14 @@ and `TESTING.md`.
 
 ### For new contributors
 1. `architecture.md` - Understand the system structure.
-2. `design.md` - Understand the engineering values.
+2. `DESIGN.md` - Understand the engineering and visual-system values.
 3. `project-status.md` - See what is currently built.
 4. `TESTING.md` - Learn how to verify your work.
 
 ### For implementing a new feature
 1. `SCHEMA.md` - Check if data contracts need updates.
 2. `API.md` - Identify available stable interfaces.
-3. `styling.md` - Review UI standards if building components.
+3. `DESIGN.md` - Review UI and interaction standards if building components.
 4. `TESTING.md` - Determine required tests.
 
 ### For debugging a production issue
@@ -148,8 +145,8 @@ and `TESTING.md`.
 ## 8. Component & Module Specification Layer (doc/components/, doc/modules/)
 
 **Summary:** A separate implementation/design-contract layer, one file per
-component (`doc/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
-2026-08-07 = 19) or module/logical-unit (`doc/modules/*.md`, 26 files). Each
+component (`doc/components/*.md`, 19 files) or module/logical-unit
+(`doc/modules/*.md`, 27 files). Each
 file identifies representative/member source files and (where reconciled)
 a real contract: exported functions, storage keys, dependencies, and known
 implementation/documentation gaps.
@@ -161,24 +158,14 @@ whether its `.md` file already documents a contract you must preserve.
 (cross-cutting contracts) without duplicating them; this layer is
 per-unit detail.
 
-**Status as of 2026-08-07 reconciliation:** all 45 files were produced by an
-automated "Milestone 1 / Milestone 12" ingestion pass
-(`log/iworkhere-timearith-prepared/`) and, except where noted below, contain
-only generation metadata (representative file, member files, inferred role,
-merge signals) with **no real contract content** — every unreconciled file
-ends with "Manual review and updates are encouraged to add implementation
-details." This reconciliation pass added a `## Contract` section with real
-exported signatures, storage keys, and dependencies to the files judged most
-architecturally load-bearing: `Registry.md`, `Metadata.md`, `Storage.md`,
-`RecentlyUsed.md`, `Observability.md`, `Seo.md`, `ThemeRegistry.md`,
-`ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
-`TimeArithmeticTool.md` (previously undocumented despite being a registered
-tool). The remaining ~36 files (all `doc/components/*.md` except
-`TimeArithmeticTool.md`, and `doc/modules/{Analytics,Button,ExtractHtmlText,
-Input,Layout,NavData,Page,Provider,Route,RustLogProvider,StatusPanel,
-ThemeProvider,ThemeToggle,ToolSearch,Type,Types,Util,Logger}.md`) remain thin
-generation stubs. This is recorded as an open documentation gap, not silently
-fixed — see the Architecture Assimilation Report handoff for the full list.
+**Current status:** the design modernization completed specifications only for
+units materially changed by the task. There are 11 substantive component
+specifications and 8 component stubs, plus 15 substantive module
+specifications and 12 module stubs. Newly completed specifications cover
+AppShell, Header, Footer, VerticalNav, both ad placeholders, HomeClient,
+DiscoverClient, ToolPageTemplate, ToolErrorBoundary, Button, Input,
+ThemeToggle, ToolSearch, the root layout, and the category page. Unaffected
+stubs remain documented debt and were not completed globally.
 
 ---
 
@@ -234,8 +221,6 @@ hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
   planned test category with no current implementation (no `@playwright/test`
   dependency or spec files exist). Marked explicitly in that document as of
   2026-08-07; do not treat it as evidence E2E coverage exists today.
-- **Theme system underdocumented at the style-policy level:** the
-  implementation (`src/module/theme/`) supports eight themes; `styling.md`
-  documents only a Light/Dark policy. `architecture.md` and the theme module
-  docs were updated 2026-08-07 to describe the real module structure, but no
-  per-theme token specification exists yet in any tracked document.
+- **Theme system:** `DESIGN.md` documents the shared policy for all eight
+  themes. Light and dark define the canonical product palettes; alternate
+  presets preserve their established identities and share non-color rules.

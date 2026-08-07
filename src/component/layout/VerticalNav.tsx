@@ -18,20 +18,19 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
     const pathname = usePathname();
 
     return (
-        <nav aria-label={ariaLabel} className="w-full lg:w-64">
-            <ul className="flex flex-row flex-wrap gap-2 lg:flex-col lg:gap-1">
+        <nav aria-label={ariaLabel} className="w-full">
+            <ul className="flex flex-row flex-wrap gap-2 lg:flex-col lg:gap-2">
                 {item.map((navItem) => {
                     const active = navItem.href
                         ? isActive(navItem.href, pathname)
                         : false;
 
                     const className = `
-                        flex w-full items-center gap-3 rounded-xl p-4 text-left transition-colors
-                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]
+                        flex min-h-11 w-full items-center gap-3 rounded-[10px] border border-transparent px-3 py-2.5 text-left transition-[color,background-color,border-color] duration-180
                         ${
                             active
-                                ? "bg-[var(--nav-item-active-bg)] text-[var(--nav-item-active-text)]"
-                                : "bg-[var(--nav-item-bg)] text-[var(--nav-item-muted-text)] hover:bg-[var(--nav-item-hover-bg)] hover:text-[var(--nav-item-text)]"
+                                ? "border-[var(--brand-primary)] bg-[var(--nav-item-active-bg)] text-[var(--nav-item-active-text)]"
+                                : "bg-[var(--nav-item-bg)] text-[var(--nav-item-muted-text)] hover:border-border hover:bg-[var(--nav-item-hover-bg)] hover:text-[var(--nav-item-text)]"
                         }
                         ${navItem.disabled ? "cursor-not-allowed opacity-50 pointer-events-none" : "cursor-pointer"}
                     `;

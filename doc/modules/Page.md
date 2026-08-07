@@ -1,31 +1,25 @@
-# Unknown: Page
+# Module: Category Page
 
-**Kind:** Unknown
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/app/category/[category]/page.tsx` owns category route validation, registry-backed selection, category metadata composition, and category-page presentation.
 
-`src/app/category/[category]/page.tsx`
+## Public contract and behavior
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+The page receives asynchronous route params, accepts only existing `ToolCategory` values, uses `notFound()` for invalid categories, and preserves registry order and tool links.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/app/category/[category]/page.tsx` [implementation]
+The route uses a concise existing category heading/description and a responsive solid-card tool grid without a decorative hero.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/app/category/[category]/page.tsx
-- file-role: unknown
-- default-classification: unknown
-- Derived from single-file merged unit "Page".
-- Merge signals: single-file-unit
+The page maintains one page heading, semantic list/link structure, visible focus, and semantic theme tokens.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Do not change category values, descriptions, metadata generation, registry queries, route behavior, tool content, or add destinations.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 17, 21, and 23–25.

@@ -39,27 +39,28 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
     const toolList = getToolByCategory(typed);
 
     return (
-        <main>
+        <div className="page-stack">
             <header>
-                <h1>{formatCategoryTitle(typed)}</h1>
-                <p>{categoryDescription(typed)}</p>
+                <h1 className="page-title">{formatCategoryTitle(typed)}</h1>
+                <p className="page-summary">{categoryDescription(typed)}</p>
             </header>
 
             {toolList.length === 0 ? (
-                <p>No tool available in this category yet.</p>
+                <p className="empty-state" role="status">No tool available in this category yet.</p>
             ) : (
-                <ul>
+                <ul className="tool-grid">
                     {toolList.map((tool) => (
-                        <li key={tool.id}>
-                            <Link href={`/tool/${tool.slug}`}>
-                                <h2>{tool.name}</h2>
-                                <p>{tool.description}</p>
+                        <li key={tool.id} className="tool-card">
+                            <Link className="tool-card-control" href={`/tool/${tool.slug}`}>
+                                <span className="metadata-label capitalize">{tool.category}</span>
+                                <h2 className="tool-card-title">{tool.name}</h2>
+                                <p className="tool-card-summary">{tool.description}</p>
                             </Link>
                         </li>
                     ))}
                 </ul>
             )}
-        </main>
+        </div>
     );
 }
 

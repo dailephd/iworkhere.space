@@ -113,7 +113,7 @@ A local orchestration wrapper that injects governance context into Claude Code r
 
 #### context
 
-Reads all governance files (CLAUDE.md, architecture, design, guidelines, status, project tree, package.json, vitest config), concatenates them into a structured context block, and prints to stdout.
+Reads the governance files (CLAUDE.md, architecture, DESIGN, guidelines, status, project tree, package.json, and Vitest configuration), concatenates them into a structured context block, and prints to stdout.
 
 ```bash
 npm run orchestrator:context
@@ -184,8 +184,7 @@ The `test-report/` directory is gitignored.
 ## Documentation
 
 - `doc/architecture.md` — Architectural boundaries and layer rules
-- `doc/styling.md` — Styling rules and design tokens
-- `doc/design.md` — Design philosophy
+- `doc/DESIGN.md` — Canonical product design, styling, interaction, responsive, and accessibility contract
 - `doc/project-status.md` — Current project status and next steps
 - `doc/code-generation-guidelines.md` — Code generation rules for LLM agents
 - `CLAUDE.md` — Claude Code agent instructions

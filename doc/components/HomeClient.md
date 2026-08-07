@@ -1,32 +1,29 @@
 # Component: HomeClient
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/app/HomeClient.tsx` owns the homepage client-side tool-opening interaction and composes the shared `ToolSearch` catalog.
 
-`src/app/HomeClient.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`HomeClientProps` accepts `toolItem: ToolSearchItem[]` and optional `children`.
 
-<!-- section-id: member-files -->
-## Member Files
+## Current behavior
 
-- `src/app/HomeClient.tsx` [implementation]
+Selecting a tool navigates to `/tool/<slug>` through the existing router. Children render after the catalog.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Visual and responsive role
 
-- Representative file: src/app/HomeClient.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (HomeClient)
-- Derived from single-file merged unit "HomeClient".
-- Merge signals: single-file-unit
+The component spaces the shared discovery surface and supporting content within the homepage hierarchy. Tool-card responsiveness belongs to `ToolSearch`.
 
-<!-- section-id: notes -->
-## Notes
+## Accessibility and theme interaction
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+It introduces no alternate interaction or theme markup and relies on accessible shared controls.
+
+## Invariants
+
+Do not change routing, tool data, ordering, search behavior, or child behavior.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 17, 19, 24, and 25.

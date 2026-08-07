@@ -1,257 +1,204 @@
-/* ----------------------------------------
-   Theme tokens
-   - Default follows system preference (light base)
-   - System dark preference: prefers-color-scheme block
-   - Explicit user choice: [data-theme="..."] on <html>
-   ---------------------------------------- */
+/* Canonical semantic theme tokens. Theme changes color only. */
 
 :root {
-  --background: #fafafa;
-  --surface: #ffffff;
-  --surface-alt: #f3f4f6;
+  color-scheme: light;
+  --background: #edeff3;
+  --surface: #f5f6f8;
+  --surface-alt: #f1f3f6;
+  --card: #f1f3f6;
+  --elevated: #fafafb;
   --contrast: #ffffff;
-  --border: #e5e7eb;
-
+  --border: #d1d5db;
   --text: #111827;
+  --text-secondary: #4b5563;
   --text-muted: #6b7280;
-
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-active: #5b21b6;
+  --brand-primary: #7c3aed;
+  --brand-primary-hover: #6d28d9;
+  --brand-primary-active: #5b21b6;
+  --brand-contrast: #ffffff;
+  --system-accent: #087f9a;
+  --system-accent-hover: #0e7490;
+  --focus-ring: #0891b2;
   --danger: #dc2626;
   --success: #16a34a;
   --warning: #d97706;
-
-  --focus-ring: var(--accent);
-
-  --font-sans: segoe-ui-variable, Arial, Helvetica, sans-serif;
+  --card-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 8px 24px rgba(17, 24, 39, 0.06);
+  --font-sans: "Segoe UI Variable", "Segoe UI", Arial, Helvetica, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-
   --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
+  --nav-item-hover-bg: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  --nav-item-active-bg: var(--brand-primary);
   --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
+  --nav-item-muted-text: var(--text-secondary);
+  --nav-item-active-text: var(--brand-contrast);
 }
 
-/* system dark, only if user has not explicitly chosen a theme */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --background: #0b0b0c;
-    --surface: #121214;
-    --surface-alt: #18181b;
-    --contrast: #ffffff;
-    --border: #27272a;
-
-    --text: #f4f4f5;
-    --text-muted: #a1a1aa;
-
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
-
+    color-scheme: dark;
+    --background: #1a1d23;
+    --surface: #20242c;
+    --surface-alt: #262b35;
+    --card: #262b35;
+    --elevated: #2d3340;
+    --contrast: #1a1d23;
+    --border: #3a4150;
+    --text: #f3f4f6;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --accent: #a78bfa;
+    --accent-hover: #c4b5fd;
+    --accent-active: #8b5cf6;
+    --brand-primary: #a78bfa;
+    --brand-primary-hover: #c4b5fd;
+    --brand-primary-active: #8b5cf6;
+    --brand-contrast: #1a1d23;
+    --system-accent: #22d3ee;
+    --system-accent-hover: #67e8f9;
+    --focus-ring: #22d3ee;
     --danger: #ef4444;
     --success: #22c55e;
     --warning: #f59e0b;
-
-    --focus-ring: var(--accent);
-
-    --nav-item-bg: transparent;
-    --nav-item-hover-bg: var(--accent-hover);
-    --nav-item-active-bg: var(--accent);
-    --nav-item-text: var(--text);
-    --nav-item-muted-text: var(--text-muted);
-    --nav-item-active-text: var(--contrast);
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
   }
 }
 
-/* explicit user choices */
-
 :root[data-theme="light"] {
-  --background: #fafafa;
-  --surface: #ffffff;
-  --surface-alt: #f3f4f6;
-  --contrast: #ffffff;
-  --border: #e5e7eb;
-
-  --text: #111827;
-  --text-muted: #6b7280;
-
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-
-  --danger: #dc2626;
-  --success: #16a34a;
-  --warning: #d97706;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
+  color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --background: #0b0b0c;
-  --surface: #121214;
-  --surface-alt: #18181b;
-  --contrast: #ffffff;
-  --border: #27272a;
-
-  --text: #f4f4f5;
-  --text-muted: #a1a1aa;
-
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-
+  color-scheme: dark;
+  --background: #1a1d23;
+  --surface: #20242c;
+  --surface-alt: #262b35;
+  --card: #262b35;
+  --elevated: #2d3340;
+  --contrast: #1a1d23;
+  --border: #3a4150;
+  --text: #f3f4f6;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent: #a78bfa;
+  --accent-hover: #c4b5fd;
+  --accent-active: #8b5cf6;
+  --brand-primary: #a78bfa;
+  --brand-primary-hover: #c4b5fd;
+  --brand-primary-active: #8b5cf6;
+  --brand-contrast: #1a1d23;
+  --system-accent: #22d3ee;
+  --system-accent-hover: #67e8f9;
+  --focus-ring: #22d3ee;
   --danger: #ef4444;
   --success: #22c55e;
   --warning: #f59e0b;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
+/* Alternate presets preserve their established palette identity. New brand
+   and focus roles inherit the shared violet/cyan values from :root. */
 :root[data-theme="amethyst-haze"] {
+  color-scheme: light;
   --background: #f7f5fb;
   --surface: #ffffff;
   --surface-alt: #f0ecf9;
+  --card: #f0ecf9;
+  --elevated: #ffffff;
   --contrast: #ffffff;
   --border: #e3dcf4;
-
   --text: #14121a;
+  --text-secondary: #4f485e;
   --text-muted: #6b647a;
-
   --accent: #7c3aed;
   --accent-hover: #6d28d9;
-
+  --accent-active: #5b21b6;
   --danger: #dc2626;
   --success: #16a34a;
   --warning: #d97706;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
 }
 
 :root[data-theme="mercury-fog"] {
+  color-scheme: light;
   --background: #f2f4f7;
   --surface: #fafbfc;
   --surface-alt: #e9edf2;
+  --card: #e9edf2;
+  --elevated: #ffffff;
   --contrast: #ffffff;
   --border: #d7dde6;
-
   --text: #0f172a;
+  --text-secondary: #3f4a5d;
   --text-muted: #5b667a;
-
   --accent: #0ea5e9;
   --accent-hover: #0284c7;
-
+  --accent-active: #0369a1;
   --danger: #dc2626;
   --success: #16a34a;
   --warning: #d97706;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
 }
 
 :root[data-theme="onedark"] {
+  color-scheme: dark;
   --background: #282c34;
   --surface: #21252b;
   --surface-alt: #2c313c;
+  --card: #2c313c;
+  --elevated: #343a46;
   --contrast: #ffffff;
   --border: #3a404c;
-
   --text: #e6e6e6;
+  --text-secondary: #c2c8d1;
   --text-muted: #9aa4b2;
-
   --accent: #c678dd;
   --accent-hover: #b266cc;
-
+  --accent-active: #a154bd;
   --danger: #e06c75;
   --success: #98c379;
   --warning: #e5c07b;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 :root[data-theme="vscode-modern"] {
+  color-scheme: dark;
   --background: #1f1f1f;
   --surface: #252526;
   --surface-alt: #2d2d2d;
+  --card: #2d2d2d;
+  --elevated: #333333;
   --contrast: #ffffff;
   --border: #3c3c3c;
-
   --text: #d4d4d4;
+  --text-secondary: #bdc3ce;
   --text-muted: #9da5b4;
-
   --accent: #3794ff;
   --accent-hover: #1f7fff;
-
+  --accent-active: #0e6fd8;
   --danger: #f14c4c;
   --success: #89d185;
   --warning: #cca700;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 :root[data-theme="dracula"] {
+  color-scheme: dark;
   --background: #282a36;
   --surface: #1f202a;
   --surface-alt: #343746;
+  --card: #343746;
+  --elevated: #3b3e4f;
   --contrast: #ffffff;
   --border: #44475a;
-
   --text: #f8f8f2;
+  --text-secondary: #d7d7d1;
   --text-muted: #b4b4c0;
-
   --accent: #bd93f9;
   --accent-hover: #a97ff0;
-
+  --accent-active: #9567df;
   --danger: #ff5555;
   --success: #50fa7b;
   --warning: #f1fa8c;
-
-  --focus-ring: var(--accent);
-
-  --nav-item-bg: transparent;
-  --nav-item-hover-bg: var(--accent-hover);
-  --nav-item-active-bg: var(--accent);
-  --nav-item-text: var(--text);
-  --nav-item-muted-text: var(--text-muted);
-  --nav-item-active-text: var(--contrast);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
 }

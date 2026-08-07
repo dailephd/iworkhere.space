@@ -1,31 +1,29 @@
 # Module: ToolSearch
 
-**Kind:** Module
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/common/ToolSearch.tsx` owns reusable client-side tool filtering and compact catalog presentation.
 
-`src/component/common/ToolSearch.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`ToolSearchItem` contains `slug`, `name`, `description`, `category`, and optional `tag`. `ToolSearchProps` contains `item`, `onOpen`, and optional `emptyLabel`.
 
-<!-- section-id: member-files -->
-## Member Files
+## Current behavior
 
-- `src/component/common/ToolSearch.tsx` [implementation]
+Search is case-insensitive across name, description, and category. Results preserve input order and delegate opening to `onOpen`.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Visual and responsive role
 
-- Representative file: src/component/common/ToolSearch.tsx
-- file-role: shared-core
-- path-segment: common
-- Derived from single-file merged unit "ToolSearch".
-- Merge signals: single-file-unit
+The labeled search field precedes a responsive tool-card grid. Cards prioritize name, purpose, and category using the shared solid-card family.
 
-<!-- section-id: notes -->
-## Notes
+## Accessibility and theme interaction
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Input labeling, keyboard-operable result buttons, visible focus, and a readable empty state are required. Theme changes use semantic tokens only.
+
+## Invariants
+
+Do not change matching, ordering, item contracts, or opening behavior.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 17, 19, 23–25, and 28.

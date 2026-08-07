@@ -1,31 +1,25 @@
 # Module: Input
 
-**Kind:** Module
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/common/Input.tsx` owns the reusable text-input primitive.
 
-`src/component/common/Input.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`InputProps` extends native input attributes. Native value, change, form, validation, disabled, and ref behavior are preserved.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/component/common/Input.tsx` [implementation]
+Inputs use a solid elevated surface, semantic border, 10px radius, readable text, restrained placeholder, and comfortable minimum 44px height.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/component/common/Input.tsx
-- file-role: shared-core
-- path-segment: common
-- Derived from single-file merged unit "Input".
-- Merge signals: single-file-unit
+Consumers must provide a visible or programmatic label. The primitive supplies a cyan focus ring and semantic theme tokens without changing markup by theme.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+The primitive adds no validation rules, state ownership, business logic, analytics, or persistence.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 10, 13, 17, 25, and 29.

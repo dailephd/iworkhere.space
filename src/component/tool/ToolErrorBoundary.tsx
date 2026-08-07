@@ -33,14 +33,14 @@ export class ToolErrorBoundary extends Component<Props, State> {
     render(): ReactNode {
         if (this.state.hasError) {
             return (
-                <div className="p-6 rounded-lg border border-danger/20 bg-danger/5 text-center">
-                    <h3 className="text-lg font-semibold text-danger mb-2">Something went wrong</h3>
-                    <p className="text-textMuted mb-4">
+                <div className="error-state" role="alert">
+                    <h2 className="mb-2 text-xl font-semibold leading-7 text-danger">Something went wrong</h2>
+                    <p className="mb-5 text-text-secondary">
                         The tool encountered an unexpected error and could not continue.
                     </p>
                     <button
                         onClick={() => this.setState({ hasError: false })}
-                        className="px-4 py-2 bg-danger text-white rounded-md hover:bg-danger/90 transition-colors"
+                        className="button-base button-danger"
                     >
                         Try again
                     </button>

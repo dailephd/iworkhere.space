@@ -1,31 +1,25 @@
 # Module: ThemeToggle
 
-**Kind:** Module
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/component/common/ThemeToggle.tsx` owns the existing user-facing theme picker. `ThemeRegistry`, `ThemeStorage`, and `ThemeRuntime` remain the data, persistence, and DOM owners.
 
-`src/component/common/ThemeToggle.tsx`
+## Public contract and behavior
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`ThemeToggle()` accepts no props. It lists `listThemes()`, loads the persisted theme after mount, applies and stores selection, and closes when an outside pointer event occurs.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/component/common/ThemeToggle.tsx` [implementation]
+The trigger is a compact 40–44px control with a 10px radius. The menu is a solid elevated list with clear selected, hover, and focus states and no alternate mobile structure.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/component/common/ThemeToggle.tsx
-- file-role: shared-core
-- path-segment: common
-- Derived from single-file merged unit "ThemeToggle".
-- Merge signals: single-file-unit
+The trigger exposes expanded and popup state. The listbox and options retain selected state, support keyboard activation through semantic buttons, and use cyan focus treatment. Markup does not vary by theme.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+All eight IDs, labels, storage key, runtime behavior, system fallback, and provider boundaries remain unchanged.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 9, 16, 17, 25, and 28.

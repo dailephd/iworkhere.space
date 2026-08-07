@@ -1,32 +1,29 @@
 # Component: DiscoverClient
 
-**Kind:** Component
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/app/discover/DiscoverClient.tsx` owns the existing discover-page query and tag filtering, category grouping, and tool-opening interaction.
 
-`src/app/discover/DiscoverClient.tsx`
+## Public contract
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`DiscoverClientProp` accepts `item: ToolSearchItem[]`.
 
-<!-- section-id: member-files -->
-## Member Files
+## Current behavior
 
-- `src/app/discover/DiscoverClient.tsx` [implementation]
+Filtering matches existing name, description, category, and tag data. Selecting a result navigates to `/tool/<slug>`. Categories are derived from filtered results.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Visual and responsive role
 
-- Representative file: src/app/discover/DiscoverClient.tsx
-- file-role: component
-- extension: .tsx
-- filename: PascalCase (DiscoverClient)
-- Derived from single-file merged unit "DiscoverClient".
-- Merge signals: single-file-unit
+The search/filter surface precedes a responsive one-, two-, or three-column catalog. Tool cards use the shared solid-card family and existing metadata only.
 
-<!-- section-id: notes -->
-## Notes
+## Accessibility and theme interaction
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+The search input has a real label. Tag buttons expose pressed state, tool controls have visible focus, and empty results are announced with readable text. Markup is theme-independent.
+
+## Invariants
+
+Do not change filter semantics, tag values, grouping, result ordering, routes, or add discovery behavior.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 17, 20, and 23–25.

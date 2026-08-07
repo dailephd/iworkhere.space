@@ -1,31 +1,25 @@
-# Unknown: Layout
+# Module: Root Layout
 
-**Kind:** Unknown
+## Purpose and ownership
 
-<!-- section-id: representative-file -->
-## Representative File
+`src/app/layout.tsx` owns root metadata composition, global style imports, pre-paint theme initialization, `ThemeProvider`, `AppShell`, service-worker registration, navigation data injection, and existing advertising placeholder slots.
 
-`src/app/layout.tsx`
+## Public contract and behavior
 
-This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
+`RootLayout` accepts route `children`. It remains a Server Component and emits one document shell. The inline theme initializer recognizes the seven explicit non-system IDs; absence of `data-theme` represents `system`.
 
-<!-- section-id: member-files -->
-## Member Files
+## Visual and responsive role
 
-- `src/app/layout.tsx` [implementation]
+The root uses the system sans-serif stack and delegates all visual layout to `AppShell` and semantic CSS. Existing banner slots are rendered through their established placeholder components.
 
-<!-- section-id: inferred-role -->
-## Inferred Role
+## Accessibility and theme interaction
 
-- Representative file: src/app/layout.tsx
-- file-role: unknown
-- default-classification: unknown
-- Derived from single-file merged unit "Layout".
-- Merge signals: single-file-unit
+The document language, hydration suppression, pre-paint theme behavior, and single main landmark contract remain intact.
 
-<!-- section-id: notes -->
-## Notes
+## Invariants
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
-It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
-Manual review and updates are encouraged to add implementation details.
+Do not change routes, metadata semantics, theme IDs, storage key, service-worker behavior, provider ownership, or convert the layout to a Client Component.
+
+## Design requirements
+
+Follow `doc/DESIGN.md` sections 7, 15, 25, 26, 28–30.
