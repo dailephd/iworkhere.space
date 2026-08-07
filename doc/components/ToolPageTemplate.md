@@ -10,7 +10,7 @@ Props are `tool: ToolDefinition` and `toolUi: ReactNode`. Registry data is rende
 
 ## Visual and responsive role
 
-The tool identity and existing description precede a solid elevated workspace. The workspace is the dominant content and remains responsive without introducing a per-tool layout system.
+The tool identity and existing description precede a solid elevated workspace. The workspace is fluid, content-driven, receives the available main-column width, and expands the browser document instead of owning a page-level vertical scrollbar. It remains the dominant content without introducing a per-tool layout system.
 
 ## Accessibility and theme interaction
 

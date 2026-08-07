@@ -9,7 +9,7 @@ interface AdBannerVerticalProps {
 export function AdBannerVertical({ label, children, isPlaceholder }: AdBannerVerticalProps) {
     return (
         <aside
-            className="flex w-56 flex-col gap-3 rounded-[14px] border border-border bg-surface-alt p-4"
+            className="flex w-full max-w-[112px] flex-col gap-3 rounded-[14px] border border-border bg-surface-alt p-3"
             aria-label={label}
         >
             <div className="text-xs font-semibold text-text-muted">

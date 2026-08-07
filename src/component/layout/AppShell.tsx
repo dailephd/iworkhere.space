@@ -29,11 +29,11 @@ export default function AppShell(props: AppShellProps) {
     } = props
 
     return (
-        <div className="h-dvh min-h-svh w-full overflow-hidden bg-background text-text">
+        <div className="min-h-dvh w-full bg-background text-text">
             <a className="skip-link" href="#main-content">
                 Skip to main content
             </a>
-            <div className="grid h-full w-full grid-rows-[auto_auto_1fr_auto_auto]">
+            <div className="flex min-h-dvh w-full flex-col">
                 <header className="z-10 border-b border-border bg-surface shadow-[0_1px_2px_rgba(17,24,39,0.04)]">
                     <Header />
                 </header>
@@ -44,41 +44,39 @@ export default function AppShell(props: AppShellProps) {
                     </div>
                 ) : null}
 
-                <div className="h-full min-h-0">
-                    <div className="grid h-full min-h-0 grid-cols-1 xl:grid-cols-[auto_1fr_auto]">
-                        <aside className="hidden min-w-0 border-r border-border bg-surface xl:block">
-                            <div className="h-full overflow-y-auto p-4">
-                                {leftBannerSlot}
-                            </div>
-                        </aside>
-
-                        <div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-[232px_minmax(0,1fr)]">
-                            <aside className="hidden min-w-0 border-r border-border bg-surface lg:block">
-                                <div className="h-full overflow-hidden p-4">
-                                    {navItem && navItem.length > 0 ? (
-                                        <VerticalNav
-                                            item={navItem}
-                                            ariaLabel="Primary navigation"
-                                        />
-                                    ) : null}
-                                </div>
-                            </aside>
-
-                            <main id="main-content" tabIndex={-1} className="min-h-0 min-w-0 outline-none">
-                                <div className="MainScroll h-full min-h-0 px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-                                    <div className="mx-auto w-full max-w-[1280px]">
-                                        {children}
-                                    </div>
-                                </div>
-                            </main>
+                <div className="grid w-full flex-1 grid-cols-1 xl:grid-cols-[112px_minmax(0,1fr)_112px]">
+                    <aside className="hidden min-w-0 border-r border-border bg-surface xl:block">
+                        <div className="py-4">
+                            {leftBannerSlot}
                         </div>
+                    </aside>
 
-                        <aside className="hidden min-w-0 border-l border-border bg-surface xl:block">
-                            <div className="h-full overflow-y-auto p-4">
-                                {rightBannerSlot}
+                    <div className="grid min-w-0 grid-cols-1 lg:grid-cols-[176px_minmax(0,1fr)]">
+                        <aside className="hidden min-w-0 border-r border-border bg-surface lg:block">
+                            <div className="p-3">
+                                {navItem && navItem.length > 0 ? (
+                                    <VerticalNav
+                                        item={navItem}
+                                        ariaLabel="Primary navigation"
+                                    />
+                                ) : null}
                             </div>
                         </aside>
+
+                        <main id="main-content" tabIndex={-1} className="min-w-0 outline-none">
+                            <div className="px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+                                <div className="mx-auto w-full max-w-[1280px]">
+                                    {children}
+                                </div>
+                            </div>
+                        </main>
                     </div>
+
+                    <aside className="hidden min-w-0 border-l border-border bg-surface xl:block">
+                        <div className="py-4">
+                            {rightBannerSlot}
+                        </div>
+                    </aside>
                 </div>
 
                 {footerBannerSlot ? (

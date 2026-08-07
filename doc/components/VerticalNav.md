@@ -14,7 +14,7 @@
 
 ## Visual and responsive role
 
-The component is the existing desktop navigation owner. Items use solid semantic states, 10px control radii, restrained spacing, and no decorative motion.
+The component is the existing desktop navigation owner within AppShell's canonical 176px column. Labels remain readable, item hit targets remain at least 40–44px high, and items use solid semantic states, 10px control radii, restrained horizontal spacing, and no decorative motion.
 
 ## Accessibility and theme interaction
 

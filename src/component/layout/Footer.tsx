@@ -1,14 +1,9 @@
 export function Footer() {
     return (
-        <div className="flex flex-col items-center justify-between gap-2 px-5 text-center sm:flex-row sm:px-8 sm:text-left lg:px-10">
+        <div className="flex items-center justify-center px-5 text-center sm:px-8 lg:px-10">
             <p className="text-sm text-text-muted">
-                &copy; {new Date().getFullYear()} iworkhere.space.
+                &copy; 2026 iworkhere.space created by dailephd LLC
             </p>
-            <div>
-                <p className="text-sm text-text-muted">
-                    Client-side processing. No files stored.
-                </p>
-            </div>
         </div>
     );
 }

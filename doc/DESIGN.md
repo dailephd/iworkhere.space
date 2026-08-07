@@ -77,11 +77,15 @@ Cards use solid backgrounds, subtle visible borders, and restrained shadows. Lig
 
 ## 15. Layout system
 
-`AppShell` remains the layout owner. The header targets 64px height. Desktop keeps the existing vertical navigation at approximately 224–240px and gives remaining space to the main region. Main content is centered within 1280px. Mobile remains single-column with 20px safe edge padding and preserves current navigation behavior. Major layout must not depend on transforms, fragile absolute positioning, or fixed card widths that create horizontal scrolling.
+`AppShell` remains the layout owner. The header targets 64px height. The utility workspace has higher visual priority than advertising placeholders and must not be squeezed to preserve oversized placeholder inventory. On desktop, `VerticalNav` targets 176px and may range only from 168px to 184px when border or padding calculations require it. Each existing vertical advertising rail targets 112px and must not exceed 120px of application-layout width. After navigation and advertising rails are allocated, the main/workspace column receives all remaining space through `minmax(0, 1fr)` or the equivalent existing mechanism. Tool pages use a fluid workspace rather than a narrow fixed width, with approximately 800–1040px usable width when the viewport permits. Main content remains centered within 1280px. Mobile remains single-column with 20px safe edge padding and preserves current navigation and advertising-slot behavior without allowing placeholders to squeeze the workspace.
+
+The browser document owns normal vertical scrolling. `AppShell` uses natural document flow and may use `min-height: 100dvh`, but it must not use a fixed viewport height, shell-level overflow trapping, or a page-level `overflow-y: auto` middle workspace. Long tool workspaces grow the document. The footer advertising area and `Footer` follow the complete main workspace in normal document flow and must never remain fixed at the viewport bottom while the workspace scrolls independently. Major layout must not depend on transforms, fragile absolute positioning, or fixed card widths that create horizontal scrolling.
 
 ## 16. Navigation
 
 Navigation is visually clear but subordinate to tools. `VerticalNav` remains the desktop navigation owner and uses existing route data and active-state behavior. Do not introduce a drawer, modal, hamburger, destination, or parallel navigation model. Active navigation uses primary emphasis; links retain visible hover and focus states.
+
+The theme picker trigger is a normal compact secondary control labeled exactly `Themes`. The palette icon is not visible in the trigger. The control is at least 40px high, uses 12–16px horizontal padding and a 10px radius, and has no unnecessary fixed width or pill shape. Its existing picker behavior and choices remain unchanged.
 
 ## 17. Shared component rules
 
@@ -117,9 +121,11 @@ States use a solid bounded surface, clear heading or message, and an action only
 
 Advertising placeholders stay low priority, reserve clear layout space, and identify themselves as placeholders. They must not resemble real advertising or compete with tools.
 
+The footer displays exactly `© 2026 iworkhere.space created by dailephd LLC`. It contains no replacement privacy or promotional statement.
+
 ## 18. Tool-workspace design
 
-The workspace is a solid elevated surface with a clear boundary, useful maximum width, and 20–24px padding. Inputs, actions, and results are grouped clearly. Outputs remain visually primary. Decorative workspace backgrounds and per-tool visual systems are forbidden. Calculation, parsing, validation, URL state, storage, observability, and error behavior must not change.
+The workspace is a fluid, content-driven solid elevated surface with a clear boundary, useful maximum width, and 20–24px padding. It occupies the available main column and never owns the application's primary vertical scrollbar. Inputs, actions, and results are grouped clearly. Outputs remain visually primary. Decorative workspace backgrounds and per-tool visual systems are forbidden. Calculation, parsing, validation, URL state, storage, observability, and error behavior must not change.
 
 ## 19. Homepage design
 

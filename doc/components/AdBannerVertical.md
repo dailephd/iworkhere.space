@@ -10,7 +10,7 @@ Props are `label`, optional `children`, and optional `isPlaceholder`. Placeholde
 
 ## Visual, responsive, accessibility, and theme role
 
-The slot is a low-priority solid bordered panel with a 14px radius and reserved vertical height. Its `<aside>` keeps the supplied accessible label and uses semantic tokens in every theme.
+The slot is a low-priority solid bordered panel with a 14px radius and reserved vertical height. Its preferred desktop width is 112px and its maximum layout allocation is 120px. Its `<aside>` keeps the supplied accessible label and uses semantic tokens in every theme; existing smaller-breakpoint visibility behavior remains unchanged.
 
 ## Invariants
 

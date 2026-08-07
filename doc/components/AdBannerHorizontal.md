@@ -10,7 +10,7 @@ Props are `label`, optional `children`, and optional `isPlaceholder`. Placeholde
 
 ## Visual, responsive, accessibility, and theme role
 
-The slot is a low-priority solid bordered panel with a 14px radius and reserved horizontal height. Its `<aside>` keeps the supplied accessible label and uses semantic tokens in every theme.
+The slot is a low-priority solid bordered panel with a 14px radius and reserved horizontal height. Its `<aside>` keeps the supplied accessible label and uses semantic tokens in every theme. The footer slot follows the complete main workspace in normal document flow and is never fixed or sticky.
 
 ## Invariants
 

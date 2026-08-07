@@ -2,15 +2,15 @@
 
 ## Purpose and ownership
 
-`src/component/layout/Footer.tsx` owns the existing copyright and client-side-processing statements in the shared shell.
+`src/component/layout/Footer.tsx` owns the established copyright and creator identity line in the shared shell.
 
 ## Public contract
 
-`Footer()` accepts no props and renders only the established copy.
+`Footer()` accepts no props and renders exactly `© 2026 iworkhere.space created by dailephd LLC`.
 
 ## Visual and responsive role
 
-The footer uses a quiet solid surface and compact secondary text, stacking on narrow screens and aligning horizontally when space permits.
+The footer uses a quiet solid surface and compact centered secondary text. AppShell places it after the footer advertising area in normal document flow.
 
 ## Accessibility and theme interaction
 
