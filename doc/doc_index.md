@@ -145,7 +145,78 @@ and `TESTING.md`.
 
 ---
 
-## 8. Gaps & Observations
+## 8. Component & Module Specification Layer (doc/components/, doc/modules/)
+
+**Summary:** A separate implementation/design-contract layer, one file per
+component (`doc/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
+2026-08-07 = 19) or module/logical-unit (`doc/modules/*.md`, 26 files). Each
+file identifies representative/member source files and (where reconciled)
+a real contract: exported functions, storage keys, dependencies, and known
+implementation/documentation gaps.
+
+**When to read:** Before modifying a specific component or module — check
+whether its `.md` file already documents a contract you must preserve.
+
+**Relations:** Complements `architecture.md` (system-level) and `API.md`
+(cross-cutting contracts) without duplicating them; this layer is
+per-unit detail.
+
+**Status as of 2026-08-07 reconciliation:** all 45 files were produced by an
+automated "Milestone 1 / Milestone 12" ingestion pass
+(`log/iworkhere-timearith-prepared/`) and, except where noted below, contain
+only generation metadata (representative file, member files, inferred role,
+merge signals) with **no real contract content** — every unreconciled file
+ends with "Manual review and updates are encouraged to add implementation
+details." This reconciliation pass added a `## Contract` section with real
+exported signatures, storage keys, and dependencies to the files judged most
+architecturally load-bearing: `Registry.md`, `Metadata.md`, `Storage.md`,
+`RecentlyUsed.md`, `Observability.md`, `Seo.md`, `ThemeRegistry.md`,
+`ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
+`TimeArithmeticTool.md` (previously undocumented despite being a registered
+tool). The remaining ~36 files (all `doc/components/*.md` except
+`TimeArithmeticTool.md`, and `doc/modules/{Analytics,Button,ExtractHtmlText,
+Input,Layout,NavData,Page,Provider,Route,RustLogProvider,StatusPanel,
+ThemeProvider,ThemeToggle,ToolSearch,Type,Types,Util,Logger}.md`) remain thin
+generation stubs. This is recorded as an open documentation gap, not silently
+fixed — see the Architecture Assimilation Report handoff for the full list.
+
+---
+
+## 9. Layer Inventories (doc/features/)
+
+**Summary:** Four files (`src-app.md`, `src-component.md`, `src-lib.md`,
+`src-module.md`) that are raw, auto-generated per-`src/`-subdirectory file
+listings from the same ingestion pass, not component specs (their original
+titles named an arbitrary member file, e.g. "Component: HomeClient" for the
+whole `src/app` group — corrected 2026-08-07 to accurate layer-inventory
+titles).
+
+**When to read:** As a cross-check of file membership per layer, or to spot
+files not yet covered by an individual component/module doc. Not for
+authoritative responsibility descriptions — use `architecture.md` for that.
+
+**Relations:** Subordinate to `architecture.md`; overlaps with
+`project-tree.txt` (file locations) but grouped by classifier heuristics
+rather than directory structure.
+
+---
+
+## 10. Generated Reports
+
+### EXISTING_PROJECT_INVENTORY_REPORT.md
+**Summary:** Machine-generated inventory (Milestone 1 v1, generated
+2026-04-01) of every source file, its inferred unit/role, and merged logical
+units. This is the report that originally proposed the `doc/components/`,
+`doc/modules/`, and `doc/features/` doc targets listed above.
+**When to read:** To understand how the component/module doc set was derived,
+or to see the classifier's raw file-role output.
+**Relations:** Upstream of every file in section 8 and section 9.
+**Do not hand-edit:** regenerate via the ingestion tool rather than editing by
+hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
+
+---
+
+## 11. Gaps & Observations
 
 - **Overlap:** `API.md` and `SCHEMA.md` both define contracts, but `SCHEMA.md`
   focuses on data shapes while `API.md` focuses on function signatures and
@@ -153,7 +224,18 @@ and `TESTING.md`.
 - **Overlap:** `TESTING.md` and `CI_CD.md` both discuss test reporting, but
   `CI_CD.md` focuses on the pipeline mechanics while `TESTING.md` focuses on
   test content.
-- **Completeness:** The documentation covers architecture, design, testing, and
-  operations well.
+- **Completeness:** Architecture, design, testing, and operations are well
+  covered at the system level. The per-unit `doc/components/` and
+  `doc/modules/` layer is largely unreconciled generation stubs (see section
+  8) — a known, tracked gap rather than a completeness claim.
 - **Naming:** Consistent use of singular naming is enforced in
   `code-generation-guidelines.md` and visible in the file structure.
+- **Aspirational content:** `TESTING.md` §2.4 (Playwright E2E) describes a
+  planned test category with no current implementation (no `@playwright/test`
+  dependency or spec files exist). Marked explicitly in that document as of
+  2026-08-07; do not treat it as evidence E2E coverage exists today.
+- **Theme system underdocumented at the style-policy level:** the
+  implementation (`src/module/theme/`) supports eight themes; `styling.md`
+  documents only a Light/Dark policy. `architecture.md` and the theme module
+  docs were updated 2026-08-07 to describe the real module structure, but no
+  per-theme token specification exists yet in any tracked document.

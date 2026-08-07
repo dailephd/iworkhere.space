@@ -51,9 +51,11 @@ Tools are the core domain concept. Each tool is a React component registered in 
 ### Current Tools
 
 - **Slugify Text** (`/tool/slugify`) — Convert text into URL-safe slugs
+- **HTML Text Extractor** (`/tool/html-text-extractor`) — Extract visible text from HTML and preserve line breaks
 - **Calculator** (`/tool/calculator`) — Evaluate simple math expressions
 - **Length Converter** (`/tool/length-converter`) — Convert between common length units
 - **Weight Converter** (`/tool/weight-converter`) — Convert between common weight units
+- **Time Arithmetic** (`/tool/time-arithmetic`) — Add and subtract time values in HH:MM format
 
 ### Key Routes
 
