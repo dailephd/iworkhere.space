@@ -51,9 +51,9 @@ export default function AppShell(props: AppShellProps) {
                         </div>
                     </aside>
 
-                    <div className="grid min-w-0 grid-cols-1 lg:grid-cols-[97px_minmax(0,1fr)]">
+                    <div className="grid min-w-0 grid-cols-1 lg:grid-cols-[176px_minmax(0,1fr)]">
                         <aside className="hidden min-w-0 border-r border-border bg-surface lg:block">
-                            <div className="p-2">
+                            <div className="p-3">
                                 {navItem && navItem.length > 0 ? (
                                     <VerticalNav
                                         item={navItem}

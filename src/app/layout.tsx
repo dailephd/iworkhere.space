@@ -6,6 +6,7 @@ import { ServiceWorkerRegister } from "@/component/layout/ServiceWorkerRegister"
 import { ThemeProvider } from "@/component/common/ThemeProvider"
 import { defaultNavItem } from "./navData"
 import "./global.css";
+import "./scroll.css";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {

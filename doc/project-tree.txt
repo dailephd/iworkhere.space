@@ -6,6 +6,7 @@ src/
 │   │   layout.tsx
 │   │   navData.ts
 │   │   page.tsx
+│   │   scroll.css
 │   │
 │   ├── api/
 │   │   ├── health/

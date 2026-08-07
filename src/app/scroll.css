@@ -1,0 +1,25 @@
+/* Scroll behavior for opt-in containers only */
+/* Do not apply globally */
+
+.MainScroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--border) transparent;
+}
+
+.MainScroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.MainScroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.MainScroll::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
