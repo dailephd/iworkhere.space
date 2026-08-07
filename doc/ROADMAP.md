@@ -106,20 +106,20 @@ Known baseline defects and debt are addressed by the following versions rather t
 
 ## Version 0.1.1 — Development Validation Hardening
 
-Status: Planned
+Status: Implemented
 
 ### Goal
 
 Restore trustworthy development and continuous-integration validation before larger feature work proceeds.
 
-The current repository has two validation defects:
+The repository previously had two validation defects, both corrected by this version:
 
-* `npm run lint` invokes the removed Next.js `next lint` command and fails under Next.js 16.1.0.
-* the GitHub Actions test workflow uses `continue-on-error: true`, even though the documented continuous-integration policy says required tests must pass.
+* `npm run lint` invoked the removed Next.js `next lint` command and failed under Next.js 16.1.0.
+* the GitHub Actions test workflow used `continue-on-error: true`, even though the documented continuous-integration policy says required tests must pass.
 
-These defects affect validation of every later implementation and should be corrected before broader feature development.
+These defects affected validation of every later implementation and were corrected before broader feature development proceeds.
 
-### Planned scope
+### Implemented scope
 
 #### Lint command correction
 
@@ -948,7 +948,7 @@ Items listed under **Planned Work — Version TBD** remain outside this concrete
 
 ### Validation foundation
 
-v0.1.1 is a prerequisite for all later implementation versions because the current lint and continuous-integration test gates are not trustworthy.
+v0.1.1 was a prerequisite for all later implementation versions because the lint and continuous-integration test gates were not trustworthy before it; both gates are now restored and enforced.
 
 ### Browser validation
 
@@ -1023,14 +1023,10 @@ Where a version has a **Definition gate**, that gate must be resolved before imp
 
 ## Next Planning Action
 
+v0.1.1 — Development Validation Hardening is implemented; both validation defects are corrected and the local/continuous-integration gates are trustworthy.
+
 The next implementation target is:
 
-**v0.1.1 — Development Validation Hardening**
+**v0.2.0 — Browser End-to-End Validation Foundation**
 
-Before its implementation prompt is written:
-
-1. verify the current lint configuration and supported ESLint execution path;
-2. verify the exact GitHub Actions test-job ownership and `continue-on-error` behavior;
-3. identify the documentation references that must change with the corrected validation contract;
-4. use current my-dev-kit targeted retrieval before source/test edits;
-5. implement the bounded validation correction without introducing unrelated product work.
+v0.2.0 has no Definition gate. Before its implementation prompt is written, use current my-dev-kit targeted retrieval before any source/test edits.

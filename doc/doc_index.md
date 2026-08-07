@@ -149,7 +149,7 @@ and `TESTING.md`.
 
 **Summary:** A separate implementation/design-contract layer, one file per
 component (`doc/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
-2026-08-07 = 19) or module/logical-unit (`doc/modules/*.md`, 26 files). Each
+2026-08-07 = 19) or module/logical-unit (`doc/modules/*.md`, 27 files). Each
 file identifies representative/member source files and (where reconciled)
 a real contract: exported functions, storage keys, dependencies, and known
 implementation/documentation gaps.
@@ -161,7 +161,7 @@ whether its `.md` file already documents a contract you must preserve.
 (cross-cutting contracts) without duplicating them; this layer is
 per-unit detail.
 
-**Status as of 2026-08-07 reconciliation:** all 45 files were produced by an
+**Status as of 2026-08-07 reconciliation:** all 46 files were produced by an
 automated "Milestone 1 / Milestone 12" ingestion pass
 (`log/iworkhere-timearith-prepared/`) and, except where noted below, contain
 only generation metadata (representative file, member files, inferred role,
