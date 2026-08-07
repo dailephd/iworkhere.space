@@ -14,7 +14,7 @@ The shell grows from a `100dvh` minimum height and leaves primary vertical scrol
 
 ## Visual and responsive role
 
-The shell uses solid semantic surfaces, a 64px header, a 176px desktop navigation column, 112px desktop advertising columns, and a fluid `minmax(0, 1fr)` main column whose content remains no wider than 1280px. Navigation may range only from 168–184px and advertising columns never exceed 120px. Mobile remains single-column with 20px edge padding and does not introduce a new navigation mechanism.
+The shell uses solid semantic surfaces, a 64px header, a 97px desktop navigation column, 112px desktop advertising columns, and a fluid `minmax(0, 1fr)` main column whose content remains no wider than 1280px. Navigation may range only from 96–98px and advertising columns never exceed 120px. Mobile remains single-column with 20px edge padding and does not introduce a new navigation mechanism.
 
 ## Accessibility and theme interaction
 

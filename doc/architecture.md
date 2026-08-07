@@ -104,7 +104,6 @@ graph TD
 **Supporting files:**
 - `navData.ts` — Navigation item definitions
 - `global.css` — CSS custom properties for theming
-- `scroll.css` — Scroll behavior styles
 
 ### module/
 - Owns all domain concepts (tools, registry, capabilities, analytics, logging,

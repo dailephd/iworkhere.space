@@ -26,7 +26,7 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
                         : false;
 
                     const className = `
-                        flex min-h-11 w-full items-center gap-3 rounded-[10px] border border-transparent px-3 py-2.5 text-left transition-[color,background-color,border-color] duration-180
+                        flex min-h-11 w-full items-center gap-2 rounded-[10px] border border-transparent px-2 py-2 text-left transition-[color,background-color,border-color] duration-180
                         ${
                             active
                                 ? "border-[var(--brand-primary)] bg-[var(--nav-item-active-bg)] text-[var(--nav-item-active-text)]"
@@ -42,7 +42,7 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
                                     {navItem.icon}
                                 </span>
                             )}
-                            <div className="flex flex-col leading-tight">
+                            <div className="flex min-w-0 flex-col leading-tight">
                                 <span className="font-medium">
                                     {navItem.label}
                                 </span>
