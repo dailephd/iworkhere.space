@@ -37,6 +37,10 @@ Four jobs run on every push and pull request:
 All four jobs must pass.
 If any job fails, merge is blocked.
 
+For local aggregate validation, run `npm run verify`. This command runs the
+same four checks sequentially with a shared `RUN_ID` and per-command logs; it
+does not replace the four independent GitHub Actions jobs.
+
 Each job runs in a separate GitHub Actions workflow file under `.github/workflows/`.
 
 ---

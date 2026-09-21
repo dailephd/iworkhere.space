@@ -48,8 +48,8 @@ expansion.
   build)
 - Test infrastructure with Vitest and unique report generation
   (`test-report/<RUN_ID>/`)
-- Orchestration wrapper (`script/orchestrator.ts`) with context, ask, verify
-  modes
+- Aggregate local validation runner (`script/verify.ts`) with shared RUN_ID,
+  command logs, and Vitest reports
 - Project documentation updated (architecture, styling, design, code generation
   guidelines)
 
@@ -62,7 +62,7 @@ expansion.
 - **Time Arithmetic** (`/tool/time-arithmetic`) — time category
 
 ### Test coverage
-(counts as of `npm run test` on 2026-08-07; 12 test files, 194 tests, all
+(counts as of `npm run test` on 2026-09-21; 12 test files, 183 tests, all
 passing)
 - `src/module/theme/themeRegistry.test.ts` — 30 tests
 - `src/app/api/log/route.test.ts` — 9 tests
@@ -72,7 +72,7 @@ passing)
 - `src/module/tool/time/timeArithmetic.test.ts` — 31 tests
 - `src/module/tool/recentlyUsed.test.ts` — 10 tests
 - `src/module/tool/registry.test.ts` — 11 tests
-- `script/orchestrator.test.ts` — 16 tests
+- `script/verify.test.ts` — focused validation-runner tests
 - `src/lib/seo.test.ts` — 9 tests
 - `src/module/tool/text/extractHtmlText.test.ts` — 21 tests
 - `src/module/theme/themeRuntime.client.test.ts` — 18 tests

@@ -1,3 +1,7 @@
+script/
+├── verify.test.ts
+└── verify.ts
+
 src/
 ├── app/
 │   │   favicon.ico

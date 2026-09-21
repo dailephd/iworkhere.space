@@ -403,17 +403,13 @@ Dynamic metadata generation from tool definitions.
 - Each report contains `results.json` (JSON) and `results.xml` (JUnit)
 - CI uploads `test-report/` as an artifact
 
-### Orchestrator (`script/orchestrator.ts`)
-- Local orchestration wrapper with three modes: `context`, `ask`, `verify`
-- `context` — prints governance file bundle to stdout
-- `ask` — invokes Claude Code with governance context prepended to a user
-  request
-- `verify` — runs typecheck, lint, test, build in order with log capture under a
-  unified RUN_ID
-- Passes `VITEST_RUN_ID` env var to vitest so test reports land in the
-  orchestrator's report directory
-- npm scripts: `orchestrator:context`, `orchestrator:ask`,
-  `orchestrator:verify`
+### Local validation (`script/verify.ts`)
+- Aggregate local validation runner exposed as `npm run verify`
+- Runs typecheck, lint, test, and build in order with log capture under a
+  shared RUN_ID
+- Passes `VITEST_RUN_ID` to vitest so JSON and JUnit reports share the run
+  directory
+- Contains no governance context, prompt, or coding-agent invocation
 
 ### CI pipeline
 Four separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,

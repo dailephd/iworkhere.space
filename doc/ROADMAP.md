@@ -106,7 +106,7 @@ Known baseline defects and debt are addressed by the following versions rather t
 
 ## Version 0.1.1 — Development Validation Hardening
 
-Status: Active — validation fixes implemented; legacy local orchestrator cleanup pending
+Status: Complete — validation fixes and legacy local orchestrator cleanup implemented
 
 ### Goal
 
@@ -1070,10 +1070,10 @@ Where a version has a **Definition gate**, that gate must be resolved before imp
 
 ## Next Planning Action
 
-v0.1.1 — Development Validation Hardening remains active. The lint and continuous-integration test-gate corrections are implemented, but the legacy repository-local orchestrator retirement defined above is still required.
+v0.1.1 — Development Validation Hardening is complete. The lint and continuous-integration test-gate corrections and legacy repository-local orchestrator retirement are implemented.
 
 The next implementation action is:
 
-**Complete the v0.1.1 legacy local orchestrator cleanup.**
+**Begin v0.2.0 — Browser End-to-End Validation Foundation.**
 
 Do not begin v0.2.0 until the v0.1.1 cleanup acceptance boundaries pass. After v0.1.1 is complete, the next implementation target is **v0.2.0 — Browser End-to-End Validation Foundation**.

@@ -76,8 +76,9 @@ the expected code quality.
 
 ### CI_CD.md
 **Summary:** Defines the mandatory CI checks (typecheck, lint, test, build) that
-run on every PR. It explains the test report discipline and the prohibition on
-suppressing errors.
+run independently on every PR. It also documents `npm run verify` as the
+aggregate local validation command, test report discipline, and the prohibition
+on suppressing errors.
 **When to read:** When setting up a PR or debugging a CI failure.
 **Relations:** Enforces the standards defined in `TESTING.md`.
 

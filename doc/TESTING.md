@@ -74,6 +74,10 @@ All tests fall into one of these categories:
 
 Unit tests verify pure logic in isolation.
 
+Run `npm run verify` for the aggregate local validation sequence. It runs
+typecheck, lint, test, and build in order and preserves the shared Vitest
+`RUN_ID` reports and command logs under `test-report/<RUN_ID>/`.
+
 Examples:
 
 - SEO builder functions (`buildToolMetadata`, `buildCategoryMetadata`)

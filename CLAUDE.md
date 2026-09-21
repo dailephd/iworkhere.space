@@ -9,9 +9,7 @@ npm run build        # Production build
 npm run lint         # ESLint
 npm run typecheck    # TypeScript type checking (tsc --noEmit)
 npm run test         # Unit tests (vitest run)
-npm run orchestrator:context  # Print governance context bundle
-npm run orchestrator:ask      # Run Claude Code with governance context
-npm run orchestrator:verify   # Run CI steps with unified test report
+npm run verify       # Aggregate local validation with shared reports
 
 CI runs: typecheck, lint, test, build (all must pass). Separate GitHub Actions workflow per step.
 
