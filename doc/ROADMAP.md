@@ -106,20 +106,20 @@ Known baseline defects and debt are addressed by the following versions rather t
 
 ## Version 0.1.1 — Development Validation Hardening
 
-Status: Implemented
+Status: Active — validation fixes implemented; legacy local orchestrator cleanup pending
 
 ### Goal
 
-Restore trustworthy development and continuous-integration validation before larger feature work proceeds.
+Restore trustworthy development and continuous-integration validation before larger feature work proceeds, and retire the obsolete repository-local orchestration predecessor so the project has one clear development workflow.
 
 The repository previously had two validation defects, both corrected by this version:
 
 * `npm run lint` invoked the removed Next.js `next lint` command and failed under Next.js 16.1.0.
 * the GitHub Actions test workflow used `continue-on-error: true`, even though the documented continuous-integration policy says required tests must pass.
 
-These defects affected validation of every later implementation and were corrected before broader feature development proceeds.
+Those two validation defects are corrected. Before v0.2.0 begins, v0.1.1 must also retire `script/orchestrator.ts` and its context/agent-invocation commands while preserving its useful project-local verification behavior under a normal validation command.
 
-### Implemented scope
+### Version scope
 
 #### Lint command correction
 
@@ -147,6 +147,41 @@ Correct the known inventory drift:
 
 Update only documentation that owns these current-state facts.
 
+#### Legacy local orchestrator retirement
+
+`script/orchestrator.ts` is the predecessor of the current my-dev-kit development workflow. It must be retired in v0.1.1 rather than maintained as a second context, prompting, or orchestration system.
+
+Cleanup requirements:
+
+* Delete `script/orchestrator.ts` after its still-useful project verification behavior has been extracted.
+* Remove these package scripts:
+    * `orchestrator:context`
+    * `orchestrator:ask`
+    * `orchestrator:ask:file`
+    * `orchestrator:verify`
+* Remove the obsolete local-orchestrator responsibilities:
+    * governance-file concatenation and context-bundle generation;
+    * direct Claude Code invocation;
+    * the `CLAUDE_COMMAND` override used by the local agent launcher;
+    * agent-request `prompt.txt` generation;
+    * documentation instructing developers or coding agents to use the repository-local orchestrator for context construction or prompting.
+* Preserve only the useful repository validation behavior by moving it to a narrowly owned validation runner, preferably `script/verify.ts`, exposed as `npm run verify`.
+* The validation runner must:
+    * generate one `RUN_ID`;
+    * create `test-report/<RUN_ID>/command/`;
+    * run `npm run typecheck`, `npm run lint`, `npm run test`, and `npm run build` sequentially;
+    * stop on the first failing command while preserving generated logs;
+    * capture command stdout and stderr under the shared run directory;
+    * pass `VITEST_RUN_ID` so Vitest JSON/JUnit output remains associated with the same run.
+* The validation runner must not:
+    * assemble LLM or governance context;
+    * create coding-agent prompts;
+    * invoke Claude Code or another coding agent;
+    * choose implementation scope or workflow mode;
+    * embed or invoke my-dev-kit-orchestrator.
+* Keep the four GitHub Actions jobs separate. `npm run verify` is the aggregate local project-validation command; it does not replace the independent CI jobs.
+* Search tracked repository content for stale legacy references, including `orchestrator:`, `script/orchestrator.ts`, `CLAUDE_COMMAND`, `prompt.txt`, and prose describing the local orchestration wrapper. Remove or rewrite every current instruction that points to the retired system. Historical evidence need not be rewritten solely to erase history.
+
 ### Documentation prerequisites
 
 Review and update as applicable:
@@ -155,9 +190,13 @@ Review and update as applicable:
 * `doc/CI_CD.md`
 * `doc/TESTING.md`
 * `doc/doc_index.md`
+* `doc/architecture.md`
+* `doc/project-status.md`
+* `doc/project-tree.txt`
 * development/orchestration command documentation
+* `package.json` command descriptions where applicable
 
-No component or module specification is required solely for the lint or continuous-integration correction.
+No component or module specification is required solely for the lint, continuous-integration correction, or retirement of the legacy local orchestrator.
 
 ### Acceptance boundaries
 
@@ -169,6 +208,12 @@ Version 0.1.1 is complete when:
 * type checking still passes;
 * all existing tests still pass;
 * production build still passes;
+* `script/orchestrator.ts` no longer exists;
+* `orchestrator:context`, `orchestrator:ask`, `orchestrator:ask:file`, and `orchestrator:verify` no longer exist in `package.json`;
+* `npm run verify` exists as the project-local aggregate validation command and preserves the required shared RUN_ID/log/report behavior;
+* the repository contains no current development instruction that directs developers or coding agents to the retired local context/prompt orchestration path;
+* the replacement validation runner contains no LLM context assembly, prompt generation, or coding-agent invocation;
+* GitHub Actions continues to run the required validation jobs independently;
 * documentation accurately describes the validation commands and gates;
 * the documentation inventory reports the actual component/module specification counts.
 
@@ -186,6 +231,8 @@ Version 0.1.1 does not include:
 * About page
 * global completion of all specification stubs
 * package/provider architecture changes
+* embedding my-dev-kit-orchestrator or another agent/orchestration system into the application package scripts
+* product-behavior changes unrelated to development validation cleanup
 
 ## Version 0.2.0 — Browser End-to-End Validation Foundation
 
@@ -1023,10 +1070,10 @@ Where a version has a **Definition gate**, that gate must be resolved before imp
 
 ## Next Planning Action
 
-v0.1.1 — Development Validation Hardening is implemented; both validation defects are corrected and the local/continuous-integration gates are trustworthy.
+v0.1.1 — Development Validation Hardening remains active. The lint and continuous-integration test-gate corrections are implemented, but the legacy repository-local orchestrator retirement defined above is still required.
 
-The next implementation target is:
+The next implementation action is:
 
-**v0.2.0 — Browser End-to-End Validation Foundation**
+**Complete the v0.1.1 legacy local orchestrator cleanup.**
 
-v0.2.0 has no Definition gate. Before its implementation prompt is written, use current my-dev-kit targeted retrieval before any source/test edits.
+Do not begin v0.2.0 until the v0.1.1 cleanup acceptance boundaries pass. After v0.1.1 is complete, the next implementation target is **v0.2.0 — Browser End-to-End Validation Foundation**.
