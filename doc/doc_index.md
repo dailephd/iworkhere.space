@@ -15,7 +15,40 @@ be preceded by changes to documentation.
 
 ---
 
-## 2. Architecture & Design Documents
+## 2. Planning, Architecture & Design Documents
+
+### ROADMAP.md
+**Summary:** Canonical version-level planning authority. It owns version goals,
+product capability scope, dependencies, constraints, exclusions, acceptance
+criteria, unresolved planning decisions, deferred/Version-TBD work, and concise
+status. It must not become an implementation-batch log, command transcript,
+changed-file inventory, or execution report.
+**When to read:** Before planning any version or deciding whether work belongs
+in the current release.
+**Relations:** Version-specific implementation plans derive from the roadmap but
+do not replace or silently rewrite it.
+
+### doc/plans/vX.Y.Z-implementation-plan.md
+**Summary:** Version-specific frozen implementation plan, created only when that
+version starts and after current repository inspection and fresh my-dev-kit
+retrieval. A version plan may define implementation architecture decisions,
+context-sharing batches, sequencing, affected owners/contracts, planner-authored
+test expectations, batch gates, validation, explicit exclusions, and the
+handoff into documentation reconciliation/readiness.
+**When to read:** During implementation of the named version. If no plan exists
+yet, do not invent batches from the roadmap; prepare the plan first.
+**Relations:** Subordinate to the roadmap's version-level scope. It is planning
+authority, not evidence that a batch or version was implemented.
+
+### project-status.md
+**Summary:** Tracks actual current implementation, validation state, open
+decisions, and exact next action. It does not own future version scope.
+**When to read:** To establish the current repository state before planning or
+implementation.
+**Relations:** Implementation evidence may update roadmap status but must not
+erase unrelated future scope.
+
+### architecture.md
 
 ### architecture.md
 **Summary:** Defines the high-level four-layer structure (`app`, `module`,
@@ -55,12 +88,6 @@ platform services like the registry, observability, or storage.
 **Summary:** A text representation of the file structure.
 **When to read:** To understand where files are located.
 **Relations:** Visualizes the structure defined in `architecture.md`.
-
-### project-status.md
-**Summary:** Tracks the current implementation state, completed features, open
-decisions, and next steps.
-**When to read:** To check what is already built and what is planned next.
-**Relations:** Updated as features from `architecture.md` are implemented.
 
 ---
 
@@ -125,14 +152,27 @@ and `TESTING.md`.
 ### For new contributors
 1. `architecture.md` - Understand the system structure.
 2. `design.md` - Understand the engineering values.
-3. `project-status.md` - See what is currently built.
-4. `TESTING.md` - Learn how to verify your work.
+3. `project-status.md` - See what is actually built now.
+4. `ROADMAP.md` - Understand the approved product/version direction.
+5. `TESTING.md` - Learn how to verify your work.
 
-### For implementing a new feature
-1. `SCHEMA.md` - Check if data contracts need updates.
-2. `API.md` - Identify available stable interfaces.
-3. `styling.md` - Review UI standards if building components.
-4. `TESTING.md` - Determine required tests.
+### For planning a version
+1. `ROADMAP.md` - Preserve the approved version goal, scope, dependencies,
+   exclusions, acceptance, and unresolved decisions.
+2. `project-status.md` - Establish current implementation and validation
+   state.
+3. Refresh repository evidence with my-dev-kit.
+4. Resolve the version's open planning decisions.
+5. Create and freeze `doc/plans/vX.Y.Z-implementation-plan.md`.
+
+### For implementing a planned version
+1. Read `ROADMAP.md` and the current version implementation plan.
+2. `SCHEMA.md` - Check whether shared data contracts are affected.
+3. `API.md` - Identify stable interfaces and extension points.
+4. Read affected `doc/components/*.md` and `doc/modules/*.md` contracts.
+5. `styling.md` / the canonical design document - Review UI rules when
+   applicable.
+6. `TESTING.md` - Apply the required test layers and validation evidence.
 
 ### For debugging a production issue
 1. `debugging.md` - Follow the strict isolation protocol.
