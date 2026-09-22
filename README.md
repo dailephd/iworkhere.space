@@ -58,8 +58,16 @@ Each Vitest run writes JSON and JUnit output under a unique
 
 ## Documentation
 
-- `doc/ROADMAP.md` — version scope and acceptance boundaries
+- `doc/ROADMAP.md` — canonical version-level goals, scope, dependencies,
+  exclusions, acceptance, and deferred work
+- `doc/project-status.md` — actual current implementation and exact next action
+- `doc/doc_index.md` — documentation ownership and planning/implementation
+  reading paths
 - `doc/architecture.md` — architectural boundaries
 - `doc/CI_CD.md` — continuous-integration gates
 - `doc/TESTING.md` — testing strategy
-- `doc/project-status.md` — current implementation status
+
+When an implementation version begins, its concrete batch/validation plan is
+created under `doc/plans/vX.Y.Z-implementation-plan.md` after current
+repository inspection and fresh my-dev-kit retrieval. The roadmap intentionally
+does not prewrite those batches.
