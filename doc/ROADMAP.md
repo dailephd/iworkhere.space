@@ -6,1074 +6,702 @@
 
 The current repository package version is `0.1.0`.
 
-The existing implementation provides:
+The existing product baseline provides six registered utilities:
 
-* six registered tools:
+- Slugify Text
+- HTML Text Extractor
+- Calculator
+- Length Converter
+- Weight Converter
+- Time Arithmetic
 
-    * Slugify Text
-    * HTML Text Extractor
-    * Calculator
-    * Length Converter
-    * Weight Converter
-    * Time Arithmetic
-* registry-driven tool discovery and routing
-* category and discovery/search surfaces
-* query-state sharing for supported tools
-* an eight-theme system with persistence and system fallback
-* analytics, logging, observability, and error-capture abstractions
-* persistent browser storage through the existing storage adapter
-* `/api/health`
-* `/api/log`
-* Progressive Web App and service-worker support
-* responsive shared application layout
-* Vitest-based automated testing
-* documentation-first component and module specifications
+The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
-Future development must preserve the existing architecture rather than adding parallel owners, registries, state systems, persistence paths, provider systems, or routing abstractions.
+Future development must preserve the existing architecture rather than adding parallel registries, routing systems, state systems, persistence paths, provider systems, or tool frameworks.
 
-The roadmap follows this general development sequence:
+## Planning model
 
-```text
-version goal
-→ affected project-level documentation
-→ affected component/module specifications
-→ implementation
-→ behavior-derived tests
-→ documentation reconciliation
-→ validation
-→ release preparation
-```
+This roadmap is the canonical version-level planning document.
 
-Component and module specifications are implementation contracts. When a version affects a component or module whose specification is currently a stub, that specification must be completed before production implementation begins.
+It owns:
 
-The roadmap records version goals, planned capability scope, dependencies, exclusions, and high-level status. Detailed implementation batches and execution reports belong outside this document.
+- version goals;
+- product capability scope;
+- dependencies;
+- architectural constraints that affect version scope;
+- explicit exclusions;
+- version-level acceptance criteria;
+- unresolved planning decisions;
+- deferred or Version-TBD work;
+- concise implementation/release status.
+
+It does not own implementation batches, command transcripts, changed-file lists, test counts, branch bookkeeping, or execution reports.
+
+At the start of each implementation version, after current repository inspection and fresh my-dev-kit retrieval, create a version-specific plan at:
+
+`doc/plans/vX.Y.Z-implementation-plan.md`
+
+The version plan may freeze:
+
+- implementation architecture decisions;
+- context-sharing batch structure;
+- sequencing;
+- affected owners/contracts;
+- planner-authored test expectations;
+- batch acceptance gates;
+- validation expectations;
+- implementation exclusions;
+- documentation-reconciliation and readiness handoff.
+
+A future version's batch plan must not be prewritten in this roadmap. Implementation reports describe what happened; they do not silently rewrite the roadmap or the frozen version plan.
+
+`doc/project-status.md` describes actual current implementation and validation state. Implementation and release evidence may update roadmap status, but must not erase unrelated future scope.
 
 ## Product principles
 
 Future versions must preserve the following established principles:
 
-* Keep the architecture explicit and predictable.
-* Prefer composition over speculative abstraction.
-* Preserve the existing four-layer structure:
-
-    * `src/app`
-    * `src/module`
-    * `src/component`
-    * `src/lib`
-* Keep route files focused on routing and composition.
-* Keep browser APIs inside client components, effects, or handlers.
-* Keep tool/domain logic out of `src/app`.
-* Preserve the rule that `src/lib` does not import from `src/module`.
-* Keep `ToolDefinition` and `tool_definition_list` authoritative for tool registration.
-* Put cross-tool derived queries in the existing metadata layer.
-* Use the existing storage abstraction rather than direct parallel `localStorage` access.
-* Use the existing theme registry, storage, and runtime mechanisms.
-* Use the observability facade rather than bypassing it with direct analytics or logging-provider calls.
-* Extend the existing provider interfaces when changing analytics or logging behavior.
-* Preserve the existing application-shell composition and slots.
-* Keep client-side processing preferred where it fits the product.
-* Preserve mobile and slow-network usability.
-* Document architecture, schema, style, and component/module contracts before implementing changes that alter them.
+- Keep the architecture explicit and predictable.
+- Prefer composition over speculative abstraction.
+- Preserve the existing four-layer structure:
+  - `src/app`
+  - `src/module`
+  - `src/component`
+  - `src/lib`
+- Keep route files focused on routing and composition.
+- Keep browser APIs inside client components, effects, or handlers.
+- Keep tool/domain logic out of `src/app`.
+- Preserve the rule that `src/lib` does not import from `src/module`.
+- Keep `ToolDefinition` and `tool_definition_list` authoritative for tool registration.
+- Put cross-tool derived queries in the existing metadata layer.
+- Use the existing storage abstraction rather than direct parallel `localStorage` access.
+- Use the existing theme registry, storage, and runtime mechanisms.
+- Use the observability facade rather than bypassing it with direct analytics or logging-provider calls.
+- Extend existing provider interfaces when changing analytics or logging behavior.
+- Preserve the existing application-shell composition and slots.
+- Keep client-side processing preferred where it fits the product.
+- Preserve mobile and slow-network usability.
+- Complete affected component/module specifications before implementing changes to those units.
+- Add reusable tool UI primitives only when repeated product behavior demonstrates a shared need.
+- Do not introduce magic tool discovery, a universal tool engine, or premature server/catalog infrastructure.
 
 ## Current baseline — v0.1.0
 
-Status: Current repository baseline
+Status: Current released/package baseline
 
 Version 0.1.0 establishes the current product and architecture.
 
 Current capabilities include:
 
-* six working utility tools
-* registry-based tool definition and discovery
-* dynamic tool routes
-* category routes
-* home and discovery interfaces
-* tool metadata and SEO generation
-* local persistent storage abstraction
-* recently-used storage behavior at the module level
-* eight-theme registration and runtime application
-* analytics abstraction
-* logging abstraction
-* observability facade
-* error handling
-* PWA/service-worker support
-* health and log API routes
-* Vitest testing infrastructure
-* continuous-integration workflow definitions
-* documentation-first component/module architecture
-
-Known baseline defects and debt are addressed by the following versions rather than being silently folded into unrelated feature work.
+- six working utility tools;
+- registry-based tool definition and discovery;
+- dynamic tool routes;
+- category routes;
+- home and discovery interfaces;
+- tool metadata and SEO generation;
+- local persistent storage abstraction;
+- recently-used storage behavior at the module level;
+- eight-theme registration and runtime application;
+- analytics abstraction;
+- logging abstraction;
+- observability facade;
+- error handling;
+- PWA/service-worker support;
+- health and log API routes;
+- Vitest testing infrastructure;
+- continuous-integration workflow definitions;
+- documentation-first component/module architecture.
 
 ## Version 0.1.1 — Development Validation Hardening
 
-Status: Complete — validation fixes and legacy local orchestrator cleanup implemented
+Status: Implemented / unreleased
 
 ### Goal
 
-Restore trustworthy development and continuous-integration validation before larger feature work proceeds, and retire the obsolete repository-local orchestration predecessor so the project has one clear development workflow.
+Restore trustworthy development and continuous-integration validation and retire the obsolete repository-local orchestration predecessor before broader product expansion.
 
-The repository previously had two validation defects, both corrected by this version:
+### Scope
 
-* `npm run lint` invoked the removed Next.js `next lint` command and failed under Next.js 16.1.0.
-* the GitHub Actions test workflow used `continue-on-error: true`, even though the documented continuous-integration policy says required tests must pass.
+- Replace the obsolete Next.js lint path with supported ESLint execution.
+- Restore the CI test job as a real blocking gate.
+- Correct documentation inventory drift.
+- Retire the legacy `script/orchestrator.ts` context/agent-invocation system.
+- Preserve project-local aggregate validation through `script/verify.ts` and `npm run verify`.
+- Keep the four GitHub Actions validation jobs independent.
 
-Those two validation defects are corrected. Before v0.2.0 begins, v0.1.1 must also retire `script/orchestrator.ts` and its context/agent-invocation commands while preserving its useful project-local verification behavior under a normal validation command.
+### Acceptance
 
-### Version scope
+v0.1.1 implementation is complete when:
 
-#### Lint command correction
+- type checking, linting, tests, and production build pass;
+- CI test failures block the test job;
+- the legacy context/ask orchestrator surface is removed;
+- `npm run verify` owns aggregate local validation with shared run/report identity;
+- current documentation describes the implemented validation model;
+- repository state is clean and the implementation branch is pushed.
 
-* Replace the obsolete `next lint` execution path with the supported lint mechanism already compatible with the repository's ESLint configuration and dependencies.
-* Preserve existing linting intent rather than weakening or bypassing lint rules.
-* Update user/developer commands that refer to the obsolete lint invocation.
-* Ensure local and continuous-integration lint execution use the same supported contract.
+Publication/release status is separate. The repository package remains `0.1.0` until the normal release/integration workflow establishes a new released version.
 
-#### Continuous-integration test-gate correction
+### Exclusions
 
-* Make test failures fail the test job.
-* Remove or correct the current non-blocking behavior caused by `continue-on-error: true`.
-* Preserve the existing separation of validation jobs unless a narrowly required correction is necessary.
-* Verify that a failing test produces a failing continuous-integration result.
+v0.1.1 does not add product utilities, browser E2E capability, new categories, product routes, or unrelated architecture.
 
-#### Documentation consistency correction
+## Catalog expansion direction
 
-Correct the known inventory drift:
+The next product track is the Priority A+B utility catalog.
 
-* component/module specification total: 46
-* component specifications: 19
-* module specifications: 27
-* substantive specifications: 10
-* stub specifications: 36
+The architecture investigation at v0.1.1 found the existing explicit registry, routing, metadata, shared tool frame, storage, observability, and SEO architecture suitable for continued catalog growth with incremental evolution. No registry redesign is required before adding the next several dozen lightweight utilities.
 
-Update only documentation that owns these current-state facts.
+Priority A contains 12 new utilities. Priority B contains 12 new utilities. Completing this roadmap through v0.6.0 yields 24 new utilities and 30 total registered utilities including the six-tool baseline.
 
-#### Legacy local orchestrator retirement
+Priority C and heavier processing utilities are intentionally outside this concrete sequence.
 
-`script/orchestrator.ts` is the predecessor of the current my-dev-kit development workflow. It must be retired in v0.1.1 rather than maintained as a second context, prompting, or orchestration system.
-
-Cleanup requirements:
-
-* Delete `script/orchestrator.ts` after its still-useful project verification behavior has been extracted.
-* Remove these package scripts:
-    * `orchestrator:context`
-    * `orchestrator:ask`
-    * `orchestrator:ask:file`
-    * `orchestrator:verify`
-* Remove the obsolete local-orchestrator responsibilities:
-    * governance-file concatenation and context-bundle generation;
-    * direct Claude Code invocation;
-    * the `CLAUDE_COMMAND` override used by the local agent launcher;
-    * agent-request `prompt.txt` generation;
-    * documentation instructing developers or coding agents to use the repository-local orchestrator for context construction or prompting.
-* Preserve only the useful repository validation behavior by moving it to a narrowly owned validation runner, preferably `script/verify.ts`, exposed as `npm run verify`.
-* The validation runner must:
-    * generate one `RUN_ID`;
-    * create `test-report/<RUN_ID>/command/`;
-    * run `npm run typecheck`, `npm run lint`, `npm run test`, and `npm run build` sequentially;
-    * stop on the first failing command while preserving generated logs;
-    * capture command stdout and stderr under the shared run directory;
-    * pass `VITEST_RUN_ID` so Vitest JSON/JUnit output remains associated with the same run.
-* The validation runner must not:
-    * assemble LLM or governance context;
-    * create coding-agent prompts;
-    * invoke Claude Code or another coding agent;
-    * choose implementation scope or workflow mode;
-    * embed or invoke my-dev-kit-orchestrator.
-* Keep the four GitHub Actions jobs separate. `npm run verify` is the aggregate local project-validation command; it does not replace the independent CI jobs.
-* Search tracked repository content for stale legacy references, including `orchestrator:`, `script/orchestrator.ts`, `CLAUDE_COMMAND`, `prompt.txt`, and prose describing the local orchestration wrapper. Remove or rewrite every current instruction that points to the retired system. Historical evidence need not be rewritten solely to erase history.
-
-### Documentation prerequisites
-
-Review and update as applicable:
-
-* `README.md`
-* `doc/CI_CD.md`
-* `doc/TESTING.md`
-* `doc/doc_index.md`
-* `doc/architecture.md`
-* `doc/project-status.md`
-* `doc/project-tree.txt`
-* development/orchestration command documentation
-* `package.json` command descriptions where applicable
-
-No component or module specification is required solely for the lint, continuous-integration correction, or retirement of the legacy local orchestrator.
-
-### Acceptance boundaries
-
-Version 0.1.1 is complete when:
-
-* the supported lint command executes successfully on the current project;
-* lint remains a real validation gate rather than being suppressed;
-* automated test failures fail the relevant continuous-integration job;
-* type checking still passes;
-* all existing tests still pass;
-* production build still passes;
-* `script/orchestrator.ts` no longer exists;
-* `orchestrator:context`, `orchestrator:ask`, `orchestrator:ask:file`, and `orchestrator:verify` no longer exist in `package.json`;
-* `npm run verify` exists as the project-local aggregate validation command and preserves the required shared RUN_ID/log/report behavior;
-* the repository contains no current development instruction that directs developers or coding agents to the retired local context/prompt orchestration path;
-* the replacement validation runner contains no LLM context assembly, prompt generation, or coding-agent invocation;
-* GitHub Actions continues to run the required validation jobs independently;
-* documentation accurately describes the validation commands and gates;
-* the documentation inventory reports the actual component/module specification counts.
-
-### Explicit exclusions
-
-Version 0.1.1 does not include:
-
-* Playwright
-* application features
-* new tools
-* recently-used integration
-* metadata/featured behavior
-* logging-provider activation
-* security-header policy
-* About page
-* global completion of all specification stubs
-* package/provider architecture changes
-* embedding my-dev-kit-orchestrator or another agent/orchestration system into the application package scripts
-* product-behavior changes unrelated to development validation cleanup
-
-## Version 0.2.0 — Browser End-to-End Validation Foundation
+## Version 0.2.0 — Image Utility Foundation
 
 Status: Planned
 
 ### Goal
 
-Implement the browser-level automated testing capability already specified in `doc/TESTING.md` before expanding the application with additional tool, route, and layout behavior.
+Establish the first substantial new utility family using the existing `image` category and prove the shared file-processing user experience needed by later catalog releases.
 
-The existing automated suite is Vitest-based. Browser end-to-end testing is explicitly planned but not currently implemented.
+### Scope
 
-### Planned scope
+Priority A utilities:
 
-#### Playwright foundation
-
-* Add the required Playwright testing dependency and configuration.
-* Define the local application/server lifecycle used by browser tests.
-* Add a stable project command for running browser tests.
-* Ensure the browser suite can run reproducibly in the project's supported development and continuous-integration environments.
-
-#### Browser test coverage
-
-Establish representative browser coverage for the behavior already identified by the testing specification:
-
-* application routing
-* tool-page rendering
-* primary tool interaction where appropriate
-* responsive layout behavior
-* hydration/runtime browser warnings where the selected testing mechanism can detect them
-* service-worker or Progressive Web App behavior where reliably testable within the adopted browser-test environment
-
-The implementation must not claim browser coverage beyond what the actual tests verify.
-
-#### Continuous-integration integration
-
-* Add the browser suite to the documented validation workflow.
-* Ensure browser-test failures are visible and blocking wherever the documented testing policy requires them to be blocking.
-* Keep browser setup and generated output out of committed project artifacts unless explicitly required.
-
-### Documentation-first prerequisites
-
-Before browser tests are used as acceptance contracts for a particular component or module, the corresponding behavioral specification must be substantive.
-
-Complete only the specifications needed by the initial browser suite.
-
-Do not complete all 36 current stubs merely because Playwright is being introduced.
-
-Likely affected project documentation includes:
-
-* `doc/TESTING.md`
-* `doc/CI_CD.md`
-* relevant workflow/development documentation
-
-Likely lower-level specifications depend on the exact initial browser scenarios selected during implementation planning.
+- Image Resizer
+- Image Compressor
+- JPG / PNG / WebP Converter
+- HEIC → JPG / PNG Converter
 
 ### Dependencies
 
 Requires:
 
-* v0.1.1 Development Validation Hardening
+- v0.1.1 as the accepted development base;
+- the existing `image` category and registry/routing contracts;
+- substantive specifications for affected tools/components before implementation;
+- browser-level validation sufficient to protect real file-selection, execution, result, download, hydration, and responsive behavior.
 
-### Acceptance boundaries
+Browser E2E capability is enabling implementation infrastructure for this product release. It is not a standalone product-version goal.
 
-Version 0.2.0 is complete when:
+### Constraints
 
-* Playwright is installed and configured;
-* the documented browser-test command executes successfully;
-* representative browser tests exercise the selected existing user flows;
-* browser-test failures produce the expected failing validation result;
-* continuous integration runs the required browser suite;
-* browser-generated output is handled according to repository hygiene policy;
-* existing Vitest tests continue to pass;
-* type checking, linting, and build validation remain green;
-* testing and continuous-integration documentation describe actual implemented behavior.
+- Reuse the existing `ToolDefinition` → registry → `/tool/[slug]` → `ToolClientFrame` → `ToolErrorBoundary` path.
+- Prefer client-side processing where browser capability, memory, dependency size, and output fidelity are acceptable.
+- Do not introduce a universal file-tool engine.
+- Extract shared file-input/result UI only when repeated behavior demonstrates a stable abstraction.
+- Heavy image dependencies must not silently degrade unrelated routes.
 
-### Explicit exclusions
+### Acceptance
 
-Version 0.2.0 does not include:
+v0.2.0 is complete when:
 
-* new product tools
-* new product routes solely to create test targets
-* recently-used implementation changes
-* metadata feature changes
-* logging-provider activation
-* auth
-* payments
-* ad-provider integration
-* analytics-provider replacement
-* server-side storage
+- all four utilities are usable through normal tool routes;
+- each tool participates in existing registry, category, discovery, metadata, SEO, error, and observability paths;
+- file validation, processing, result, and download behavior is defined and tested;
+- required browser-visible behavior has automated evidence;
+- repository validation passes;
+- documentation matches the shipped contracts.
 
-## Version 0.3.0 — Additional Tools End-to-End
+### Exclusions
 
-Status: Planned — requires tool selection before implementation
+- PDF processing
+- EXIF tools
+- OCR
+- background removal
+- server-side processing architecture
+- registry redesign
+- server-side catalog search
 
-### Goal
+### Unresolved planning decisions
 
-Expand the utility catalog with additional tools in the already planned document, image, and time categories.
+Resolve during v0.2.0 implementation-plan preparation:
 
-The exact tools have not yet been selected. This version must not enter implementation until the concrete tool list and behavior are approved.
+- exact browser E2E tooling and command/CI ownership;
+- HEIC decoding approach and acceptable dependency/runtime cost;
+- shared file-input/result primitives justified by the selected implementations.
 
-### Definition gate
-
-Before implementation planning for this version:
-
-* select the exact tools to add;
-* define each tool's purpose;
-* define input and output behavior;
-* define validation/error behavior;
-* determine whether URL query-state sharing applies;
-* determine category placement;
-* define SEO metadata;
-* write a substantive specification for each selected tool.
-
-Do not infer tool requirements from category names alone.
-
-### Planned capability scope
-
-For every approved tool:
-
-* implement the tool component according to its approved specification;
-* use `ToolComponentProp`;
-* register the tool explicitly in `tool_definition_list`;
-* preserve registry uniqueness and canonical slug behavior;
-* provide required category/capability metadata;
-* integrate with existing metadata/SEO infrastructure;
-* use existing observability/error-handling patterns;
-* add behavior-derived unit tests;
-* add registry/metadata contract coverage as needed;
-* add browser coverage consistent with the implemented v0.2.0 testing policy.
-
-### Architecture constraints
-
-New tools must extend:
-
-* the existing tool registry;
-* the existing tool type contract;
-* the existing metadata layer;
-* the existing tool rendering path;
-* the existing observability and error-handling mechanisms.
-
-Do not introduce:
-
-* a second tool registry;
-* reflection-based or magic registration;
-* a parallel tool routing mechanism;
-* a new general state system solely for individual tools;
-* direct persistence or provider access that bypasses established abstractions.
-
-### Documentation prerequisites
-
-Update affected project-level documents as required:
-
-* project status
-* architecture
-* API
-* schema
-* testing
-* styling when the tool introduces new UI requirements
-
-Create one substantive component specification for every selected new tool before implementation.
-
-Complete existing Registry, Metadata, Type, or related specifications only where they are required by the selected tool changes.
-
-### Dependencies
-
-Requires:
-
-* v0.1.1 Development Validation Hardening
-* v0.2.0 Browser End-to-End Validation Foundation
-* exact tool selection and approved tool specifications
-
-### Acceptance boundaries
-
-Version 0.3.0 is complete when:
-
-* every selected tool has an approved specification;
-* every selected tool is implemented through the existing registry architecture;
-* the selected tools are reachable through their intended routes/categories;
-* registry and metadata contracts remain valid;
-* relevant unit tests pass;
-* relevant browser tests pass;
-* typecheck, lint, full tests, and build pass;
-* documentation reflects only the tools actually shipped.
-
-### Explicit exclusions
-
-Unless separately approved as part of the version definition, v0.3.0 does not include:
-
-* metadata featured/ranking redesign
-* analytics-provider replacement
-* advertising-provider integration
-* server-side storage
-* auth
-* payments
-* broad theme-system changes
-
-## Version 0.4.0 — HTTP Security Header Hardening
-
-Status: Planned — policy definition required before implementation
-
-### Goal
-
-Implement the explicitly planned HTTP security-header capability through the project's existing Next.js application/configuration architecture.
-
-### Definition gate
-
-Before implementation begins, document and approve:
-
-* the exact security-header policy;
-* the configuration owner;
-* environment-specific differences, if any;
-* compatibility requirements;
-* validation expectations.
-
-Do not guess a header set from generic web recommendations and present it as project policy.
-
-### Planned scope
-
-* Implement the approved HTTP security-header policy in the established configuration/application layer.
-* Preserve existing routing and response behavior unless the approved security policy explicitly changes it.
-* Add automated or reproducible validation for the configured headers.
-* Update security/API/architecture/continuous-integration documentation as applicable.
-
-### Dependencies
-
-Requires:
-
-* v0.1.1 Development Validation Hardening
-* approved security-header policy
-
-Browser-level validation from v0.2.0 may be reused when appropriate but must not replace direct validation of response headers.
-
-### Acceptance boundaries
-
-Version 0.4.0 is complete when:
-
-* the approved headers are emitted on the intended response surfaces;
-* tests or other deterministic validation prove the configured policy;
-* existing routes continue to work;
-* typecheck, lint, tests, and build pass;
-* documentation accurately records the implemented policy and its boundaries.
-
-### Explicit exclusions
-
-Version 0.4.0 does not include:
-
-* authentication
-* authorization
-* payments
-* general security architecture redesign
-* server-side storage
-* advertising-provider integration
-* unrelated API changes
-
-## Version 0.5.0 — Recently Used Tool Tracking Integration
+## Version 0.3.0 — PDF & Document Essentials
 
 Status: Planned
 
 ### Goal
 
-Complete the existing recently-used capability by wiring the already implemented recording behavior into the existing shared tool-open lifecycle.
+Establish the `document` utility family and provide the highest-priority PDF workflows using the file-processing experience proven in v0.2.0.
 
-The module-level recent-tool behavior already exists but has no production caller.
+### Scope
 
-### Planned scope
+Priority A utilities:
 
-#### Specification completion
-
-Complete `doc/components/ToolClientFrame.md` before production implementation.
-
-The specification must define:
-
-* ToolClientFrame's shared tool-open lifecycle responsibility;
-* observability behavior;
-* recently-used recording behavior;
-* persistence interaction through the existing storage abstraction;
-* failure behavior;
-* applicable test expectations.
-
-Preserve the substantive existing specifications for:
-
-* RecentlyUsed
-* Storage
-
-#### Runtime integration
-
-Extend the existing `ToolClientFrame` tool-open lifecycle to invoke the existing recent-tool recording behavior when a tool is opened.
-
-Preserve:
-
-* current `tool_opened` observability behavior;
-* the existing `recordRecentTool` contract;
-* ordered recent slugs;
-* deduplication behavior;
-* maximum of 10 entries;
-* storage key `recent-tool`;
-* storage abstraction ownership.
-
-### Architecture constraints
-
-Do not:
-
-* create a second recently-used store;
-* write directly to `localStorage`;
-* move the behavior into unrelated home/discovery components;
-* add a recent-tools display surface without a separate approved product requirement.
-
-The current plan is to record recently opened tools. A user-interface display for that data is not currently specified.
+- PDF → JPG / PNG
+- Images → PDF
+- Merge PDF
+- Split PDF
+- Compress PDF
 
 ### Dependencies
 
 Requires:
 
-* v0.1.1 Development Validation Hardening
-* completion of `ToolClientFrame.md`
+- v0.2.0 file-processing and browser-validation foundation;
+- the existing `document` category;
+- an approved PDF-processing approach demonstrated to be viable for the planned operations.
 
-May reuse browser validation introduced in v0.2.0.
+### Constraints
 
-### Acceptance boundaries
+- Prefer browser/local processing where it produces acceptable fidelity and resource usage.
+- Do not create generic server-processing infrastructure solely because PDF operations are complex.
+- Escalate to a server/service boundary only when concrete browser limitations block an approved capability.
+- Measure heavy dependency and route-bundle effects before changing component-loading architecture.
+- PDF compression must represent meaningful, measurable compression rather than a nominal rewrite.
 
-Version 0.5.0 is complete when:
+### Acceptance
 
-* opening a tool records the tool through the existing recent-tool module;
-* existing deduplication/order/cap behavior is preserved;
-* persistence continues through the existing storage adapter;
-* existing observability behavior remains intact;
-* focused integration/regression tests protect the new wiring;
-* browser validation is added where useful under the established testing policy;
-* typecheck, lint, tests, and build pass;
-* affected documentation matches implemented behavior.
+v0.3.0 is complete when:
 
-### Explicit exclusions
+- all five utilities implement their documented operations;
+- supported and unsupported file/error cases are explicit;
+- outputs preserve the documented fidelity/order/page semantics;
+- applicable browser/regression evidence passes;
+- existing registry/routing/discovery architecture remains authoritative;
+- repository validation and documentation reconciliation pass.
 
-Version 0.5.0 does not include:
+### Exclusions
 
-* a recently-used user-interface panel
-* home-page recently-used rendering
-* discovery-page recently-used rendering
-* new persistence architecture
-* server-side recent-tool synchronization
+- OCR
+- PDF editing
+- PDF signing
+- Office-document conversion
+- cloud file storage
+- user accounts
+- generic background-job infrastructure
 
-Those require separate product decisions.
+### Unresolved planning decisions
 
-## Version 0.6.0 — Tool Metadata and Discovery Enrichment
+Resolve during v0.3.0 implementation-plan preparation:
 
-Status: Planned — product definition required before implementation
+- PDF library/processing strategy;
+- supported file/page/size limits;
+- whether any specific PDF capability requires a server boundary.
+
+## Version 0.4.0 — Core Text, Data & Sharing Utilities
+
+Status: Planned
 
 ### Goal
 
-Complete the existing planned tool metadata expansion without duplicating data already present in the registry.
+Complete the Priority A catalog with lightweight, frequently used browser utilities and resolve the durable category model needed by the upcoming developer-tool family.
 
-Current implementation already provides:
+### Scope
 
-* tags for all six current tools;
-* popularity metadata for all six current tools;
-* metadata query functions;
-* no production consumers of the tag/popularity queries;
-* no `featured` field.
+Remaining Priority A utilities:
 
-The future plan therefore requires clarification before implementation rather than simply "adding tags and popularity" again.
+- JSON Formatter / Validator
+- Word / Character Counter
+- QR Code Generator
 
-### Definition gate
-
-Before implementation begins, decide:
-
-* the intended meaning of `featured`;
-* whether `featured` becomes part of the canonical `ToolDefinition` contract;
-* which surface consumes tags;
-* which surface consumes popularity;
-* which surface consumes featured state;
-* whether these values affect discovery filtering, ranking, home-page presentation, another interface, or a defined combination;
-* expected sorting/filtering behavior;
-* acceptance criteria.
-
-Do not assume `HomeClient`, `DiscoverClient`, or another component is the intended consumer until the product decision is made.
-
-### Planned scope
-
-Once the product definition is approved:
-
-* update the canonical tool metadata/type contract only where necessary;
-* preserve registry ownership of canonical tool metadata;
-* preserve `metadata.ts` as the cross-tool derived-query layer;
-* implement the approved consumer behavior;
-* complete affected component/module specifications before coding;
-* extend registry and metadata tests;
-* add integration/browser tests for the approved user-facing behavior.
-
-### Documentation prerequisites
-
-At minimum review:
-
-* API
-* schema
-* architecture
-* project status
-
-Complete affected lower-level specifications, including `Type.md` and whichever consumer specification is selected.
+At completion of v0.4.0, all Priority A utilities are implemented.
 
 ### Dependencies
 
 Requires:
 
-* approved metadata/consumer product definition
-* v0.1.1 Development Validation Hardening
-* applicable component/module specification completion
+- stable tool/catalog contracts from earlier releases;
+- a resolved category decision for developer-oriented utilities before the v0.4.0 implementation plan is frozen.
 
-If the approved behavior changes discovery/browser interaction substantially, use the v0.2.0 browser-test infrastructure.
+### Constraints
 
-### Acceptance boundaries
+- JSON formatting/validation must preserve data semantics and report parse errors explicitly.
+- Word/character metrics must have deterministic documented definitions.
+- QR generation should begin with approved core input modes rather than an unbounded specialized QR suite.
+- If a `developer` category is introduced, category identity must have one canonical owner rather than duplicated hardcoded lists.
 
-Version 0.6.0 is complete only when:
+### Acceptance
 
-* the canonical metadata contract is explicit;
-* existing tags/popularity data are not redundantly duplicated;
-* `featured`, if retained by the approved design, has one canonical definition;
-* intended consumers use the existing registry/metadata architecture;
-* filtering/ranking/presentation behavior is covered by tests;
-* documentation describes actual behavior rather than the earlier ambiguous plan.
+v0.4.0 is complete when:
 
-### Explicit exclusions
+- all three utilities are routed, registered, discoverable, documented, and tested through existing contracts;
+- the selected category model is canonical and covered by contract tests;
+- Priority A catalog completion is reflected in current-state documentation;
+- repository validation passes.
 
-Until separately approved, this version does not include:
+### Exclusions
 
-* analytics-provider replacement
-* ad-provider integration
-* arbitrary recommendation algorithms
-* server-side ranking/storage
-* user-personalized ranking
+- recommendation algorithms
+- personalized ranking
+- broad discovery redesign
+- analytics-provider replacement
+- server persistence
 
-## Version 0.7.0 — RustLogProvider Startup Activation
+### Unresolved planning decisions
 
-Status: Planned — startup and privacy contract required before implementation
+Before implementation-plan freeze, decide:
+
+- whether `developer` becomes a canonical `ToolCategory`;
+- the canonical category assignment for JSON Formatter / Validator.
+
+## Version 0.5.0 — Developer & Text Utility Suite
+
+Status: Planned
 
 ### Goal
 
-Complete the existing logging-provider capability by activating the already implemented `RustLogProvider` through the established provider-swap architecture.
+Build the main Priority B developer/text utility family using the existing registry, metadata, route, shared UI, storage, and observability contracts.
 
-The provider implementation, `/api/log` endpoint, logger abstraction, and `setLogProvider` extension point already exist. Startup activation is missing.
+### Scope
 
-### Definition gate
+Priority B utilities:
 
-Before implementation begins, document and approve:
-
-* the client/server startup owner;
-* when the provider is activated;
-* environment-specific behavior;
-* failure behavior;
-* privacy/consent expectations where applicable;
-* network behavior;
-* fallback behavior.
-
-Do not invent a startup mechanism merely because `setLogProvider` exists.
-
-### Planned scope
-
-#### Specification completion
-
-Complete the affected specifications before production edits:
-
-* `Logger.md`
-* `Provider.md`
-* `RustLogProvider.md`
-* specification for the selected startup owner
-
-#### Provider activation
-
-* Activate `RustLogProvider` through the existing `setLogProvider` mechanism.
-* Preserve the current `LogProvider` contract.
-* Preserve `/api/log` request/response contracts.
-* Preserve appropriate fallback/fail-safe behavior.
-* Do not let normal tool components import the provider directly.
-
-#### Validation
-
-Add focused coverage for:
-
-* provider selection;
-* startup behavior;
-* endpoint interaction;
-* failure/fallback behavior;
-* architecture boundary preservation.
+- Password Generator
+- UUID Generator
+- Base64 Encode / Decode
+- URL Encode / Decode
+- JWT Decoder
+- Regex Tester
+- Text Diff
+- Markdown → HTML
+- Hash Generator
 
 ### Dependencies
 
 Requires:
 
-* v0.1.1 Development Validation Hardening
-* approved startup/environment/privacy contract
-* completed affected specifications
+- the category decision from v0.4.0;
+- stable shared tool UX and browser-validation infrastructure;
+- existing catalog/discovery architecture.
 
-### Acceptance boundaries
+### Constraints
 
-Version 0.7.0 is complete when:
+- Security-sensitive utilities must state their actual guarantees.
+- Password generation must use cryptographically appropriate randomness.
+- JWT decoding must not be presented as signature verification.
+- Hash algorithms must identify relevant security limitations.
+- Markdown rendering must have an explicit safe-rendering boundary.
+- Regex execution must not knowingly expose the primary UI to uncontrolled pathological execution.
+- Do not create a separate developer-tool registry or routing framework.
 
-* the selected startup path activates the intended provider;
-* log-provider architecture remains swappable;
-* normal application behavior remains functional when logging transport fails according to the approved failure contract;
-* relevant tests pass;
-* typecheck, lint, tests, and build pass;
-* documentation reflects actual startup/provider behavior.
+### Acceptance
 
-### Explicit exclusions
+v0.5.0 is complete when:
 
-Version 0.7.0 does not include:
+- all nine utilities use the canonical category, registry, routing, discovery, metadata, SEO, and validation paths;
+- transformation/security semantics are explicit and covered by tests;
+- browser-visible workflows have proportionate browser evidence;
+- repository validation passes;
+- current documentation accurately describes the developer/text catalog.
 
-* analytics-provider replacement
-* a new logging abstraction
-* direct logging-provider imports from tool components
-* auth
-* server-storage architecture changes
+### Exclusions
 
-## Version 0.8.0 — About Page
+- code execution sandboxes
+- secret storage
+- JWT signing infrastructure
+- authentication
+- cloud developer workspaces
+- generic plugin systems
 
-Status: Planned — content definition required before implementation
+## Version 0.6.0 — Time & Everyday Calculators
+
+Status: Planned
 
 ### Goal
 
-Add the explicitly planned About page through the existing Next.js routing, navigation, layout, and SEO architecture.
+Complete the Priority B catalog with common time/date and percentage utilities while reusing the existing `time` and `math` architecture.
 
-### Definition gate
+### Scope
 
-Before implementation begins, define:
+Priority B utilities:
 
-* About-page content;
-* route;
-* navigation placement;
-* layout requirements;
-* SEO metadata;
-* responsive behavior;
-* acceptance criteria.
+- Timestamp / Date Converter
+- Age Calculator
+- Percentage Calculator
 
-Do not invent project/company copy during implementation planning.
+At completion of v0.6.0:
 
-### Planned scope
-
-After content and behavior are approved:
-
-* create the About route using the existing App Router conventions;
-* keep the route composition-oriented and server-first where appropriate;
-* use existing shared layout/components;
-* update explicit navigation data if the approved design requires a navigation link;
-* use existing SEO builders/contracts where applicable;
-* write the required page/component specification before implementation;
-* add route/rendering tests;
-* add browser coverage under the established Playwright infrastructure.
+- Priority A is complete;
+- Priority B is complete;
+- 24 new catalog utilities have been added;
+- the product contains 30 registered utilities in total, assuming the six-tool baseline remains.
 
 ### Dependencies
 
 Requires:
 
-* approved About-page content and placement
-* relevant page/component specification
-* v0.1.1 Development Validation Hardening
+- the preceding catalog releases;
+- established shared UI, browser-validation, registry, metadata, and testing conventions.
 
-Browser acceptance testing should use the v0.2.0 infrastructure.
+### Constraints
 
-### Acceptance boundaries
+- Date/time utilities must make timezone, unit, and calendar semantics explicit.
+- Ambiguous date/time input must not be silently reinterpreted.
+- Percentage operations should remain one coherent utility unless future product/SEO evidence justifies separate pages.
+- Reuse existing calculation/time patterns rather than create another calculation framework.
 
-Version 0.8.0 is complete when:
+### Acceptance
 
-* the approved About route exists;
-* approved content renders correctly;
-* navigation integration matches the approved design;
-* SEO metadata follows existing architecture;
-* responsive behavior is verified;
-* tests and browser checks pass;
-* typecheck, lint, full tests, and build pass.
+v0.6.0 is complete when:
 
-### Explicit exclusions
+- all three utilities are implemented through existing architecture;
+- Priority A+B catalog completion is documented;
+- tests cover defined date/time/calculation semantics;
+- repository validation passes;
+- a post-catalog architecture checkpoint is completed before planning substantially larger catalog expansion.
 
-Version 0.8.0 does not include:
+### Exclusions
 
-* authentication
-* payments
-* advertising-provider integration
-* analytics-provider replacement
-* server-side storage
-* unrelated content pages
+- scheduling services
+- calendar/account integration
+- financial calculators outside separately approved scope
+- server-backed saved history
 
-## Documentation and Specification Debt Policy
+## Post-v0.6 catalog architecture checkpoint
 
-The current repository contains:
+After the 30-tool A+B catalog is complete, reassess the current architecture before planning a much larger catalog.
 
-* 19 component specifications
-* 27 module specifications
-* 46 combined specifications
-* 10 substantive specifications
-* 36 generated/content-light stubs
+The checkpoint should inspect measured evidence for:
+
+- registry size and static import fan-in;
+- production route/client bundle output;
+- catalog payload size;
+- search/filter responsiveness;
+- build time;
+- shared-tool UI maturity;
+- storage-key ownership/versioning needs;
+- SEO crawl/discovery infrastructure;
+- dependency cost of file-processing tools.
+
+This checkpoint does not presume a redesign. The v0.1.1 architecture investigation found the current architecture appropriate for the next several dozen utilities and identified larger-scale catalog/search/component-loading evolution as a later evidence-driven concern.
+
+## Cross-version enabling work
+
+The following capabilities support product versions and should be implemented when the first owning product version needs them. They are not standalone product versions in this roadmap.
+
+### Browser end-to-end validation
+
+Browser-level validation is planned testing infrastructure. Establish the minimum required browser test capability during v0.2.0 and extend it proportionately for later browser-visible releases.
+
+Static/unit checks must not be presented as browser proof when the acceptance requirement is browser-visible behavior.
+
+### Shared tool UI primitives
+
+The platform may gain shared file-input, result, download, text-output, validation, or action primitives as repeated implementations demonstrate stable common behavior.
+
+Do not pre-design a universal tool engine or speculative component hierarchy.
+
+### Bundle and dependency measurement
+
+Measure production bundle/dependency impact when image/PDF/developer tools introduce materially heavier dependencies. Do not change registry/component-loading architecture without evidence.
+
+### SEO/catalog growth support
+
+Current per-tool/category metadata remains adequate for the A+B sequence. Sitemap, structured data, internal-linking, and richer catalog discovery work may be introduced when catalog size or crawl evidence justifies them.
+
+## Documentation and specification debt policy
+
+The repository currently contains a substantial generated component/module specification layer, including many thin stubs.
 
 This debt must not become a standalone requirement to rewrite every specification before productive work can continue.
 
-The rule for future versions is:
+The rule remains:
 
 > Complete the specification for an affected component or module before that unit enters implementation scope.
 
 Therefore:
 
-* targeted specification completion is part of version preparation;
-* unrelated stubs remain outside the version;
-* global completion of all stubs is not currently a planned product release;
-* documentation inventory counts must remain accurate;
-* generated inventory artifacts must not be treated as canonical product plans.
+- targeted specification completion is part of version preparation;
+- unrelated stubs remain outside the version;
+- global completion of all stubs is not a planned catalog release;
+- generated inventory artifacts are not canonical product plans;
+- each version implementation plan should identify only the affected specification owners.
 
-Known high-priority stubs because they intersect currently planned work include:
+## Theme specification debt
 
-* `ToolClientFrame.md`
-* `Type.md`
-* `Logger.md`
-* `Provider.md`
-* `RustLogProvider.md`
-* `ThemeProvider.md`
-* `ThemeToggle.md`
-* selected page/component specifications required by About or browser-test work
+The application currently supports eight theme selections:
 
-Other stubs become relevant only when their owning units enter planned scope.
+- system
+- light
+- dark
+- onedark
+- vscode-modern
+- dracula
+- amethyst-haze
+- mercury-fog
 
-## Theme Specification Debt
+Theme implementation is functional. Theme/design documentation must remain current before future visual-system behavior changes.
 
-The application currently supports these theme selections:
+No standalone catalog version is assigned solely to theme documentation debt.
 
-* system
-* light
-* dark
-* onedark
-* vscode-modern
-* dracula
-* amethyst-haze
-* mercury-fog
+## Planned work — Version TBD
 
-The theme implementation is functional, but the non-Light/Dark palette intent is not fully captured in canonical styling documentation.
+The following planned items remain preserved but are not assigned to the concrete Priority A+B version sequence.
 
-This is documentation/specification debt rather than an identified runtime feature defect.
+They must not be silently folded into a catalog version without an explicit planning decision.
 
-Required rule:
+### HTTP security-header hardening
 
-> Complete the canonical token/design specification before future theme or styling behavior is changed.
+A security-header policy remains planned.
 
-No standalone product version is assigned to this work at present.
+Before assignment to a version, define the exact policy, owner, environment differences, compatibility requirements, and validation evidence. This work is likely to become relevant when network/server-backed capabilities materially expand.
 
-A documentation-only correction may address the missing theme specification independently when appropriate.
+### Recently-used tool integration
 
-## Planned Work — Version TBD
+The recently-used module exists but requires product/UI ownership before its runtime integration or presentation is scheduled.
 
-The following items are explicitly present in project planning sources but do not yet have enough approved product or architecture definition for a concrete version assignment.
+Do not add a recently-used UI surface without an explicit product decision.
 
-They must remain separate rather than being folded into another version without an explicit planning decision.
+### Metadata and discovery enrichment
+
+Tags/popularity support exists in the current architecture, but consumer/ranking/featured semantics remain unresolved.
+
+Do not introduce recommendation/ranking behavior until the consumer surface and semantics are explicitly defined.
+
+### RustLogProvider startup activation
+
+The provider and `/api/log` endpoint exist. Startup owner, environment behavior, network/privacy expectations, fallback behavior, and validation remain unresolved.
+
+### About page
+
+An About page remains a valid product/content candidate, but its content, route placement, navigation role, and SEO contract are not yet defined.
 
 ### Analytics provider swap
 
-Current state:
-
-* analytics abstraction exists;
-* provider swapping is supported by the architecture;
-* no external analytics vendor has been selected.
-
-Future work may replace the current provider through the existing provider interface.
-
-Required decisions before version assignment:
-
-* vendor
-* privacy policy
-* network behavior
-* configuration
-* consent requirements if applicable
-* validation requirements
-
-Do not bypass the existing analytics abstraction.
+The analytics abstraction supports provider replacement. Vendor, privacy, consent, configuration, network behavior, and validation decisions remain open.
 
 ### Advertising provider integration
 
-Current state:
-
-* horizontal and vertical ad placeholders exist;
-* AppShell provides the current layout surfaces;
-* no advertising provider is selected.
-
-Required decisions before version assignment:
-
-* provider
-* privacy policy
-* loading behavior
-* security policy
-* responsive behavior
-* failure behavior
-* exact slot behavior
-
-Complete the AdBanner and relevant AppShell specifications before implementation.
+Advertising placeholders exist, but provider, privacy, loading, security, responsive, failure, and slot behavior are unresolved.
 
 ### Server-side storage backend
 
-Current state:
-
-* browser persistence uses the established `StorageAdapter`;
-* theme, recently-used data, and other consumers depend on that abstraction.
-
-Any server-side storage work must preserve or deliberately migrate the existing storage contract.
-
-This work likely requires architecture re-assimilation because it would introduce a new persistence architecture and affect multiple consumers.
-
-Required decisions include:
-
-* backend technology
-* state ownership
-* migration behavior
-* browser/server synchronization
-* authentication relationship
-* failure/offline behavior
-* compatibility with existing stored values
-
-No version is assigned.
+The current storage abstraction is browser-backed. Any durable/server-backed evolution requires explicit decisions for backend technology, state ownership, migration, synchronization, authentication relationship, offline behavior, and compatibility.
 
 ### Authentication
 
-Status: Not needed yet
-
-Authentication is an explicit open decision and is not current required scope.
-
-Do not introduce authentication merely as a prerequisite for unrelated current features.
-
-Authentication requires separate product, security, API, state, and architecture planning before entering the roadmap sequence.
+Authentication is not required for the Priority A+B catalog. It requires separate product/security/API/state planning before version assignment.
 
 ### Payments
 
-Status: Future / unresolved
+Payments remain future/unresolved and require independent provider, business, authentication, API, and security decisions before version assignment.
 
-Payments remain an explicit future item with no defined provider, business requirements, authentication relationship, API contract, or security model.
+## Future catalog candidates outside Priority A+B
 
-Do not assign payments to a concrete version until those decisions exist.
+The following previously researched candidates are intentionally outside this concrete sequence:
 
-## Version Sequence
+- EXIF Viewer / Remover
+- Image → Text / OCR
+- Background Remover
+- MP4 → MP3
 
-The currently planned implementation sequence is:
+These are not canceled. They remain future candidates for a later catalog planning cycle, especially because several introduce heavier processing/runtime/service concerns.
+
+## Version sequence
+
+The current concrete product sequence is:
 
 ```text
 v0.1.0  Current product baseline
 
 v0.1.1  Development Validation Hardening
+        implemented / unreleased
         ↓
-v0.2.0  Browser End-to-End Validation Foundation
+v0.2.0  Image Utility Foundation
         ↓
-v0.3.0  Additional Tools End-to-End
+v0.3.0  PDF & Document Essentials
         ↓
-v0.4.0  HTTP Security Header Hardening
+v0.4.0  Core Text, Data & Sharing Utilities
+        Priority A complete
         ↓
-v0.5.0  Recently Used Tool Tracking Integration
+v0.5.0  Developer & Text Utility Suite
         ↓
-v0.6.0  Tool Metadata and Discovery Enrichment
-        ↓
-v0.7.0  RustLogProvider Startup Activation
-        ↓
-v0.8.0  About Page
+v0.6.0  Time & Everyday Calculators
+        Priority A+B complete
 ```
 
-This sequence preserves the current project's documented product-work ordering after first resolving the validation infrastructure required to implement and verify later versions safely.
+Items under **Planned work — Version TBD** and **Future catalog candidates outside Priority A+B** remain outside this sequence until explicitly assigned.
 
-Items listed under **Planned Work — Version TBD** remain outside this concrete sequence until their required product and architecture decisions are made.
-
-## Cross-Version Dependencies
+## Cross-version dependencies
 
 ### Validation foundation
 
-v0.1.1 was a prerequisite for all later implementation versions because the lint and continuous-integration test gates were not trustworthy before it; both gates are now restored and enforced.
-
-### Browser validation
-
-v0.2.0 establishes the planned browser-test capability needed to validate later route, tool, layout, and user-flow changes.
+v0.1.1 is the prerequisite development baseline for later implementation work.
 
 ### Documentation-first implementation
 
-Every later version must complete affected component/module specifications before implementing production changes.
+Every implementation version must inspect current repository state, use current my-dev-kit evidence before source/test edits, and complete affected specifications before production implementation.
 
 This does not require global completion of unrelated stubs.
 
+### Browser evidence
+
+v0.2.0 establishes the browser-validation capability required by the first file-processing product workflows. Later versions extend that evidence only as needed.
+
 ### Architecture preservation
 
-Later versions must continue to use the established owners:
+Later versions must continue to use established owners:
 
-* tool registration → `ToolDefinition` / `tool_definition_list`
-* tool queries → metadata layer
-* persistence → `StorageAdapter`
-* themes → ThemeRegistry / ThemeStorage / ThemeRuntime
-* logging → LogProvider / logger / `setLogProvider`
-* analytics → existing analytics provider abstraction
-* tool lifecycle → ToolClientFrame where the shared tool-open client lifecycle is involved
-* observability → observability facade
-* layout → AppShell
-* navigation → explicit navigation data
-* SEO → registry metadata and existing SEO builder functions
+- tool registration → `ToolDefinition` / `tool_definition_list`;
+- tool queries → metadata layer;
+- persistence → storage abstraction;
+- themes → existing theme registry/storage/runtime;
+- logging → existing log/provider abstraction;
+- analytics → existing analytics abstraction;
+- tool lifecycle → `ToolClientFrame`;
+- observability → observability facade;
+- layout → `AppShell`;
+- navigation → explicit navigation data;
+- SEO → registry metadata and existing SEO helpers.
 
-A version that introduces any of the following requires Architecture Assimilation to be refreshed before implementation:
+Refresh architecture assimilation before implementation when a version introduces a new canonical state store, new persistence architecture, major route/state redesign, new framework/service boundary, new public contract family, major subsystem replacement, or substantial repository restructuring.
 
-* a new canonical state store
-* a new persistence architecture
-* a major route/state redesign
-* a new framework/service/package boundary
-* a new public contract family
-* replacement of a major subsystem
-* substantial repository restructuring
+### Catalog-scale architecture evolution
 
-## Global Validation Expectations
+Do not redesign the registry/search/component-loading architecture merely because the catalog is growing.
 
-Every implementation version must preserve or restore the repository's required validation chain.
+Measure first. The post-v0.6 checkpoint decides whether further evolution is justified.
 
-At minimum, once the v0.1.1 correction establishes the supported commands:
+## Global validation expectations
 
-* type checking must pass;
-* linting must pass;
-* unit/integration tests must pass;
-* browser tests must pass when applicable under the established testing policy;
-* production build must pass;
-* documentation must be reconciled with implemented behavior;
-* relevant component/module specifications must match the final implementation.
+Every implementation version must preserve the repository's required validation chain.
 
-A version is not release-ready merely because its implementation code is complete.
+At minimum:
 
-Release readiness, release preparation, and publication remain separate workflow stages.
+- type checking passes;
+- linting passes;
+- unit/contract/integration tests pass;
+- browser tests pass when the version's acceptance depends on browser-visible behavior;
+- production build passes;
+- `npm run verify` passes;
+- documentation is reconciled with implemented behavior;
+- affected component/module specifications match the final implementation.
 
-## Roadmap Boundaries
+A version is not release-ready merely because implementation code is complete. Implementation completeness, documentation reconciliation, readiness, release/integration, and publication/deployment remain separate workflow states.
 
-This roadmap must not be interpreted as authorization to:
+## Roadmap boundaries
 
-* implement unassigned Version-TBD items;
-* infer exact tools for v0.3.0;
-* invent a security-header policy for v0.4.0;
-* invent metadata consumer behavior for v0.6.0;
-* invent Rust logging startup/privacy behavior for v0.7.0;
-* invent About-page content for v0.8.0;
-* implement authentication or payments;
-* select external analytics, advertising, or storage providers;
-* complete unrelated specification stubs;
-* reorganize the version sequence without an explicit planning decision.
+This roadmap does not authorize a coding agent to:
 
-Where a version has a **Definition gate**, that gate must be resolved before implementation prompts are written.
+- invent behavior for any listed utility;
+- prewrite implementation batches for future versions;
+- add Priority C utilities to the Priority A+B sequence;
+- introduce new categories without resolving the documented planning decision;
+- introduce server processing merely because browser processing is inconvenient;
+- implement Version-TBD work without explicit assignment;
+- select external analytics, advertising, storage, OCR, background-removal, or media providers;
+- implement authentication or payments;
+- complete unrelated specification stubs;
+- reorganize the version sequence without an explicit planning decision.
 
-## Next Planning Action
+Where a version has unresolved planning decisions, resolve them before its implementation plan is frozen.
 
-v0.1.1 — Development Validation Hardening is complete. The lint and continuous-integration test-gate corrections and legacy repository-local orchestrator retirement are implemented.
+## Next planning action
 
-The next implementation action is:
+v0.1.1 implementation is complete on the current feature branch but remains unreleased.
 
-**Begin v0.2.0 — Browser End-to-End Validation Foundation.**
+Before product implementation begins, establish the accepted post-v0.1.1 base through the normal readiness/integration workflow.
 
-Do not begin v0.2.0 until the v0.1.1 cleanup acceptance boundaries pass. After v0.1.1 is complete, the next implementation target is **v0.2.0 — Browser End-to-End Validation Foundation**.
+Then start v0.2.0 planning:
+
+1. inspect the exact accepted repository state;
+2. refresh my-dev-kit evidence;
+3. resolve the v0.2.0 open planning decisions;
+4. create and freeze `doc/plans/v0.2.0-implementation-plan.md`;
+5. only then issue bounded coding-agent implementation prompts.
