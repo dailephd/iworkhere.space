@@ -1,8 +1,14 @@
 # PROJECT STATUS
 
 ## Current Phase
-Infrastructure complete. Platform infrastructure upgraded. Ready for tool
-expansion.
+v0.1.1 development hardening is implemented on the current feature branch but
+has not yet been released. The architecture has been reassessed and is suitable
+for continued catalog growth with incremental evolution.
+
+The next concrete product track is the Priority A+B utility catalog defined in
+`doc/ROADMAP.md`. Before v0.2.0 implementation begins, establish the accepted
+post-v0.1.1 base through the normal readiness/integration workflow, then create
+the version-specific implementation plan from fresh repository evidence.
 
 ---
 
@@ -76,7 +82,7 @@ passing)
 - `src/lib/seo.test.ts` — 9 tests
 - `src/module/tool/text/extractHtmlText.test.ts` — 21 tests
 - `src/module/theme/themeRuntime.client.test.ts` — 18 tests
-- Total: 194 tests, all passing
+- Total: 183 tests, all passing
 
 ---
 
@@ -96,24 +102,44 @@ passing)
 
 ## Open Decisions
 
-- Auth (not needed yet)
+- v0.2.0 browser E2E implementation details and ownership
+- v0.2.0 HEIC decoding approach and dependency/runtime cost
+- v0.4.0/v0.5.0 canonical category model for developer-oriented utilities
+- Auth (not needed for the Priority A+B catalog)
 - Payments (future)
 - Analytics provider swap (GA, Plausible, etc.)
 - Ad provider (future)
 - Server-side storage backend (future)
 - RustLogProvider activation (endpoint exists at `/api/log`, provider swap not
   yet wired at startup)
+- Recently-used product/UI ownership
+- Metadata/discovery enrichment semantics
+- About-page content and placement
 
 ---
 
 ## Next Steps
 
-1. Build additional tools end-to-end (document, image, time categories)
-2. Add security headers
-3. Wire recently used tool tracking into ToolClientFrame
-4. Add tool tags and featured/popularity metadata
-5. Activate RustLogProvider at startup (swap from ConsoleProvider)
-6. Implement About page
+1. Complete the normal v0.1.1 readiness/integration workflow and establish the
+   exact accepted base for new product work.
+2. Start v0.2.0 planning from that exact base:
+   - refresh my-dev-kit evidence;
+   - resolve the v0.2.0 open planning decisions;
+   - create and freeze `doc/plans/v0.2.0-implementation-plan.md`.
+3. Implement v0.2.0 — Image Utility Foundation:
+   - Image Resizer
+   - Image Compressor
+   - JPG / PNG / WebP Converter
+   - HEIC → JPG / PNG Converter
+4. Continue the product sequence defined in `doc/ROADMAP.md`:
+   - v0.3.0 — PDF & Document Essentials
+   - v0.4.0 — Core Text, Data & Sharing Utilities
+   - v0.5.0 — Developer & Text Utility Suite
+   - v0.6.0 — Time & Everyday Calculators
+5. Keep security headers, recently-used integration, metadata/discovery
+   enrichment, RustLogProvider activation, About, analytics provider, ads,
+   server storage, authentication, and payments under Version TBD until an
+   explicit planning decision assigns them.
 
 ---
 
