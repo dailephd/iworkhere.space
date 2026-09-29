@@ -1,14 +1,26 @@
 # PROJECT STATUS
 
 ## Current Phase
-v0.1.1 development hardening is implemented on the current feature branch but
-has not yet been released. The architecture has been reassessed and is suitable
-for continued catalog growth with incremental evolution.
+v0.1.1 development hardening is implemented on
+`feature/v0.1.1-validation-hardening` and remains unreleased. The implementation
+candidate `36deca6d7212830b09a87a324b5458647b2c212f` passed the four required
+pull-request CI jobs on 2026-09-22. Any later reconciliation commit on PR #2
+must receive new exact-head CI before merge.
 
-The next concrete product track is the Priority A+B utility catalog defined in
-`doc/ROADMAP.md`. Before v0.2.0 implementation begins, establish the accepted
-post-v0.1.1 base through the normal readiness/integration workflow, then create
-the version-specific implementation plan from fresh repository evidence.
+The earlier design-system modernization work remains open as PR #1 on
+`feature/design-system-modernization`. That branch diverges from PR #2; its
+current head passed build, typecheck, and test but failed lint, and it predates
+the v0.1.1 retirement of the repository-local orchestrator. Do not merge PR #1
+as-is after v0.1.1. Preserve its intended design changes through a fresh
+reconciliation from the accepted v0.1.1 base so obsolete validation or
+orchestration behavior is not reintroduced.
+
+The architecture has been reassessed and is suitable for continued catalog
+growth with incremental evolution. The next concrete product track is the
+Priority A+B utility catalog defined in `doc/ROADMAP.md`. Before v0.2.0
+implementation begins, establish one accepted post-v0.1.1 + design baseline,
+then create the version-specific implementation plan from fresh repository
+evidence.
 
 ---
 
@@ -120,23 +132,30 @@ passing)
 
 ## Next Steps
 
-1. Complete the normal v0.1.1 readiness/integration workflow and establish the
-   exact accepted base for new product work.
-2. Start v0.2.0 planning from that exact base:
+1. Require all four CI jobs on the exact final PR #2 head, then merge v0.1.1
+   validation hardening into `master`.
+2. From the updated `master`, create a fresh design-reconciliation branch and
+   port only the intended product/design changes from PR #1. Do not merge the
+   stale PR #1 branch as-is, and do not reintroduce its obsolete lint,
+   non-blocking validation, or `script/orchestrator.ts` state.
+3. Run typecheck, lint, test, and build on that reconciled design candidate,
+   merge it when green, and close or supersede PR #1. The resulting `master`
+   commit is the accepted base for new product work.
+4. Start v0.2.0 planning from that exact base:
    - refresh my-dev-kit evidence;
    - resolve the v0.2.0 open planning decisions;
    - create and freeze `doc/plans/v0.2.0-implementation-plan.md`.
-3. Implement v0.2.0 — Image Utility Foundation:
+5. Implement v0.2.0 — Image Utility Foundation:
    - Image Resizer
    - Image Compressor
    - JPG / PNG / WebP Converter
    - HEIC → JPG / PNG Converter
-4. Continue the product sequence defined in `doc/ROADMAP.md`:
+6. Continue the product sequence defined in `doc/ROADMAP.md`:
    - v0.3.0 — PDF & Document Essentials
    - v0.4.0 — Core Text, Data & Sharing Utilities
    - v0.5.0 — Developer & Text Utility Suite
    - v0.6.0 — Time & Everyday Calculators
-5. Keep security headers, recently-used integration, metadata/discovery
+7. Keep security headers, recently-used integration, metadata/discovery
    enrichment, RustLogProvider activation, About, analytics provider, ads,
    server storage, authentication, and payments under Version TBD until an
    explicit planning decision assigns them.
