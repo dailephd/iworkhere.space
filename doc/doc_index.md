@@ -57,13 +57,13 @@ rendering.
 new modules or changing layer boundaries.
 **Relations:** Enforces the boundaries tested in `TESTING.md`.
 
-### design.md
-**Summary:** Outlines the core engineering values: clarity over cleverness,
-explicit over implicit, and boring over exciting. It establishes the philosophy
-for UI, performance, security, and abstraction.
-**When to read:** Before making architectural decisions or introducing new
-patterns.
-**Relations:** Sets the philosophical groundwork for `styling.md` and
+### DESIGN.md
+**Summary:** The canonical product design and styling contract, including
+visual identity, themes, layout, scrolling, accessibility, performance, and
+current implementation boundaries.
+**When to read:** Before changing product visual design, styling, interaction
+presentation, responsive behavior, or visual accessibility rules.
+**Relations:** Works with `architecture.md`, agent guidance, and
 `code-generation-guidelines.md`.
 
 ### SCHEMA.md
@@ -97,7 +97,7 @@ forbids speculative implementation, enforces singular naming, and requires
 my-dev-kit bounded retrieval before broad source reading.
 **When to read:** Mandatory for coding agents. Useful for humans to understand
 the expected code quality.
-**Relations:** Enforces the philosophy in `design.md`.
+**Relations:** Enforces the philosophy in `DESIGN.md`.
 
 ### AGENTS.md and CLAUDE.md
 **Summary:** Root-level coding-agent guidance. Both documents must stay
@@ -131,19 +131,7 @@ accompanying tests as defined here.
 
 ---
 
-## 5. Styling & Theming
-
-### styling.md
-**Summary:** Defines the visual design system, including color tokens, type
-scale, spacing, and component rules. It mandates a utility-first approach using
-Tailwind CSS.
-**When to read:** Before creating or modifying any UI component.
-**Relations:** Implements the "calm and predictable" UI philosophy from
-`design.md`.
-
----
-
-## 6. Operational / Debugging Documents
+## 5. Operational / Debugging Documents
 
 ### debugging.md
 **Summary:** A systematic protocol for isolating root causes. It mandates
@@ -155,11 +143,11 @@ and `TESTING.md`.
 
 ---
 
-## 7. Reading Paths
+## 6. Reading Paths
 
 ### For new contributors
 1. `architecture.md` - Understand the system structure.
-2. `design.md` - Understand the engineering values.
+2. `DESIGN.md` - Review the canonical product design and styling contract.
 3. `project-status.md` - See what is actually built now.
 4. `ROADMAP.md` - Understand the approved product/version direction.
 5. `TESTING.md` - Learn how to verify your work.
@@ -178,7 +166,7 @@ and `TESTING.md`.
 2. `SCHEMA.md` - Check whether shared data contracts are affected.
 3. `API.md` - Identify stable interfaces and extension points.
 4. Read affected `doc/components/*.md` and `doc/modules/*.md` contracts.
-5. `styling.md` / the canonical design document - Review UI rules when
+5. `DESIGN.md` - Review UI rules when
    applicable.
 6. `TESTING.md` - Apply the required test layers and validation evidence.
 
@@ -283,7 +271,6 @@ hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
   planned test category with no current implementation (no `@playwright/test`
   dependency or spec files exist). Marked explicitly in that document as of
   2026-08-07; do not treat it as evidence E2E coverage exists today.
-- **Theme token detail remains implementation-owned:** `styling.md` now
-  reflects the eight-theme registry and cross-theme rules, while exact
-  per-theme token values remain defined by the implementation rather than a
-  separate tracked palette specification.
+- **Theme token detail remains implementation-owned:** `DESIGN.md` records the
+  cross-theme contract; exact per-theme token values remain defined in
+  `src/style/theme.css`.

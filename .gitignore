@@ -47,3 +47,6 @@ prompt/
 /log/iworkhere-timearith-prepared/
 /diagram.md
 /diagram.svg
+.my-dev-kit-workflow/
+.my-dev-kit-context/
+.my-dev-kit-orchestrator/

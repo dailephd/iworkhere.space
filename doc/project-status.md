@@ -8,21 +8,9 @@ obsolete local repository orchestrator is retired. The four active CI jobs are
 Typecheck, Lint, Test, and Build. Browser E2E remains planned for v0.2.0 and is
 not currently implemented.
 
-The earlier design-system modernization work remains open as PR #1 on
-`feature/design-system-modernization`. That branch diverges from PR #2; its
-current head passed build, typecheck, and test but failed lint, and it predates
-the v0.1.1 retirement of the repository-local orchestrator. Do not merge PR #1
-as-is after v0.1.1. Preserve its intended design changes through a fresh
-reconciliation from the accepted v0.1.1 base so obsolete validation or
-orchestration behavior is not reintroduced.
+The approved design-system modernization intent from historical PR #1 has been reconciled onto this accepted baseline through the fresh design-reconciliation branch. PR #1 was not merged as-is because its branch was stale and divergent; it is superseded after replacement integration. `doc/DESIGN.md` is now the canonical visual authority and the current shell, theme controls, footer, and route composition follow it.
 
-The architecture has been reassessed and is suitable for continued catalog
-growth with incremental evolution. The next project action is to create a fresh
-design-reconciliation branch from the updated `master`, preserve only the
-intended design changes from PR #1, validate that branch, and integrate it. PR
-#1 must not be merged as-is. Only after design reconciliation should the
-v0.2.0 implementation plan be frozen from fresh repository evidence.
-
+The next project action is to prepare and freeze the v0.2.0 implementation plan from the accepted reconciled `master` using fresh repository evidence. Do not begin v0.2 implementation until that plan is complete.
 ---
 
 ## Completed
@@ -69,7 +57,7 @@ v0.2.0 implementation plan be frozen from fresh repository evidence.
   (`test-report/<RUN_ID>/`)
 - Aggregate local validation runner (`script/verify.ts`) with shared RUN_ID,
   command logs, and Vitest reports
-- Project documentation updated (architecture, styling, design, code generation
+- Project documentation updated (architecture, canonical design, code generation
   guidelines)
 
 ### Tools implemented
@@ -81,8 +69,7 @@ v0.2.0 implementation plan be frozen from fresh repository evidence.
 - **Time Arithmetic** (`/tool/time-arithmetic`) — time category
 
 ### Test coverage
-(counts as of `npm run test` on 2026-09-21; 12 test files, 183 tests, all
-passing)
+(latest local validation on 2026-09-29: 13 test files, 184 tests, all passing)
 - `src/module/theme/themeRegistry.test.ts` — 30 tests
 - `src/app/api/log/route.test.ts` — 9 tests
 - `src/lib/storage.test.ts` — 12 tests
@@ -95,7 +82,9 @@ passing)
 - `src/lib/seo.test.ts` — 9 tests
 - `src/module/tool/text/extractHtmlText.test.ts` — 21 tests
 - `src/module/theme/themeRuntime.client.test.ts` — 18 tests
-- Total: 183 tests, all passing
+- Focused design reconciliation tests cover the category route, ThemeToggle,
+  AppShell landmarks/footer, and VerticalNav destinations.
+- Total: 184 tests, all passing
 
 ---
 
@@ -133,33 +122,14 @@ passing)
 
 ## Next Steps
 
-1. Require all four CI jobs on the exact final PR #2 head, then merge v0.1.1
-   validation hardening into `master`.
-2. From the updated `master`, create a fresh design-reconciliation branch and
-   port only the intended product/design changes from PR #1. Do not merge the
-   stale PR #1 branch as-is, and do not reintroduce its obsolete lint,
-   non-blocking validation, or `script/orchestrator.ts` state.
-3. Run typecheck, lint, test, and build on that reconciled design candidate,
-   merge it when green, and close or supersede PR #1. The resulting `master`
-   commit is the accepted base for new product work.
-4. Start v0.2.0 planning from that exact base:
-   - refresh my-dev-kit evidence;
-   - resolve the v0.2.0 open planning decisions;
-   - create and freeze `doc/plans/v0.2.0-implementation-plan.md`.
-5. Implement v0.2.0 — Image Utility Foundation:
-   - Image Resizer
-   - Image Compressor
-   - JPG / PNG / WebP Converter
-   - HEIC → JPG / PNG Converter
-6. Continue the product sequence defined in `doc/ROADMAP.md`:
-   - v0.3.0 — PDF & Document Essentials
-   - v0.4.0 — Core Text, Data & Sharing Utilities
-   - v0.5.0 — Developer & Text Utility Suite
-   - v0.6.0 — Time & Everyday Calculators
-7. Keep security headers, recently-used integration, metadata/discovery
-   enrichment, RustLogProvider activation, About, analytics provider, ads,
-   server storage, authentication, and payments under Version TBD until an
-   explicit planning decision assigns them.
+Prepare and freeze `doc/plans/v0.2.0-implementation-plan.md` from the accepted
+reconciled `master` using fresh repository evidence. Do not implement v0.2
+until that plan is complete.
+
+Other unassigned scope remains under Version TBD until an explicit planning
+decision assigns it: security headers, recently-used integration,
+metadata/discovery enrichment, RustLogProvider activation, About, analytics
+provider, ads, server storage, authentication, and payments.
 
 ---
 
