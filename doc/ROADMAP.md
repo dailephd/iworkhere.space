@@ -87,7 +87,7 @@ Future versions must preserve the following established principles:
 
 ## Current baseline — v0.1.0
 
-Status: Current released/package baseline
+Status: Current package/source baseline
 
 Version 0.1.0 establishes the current product and architecture.
 
