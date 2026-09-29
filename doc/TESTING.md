@@ -74,6 +74,10 @@ All tests fall into one of these categories:
 
 Unit tests verify pure logic in isolation.
 
+Vitest discovers source tests named `*.test.ts` or `*.test.tsx` under `src/`,
+and script tests named `*.test.ts` under `script/`. Keep this include contract
+explicit in `vitest.config.mts`.
+
 Run `npm run verify` for the aggregate local validation sequence. It runs
 typecheck, lint, test, and build in order and preserves the shared Vitest
 `RUN_ID` reports and command logs under `test-report/<RUN_ID>/`.

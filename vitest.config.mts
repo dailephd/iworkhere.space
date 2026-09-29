@@ -13,7 +13,7 @@ export default defineConfig({
     },
     test: {
         environment: "node",
-        include: ["src/**/*.test.ts", "script/**/*.test.ts"],
+        include: ["src/**/*.test.{ts,tsx}", "script/**/*.test.ts"],
         reporters: ["default", "json", "junit"],
         outputFile: {
             json: path.join(reportDir, "results.json"),

@@ -69,7 +69,7 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 - **Time Arithmetic** (`/tool/time-arithmetic`) — time category
 
 ### Test coverage
-(latest local validation on 2026-09-29: 13 test files, 184 tests, all passing)
+(latest local validation on 2026-09-29: 16 test files, 188 tests, all passing)
 - `src/module/theme/themeRegistry.test.ts` — 30 tests
 - `src/app/api/log/route.test.ts` — 9 tests
 - `src/lib/storage.test.ts` — 12 tests
@@ -82,9 +82,11 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 - `src/lib/seo.test.ts` — 9 tests
 - `src/module/tool/text/extractHtmlText.test.ts` — 21 tests
 - `src/module/theme/themeRuntime.client.test.ts` — 18 tests
-- Focused design reconciliation tests cover the category route, ThemeToggle,
-  AppShell landmarks/footer, and VerticalNav destinations.
-- Total: 184 tests, all passing
+- `src/app/category/[category]/page.test.ts` — 1 test
+- `src/component/common/ThemeToggle.test.tsx` — 2 tests
+- `src/component/layout/AppShell.test.tsx` — 1 test
+- `src/component/layout/VerticalNav.test.tsx` — 1 test
+- Total: 188 tests, all passing across 16 discovered files
 
 ---
 
