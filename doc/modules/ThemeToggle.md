@@ -29,3 +29,7 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+### Current interaction contract
+
+The trigger label is exactly `Themes` and has no palette icon. The existing picker continues to expose all eight registry choices and persists selection through the current theme storage/runtime. Theme selection changes colors only. See `doc/DESIGN.md`.

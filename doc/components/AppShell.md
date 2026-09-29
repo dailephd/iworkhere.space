@@ -31,3 +31,7 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+### Current layout and scroll contract
+
+`AppShell` is the sole owner of the page `main` landmark (`id="main-content"`) and the skip-link target. It owns natural document flow: the browser document scrolls, with no fixed viewport shell or nested `.MainScroll`. Desktop content is arranged as 112px advertising rails, a 176px navigation rail, and a flexible workspace; mobile collapses to one column. The content area is capped near 1280px. See `doc/DESIGN.md`.

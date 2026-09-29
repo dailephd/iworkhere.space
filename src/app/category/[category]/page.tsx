@@ -39,27 +39,27 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
     const toolList = getToolByCategory(typed);
 
     return (
-        <main>
-            <header>
-                <h1>{formatCategoryTitle(typed)}</h1>
+        <div className="space-y-6">
+            <div className="space-y-2">
+                <h1 className="text-2xl font-semibold tracking-tight">{formatCategoryTitle(typed)}</h1>
                 <p>{categoryDescription(typed)}</p>
-            </header>
+            </div>
 
             {toolList.length === 0 ? (
                 <p>No tool available in this category yet.</p>
             ) : (
-                <ul>
+                <ul className="grid gap-3 sm:grid-cols-2">
                     {toolList.map((tool) => (
-                        <li key={tool.id}>
-                            <Link href={`/tool/${tool.slug}`}>
-                                <h2>{tool.name}</h2>
-                                <p>{tool.description}</p>
+                        <li key={tool.id} className="rounded-xl border border-border bg-surface p-4 transition-colors hover:border-[var(--accent)]">
+                            <Link className="block space-y-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]" href={`/tool/${tool.slug}`}>
+                                <h2 className="font-medium text-[var(--text)]">{tool.name}</h2>
+                                <p className="text-sm text-[var(--text-muted)]">{tool.description}</p>
                             </Link>
                         </li>
                     ))}
                 </ul>
             )}
-        </main>
+        </div>
     );
 }
 

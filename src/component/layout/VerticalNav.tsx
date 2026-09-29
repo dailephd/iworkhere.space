@@ -18,7 +18,7 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
     const pathname = usePathname();
 
     return (
-        <nav aria-label={ariaLabel} className="w-full lg:w-64">
+        <nav aria-label={ariaLabel} className="w-full">
             <ul className="flex flex-row flex-wrap gap-2 lg:flex-col lg:gap-1">
                 {item.map((navItem) => {
                     const active = navItem.href
@@ -26,7 +26,7 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
                         : false;
 
                     const className = `
-                        flex w-full items-center gap-3 rounded-xl p-4 text-left transition-colors
+                        flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition-colors
                         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]
                         ${
                             active

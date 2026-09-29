@@ -282,10 +282,10 @@ Prefer automated protection over comments.
 Add a short note to the appropriate document:
 
 - `doc/architecture.md` if it was a boundary or layering issue.
-- `doc/styling.md` if it was a styling system issue.
+- `doc/DESIGN.md` if it was a design or styling system issue.
 - `doc/code-generation-guidelines.md` if it was agent behavior.
 - `README.md` if it affects developer workflow.
-- `doc/design.md` if it reflects a design tradeoff.
+- `doc/DESIGN.md` if it reflects a design tradeoff.
 
 Document:
 

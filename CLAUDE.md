@@ -207,11 +207,11 @@ Dynamic metadata is generated from ToolDefinition.seo.
 
 - Use Tailwind classes for styling
 - Use only existing CSS variable tokens
-- One accent hue only
+- Violet for primary emphasis; cyan for focus and information; no third decorative accent
 - Theme switch changes color only
 - Subtle shadow only
 - No surprise animations
-- Update styling documentation before style system changes
+- Update `doc/DESIGN.md` before design or styling system changes
 
 ## Testing Discipline (Mandatory)
 
@@ -273,7 +273,7 @@ Agents must assume CI will enforce all four.
 ## Documentation Discipline
 
 - Architecture changes require updating doc/architecture.md first
-- Style changes require updating doc/styling.md first
+- Style changes require updating doc/DESIGN.md first
 - New abstractions require updating this file
 - Project status tracked in doc/project-status.md
 - Do not skip documentation when adding new tools

@@ -31,3 +31,7 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+### Current layout contract
+
+On desktop, AppShell provides a 176px navigation rail (acceptable design range 168–184px); the nav uses existing `NavItem` destinations and current-path active state. Mobile keeps the current inline navigation mechanism and adds no drawer or modal. See `doc/DESIGN.md`.

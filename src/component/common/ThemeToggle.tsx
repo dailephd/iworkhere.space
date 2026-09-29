@@ -68,8 +68,8 @@ export function ThemeToggle() {
         return (
             <button
                 type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-alt)]"
-                aria-label="Theme picker"
+                className="h-10 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm font-medium text-[var(--text)]"
+                aria-label="Themes"
                 disabled
             />
         );
@@ -80,12 +80,12 @@ export function ThemeToggle() {
             <button
                 type="button"
                 onClick={() => setOpen((prev) => !prev)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] text-[var(--text-muted)] hover:text-[var(--text)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] focus:outline-none"
-                aria-label="Open theme picker"
+                className="h-10 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-alt)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
+                aria-label="Themes"
                 aria-expanded={open}
                 aria-haspopup="listbox"
             >
-                <PaletteIcon />
+                Themes
             </button>
 
             {open && (

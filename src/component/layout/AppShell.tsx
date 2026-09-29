@@ -1,7 +1,4 @@
-// src/component/layout/AppShell.tsx
-
-import type { ReactNode } from "react"
-
+import { type ReactNode } from "react"
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import type { NavItem } from "./type"
@@ -9,83 +6,62 @@ import { VerticalNav } from "./VerticalNav"
 
 export interface AppShellProps {
     children: ReactNode
-
     navItem?: NavItem[]
-
     headerBannerSlot?: ReactNode
     footerBannerSlot?: ReactNode
     leftBannerSlot?: ReactNode
     rightBannerSlot?: ReactNode
 }
 
-export default function AppShell(props: AppShellProps) {
-    const {
-        children,
-        navItem,
-        headerBannerSlot,
-        footerBannerSlot,
-        leftBannerSlot,
-        rightBannerSlot,
-    } = props
-
+export default function AppShell({
+    children,
+    navItem,
+    headerBannerSlot,
+    footerBannerSlot,
+    leftBannerSlot,
+    rightBannerSlot,
+}: AppShellProps) {
     return (
-        <div className="h-dvh min-h-svh w-full overflow-hidden bg-background text-text">
-            <div className="grid h-full w-full grid-rows-[auto_auto_1fr_auto_auto]">
-                <header className="z-10 border-b border-border bg-surface">
-                    <Header />
-                </header>
+        <div className="min-h-screen w-full bg-background text-text">
+            <a
+                href="#main-content"
+                className="sr-only z-50 rounded-md bg-surface px-4 py-2 text-text focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+            >
+                Skip to main content
+            </a>
+            <header className="border-b border-border bg-surface">
+                <Header />
+            </header>
 
-                {headerBannerSlot ? (
-                    <div className="border-b border-border bg-surface-alt px-4 py-2 sm:px-6 lg:px-8">
-                        {headerBannerSlot}
-                    </div>
-                ) : null}
-
-                <div className="h-full min-h-0">
-                    <div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-[auto_1fr_auto]">
-                        <aside className="hidden min-w-0 border-r border-border lg:block">
-                            <div className="h-full overflow-y-auto p-4">
-                                {leftBannerSlot}
-                            </div>
-                        </aside>
-
-                        <div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-[240px_1fr]">
-                            <aside className="hidden min-w-0 border-r border-border bg-surface lg:block">
-                                <div className="h-full overflow-hidden p-3">
-                                    {navItem && navItem.length > 0 ? (
-                                        <VerticalNav
-                                            item={navItem}
-                                            ariaLabel="Primary navigation"
-                                        />
-                                    ) : null}
-                                </div>
-                            </aside>
-
-                            <main className="min-h-0 min-w-0">
-                                <div className="MainScroll h-full min-h-0 p-4">
-                                    {children}
-                                </div>
-                            </main>
-                        </div>
-
-                        <aside className="hidden min-w-0 border-l border-border lg:block">
-                            <div className="h-full overflow-y-auto p-4">
-                                {rightBannerSlot}
-                            </div>
-                        </aside>
-                    </div>
+            {headerBannerSlot ? (
+                <div className="border-b border-border bg-surface-alt px-5 py-2 sm:px-6">
+                    {headerBannerSlot}
                 </div>
+            ) : null}
 
-                {footerBannerSlot ? (
-                    <div className="border-t border-border bg-surface-alt px-4 py-2 sm:px-6 lg:px-8">
-                        {footerBannerSlot}
-                    </div>
-                ) : null}
-
-                <footer className="z-10 border-t border-border bg-surface py-3">
-                    <Footer />
-                </footer>
+            <div className="grid min-w-0 grid-cols-1 lg:grid-cols-[112px_minmax(0,176px)_minmax(0,1fr)_112px]">
+                <aside className="hidden border-r border-border px-2 py-4 lg:block" aria-label="Left advertising area">
+                    {leftBannerSlot}
+                </aside>
+                <aside className="border-b border-border bg-surface px-3 py-2 lg:border-b-0 lg:border-r lg:px-3 lg:py-4">
+                    {navItem?.length ? <VerticalNav item={navItem} ariaLabel="Primary navigation" /> : null}
+                </aside>
+                <main id="main-content" className="min-w-0 px-5 py-6 sm:px-6 lg:px-8">
+                    <div className="mx-auto w-full max-w-[1280px]">{children}</div>
+                </main>
+                <aside className="hidden border-l border-border px-2 py-4 lg:block" aria-label="Right advertising area">
+                    {rightBannerSlot}
+                </aside>
             </div>
+
+            {footerBannerSlot ? (
+                <div className="border-t border-border bg-surface-alt px-5 py-3 sm:px-6">
+                    {footerBannerSlot}
+                </div>
+            ) : null}
+            <footer className="border-t border-border bg-surface py-4">
+                <Footer />
+            </footer>
         </div>
     )
 }
