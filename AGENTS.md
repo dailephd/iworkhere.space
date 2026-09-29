@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code when working with code in this repository.
+This file provides repository-specific guidance to coding agents working with code in this repository.
 
 ## Build & Development Commands
 
@@ -13,19 +13,28 @@ npm run verify       # Aggregate local validation with shared reports
 
 CI runs: typecheck, lint, test, build (all must pass). Separate GitHub Actions workflow per step.
 
-## Mandatory Interaction Rule (No Guessing)
+## Mandatory Repository Retrieval Rule (No Guessing)
 
-Before generating ANY code that depends on existing files:
+Before generating or modifying code that depends on existing repository files:
 
-1. List exactly which existing files you need to see
-2. For each file, state why it is required
-3. STOP and wait for the user to provide the files
+1. Use my-dev-kit against the current repository state to identify the existing
+   behavior owner, extension point, relevant contracts, and closest tests.
+2. Retrieve bounded context first: search -> lookup -> slice when relationships
+   matter -> source -> continuation or local dependency expansion when needed.
+3. Read a complete source or test file only when bounded retrieval cannot supply
+   the required context, and record why the fallback was necessary.
+4. If ownership, contracts, or the requested behavior remain materially
+   ambiguous after bounded retrieval, stop and report the exact unresolved
+   question instead of guessing.
 
 Forbidden:
-- Do NOT guess imports, export names, or type shapes
-- Do NOT assume file structure from file paths
-- Do NOT write placeholder or most likely implementations
-- Do NOT generate partial implementations
+- Do NOT guess imports, export names, or type shapes.
+- Do NOT assume ownership from file names or paths alone.
+- Do NOT broadly dump the repository for orientation.
+- Do NOT ask the user to paste repository files that are already available to
+  the coding environment.
+- Do NOT write placeholder or "most likely" implementations.
+- Do NOT create a parallel subsystem when an existing owner can be extended.
 
 ## Design Philosophy
 
@@ -136,7 +145,7 @@ ToolClientFrame in src/component/tool/ToolClientFrame.tsx syncs tool state with 
 
 ### Theming
 
-CSS custom properties in src/app/global.css define light and dark tokens. Supports system preference and user override via data-theme on html. Tokens are wired to Tailwind via theme inline.
+Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, onedark, vscode-modern, dracula, amethyst-haze, and mercury-fog; theme selection changes color tokens without changing layout.
 
 ## Analytics and Observability Policy
 
