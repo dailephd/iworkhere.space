@@ -16,38 +16,40 @@ Do NOT generate demo-quality code.
 
 ---
 
-## **Mandatory Interaction Rule (No Guessing)**
+## **Mandatory Repository Retrieval Rule (No Guessing)**
 
 This project forbids speculative implementation.
 
-Before generating ANY code that depends on existing files, you MUST:
+Before generating or modifying code that depends on existing repository files,
+you MUST:
 
-1. List **exactly which existing files** you need to see.
-2. For **each file**, state **why** it is required.
-3. **STOP** and wait for the user to provide the files.
+1. Use my-dev-kit against the current repository state to locate the existing
+   behavior owner, extension point, relevant contracts, and closest tests.
+2. Retrieve bounded evidence first with search, lookup, slice when relationships
+   matter, and exact source retrieval.
+3. Use source continuation or local dependency expansion before escalating to a
+   complete source/test file read.
+4. If bounded retrieval cannot establish the required owner or contract, report
+   the exact missing evidence and stop instead of guessing.
 
 This is not optional.
 
 ### Forbidden behavior
 
-- Do NOT guess imports
-- Do NOT assume export names
-- Do NOT infer shapes from file paths
-- Do NOT write placeholder code
-- Do NOT write “most likely” implementations
-- Do NOT generate partial implementations
+- Do NOT guess imports or export names.
+- Do NOT infer ownership or type shapes from file paths alone.
+- Do NOT broadly read source trees for orientation.
+- Do NOT ask the user to paste repository files already available to the coding
+  environment.
+- Do NOT write placeholder code or “most likely” implementations.
+- Do NOT create a parallel implementation when an established owner can be
+  extended.
 
-If a required file is missing:
-- Ask for it explicitly
-- STOP
+### Full-file fallback
 
-### Only after files are provided
-
-Once the user provides the requested files:
-- Re-read them carefully
-- Generate the **final, correct implementation**
-- Do not restate assumptions
-- Do not re-ask for already provided files
+A complete source or test file may be read only after bounded my-dev-kit
+retrieval cannot supply specific required context. Record the retrieval
+attempts, the missing context, and why the full-file fallback was necessary.
 
 ---
 
