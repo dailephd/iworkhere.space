@@ -43,3 +43,7 @@ next-env.d.ts
 # Project specific
 project-folder-structure.txt
 prompt/
+.my-dev-kit/
+/log/iworkhere-timearith-prepared/
+/diagram.md
+/diagram.svg

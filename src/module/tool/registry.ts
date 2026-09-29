@@ -1,0 +1,130 @@
+import type { ToolDefinition } from "./type";
+import { SlugifyTool } from "./text/SlugifyTool";
+import { HtmlTextExtractorTool } from "./text/HtmlTextExtractorTool";
+import { CalculatorTool } from "@/module/tool/math/CalculatorTool";
+import { LengthConverterTool } from "./everyday/LengthConverterTool";
+import { WeightConverterTool } from "./everyday/WeightConverterTool";
+import { TimeArithmeticTool } from "./time/TimeArithmeticTool";
+
+export const tool_definition_list: ToolDefinition[] = [
+    {
+        id: "slugify",
+        slug: "slugify",
+        name: "Slugify Text",
+        description: "Convert text into URL-safe slugs.",
+        category: "text",
+        seo: {
+            title: "Slugify Text",
+            description: "Free slug generator",
+            canonicalPath: "/tool/slugify",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["text", "utility"],
+        popularity: 10,
+        Component: SlugifyTool,
+    },
+
+    {
+        id: "calculator",
+        slug: "calculator",
+        name: "Calculator",
+        description: "Evaluate simple math expressions.",
+        category: "math",
+        seo: {
+            title: "Calculator",
+            description: "Free calculator for quick math.",
+            canonicalPath: "/tool/calculator",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["math", "utility"],
+        popularity: 20,
+        statePolicy: {
+            persist: "none",
+            shareableQuery: true,
+            defaultQuery: {
+                expr: "",
+            },
+        },
+        Component: CalculatorTool,
+    },
+
+    {
+        id: "length-converter",
+        slug: "length-converter",
+        name: "Length Converter",
+        description: "Convert between common length units.",
+        category: "everyday",
+        seo: {
+            title: "Length Converter",
+            description: "Free length unit converter",
+            canonicalPath: "/tool/length-converter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["unit-converter", "everyday"],
+        popularity: 15,
+        Component: LengthConverterTool,
+    },
+
+    {
+        id: "html-text-extractor",
+        slug: "html-text-extractor",
+        name: "HTML Text Extractor",
+        description: "Extract visible text from HTML and preserve line breaks.",
+        category: "text",
+        seo: {
+            title: "HTML Text Extractor",
+            description: "Free online tool to extract visible text from HTML with preserved line breaks.",
+            canonicalPath: "/tool/html-text-extractor",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["text", "html", "utility"],
+        popularity: 14,
+        Component: HtmlTextExtractorTool,
+    },
+
+    {
+        id: "weight-converter",
+        slug: "weight-converter",
+        name: "Weight Converter",
+        description: "Convert between common weight units.",
+        category: "everyday",
+        seo: {
+            title: "Weight Converter",
+            description: "Free weight unit converter",
+            canonicalPath: "/tool/weight-converter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["unit-converter", "everyday"],
+        popularity: 12,
+        Component: WeightConverterTool,
+    },
+
+    {
+        id: "time-arithmetic",
+        slug: "time-arithmetic",
+        name: "Time Arithmetic",
+        description: "Add and subtract time values in HH:MM format.",
+        category: "time",
+        seo: {
+            title: "Time Arithmetic",
+            description: "Free online tool to add and subtract time values with carry and borrow normalization.",
+            canonicalPath: "/tool/time-arithmetic",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["time", "utility"],
+        popularity: 11,
+        statePolicy: {
+            persist: "none",
+            shareableQuery: false,
+        },
+        Component: TimeArithmeticTool,
+    },
+];
+
+export function getToolBySlug(slug: string) {
+    return tool_definition_list.find(t => t.slug === slug);
+}
+
+export function getToolByCategory(category: string) {
+    return tool_definition_list.filter(t => t.category === category);
+}

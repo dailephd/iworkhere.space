@@ -15,7 +15,38 @@ be preceded by changes to documentation.
 
 ---
 
-## 2. Architecture & Design Documents
+## 2. Planning, Architecture & Design Documents
+
+### ROADMAP.md
+**Summary:** Canonical version-level planning authority. It owns version goals,
+product capability scope, dependencies, constraints, exclusions, acceptance
+criteria, unresolved planning decisions, deferred/Version-TBD work, and concise
+status. It must not become an implementation-batch log, command transcript,
+changed-file inventory, or execution report.
+**When to read:** Before planning any version or deciding whether work belongs
+in the current release.
+**Relations:** Version-specific implementation plans derive from the roadmap but
+do not replace or silently rewrite it.
+
+### doc/plans/vX.Y.Z-implementation-plan.md
+**Summary:** Version-specific frozen implementation plan, created only when that
+version starts and after current repository inspection and fresh my-dev-kit
+retrieval. A version plan may define implementation architecture decisions,
+context-sharing batches, sequencing, affected owners/contracts, planner-authored
+test expectations, batch gates, validation, explicit exclusions, and the
+handoff into documentation reconciliation/readiness.
+**When to read:** During implementation of the named version. If no plan exists
+yet, do not invent batches from the roadmap; prepare the plan first.
+**Relations:** Subordinate to the roadmap's version-level scope. It is planning
+authority, not evidence that a batch or version was implemented.
+
+### project-status.md
+**Summary:** Tracks actual current implementation, validation state, open
+decisions, and exact next action. It does not own future version scope.
+**When to read:** To establish the current repository state before planning or
+implementation.
+**Relations:** Implementation evidence may update roadmap status but must not
+erase unrelated future scope.
 
 ### architecture.md
 **Summary:** Defines the high-level four-layer structure (`app`, `module`,
@@ -56,28 +87,32 @@ platform services like the registry, observability, or storage.
 **When to read:** To understand where files are located.
 **Relations:** Visualizes the structure defined in `architecture.md`.
 
-### project-status.md
-**Summary:** Tracks the current implementation state, completed features, open
-decisions, and next steps.
-**When to read:** To check what is already built and what is planned next.
-**Relations:** Updated as features from `architecture.md` are implemented.
-
 ---
 
 ## 3. Development & Code Governance
 
 ### code-generation-guidelines.md
 **Summary:** Strict rules for AI agents and developers generating code. It
-forbids speculative implementation, enforces singular naming, and mandates
-reading files before writing.
+forbids speculative implementation, enforces singular naming, and requires
+my-dev-kit bounded retrieval before broad source reading.
 **When to read:** Mandatory for coding agents. Useful for humans to understand
 the expected code quality.
 **Relations:** Enforces the philosophy in `design.md`.
 
+### AGENTS.md and CLAUDE.md
+**Summary:** Root-level coding-agent guidance. Both documents must stay
+semantically aligned with the retrieval-first policy in
+`code-generation-guidelines.md` and must not require users to manually paste
+repository files that are already available to the coding environment.
+**When to read:** At coding-agent session start.
+**Relations:** Repository-specific execution guidance subordinate to the
+architecture, roadmap, and version plan.
+
 ### CI_CD.md
 **Summary:** Defines the mandatory CI checks (typecheck, lint, test, build) that
-run on every PR. It explains the test report discipline and the prohibition on
-suppressing errors.
+run independently on every PR. It also documents `npm run verify` as the
+aggregate local validation command, test report discipline, and the prohibition
+on suppressing errors.
 **When to read:** When setting up a PR or debugging a CI failure.
 **Relations:** Enforces the standards defined in `TESTING.md`.
 
@@ -86,9 +121,10 @@ suppressing errors.
 ## 4. Testing & CI
 
 ### TESTING.md
-**Summary:** The comprehensive testing strategy. It defines the four test
-categories (Unit, Contract, Integration, E2E), the requirement for unique test
-reports, and the rules for SSR safety and hydration mismatch detection.
+**Summary:** The comprehensive testing strategy. It defines the current Vitest
+unit/contract/integration disciplines plus the planned Playwright E2E browser
+discipline, the requirement for unique test reports, and the rules for SSR
+safety and hydration mismatch detection.
 **When to read:** Before writing any code. Every new feature must have
 accompanying tests as defined here.
 **Relations:** The practical enforcement of `SCHEMA.md` and `architecture.md`.
@@ -124,14 +160,27 @@ and `TESTING.md`.
 ### For new contributors
 1. `architecture.md` - Understand the system structure.
 2. `design.md` - Understand the engineering values.
-3. `project-status.md` - See what is currently built.
-4. `TESTING.md` - Learn how to verify your work.
+3. `project-status.md` - See what is actually built now.
+4. `ROADMAP.md` - Understand the approved product/version direction.
+5. `TESTING.md` - Learn how to verify your work.
 
-### For implementing a new feature
-1. `SCHEMA.md` - Check if data contracts need updates.
-2. `API.md` - Identify available stable interfaces.
-3. `styling.md` - Review UI standards if building components.
-4. `TESTING.md` - Determine required tests.
+### For planning a version
+1. `ROADMAP.md` - Preserve the approved version goal, scope, dependencies,
+   exclusions, acceptance, and unresolved decisions.
+2. `project-status.md` - Establish current implementation and validation
+   state.
+3. Refresh repository evidence with my-dev-kit.
+4. Resolve the version's open planning decisions.
+5. Create and freeze `doc/plans/vX.Y.Z-implementation-plan.md`.
+
+### For implementing a planned version
+1. Read `ROADMAP.md` and the current version implementation plan.
+2. `SCHEMA.md` - Check whether shared data contracts are affected.
+3. `API.md` - Identify stable interfaces and extension points.
+4. Read affected `doc/components/*.md` and `doc/modules/*.md` contracts.
+5. `styling.md` / the canonical design document - Review UI rules when
+   applicable.
+6. `TESTING.md` - Apply the required test layers and validation evidence.
 
 ### For debugging a production issue
 1. `debugging.md` - Follow the strict isolation protocol.
@@ -145,7 +194,78 @@ and `TESTING.md`.
 
 ---
 
-## 8. Gaps & Observations
+## 8. Component & Module Specification Layer (doc/components/, doc/modules/)
+
+**Summary:** A separate implementation/design-contract layer, one file per
+component (`doc/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
+2026-08-07 = 19) or module/logical-unit (`doc/modules/*.md`, 27 files). Each
+file identifies representative/member source files and (where reconciled)
+a real contract: exported functions, storage keys, dependencies, and known
+implementation/documentation gaps.
+
+**When to read:** Before modifying a specific component or module — check
+whether its `.md` file already documents a contract you must preserve.
+
+**Relations:** Complements `architecture.md` (system-level) and `API.md`
+(cross-cutting contracts) without duplicating them; this layer is
+per-unit detail.
+
+**Status as of 2026-08-07 reconciliation:** all 46 files were produced by an
+automated "Milestone 1 / Milestone 12" ingestion pass
+(`log/iworkhere-timearith-prepared/`) and, except where noted below, contain
+only generation metadata (representative file, member files, inferred role,
+merge signals) with **no real contract content** — every unreconciled file
+ends with "Manual review and updates are encouraged to add implementation
+details." This reconciliation pass added a `## Contract` section with real
+exported signatures, storage keys, and dependencies to the files judged most
+architecturally load-bearing: `Registry.md`, `Metadata.md`, `Storage.md`,
+`RecentlyUsed.md`, `Observability.md`, `Seo.md`, `ThemeRegistry.md`,
+`ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
+`TimeArithmeticTool.md` (previously undocumented despite being a registered
+tool). The remaining ~36 files (all `doc/components/*.md` except
+`TimeArithmeticTool.md`, and `doc/modules/{Analytics,Button,ExtractHtmlText,
+Input,Layout,NavData,Page,Provider,Route,RustLogProvider,StatusPanel,
+ThemeProvider,ThemeToggle,ToolSearch,Type,Types,Util,Logger}.md`) remain thin
+generation stubs. This is recorded as an open documentation gap, not silently
+fixed — see the Architecture Assimilation Report handoff for the full list.
+
+---
+
+## 9. Layer Inventories (doc/features/)
+
+**Summary:** Four files (`src-app.md`, `src-component.md`, `src-lib.md`,
+`src-module.md`) that are raw, auto-generated per-`src/`-subdirectory file
+listings from the same ingestion pass, not component specs (their original
+titles named an arbitrary member file, e.g. "Component: HomeClient" for the
+whole `src/app` group — corrected 2026-08-07 to accurate layer-inventory
+titles).
+
+**When to read:** As a cross-check of file membership per layer, or to spot
+files not yet covered by an individual component/module doc. Not for
+authoritative responsibility descriptions — use `architecture.md` for that.
+
+**Relations:** Subordinate to `architecture.md`; overlaps with
+`project-tree.txt` (file locations) but grouped by classifier heuristics
+rather than directory structure.
+
+---
+
+## 10. Generated Reports
+
+### EXISTING_PROJECT_INVENTORY_REPORT.md
+**Summary:** Machine-generated inventory (Milestone 1 v1, generated
+2026-04-01) of every source file, its inferred unit/role, and merged logical
+units. This is the report that originally proposed the `doc/components/`,
+`doc/modules/`, and `doc/features/` doc targets listed above.
+**When to read:** To understand how the component/module doc set was derived,
+or to see the classifier's raw file-role output.
+**Relations:** Upstream of every file in section 8 and section 9.
+**Do not hand-edit:** regenerate via the ingestion tool rather than editing by
+hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
+
+---
+
+## 11. Gaps & Observations
 
 - **Overlap:** `API.md` and `SCHEMA.md` both define contracts, but `SCHEMA.md`
   focuses on data shapes while `API.md` focuses on function signatures and
@@ -153,7 +273,17 @@ and `TESTING.md`.
 - **Overlap:** `TESTING.md` and `CI_CD.md` both discuss test reporting, but
   `CI_CD.md` focuses on the pipeline mechanics while `TESTING.md` focuses on
   test content.
-- **Completeness:** The documentation covers architecture, design, testing, and
-  operations well.
+- **Completeness:** Architecture, design, testing, and operations are well
+  covered at the system level. The per-unit `doc/components/` and
+  `doc/modules/` layer is largely unreconciled generation stubs (see section
+  8) — a known, tracked gap rather than a completeness claim.
 - **Naming:** Consistent use of singular naming is enforced in
   `code-generation-guidelines.md` and visible in the file structure.
+- **Aspirational content:** `TESTING.md` §2.4 (Playwright E2E) describes a
+  planned test category with no current implementation (no `@playwright/test`
+  dependency or spec files exist). Marked explicitly in that document as of
+  2026-08-07; do not treat it as evidence E2E coverage exists today.
+- **Theme token detail remains implementation-owned:** `styling.md` now
+  reflects the eight-theme registry and cross-theme rules, while exact
+  per-theme token values remain defined by the implementation rather than a
+  separate tracked palette specification.

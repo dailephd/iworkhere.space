@@ -1,0 +1,118 @@
+script/
+├── verify.test.ts
+└── verify.ts
+
+src/
+├── app/
+│   │   favicon.ico
+│   │   global.css
+│   │   HomeClient.tsx
+│   │   layout.tsx
+│   │   navData.ts
+│   │   page.tsx
+│   │   scroll.css
+│   │
+│   ├── api/
+│   │   ├── health/
+│   │   │       route.ts
+│   │   │
+│   │   └── log/
+│   │           route.ts
+│   │           route.test.ts
+│   │
+│   ├── category/
+│   │   └── [category]/
+│   │           page.tsx
+│   │
+│   ├── discover/
+│   │       DiscoverClient.tsx
+│   │       page.tsx
+│   │
+│   └── tool/
+│       └── [slug]/
+│               page.tsx
+│
+├── component/
+│   ├── common/
+│   │       Button.tsx
+│   │       Input.tsx
+│   │       StatusPanel.tsx
+│   │       ThemeProvider.tsx
+│   │       ThemeToggle.tsx
+│   │       ToolSearch.tsx
+│   │
+│   ├── layout/
+│   │       AdBannerHorizontal.tsx
+│   │       AdBannerVertical.tsx
+│   │       AppShell.tsx
+│   │       Footer.tsx
+│   │       Header.tsx
+│   │       ServiceWorkerRegister.tsx
+│   │       type.ts
+│   │       VerticalNav.tsx
+│   │
+│   └── tool/
+│           ToolClientFrame.tsx
+│           ToolErrorBoundary.tsx
+│           ToolPageTemplate.tsx
+│           ToolSection.tsx
+│
+├── lib/
+│       seo.ts
+│       seo.test.ts
+│       storage.ts
+│       storage.test.ts
+│       util.ts
+│
+├── module/
+│   ├── analytics/
+│   │       analytics.test.ts
+│   │       index.ts
+│   │       provider.ts
+│   │       type.ts
+│   │
+│   ├── log/
+│   │       logger.ts
+│   │       provider.ts
+│   │       RustLogProvider.ts
+│   │       types.ts
+│   │
+│   ├── observability/
+│   │       index.ts
+│   │
+│   ├── theme/
+│   │       themeRegistry.test.ts
+│   │       themeRegistry.ts
+│   │       themeRuntime.client.test.ts
+│   │       themeRuntime.client.ts
+│   │       themeStorage.ts
+│   │
+│   └── tool/
+│       │   metadata.ts
+│       │   metadata.test.ts
+│       │   recentlyUsed.ts
+│       │   recentlyUsed.test.ts
+│       │   registry.ts
+│       │   registry.test.ts
+│       │   type.ts
+│       │
+│       ├── everyday/
+│       │       LengthConverterTool.tsx
+│       │       WeightConverterTool.tsx
+│       │
+│       ├── math/
+│       │       CalculatorTool.tsx
+│       │
+│       ├── text/
+│       │       extractHtmlText.test.ts
+│       │       extractHtmlText.ts
+│       │       HtmlTextExtractorTool.tsx
+│       │       SlugifyTool.tsx
+│       │
+│       └── time/
+│               timeArithmetic.test.ts
+│               timeArithmetic.ts
+│               TimeArithmeticTool.tsx
+│
+└── style/
+        theme.css

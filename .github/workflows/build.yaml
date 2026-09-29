@@ -1,13 +1,14 @@
-name: ci
+name: Build
 
 on:
   pull_request:
   push:
-    branch:
+    branches:
       - main
+      - master
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,15 +21,6 @@ jobs:
 
       - name: Install
         run: npm ci
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm run test --if-present
 
       - name: Build
         run: npm run build

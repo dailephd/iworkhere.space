@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@import "../style/theme.css";
+
+/* ----------------------------------------
+   Tailwind v4 token wiring
+   ---------------------------------------- */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+
+  --color-border: var(--border);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --color-focus-ring: var(--focus-ring);
+
+  --color-nav-item-bg: var(--nav-item-bg);
+  --color-nav-item-hover-bg: var(--nav-item-hover-bg);
+  --color-nav-item-active-bg: var(--nav-item-active-bg);
+  --color-nav-item-text: var(--nav-item-text);
+  --color-nav-item-muted-text: var(--nav-item-muted-text);
+  --color-nav-item-active-text: var(--nav-item-active-text);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* ----------------------------------------
+   Base
+   ---------------------------------------- */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}

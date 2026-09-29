@@ -151,7 +151,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
                 </div>
 
                 <div className="text-xs text-[var(--text-muted)]">
-                    Press Enter or "=" to run. Allowed: numbers, spaces, +, -, *, /, parentheses, decimal point.
+                    Press Enter or &quot;=&quot; to run. Allowed: numbers, spaces, +, -, *, /, parentheses, decimal point.
                 </div>
             </div>
 

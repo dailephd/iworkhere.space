@@ -6,13 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "orchestrator:context": "tsx script/orchestrator.ts context",
-    "orchestrator:ask": "tsx script/orchestrator.ts ask",
-    "orchestrator:verify": "tsx script/orchestrator.ts verify",
-    "orchestrator:ask:file": "tsx script/orchestrator.ts ask -f"
+    "verify": "tsx script/verify.ts"
   },
   "dependencies": {
     "next": "16.1.0",
