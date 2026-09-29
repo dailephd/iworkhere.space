@@ -122,22 +122,25 @@ Violating test report uniqueness is a CI failure.
 
 ## 5. SSR and Hydration Safety Enforcement
 
-CI enforces SSR safety through two mechanisms:
+Current CI enforces the available build-time and Vitest checks. Browser-runtime
+hydration enforcement is planned for v0.2.0 and is not active in v0.1.1.
 
-**Build-time** (enforced by `npm run build`):
+**Build-time** (enforced by `npm run build` and type checking):
 
 - Server Components must not use browser APIs
 - `"use client"` must not be placed on pages or layouts
 - Import violations are caught by TypeScript
 
-**Runtime** (enforced by E2E tests):
+**Runtime browser gate** (planned; requires Playwright E2E infrastructure):
 
 - No hydration warnings permitted in the browser console
 - No `Date.now()` or unseeded `Math.random()` in render paths
 - Client-only behavior must render a stable placeholder on the server first
 
-A hydration mismatch appearing in production is treated as a CI failure.
-See TESTING.md for E2E hydration enforcement rules.
+Until the planned browser E2E gate is implemented, build and Vitest success
+must not be presented as browser-runtime proof. Once that gate is active, a
+hydration mismatch detected by the browser suite is a CI failure. See
+TESTING.md for the planned E2E hydration discipline.
 
 ---
 
