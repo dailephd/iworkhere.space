@@ -49,8 +49,6 @@ implementation.
 erase unrelated future scope.
 
 ### architecture.md
-
-### architecture.md
 **Summary:** Defines the high-level four-layer structure (`app`, `module`,
 `component`, `lib`) and the strict dependency rules between them. It details the
 tool registry system, the server/client split, and the data flow for tool
@@ -95,11 +93,20 @@ platform services like the registry, observability, or storage.
 
 ### code-generation-guidelines.md
 **Summary:** Strict rules for AI agents and developers generating code. It
-forbids speculative implementation, enforces singular naming, and mandates
-reading files before writing.
+forbids speculative implementation, enforces singular naming, and requires
+my-dev-kit bounded retrieval before broad source reading.
 **When to read:** Mandatory for coding agents. Useful for humans to understand
 the expected code quality.
 **Relations:** Enforces the philosophy in `design.md`.
+
+### AGENTS.md and CLAUDE.md
+**Summary:** Root-level coding-agent guidance. Both documents must stay
+semantically aligned with the retrieval-first policy in
+`code-generation-guidelines.md` and must not require users to manually paste
+repository files that are already available to the coding environment.
+**When to read:** At coding-agent session start.
+**Relations:** Repository-specific execution guidance subordinate to the
+architecture, roadmap, and version plan.
 
 ### CI_CD.md
 **Summary:** Defines the mandatory CI checks (typecheck, lint, test, build) that
@@ -114,9 +121,10 @@ on suppressing errors.
 ## 4. Testing & CI
 
 ### TESTING.md
-**Summary:** The comprehensive testing strategy. It defines the four test
-categories (Unit, Contract, Integration, E2E), the requirement for unique test
-reports, and the rules for SSR safety and hydration mismatch detection.
+**Summary:** The comprehensive testing strategy. It defines the current Vitest
+unit/contract/integration disciplines plus the planned Playwright E2E browser
+discipline, the requirement for unique test reports, and the rules for SSR
+safety and hydration mismatch detection.
 **When to read:** Before writing any code. Every new feature must have
 accompanying tests as defined here.
 **Relations:** The practical enforcement of `SCHEMA.md` and `architecture.md`.
@@ -275,8 +283,7 @@ hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
   planned test category with no current implementation (no `@playwright/test`
   dependency or spec files exist). Marked explicitly in that document as of
   2026-08-07; do not treat it as evidence E2E coverage exists today.
-- **Theme system underdocumented at the style-policy level:** the
-  implementation (`src/module/theme/`) supports eight themes; `styling.md`
-  documents only a Light/Dark policy. `architecture.md` and the theme module
-  docs were updated 2026-08-07 to describe the real module structure, but no
-  per-theme token specification exists yet in any tracked document.
+- **Theme token detail remains implementation-owned:** `styling.md` now
+  reflects the eight-theme registry and cross-theme rules, while exact
+  per-theme token values remain defined by the implementation rather than a
+  separate tracked palette specification.
