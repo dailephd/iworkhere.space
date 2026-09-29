@@ -3,7 +3,7 @@
 This document defines the styling rules of the project.
 All UI code must comply.
 
-If any instruction conflicts with ARCHITECTURE or other repo docs, STOP and ask.
+If any instruction conflicts with `doc/architecture.md` or another authoritative repository document, stop and report the conflict before editing.
 
 ## Goal
 
@@ -16,19 +16,14 @@ Avoid decoration-first UI. Prefer utility-first UI.
 
 ## Theme
 
-The app must support a Light theme and a Dark theme, with a user toggle.
+The app supports the registry-defined `ThemeId` values `system`, `light`,
+`dark`, `onedark`, `vscode-modern`, `dracula`, `amethyst-haze`, and
+`mercury-fog`.
 
-**Implementation note (2026-08-07 reconciliation):** the shipped theme system
-(`src/module/theme/themeRegistry.ts`) already exposes eight selectable
-`ThemeId` values — `system`, `light`, `dark`, `onedark`, `vscode-modern`,
-`dracula`, `amethyst-haze`, `mercury-fog` — not just Light/Dark. The rules
-below (single accent hue, color-only switching, persistence) still govern
-every theme, including the six added beyond Light/Dark. This section
-describes the original two-theme policy; it has not been rewritten into a
-full per-theme token specification because no such specification exists yet
-in any tracked document — that is a documentation gap, not an implementation
-gap. See `doc/architecture.md` "Theme module" for the current module
-structure.
+This document owns cross-theme styling rules, not a separate exact palette for
+each named theme. Base tokens live in `src/app/global.css`; theme-specific
+token overrides live in `src/style/theme.css`. See `doc/architecture.md`
+"Theme module" for the module structure.
 
 Rules:
 - Theme switch changes color only, not layout
@@ -113,7 +108,7 @@ Rules:
 
 - Subtle only
 - Shadow is for separation, not decoration
-- Dark theme shadow must remain subtle
+- Shadows must remain subtle in every theme, including dark variants
 
 Avoid:
 - Large blur shadow
@@ -137,8 +132,8 @@ If motion is added:
 
 Mandatory:
 - Keyboard navigation must work
-- Focus ring must be visible in Light and Dark
-- Contrast must remain readable in both themes
+- Focus ring must be visible in every supported theme
+- Contrast must remain readable in every supported theme
 - Inputs must have label or aria-label
 
 Avoid:
@@ -176,7 +171,7 @@ Link:
 - Use Tailwind class for styling
 - Avoid inline style
 - Avoid per-page custom CSS
-- Shared tokens live in global.css as CSS variable
+- Shared base tokens live in `src/app/global.css`; named-theme overrides live in `src/style/theme.css`
 - Do not create new styling system
 
 Theme method:
@@ -184,7 +179,7 @@ Theme method:
 - Switch theme by toggling a single attribute or class at root
 
 Do not:
-- Use different component markup for Light and Dark
+- Use different component markup for individual themes
 - Override random colors inside tool code
 
 ## Do not list
