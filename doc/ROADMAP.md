@@ -114,7 +114,7 @@ Current capabilities include:
 
 ## Version 0.1.1 — Development Validation Hardening
 
-Status: Implemented / unreleased
+Status: Integrated / accepted validation baseline
 
 ### Goal
 
@@ -131,14 +131,15 @@ Restore trustworthy development and continuous-integration validation and retire
 
 ### Acceptance
 
-v0.1.1 implementation is complete when:
+v0.1.1 implementation is accepted when:
 
 - type checking, linting, tests, and production build pass;
 - CI test failures block the test job;
 - the legacy context/ask orchestrator surface is removed;
 - `npm run verify` owns aggregate local validation with shared run/report identity;
 - current documentation describes the implemented validation model;
-- repository state is clean and the implementation branch is pushed.
+- the integration commit is on `master` and all four required CI jobs pass on
+  that exact commit.
 
 Publication/release status is separate. The repository package remains `0.1.0` until the normal release/integration workflow establishes a new released version.
 
@@ -601,7 +602,7 @@ The current concrete product sequence is:
 v0.1.0  Current product baseline
 
 v0.1.1  Development Validation Hardening
-        implemented / unreleased
+        integrated / accepted validation baseline
         ↓
 v0.2.0  Image Utility Foundation
         ↓
@@ -694,11 +695,14 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.1.1 implementation is complete on the current feature branch but remains unreleased.
+The integrated v0.1.1 validation hardening is the accepted development baseline.
+The package version remains `0.1.0`; this integration is not an npm publication
+or external product release.
 
-Before product implementation begins, establish the accepted post-v0.1.1 base through the normal readiness/integration workflow.
-
-Then start v0.2.0 planning:
+The next project action is to create a fresh design-reconciliation branch from
+the updated `master`, preserve only the intended design changes from PR #1,
+validate that branch, and integrate it. Do not merge PR #1 as-is. Only after
+that design reconciliation should v0.2.0 planning begin:
 
 1. inspect the exact accepted repository state;
 2. refresh my-dev-kit evidence;

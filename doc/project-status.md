@@ -1,11 +1,12 @@
 # PROJECT STATUS
 
 ## Current Phase
-v0.1.1 development hardening is implemented on
-`feature/v0.1.1-validation-hardening` and remains unreleased. The implementation
-candidate `36deca6d7212830b09a87a324b5458647b2c212f` passed the four required
-pull-request CI jobs on 2026-09-22. Any later reconciliation commit on PR #2
-must receive new exact-head CI before merge.
+v0.1.1 development-validation hardening is integrated into `master` and is the
+accepted validation/development baseline. The package metadata remains at
+`0.1.0`; this integration does not perform a package-version release. The
+obsolete local repository orchestrator is retired. The four active CI jobs are
+Typecheck, Lint, Test, and Build. Browser E2E remains planned for v0.2.0 and is
+not currently implemented.
 
 The earlier design-system modernization work remains open as PR #1 on
 `feature/design-system-modernization`. That branch diverges from PR #2; its
@@ -16,11 +17,11 @@ reconciliation from the accepted v0.1.1 base so obsolete validation or
 orchestration behavior is not reintroduced.
 
 The architecture has been reassessed and is suitable for continued catalog
-growth with incremental evolution. The next concrete product track is the
-Priority A+B utility catalog defined in `doc/ROADMAP.md`. Before v0.2.0
-implementation begins, establish one accepted post-v0.1.1 + design baseline,
-then create the version-specific implementation plan from fresh repository
-evidence.
+growth with incremental evolution. The next project action is to create a fresh
+design-reconciliation branch from the updated `master`, preserve only the
+intended design changes from PR #1, validate that branch, and integrate it. PR
+#1 must not be merged as-is. Only after design reconciliation should the
+v0.2.0 implementation plan be frozen from fresh repository evidence.
 
 ---
 
