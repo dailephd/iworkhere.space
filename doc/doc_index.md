@@ -82,6 +82,13 @@ implementation detail.
 platform services like the registry, observability, or storage.
 **Relations:** Implements the contracts defined in `SCHEMA.md`.
 
+### modules/ImageResizer.md
+**Summary:** Browser-native JPEG/PNG/WebP resizing, authoritative signatures,
+25 MiB and 30 MP limits, original aspect ratio, local state, fixed encoding,
+preview/download ownership, privacy and validation evidence.
+**When to read:** Before changing or testing Image Resizer.
+**Relations:** Implements ImageFileProcessing.md through the existing registry.
+
 ### modules/ImageFileProcessing.md
 **Summary:** Frozen browser image-file validation, privacy, state, resource-limit,
 Blob/download and object-URL lifecycle contracts. No shared production engine is

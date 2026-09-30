@@ -12,6 +12,14 @@ import {
 import { tool_definition_list } from "./registry"
 
 describe("tool metadata index", () => {
+    it("derives Image Resizer SEO and the populated image category from the registry", () => {
+        expect(getToolSeoBySlug("image-resizer")).toEqual({
+            title: "Image Resizer",
+            description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-resizer",
+        })
+        expect(getAvailableCategory()).toContain("image")
+    })
     describe("getAllTool", () => {
         it("returns all tools from registry", () => {
             const result = getAllTool()

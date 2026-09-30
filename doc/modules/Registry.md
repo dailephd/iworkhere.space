@@ -15,9 +15,9 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 ## Contract (added 2026-08-07 reconciliation)
 
 The single source of truth for tool data — `tool_definition_list`, an array
-of `ToolDefinition` (`src/module/tool/type.ts`). Currently registers six
+of `ToolDefinition` (`src/module/tool/type.ts`). Currently registers seven
 tools: `slugify`, `calculator`, `length-converter`, `html-text-extractor`,
-`weight-converter`, `time-arithmetic`.
+`weight-converter`, `time-arithmetic`, `image-resizer`.
 
 ```typescript
 function getToolBySlug(slug: string): ToolDefinition | undefined

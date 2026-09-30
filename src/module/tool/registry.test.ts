@@ -2,6 +2,17 @@ import { describe, expect, it } from "vitest"
 import { getToolByCategory, getToolBySlug, tool_definition_list } from "./registry"
 
 describe("registry invariants", () => {
+    it("registers the local-only Image Resizer and resolves its image category", () => {
+        const tool = getToolBySlug("image-resizer")
+        expect(tool).toMatchObject({
+            id: "image-resizer", slug: "image-resizer", name: "Image Resizer", category: "image",
+            seo: { title: "Image Resizer", canonicalPath: "/tool/image-resizer" },
+            capability: ["client-only", "offline"], tag: ["image", "resize", "utility"],
+            statePolicy: { persist: "none", shareableQuery: false },
+        })
+        expect(tool?.Component).toBeDefined()
+        expect(getToolByCategory("image")).toContain(tool)
+    })
     it("all tools have unique ids", () => {
         const ids = tool_definition_list.map(t => t.id)
         const uniqueIds = new Set(ids)

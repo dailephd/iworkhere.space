@@ -5,6 +5,7 @@ import { CalculatorTool } from "@/module/tool/math/CalculatorTool";
 import { LengthConverterTool } from "./everyday/LengthConverterTool";
 import { WeightConverterTool } from "./everyday/WeightConverterTool";
 import { TimeArithmeticTool } from "./time/TimeArithmeticTool";
+import { ImageResizerTool } from "./image/ImageResizerTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -118,6 +119,22 @@ export const tool_definition_list: ToolDefinition[] = [
             shareableQuery: false,
         },
         Component: TimeArithmeticTool,
+    },
+    {
+        id: "image-resizer",
+        slug: "image-resizer",
+        name: "Image Resizer",
+        description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+        category: "image",
+        seo: {
+            title: "Image Resizer",
+            description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-resizer",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "resize", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImageResizerTool,
     },
 ];
 
