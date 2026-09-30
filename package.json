@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run dev:check && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-Dev.ps1",
+    "dev:web": "next dev",
+    "dev:check": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Check-DevEnv.ps1",
     "docker:ready": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-DockerDesktop.ps1",
     "dev:docker": "npm run docker:ready && docker compose up --build -d",
     "dev:docker:down": "npm run docker:ready && docker compose down --remove-orphans",

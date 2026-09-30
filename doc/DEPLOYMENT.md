@@ -1,7 +1,9 @@
 # Deployment and Docker Preview
 
-Docker is an optional production-style preview. Normal development remains
-`npm run dev` and does not start Docker.
+Docker is an optional production-style preview. `npm run dev` validates the
+local development environment and starts the normal host Next.js dev server;
+it does not start or check Docker. `npm run dev:docker` opts into the
+production-style Docker preview.
 
 ## Requirements and commands
 
@@ -15,6 +17,8 @@ runtime is `24.x`; Docker stages use the digest-pinned
 ```sh
 npm ci
 npm run dev                 # normal development
+npm run dev:web              # raw Next.js dev server (without the environment wrapper)
+npm run dev:check            # validate Node 24 and repository prerequisites
 npm run docker:ready        # optional Docker Desktop readiness check
 npm run dev:docker           # build and run the production preview
 npm run dev:docker:down      # stop the Compose preview

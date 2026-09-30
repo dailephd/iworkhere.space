@@ -16,7 +16,8 @@ CI runs six independent gates: typecheck, lint, test, build, E2E, and Container.
 `npm run verify` runs the first four; `npm run test:e2e` and `npm run test:container`
 are separate. Docker is optional for normal development. Active CI uses Node 24;
 production Docker packaging uses Next standalone output. Do not bypass the
-container gate for deployment-runtime changes.
+container gate for deployment-runtime changes. Normal development uses
+`npm run dev`; Docker preview is opt-in through `npm run dev:docker`.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 

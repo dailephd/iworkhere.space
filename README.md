@@ -13,13 +13,21 @@ npm run dev
 ## Development Commands
 
 ```bash
-npm run dev          # Start the development server
-npm run build        # Production build
-npm run lint         # ESLint
-npm run typecheck    # TypeScript type checking
-npm run test         # Vitest tests
-npm run verify       # Aggregate local validation with shared reports
+npm run dev              # Check the environment, then start local Next.js
+npm run dev:web           # Start raw Next.js dev server
+npm run dev:check         # Validate Node 24 and repository prerequisites
+npm run dev:docker        # Optional production-style Docker preview
+npm run dev:docker:down   # Stop the optional Docker preview
+npm run build             # Production build
+npm run lint              # ESLint
+npm run typecheck         # TypeScript type checking
+npm run test              # Vitest tests
+npm run verify            # Aggregate local validation with shared reports
 ```
+
+`npm run dev` checks the local development environment and starts the normal
+host Next.js dev server on port 3000. Docker remains optional; `npm run dev`
+does not start or check Docker.
 
 `npm run verify` runs typecheck, lint, test, and build in order. It generates
 one unique `RUN_ID`, stops on the first failure, and captures each executed
