@@ -9,8 +9,9 @@ is in progress. Batch 1 implements a separate production Chromium browser gate,
 fixture provenance policy and image lifecycle specification. CI now defines
 Typecheck, Lint, Test, Build and E2E; hosted E2E execution is pending the final
 version PR. The package remains `0.1.0`. Batch 2 adds Image Resizer;
-Batch 3 adds Image Compressor as the eighth registered tool. Existing tool
-behavior remains protected.
+Batch 3 adds Image Compressor as the eighth registered tool. Batch 4 adds
+JPG / PNG / WebP Converter as the ninth registered tool. Registered tools = 9;
+image tools = 3. Existing tool behavior remains protected.
 
 The approved design-system modernization intent from historical PR #1 has been reconciled onto this accepted baseline through the fresh design-reconciliation branch. PR #1 was not merged as-is because its branch was stale and divergent; it is superseded after replacement integration. `doc/DESIGN.md` is now the canonical visual authority and the current shell, theme controls, footer, and route composition follow it.
 
@@ -18,9 +19,15 @@ The accepted Batch 1 foundation supports the planner-owned Batch 2 Image Resizer
 vertical slice: browser-native JPEG/PNG/WebP resizing with local selection,
 validation, previews and downloads. No generic file-processing framework is
 implemented. Batch 3 independently proves browser-native compression and shares
-only the ten equivalent source-file primitives through ImageFile. React UI,
-state, object URLs and operation encoding remain local. Both corrected Observer
-lanes pass; the historical workflow integration gap remains recorded as degraded.
+only the ten equivalent source-file primitives through ImageFile. Batch 4 shares
+only identical source presentation through ImageSourcePanel;
+state, object URLs, results/actions and operation encoding remain local. Batch 4
+protects existing Compressor structure through the project-aware Observer lane
+and proves natural document scrolling in the actual completed mobile Converter
+state through Playwright. Feature result PASS; ecosystem result DEGRADED because
+the first Batch 4 planner packet incorrectly required scroll ownership from a
+non-scrollable baseline and required a corrected planner prompt. The prior
+Batch 3 workflow gap remains historical evidence.
 ---
 
 ## Completed
@@ -87,17 +94,21 @@ lanes pass; the historical workflow integration gap remains recorded as degraded
 - **Image Compressor** (`/tool/image-compressor`) — image category; actual JPEG,
   PNG and WebP byte reduction, with truthful no-reduction outcomes
 
+- **JPG / PNG / WebP Converter** (`/tool/image-converter`) — image category;
+  all six distinct conversion pairs, exact dimensions/MIME, JPEG white flattening,
+  PNG/WebP alpha preservation and canonical downloads
+
 ### Test coverage
-(latest local validation on 2026-09-30: 23 Vitest files, 305 tests, all passing;
-94 browser tests passing, 47 per Chromium project)
+(latest local validation on 2026-09-30: 27 Vitest files, 356 tests, all passing;
+126 browser tests passing, 63 per Chromium project)
 - `src/module/theme/themeRegistry.test.ts` — 30 tests
 - `src/app/api/log/route.test.ts` — 9 tests
 - `src/lib/storage.test.ts` — 12 tests
 - `src/module/analytics/analytics.test.ts` — 10 tests
-- `src/module/tool/metadata.test.ts` — 19 tests
+- `src/module/tool/metadata.test.ts` — 20 tests
 - `src/module/tool/time/timeArithmetic.test.ts` — 31 tests
 - `src/module/tool/recentlyUsed.test.ts` — 10 tests
-- `src/module/tool/registry.test.ts` — 13 tests
+- `src/module/tool/registry.test.ts` — 14 tests
 - `script/verify.test.ts` — focused validation-runner tests
 - `src/lib/seo.test.ts` — 9 tests
 - `src/module/tool/text/extractHtmlText.test.ts` — 21 tests
@@ -113,9 +124,20 @@ lanes pass; the historical workflow integration gap remains recorded as degraded
 - `src/module/tool/image/imageCompressor.test.ts` — 46 pure rule tests
 - `src/module/tool/image/ImageCompressorTool.test.tsx` — 5 lifecycle/telemetry tests
 - `src/module/tool/image/imageFile.client.test.ts` — 7 boundary/cleanup tests
-- Total: 305 tests, all passing across 23 discovered Vitest files; all accepted
-  Batch 2 tests retained. Production E2E passes 94 tests across both required viewports,
-  including all 64 inherited browser cases and 30 Compressor cases.
+- `src/module/tool/image/imageConverter.test.ts` — 30 pure rule tests
+- `src/module/tool/image/imageConverter.client.test.ts` — 11 encoding/cleanup tests
+- `src/module/tool/image/ImageConverterTool.test.tsx` — 7 lifecycle/telemetry tests
+- `src/component/tool/image/ImageSourcePanel.test.tsx` — 1 presentation/delegation test
+- Total: 356 tests, all passing across 27 discovered Vitest files; all inherited
+  305 tests retained. Production E2E passes 126 tests across both viewports,
+  including all 94 inherited browser cases and 32 Converter cases.
+- Completed mobile Converter: document height 1,986px > 844px viewport, document
+  scrolling element HTML, main/workspace overflow visible, window scrollY 1,142px,
+  footer reachable. No horizontal overflow at either required viewport.
+- Frozen Compressor project-aware Observer check PASS; acceptance configuration
+  restored byte-for-byte. Supplementary Observer scroll lane NOT_REQUIRED.
+- Static JavaScript: 620,482 bytes / 13 chunks (+7,424 bytes); existing representative
+  route transfer delta +1,056 bytes each. No dependency or package-version change.
 
 ---
 
@@ -153,9 +175,11 @@ lanes pass; the historical workflow integration gap remains recorded as degraded
 
 ## Next Steps
 
-Return the Batch 3 report to the planner. Do not begin Batch 4 — JPG / PNG / WebP
-Converter until the planner reviews Compressor behavior, both Observer lanes,
-and the shared-extraction result. Preserve the shared feature branch and planner-owned scope.
+Next action: Batch 5 — HEIC → JPG / PNG Converter, only after planner review.
+Return the Batch 4 report to the planner. Do not begin Batch 5 until the planner
+reviews all six conversion directions, alpha/white-flatten semantics, real
+completed-state scroll behavior, shared presentation evidence, Observer result
+and bundle impact. HEIC is not implemented. Preserve the shared feature branch.
 
 Other unassigned scope remains under Version TBD until an explicit planning
 decision assigns it: security headers, recently-used integration,

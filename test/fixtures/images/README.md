@@ -79,3 +79,20 @@ at (2,2), calculated SHA-256, and performed native same-size encoding at quality
 The existing `resizer-source.png` is also consumed by Image Compressor's
 no-reduction test: same-size native encoding produces the same 309-byte file,
 with no result URL or download. Its original provenance and checksum remain above.
+
+
+## Converter transparent WebP
+
+The Converter six-pair tests reuse compressor-source.jpg and compressor-source.png.
+The existing WebP fixtures are opaque, so exactly one additional fixture is used.
+
+`converter-transparent.webp` is project-owned geometric artwork generated locally
+by headless Chromium 153.0.8010.12 (Playwright 1.63.0), without third-party content
+or attribution requirements. Recipe: transparent 240 x 180 off-DOM canvas, fill
+(30,0,210,180) with #5b4bd8 and (0,30,30,150) with #0891b2, then
+`toDataURL("image/webp", 1)`. The top-left 30 x 30 remains transparent.
+Independent saved-byte decode verified image/webp, 240 x 180 (43,200 pixels),
+and RGBA (0,0,0,0) at (2,2). Consumer: test/e2e/image-converter.spec.ts,
+transparent WebP to PNG alpha preservation and WebP to JPEG white flattening.
+SHA-256: fb27276e4d2de53c309031b566dc77b6f6f56ff3e5ad5c068b06621f99d301b4.
+Tests consume committed bytes and do not regenerate the fixture.

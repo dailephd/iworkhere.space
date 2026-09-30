@@ -82,6 +82,19 @@ implementation detail.
 platform services like the registry, observability, or storage.
 **Relations:** Implements the contracts defined in `SCHEMA.md`.
 
+### modules/ImageConverter.md
+**Summary:** Local JPEG/PNG/WebP conversion in all six distinct directions,
+quality for JPEG/WebP, alpha preservation, white JPEG compositing, exact MIME
+verification, lifecycle/privacy and real completed-state scrolling acceptance.
+**When to read:** Implementing or validating Image Converter.
+**Relations:** Reuses ImageFile.md and ImageSourcePanel.md; registry and E2E owners.
+
+### modules/ImageSourcePanel.md
+**Summary:** Presentation-only common source panel proven across independently
+passing Resizer, Compressor and Converter. No domain imports or lifecycle ownership.
+**When to read:** Editing image source presentation.
+**Relations:** All three image tool UIs pass display-ready data and keep lifecycle local.
+
 ### modules/ImageCompressor.md
 **Summary:** Local JPEG/PNG/WebP compression with actual byte comparison,
 JPEG/WebP quality controls, native PNG re-encoding, truthful no-reduction outcomes,
@@ -94,7 +107,7 @@ safe telemetry and resource cleanup.
 Resizer/Compressor implementations: signatures, metadata, limits, formatting,
 basename, native decode and inspection. No shared React framework or encoder.
 **When to read:** Changing common source validation or decoding.
-**Relations:** Shared by ImageResizer.md and ImageCompressor.md.
+**Relations:** Shared by ImageResizer.md, ImageCompressor.md and ImageConverter.md.
 
 ### modules/ImageResizer.md
 **Summary:** Browser-native JPEG/PNG/WebP resizing, authoritative signatures,

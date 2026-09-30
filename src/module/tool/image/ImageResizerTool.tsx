@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { ImageSourcePanel } from "@/component/tool/image/ImageSourcePanel";
 import type { ToolComponentProp } from "../type";
 import { trackEvent } from "@/module/observability";
 import { heightFromWidth, widthFromHeight, imageResizerFilename, validateImageResizerDimension } from "./imageResizer";
@@ -149,23 +150,9 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
     return (
         <div className="min-w-0 space-y-4">
             <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
-            <section className={SURFACE_CLASS} aria-labelledby="resizer-source-title">
-                <h2 id="resizer-source-title" className="font-semibold">Source image</h2>
-                <label className="block space-y-2">
-                    <span className="block font-medium">Choose image</span>
-                    <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" onChange={selectFile}
-                        className={`${INPUT_CLASS} text-sm file:mr-2 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-text`} />
-                </label>
-                <p className="text-sm text-text-muted">JPEG, PNG or WebP. Up to 25 MiB and 30 megapixels.</p>
-                {selecting && <p role="status">Reading image…</p>}
-                {source && <>
-                    <p className="break-all text-sm">{source.file.name}</p>
-                    <p className="text-sm">Source: {source.width} × {source.height} px · {formatImageResizerBytes(source.file.size)} · {IMAGE_RESIZER_ENCODING[source.format].label}</p>
-                    {/* Native img displays local Blob URLs without an optimization request. */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={source.url} alt="Selected source image preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />
-                </>}
-            </section>
+            <ImageSourcePanel titleId="resizer-source-title" inputRef={fileInput} onChange={selectFile} selecting={selecting}
+            source={source ? { name: source.file.name, width: source.width, height: source.height,
+                formattedBytes: formatImageResizerBytes(source.file.size), formatLabel: IMAGE_RESIZER_ENCODING[source.format].label, previewUrl: source.url } : null} />
             <form onSubmit={resize} noValidate className={SURFACE_CLASS} aria-labelledby="resizer-dimension-title">
                 <h2 id="resizer-dimension-title" className="font-semibold">Resize dimensions</h2>
                 <div className="grid min-w-0 gap-3 sm:grid-cols-2">

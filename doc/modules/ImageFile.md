@@ -6,8 +6,10 @@ The independently passing Resizer and Compressor established identical semantics
 for these source concerns: format type, MIME/extension/label metadata, signature
 detection, source-size limit, decoded source dimensions/area, byte formatting,
 basename extraction, signature reading, native decode and source inspection.
-These responsibilities alone are shared. No UI, hook, local state, object URL,
-generation token, telemetry, action or canvas encoder is shared.
+These source-file owners share no UI, hook, local state, object URL,
+generation token, telemetry, action or canvas encoder. Converter also reuses
+these unchanged contracts. The separate presentation-only ImageSourcePanel
+is specified in `ImageSourcePanel.md`; it does not expand ImageFile ownership.
 
 ## Pure owner: imageFile.ts
 

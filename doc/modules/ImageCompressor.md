@@ -1,5 +1,11 @@
 # Image Compressor
 
+Batch 4 preserves this behavior and delegates identical source presentation to
+`component/tool/image/ImageSourcePanel.tsx` (see `ImageSourcePanel.md`). The
+Compressor still owns selection, state, URLs, generations, controls, results,
+telemetry and its encoder. The independent Batch 3 extraction evidence below
+remains historical source-file evidence.
+
 Image Compressor is a browser-only, offline tool at `/tool/image-compressor`. Its registered state policy is `persist: none`, `shareableQuery: false`. It accepts JPEG, PNG and WebP by encoded signature, independently of filename or declared MIME. JPEG uses SOI bytes, PNG its eight-byte signature, and WebP RIFF plus WEBP markers.
 
 ## Source and processing

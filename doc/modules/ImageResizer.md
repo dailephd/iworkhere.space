@@ -2,6 +2,11 @@
 
 ## Ownership and scope
 
+Batch 4 delegates only identical source presentation to the presentation-only
+`component/tool/image/ImageSourcePanel.tsx` (see `ImageSourcePanel.md`). The
+Resizer keeps all selection/state, URL ownership, generations, controls,
+results, telemetry and operation logic below.
+
 `src/module/tool/image/ImageResizerTool.tsx` owns local React state, selection,
 previews, actions, recoverable feedback and object URLs. `imageResizer.ts` owns
 target-dimension, ratio and filename rules. `imageResizer.client.ts`

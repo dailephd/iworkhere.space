@@ -40,6 +40,12 @@ describe("tool metadata index", () => {
         })
     })
 
+    it("derives Converter SEO from the registry", () => {
+        expect(getToolSeoBySlug("image-converter")).toEqual({
+            title: "JPG / PNG / WebP Converter", description: "Convert JPEG, PNG, and WebP images locally in your browser.", canonicalPath: "/tool/image-converter",
+        })
+    })
+
     describe("getToolSeoBySlug", () => {
         it("returns seo for existing slug", () => {
             const seo = getToolSeoBySlug("slugify")

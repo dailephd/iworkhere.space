@@ -7,6 +7,7 @@ import { WeightConverterTool } from "./everyday/WeightConverterTool";
 import { TimeArithmeticTool } from "./time/TimeArithmeticTool";
 import { ImageResizerTool } from "./image/ImageResizerTool";
 import { ImageCompressorTool } from "./image/ImageCompressorTool";
+import { ImageConverterTool } from "./image/ImageConverterTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -152,6 +153,22 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["image", "compress", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: ImageCompressorTool,
+    },
+    {
+        id: "image-converter",
+        slug: "image-converter",
+        name: "JPG / PNG / WebP Converter",
+        description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+        category: "image",
+        seo: {
+            title: "JPG / PNG / WebP Converter",
+            description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-converter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "converter", "jpg", "png", "webp"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImageConverterTool,
     },
 ];
 

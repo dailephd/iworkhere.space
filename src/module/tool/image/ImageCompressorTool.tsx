@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { ImageSourcePanel } from "@/component/tool/image/ImageSourcePanel";
 import type { ToolComponentProp } from "../type";
 import { trackEvent } from "@/module/observability";
 import { DEFAULT_QUALITY, imageCompressorFilename, imageCompressorSavings, validateImageCompressorQuality,
@@ -122,22 +123,9 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
     const busy = state === "processing";
     return <div className="min-w-0 space-y-4">
         <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
-        <section className={SURFACE_CLASS} aria-labelledby="compressor-source-title">
-            <h2 id="compressor-source-title" className="font-semibold">Source image</h2>
-            <label className="block space-y-2"><span className="block font-medium">Choose image</span>
-                <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" onChange={selectFile}
-                    className="w-full min-w-0 rounded-lg border border-border bg-surface-alt px-3 py-2 text-sm text-text file:mr-2 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-text" />
-            </label>
-            <p className="text-sm text-text-muted">JPEG, PNG or WebP. Up to 25 MiB and 30 megapixels.</p>
-            {selecting && <p role="status">Reading image…</p>}
-            {source && <>
-                <p className="break-all text-sm">{source.file.name}</p>
-                <p className="text-sm">Source: {source.width} × {source.height} px · {formatImageCompressorBytes(source.file.size)} · {IMAGE_COMPRESSOR_ENCODING[source.format].label}</p>
-                {/* Native img consumes a local Blob URL without an optimization request. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={source.url} alt="Selected source image preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />
-            </>}
-        </section>
+        <ImageSourcePanel titleId="compressor-source-title" inputRef={fileInput} onChange={selectFile} selecting={selecting}
+            source={source ? { name: source.file.name, width: source.width, height: source.height,
+                formattedBytes: formatImageCompressorBytes(source.file.size), formatLabel: IMAGE_COMPRESSOR_ENCODING[source.format].label, previewUrl: source.url } : null} />
         <form onSubmit={compress} className={SURFACE_CLASS} aria-labelledby="compressor-controls-title" noValidate>
             <h2 id="compressor-controls-title" className="font-semibold">Compression settings</h2>
             {source && source.format !== "png" && <>

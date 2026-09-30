@@ -34,6 +34,11 @@ The browser document owns primary vertical scrolling. Let long workspaces grow n
 
 ## Shared controls and page composition
 
+The image family shares only source presentation through `ImageSourcePanel`:
+source heading, file input, helper/status, display-ready source information and
+preview. This preserves the existing three-tool markup, tokens and layout.
+Tool owners retain all state, validation, URL lifecycle, controls and results.
+
 Extend current component and route owners. Buttons should have clear primary and secondary hierarchy, visible disabled state, and visible keyboard focus. Inputs need an accessible label, a clear border, and a strong focus indication; placeholder text is not a label. Links use the primary violet with a restrained hover state. Cards use semantic surfaces, consistent padding, and subtle separation.
 
 Destructive button styling uses the danger token only for destructive actions. Inputs use consistent padding and restrained danger styling for errors. Reusable components keep consistent patterns; avoid one-off tool button styles, inline styles, and per-page custom CSS when existing Tailwind utilities and shared tokens express the design.

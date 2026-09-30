@@ -88,13 +88,24 @@ describe("registry invariants", () => {
         expect(tool?.name).toBe("Time Arithmetic")
     })
 
-    it("registers the local offline Image Compressor and both image tools", () => {
+    it("registers the local offline Image Compressor and all three image tools", () => {
         const tool = getToolBySlug("image-compressor")
         expect(tool).toMatchObject({ id: "image-compressor", slug: "image-compressor", name: "Image Compressor", category: "image",
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
-        expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor"])
-        expect(tool_definition_list).toHaveLength(8)
+        expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter"])
+        expect(tool_definition_list).toHaveLength(9)
+    })
+
+    it("registers Converter with its exact offline contract", () => {
+        expect(getToolBySlug("image-converter")).toMatchObject({
+            id: "image-converter", slug: "image-converter", name: "JPG / PNG / WebP Converter", category: "image",
+            description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+            seo: { title: "JPG / PNG / WebP Converter", description: "Convert JPEG, PNG, and WebP images locally in your browser.", canonicalPath: "/tool/image-converter" },
+            capability: ["client-only", "offline"], tag: ["image", "converter", "jpg", "png", "webp"],
+            statePolicy: { persist: "none", shareableQuery: false },
+        })
+        expect(getToolBySlug("image-converter")?.popularity).toBeUndefined()
     })
 
     it("returns undefined for an unknown slug", () => {

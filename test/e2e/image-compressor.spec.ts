@@ -41,10 +41,10 @@ test("Compressor route, image category and discovery use the existing registry",
     await expect(page.getByLabel("Choose image")).toBeVisible();
     await page.goto("/category/image");
     const links = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(links).toHaveCount(2);
-    await expect(links).toContainText(["Image Resizer", "Image Compressor"]);
+    await expect(links).toHaveCount(3);
+    await expect(links).toContainText(["Image Resizer", "Image Compressor", "JPG / PNG / WebP Converter"]);
     await page.goto("/discover");
-    await expect(page.getByRole("main").locator("ul button")).toHaveCount(8);
+    await expect(page.getByRole("main").locator("ul button")).toHaveCount(9);
     await page.getByRole("main").getByRole("button", { name: /Image Compressor/ }).click();
     await expect(page).toHaveURL(/\/tool\/image-compressor$/);
 });

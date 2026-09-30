@@ -276,7 +276,12 @@ The image family shares only source-file primitives through
 `src/module/tool/image/imageFile.ts` and `imageFile.client.ts`, specified in
 `doc/modules/ImageFile.md`: encoding metadata, signatures, source limits,
 byte/basename formatting, signature reading, decode and inspection. Operation
-encoders, React UI, state, object URLs, async generations and telemetry stay local.
+encoders, state, object URLs, async generations and telemetry stay local.
+Only identical source presentation is shared through the presentation-only
+`src/component/tool/image/ImageSourcePanel.tsx`, specified in
+`doc/modules/ImageSourcePanel.md`. It receives display-ready props, imports no
+module-domain behavior and owns no state, File APIs, validation, URLs, Reset,
+result or operation controls. All other React UI stays local.
 Do not expand these owners into a generic processor or shared React framework.
 
 - Architecture changes require updating doc/architecture.md first
