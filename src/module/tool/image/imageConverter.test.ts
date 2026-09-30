@@ -16,7 +16,7 @@ describe("Image Converter operation rules", () => {
     });
     for (const source of format) for (const target of format) {
         it(`${source} to ${target} pair validation`, () => {
-            expect(validateImageConverterPair(source, target)).toBe(source === target ? "Select another output format to convert this image." : null);
+            expect(validateImageConverterPair(source, target)).toBe(source === target ? "Choose a different output format. The source and output formats cannot be the same." : null);
         });
     }
     it.each([10, 15, 60, 90, 100])("accepts quality %s", quality => {

@@ -148,7 +148,7 @@ test("unsupported, empty and corrupt files fail recoverably", async ({ page }) =
     await page.goto("/tool/image-compressor");
     const input = page.getByLabel("Choose image"), alert = page.getByRole("main").getByRole("alert");
     await input.setInputFiles({ name: "wrong.jpg", mimeType: "image/jpeg", buffer: Buffer.from("not an image") });
-    await expect(alert).toContainText("file encoding is not supported");
+    await expect(alert).toContainText("not valid JPEG, PNG, or WebP image content");
     await input.setInputFiles({ name: "empty.jpg", mimeType: "image/jpeg", buffer: Buffer.alloc(0) });
     await expect(alert).toContainText("non-empty");
     await input.setInputFiles({ name: "corrupt.jpg", mimeType: "image/jpeg", buffer: Buffer.from([255, 216, 255, 0, 1]) });
@@ -160,7 +160,7 @@ test("unsupported, empty and corrupt files fail recoverably", async ({ page }) =
 test("oversized source is rejected before decode", async ({ page }) => {
     await page.goto("/tool/image-compressor");
     await page.getByLabel("Choose image").setInputFiles({ name: "large.jpg", mimeType: "image/jpeg", buffer: Buffer.alloc(26_214_401) });
-    await expect(page.getByRole("main").getByRole("alert")).toContainText("25 MiB or smaller");
+    await expect(page.getByRole("main").getByRole("alert")).toContainText("maximum file size is 25 MiB");
     await expect(page.getByRole("img")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Compress image", exact: true })).toBeDisabled();
 });
@@ -181,7 +181,7 @@ for (const failure of ["context", "encoding", "mime"] as const) {
             else HTMLCanvasElement.prototype.toBlob = callback => callback(kind === "mime" ? new Blob(["wrong"], { type: "image/png" }) : null);
         }, failure);
         await page.getByRole("button", { name: "Compress image", exact: true }).click();
-        await expect(page.getByRole("main").getByRole("alert")).toContainText(failure === "context" ? "could not create a canvas" : "could not encode");
+        await expect(page.getByRole("main").getByRole("alert")).toContainText(failure === "context" ? "could not create the canvas" : "could not encode");
         await expect(page.getByRole("link", { name: "Download compressed image" })).toHaveCount(0);
         await expect(page.getByRole("button", { name: "Reset", exact: true })).toBeVisible();
     });

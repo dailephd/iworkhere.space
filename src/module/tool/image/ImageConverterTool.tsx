@@ -83,7 +83,7 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
             setState("selected");
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof ImageFileError ? failure.message : "This image could not be read. Select another image and try again.");
+            setError(failure instanceof ImageFileError ? failure.message : "An unexpected browser error occurred while reading this image. Reset the tool and try again.");
             setState("validation failure");
         } finally { if (token === generation.current) setSelecting(false); }
     }
@@ -127,7 +127,7 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
             trackEvent("tool_executed", { toolId, slug: "image-converter" });
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof ImageFileError ? failure.message : "The image could not be converted. Try again or select another image.");
+            setError(failure instanceof ImageFileError ? failure.message : "An unexpected browser error occurred while converting this image. Reset the tool and try again.");
             setState("processing failure");
         } finally { if (token === generation.current) converting.current = false; }
     }

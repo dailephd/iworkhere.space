@@ -82,7 +82,7 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
             setState("selected");
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof ImageCompressorError ? failure.message : "This image could not be read. Select another image and try again.");
+            setError(failure instanceof ImageCompressorError ? failure.message : "An unexpected browser error occurred while reading this image. Reset the tool and try again.");
             setState("validation failure");
         } finally { if (token === generation.current) setSelecting(false); }
     }
@@ -115,7 +115,7 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
             trackEvent("tool_executed", { toolId, slug: "image-compressor" });
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof ImageCompressorError ? failure.message : "The image could not be compressed. Try again or select another image.");
+            setError(failure instanceof ImageCompressorError ? failure.message : "An unexpected browser error occurred while compressing this image. Reset the tool and try again.");
             setState("processing failure");
         } finally { if (token === generation.current) compressing.current = false; }
     }

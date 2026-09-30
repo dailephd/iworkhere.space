@@ -12,7 +12,7 @@ export function imageConverterDefaultOutput(source: ImageFileFormat): ImageFileF
 }
 
 export function validateImageConverterPair(source: ImageFileFormat, target: ImageFileFormat): string | null {
-    return imageConverterOutputOptions(source).includes(target) ? null : "Select another output format to convert this image.";
+    return imageConverterOutputOptions(source).includes(target) ? null : "Choose a different output format. The source and output formats cannot be the same.";
 }
 
 export function imageConverterSupportsQuality(target: ImageFileFormat): boolean { return target !== "png"; }

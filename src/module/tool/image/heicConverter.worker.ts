@@ -17,7 +17,7 @@ async function processRequest(request: HeicWorkerRequest): Promise<HeicWorkerRes
         try { bitmap = await heicTo({ blob: request.file, type: "bitmap" }); }
         catch { throw new HeicProcessingError("decode-failed"); }
         const sourceWidth = bitmap.width, sourceHeight = bitmap.height;
-        if (validateImageFileDimension({ width: sourceWidth, height: sourceHeight })) throw new HeicProcessingError("source-dimension-limit");
+        if (validateImageFileDimension({ width: sourceWidth, height: sourceHeight })) throw new HeicProcessingError("source-dimension-limit", { width: sourceWidth, height: sourceHeight });
         if (request.operation === "inspect") {
             const preview = heicPreviewDimension(sourceWidth, sourceHeight);
             const previewBlob = await encodeHeicBitmap(bitmap, preview.width, preview.height, "png");
@@ -27,7 +27,8 @@ async function processRequest(request: HeicWorkerRequest): Promise<HeicWorkerRes
         const blob = await encodeHeicBitmap(bitmap, sourceWidth, sourceHeight, request.target, request.quality);
         return { id: request.id, status: "converted", sourceWidth, sourceHeight, blob };
     } catch (failure) {
-        return heicErrorResponse(request.id, failure instanceof HeicProcessingError ? failure.category : "unexpected-worker-failure");
+        return heicErrorResponse(request.id, failure instanceof HeicProcessingError ? failure.category : "worker-runtime-failed",
+            failure instanceof HeicProcessingError ? failure.dimension : undefined);
     } finally { bitmap?.close(); }
 }
 

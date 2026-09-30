@@ -1,8 +1,8 @@
 # Image file processing contracts
 
 This planner-directed specification freezes the v0.2 image-family boundaries.
-Batch 1 implements no image utility, shared presentation component or processing
-runtime. The first production file workflow is Batch 2 — Image Resizer.
+The four implemented tools are Resizer, Compressor, JPG/PNG/WebP Converter and
+HEIC/HEIF to JPEG/PNG Converter. This document is the current family authority.
 
 ## Processing and formats
 
@@ -14,12 +14,10 @@ termination per operation. Its synthetic 480 x 320 positive fixture stays within
 the frozen 30 MP limit. No server image
 endpoint, external processing API or cloud upload is authorized.
 
-Initial resource-safety targets are a **25 MiB source file ceiling** (26,214,400
-bytes) and a **30 megapixel decoded area ceiling** (30,000,000 pixels). These are
-implementation starting limits; later tool batches must validate them with real
-decoder behavior, including dimensions before allocating avoidable large output.
+Frozen resource-safety limits are a **25 MiB source file ceiling** (26,214,400
+bytes) and a **30 megapixel decoded area ceiling** (30,000,000 pixels). Validate actual decoder dimensions before allocating avoidable large output.
 
-Future tools explicitly validate accepted MIME/format, file size, decodability,
+Tools validate actual encoded content, file size, decodability,
 and decoded dimensions/area where applicable. A file extension alone does not
 establish a valid encoding. Unsupported, corrupt, empty and oversized inputs must
 produce explicit validation or processing feedback inside the tool.
@@ -47,7 +45,7 @@ completed download resources and component-unmount resources. Repeated processin
 and downloads must not accumulate live URLs. Do not revoke a URL before its
 preview consumer or download has had a chance to use it.
 
-Later tools must test URL ownership on replacement, reset, failure, unmount and
+Tests protect URL ownership on replacement, reset, failure, unmount and
 repeated downloads. Object URLs remain local and must never enter shared state,
 logs, telemetry or external requests. Releasing a URL does not authorize retaining
 unneeded File/Blob references afterward.
@@ -59,24 +57,35 @@ message and a recoverable next action. Unexpected React failures may reach
 `ToolErrorBoundary`. Expected corrupt-file/unsupported-format/resource-limit
 failures must not be converted into unexpected boundary exceptions.
 
+Batch 6 feedback identifies the failed stage, includes known local size,
+dimensions/pixel area or requested output format, and gives a realistic recovery
+action. Do not invent corruption or expose raw exceptions, stacks, internal
+codes or Blob URLs. Decode uncertainty is explicit. Empty/oversized sources,
+unsupported content and invalid/oversized decoded dimensions share ImageFile
+feedback; canvas/encoding and unknown operation failures remain operation-local.
+Cancellation and stale work produce no alert. Local details never enter logging,
+analytics, URL state, persistence or network requests. Recoverable errors use
+role="alert"; reading/processing announcements remain statuses.
+
 ## Shared code and measurement
 
-No shared image-family components are authorized yet. Repeated implementation
-evidence is required before introducing shared presentation. Do not implement a
+Only identical source presentation is shared through the presentation-only
+[ImageSourcePanel](ImageSourcePanel.md). It owns no validation, state, URL or encoding. Do not implement a
 universal engine, generic processor, plugin architecture or processing runtime.
 
 Batch 3's independently passing Resizer/Compressor comparison authorizes only
 common source-file primitives, specified in [ImageFile](ImageFile.md). Operation
-encoding, React UI/state, object URLs and generation tokens remain local.
+encoding, tool state, results, object URLs and generation tokens remain local.
 
 Fixture provenance follows [the fixture convention](../../test/fixtures/images/README.md).
 Heavy decoder work must measure production build chunks and fresh-context browser
 JavaScript resources on unrelated routes and before/after explicit decoder loading.
-The ignored Batch 1 HEIC harness proves decoder-level feasibility only. Because
-the current registry statically imports components, final application isolation
-must be measured again in Batch 5 after wiring the actual tool.
+Real HEIC conversion and application-level decoder isolation pass against the
+registered production tool. The sole decoder import is `heic-to/next` inside the
+dedicated worker. Workers are lazy after the source-size check, short-lived per
+inspection/conversion, and terminated on stale work, replacement, Reset and
+unmount. The main app receives bounded messages and browser-compatible Blobs.
 
-`heic-to@1.5.2` is technical-proof-only in Batch 1. Its LGPL-3.0 license requires
-separate production license approval. Module loading does not prove functional
-HEIC conversion; a provenance-known real HEIC conversion fixture is required in
-Batch 5 before accepting production functionality.
+`heic-to@1.5.2` and bundled libheif 1.22.2 have preserved third-party license
+artifacts. HEIC_RELEASE_LICENSE_APPROVAL=REQUIRED and HEIC_RELEASE_READY=NO;
+technical evidence does not supply legal approval.

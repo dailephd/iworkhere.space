@@ -20,18 +20,19 @@ export async function convertImage(file: File, target: ImageFileFormat, quality:
         canvas.width = bitmap.width;
         canvas.height = bitmap.height;
         const context = canvas.getContext("2d");
-        if (!context) throw new ImageFileError("Your browser could not create a canvas for conversion. Try again.");
+        if (!context) throw new ImageFileError("The browser could not create the canvas needed to convert this image. Reset the tool and try again. If the problem repeats, try another current browser.");
         if (imageConverterRequiresWhite(target)) {
             context.fillStyle = "#ffffff";
             context.fillRect(0, 0, canvas.width, canvas.height);
         }
         context.drawImage(bitmap, 0, 0);
+        const encodingError = `The browser could not produce a valid ${IMAGE_FILE_ENCODING[target].label} result. Reset the tool and try again, choose another output format, or try another current browser.`;
         const blob = await new Promise<Blob | null>(resolve => {
             if (imageConverterSupportsQuality(target)) canvas!.toBlob(resolve, IMAGE_FILE_ENCODING[target].mime, imageConverterQuality(quality));
             else canvas!.toBlob(resolve, IMAGE_FILE_ENCODING[target].mime);
-        });
+        }).catch(() => { throw new ImageFileError(encodingError); });
         if (!blob || blob.size === 0 || blob.type !== IMAGE_FILE_ENCODING[target].mime) {
-            throw new ImageFileError("Your browser could not encode the selected output format. Try again or select another format.");
+            throw new ImageFileError(encodingError);
         }
         return blob;
     } finally {

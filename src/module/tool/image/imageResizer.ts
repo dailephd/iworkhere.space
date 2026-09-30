@@ -10,7 +10,7 @@ export function validateImageResizerDimension(dimension: ImageResizerDimension, 
         return "Height must be a positive whole number.";
     }
     if (dimension.width * dimension.height > MAX_PIXEL_AREA) {
-        return "The resized image must contain 30 megapixels or fewer.";
+        return `The requested output is ${dimension.width} \u00d7 ${dimension.height} px (${(dimension.width * dimension.height).toLocaleString("en-US")} pixels). The maximum is 30,000,000 pixels (30 MP). Choose smaller dimensions.`;
     }
     return null;
 }

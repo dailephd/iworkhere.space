@@ -35,28 +35,28 @@ describe("Converter native encoding and cleanup", () => {
         expect(toBlob.mock.calls[0]).toHaveLength(2); expect(fillRect).not.toHaveBeenCalled();
     });
     it("rejects same-format and invalid quality before decode", async () => {
-        await expect(convertImage(file(), "png", 90)).rejects.toThrow("another output format");
+        await expect(convertImage(file(), "png", 90)).rejects.toThrow("different output format");
         await expect(convertImage(file(), "jpeg", 11)).rejects.toThrow("steps of 5");
         expect(createImageBitmap).not.toHaveBeenCalled();
     });
     it("rejects empty and unsupported input before decode", async () => {
         await expect(convertImage(new File([], "empty"), "jpeg", 90)).rejects.toThrow("non-empty");
-        await expect(convertImage(new File(["unsupported"], "wrong"), "jpeg", 90)).rejects.toThrow("not supported");
+        await expect(convertImage(new File(["unsupported"], "wrong"), "jpeg", 90)).rejects.toThrow("not valid JPEG, PNG, or WebP");
         expect(createImageBitmap).not.toHaveBeenCalled();
     });
     it("closes oversized decoded sources without creating an output", async () => {
         vi.mocked(createImageBitmap).mockResolvedValueOnce({ width: 6000, height: 6000, close } as unknown as ImageBitmap);
-        await expect(convertImage(file(), "jpeg", 90)).rejects.toThrow("30 megapixels");
+        await expect(convertImage(file(), "jpeg", 90)).rejects.toThrow("30,000,000 pixels (30 MP)");
         expect(close).toHaveBeenCalledOnce(); expect(toBlob).not.toHaveBeenCalled();
     });
     it("closes and releases canvas on context failure", async () => {
         canvas.getContext.mockReturnValueOnce(null);
-        await expect(convertImage(file(), "jpeg", 90)).rejects.toThrow("could not create a canvas");
+        await expect(convertImage(file(), "jpeg", 90)).rejects.toThrow("could not create the canvas");
         expect(close).toHaveBeenCalledOnce(); expect(canvas.width).toBe(0);
     });
     it.each([null, new Blob([], { type: "image/jpeg" }), new Blob(["fallback"], { type: "image/png" })])("rejects failed/empty/fallback serialization", async blob => {
         toBlob.mockImplementationOnce((callback: (blob: Blob | null) => void) => callback(blob));
-        await expect(convertImage(file(), "jpeg", 90)).rejects.toThrow("could not encode");
+        await expect(convertImage(file(), "jpeg", 90)).rejects.toThrow("could not produce a valid JPEG result");
         expect(close).toHaveBeenCalledOnce(); expect(canvas.height).toBe(0);
     });
     it("closes and releases canvas if drawing throws", async () => {

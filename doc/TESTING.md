@@ -206,13 +206,27 @@ Specs in `test/e2e/` use a shared fixture that attaches listeners before navigat
 Every applicable route fails on `pageerror`, console errors and React hydration
 warnings/errors, without suppression or arbitrary allowlists. Expected 404 status
 is tested through a request to avoid treating an intentional failed resource as an
-unapproved browser diagnostic. Health response, all eight catalog button flows, calculator
+unapproved browser diagnostic. Health response, all ten registered tool routes and catalog flows, calculator
 and time arithmetic interactions, responsive shell/skip/navigation/footer,
 document scrolling, theme reload persistence and production SW are covered.
 
 Image fixtures follow [the provenance convention](../test/fixtures/images/README.md).
 No internet image downloads occur during tests. File lifecycle requirements are
 specified in [ImageFileProcessing](modules/ImageFileProcessing.md).
+
+Current final validation: 31 discovered Vitest files / 423 tests and 170 E2E
+cases (85 desktop / 85 mobile), retaining all inherited 396 unit and 146 browser
+tests. Exact RUN_ID evidence is in the Batch 6 final report.
+
+Image-family specs own real outputs, MIME/dimensions, downloads, alpha/background
+semantics, lifecycle, privacy and responsive containment. heic-converter.spec.ts
+owns real codec/worker lifecycle and lazy decoder activation. Fresh-context
+resource evidence rechecks all unrelated routes and initial HEIC rendering.
+imageFeedback.test.ts and image-feedback.spec.ts protect safe stage/context/action
+feedback, local actual size/pixel limits, decode uncertainty, bounded worker
+responses and cancellation without alerts. Deterministic dimension injection is
+not presented as real large-file decoding; prior actual 45 MP HEIC rejection is
+preserved separately. No large error fixture is committed.
 
 Playwright is a first-class discipline in this project, not optional decoration.
 

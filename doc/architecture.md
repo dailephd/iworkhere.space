@@ -438,12 +438,16 @@ Dynamic metadata generation from tool definitions.
 - Desktop and mobile Chromium contexts protect existing routes, shell,
   document scrolling, theme persistence, diagnostics and service worker.
 - Unique browser evidence belongs in `test-report/e2e/<RUN_ID>/`.
-- Future image lifecycle contracts are specified in
-  [ImageFileProcessing](modules/ImageFileProcessing.md). No shared production
-  file-processing runtime or component is introduced by this foundation.
-- Heavy decoder feasibility is measured in an ignored isolated harness. The
-  static tool registry is preserved; final application isolation must be
-  measured again when the future HEIC tool is registered.
+- Current image-family contracts are specified in
+  [ImageFileProcessing](modules/ImageFileProcessing.md). ImageFile shares only
+  source primitives; ImageSourcePanel shares presentation. Encoding, state,
+  generation tokens, results and URL lifecycles remain operation-local.
+- Real HEIC JPEG/PNG conversion and fresh-context application isolation are
+  validated against the registered production tool. Only the dedicated worker
+  imports `heic-to/next`; no decoder loads before size-checked file interaction
+  or on unrelated routes. Workers terminate per operation and on invalidation.
+- Expected image errors stay local and actionable; unexpected React rendering
+  errors remain ToolErrorBoundary-owned. License approval remains a release gate.
 
 ### CI pipeline
 Five separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,

@@ -34,7 +34,11 @@ ToolClientFrame owns opening telemetry. Each current valid completed encoding, i
 
 ## Errors and accessibility
 
-Recoverable UI feedback covers empty/oversized/unsupported/corrupt sources, invalid dimensions or pixel area, invalid quality, missing canvas context, failed encoding and wrong output MIME. Never expose raw exceptions or send file metadata to logs. Expected failures stay in the tool; unexpected React failures remain owned by ToolErrorBoundary.
+Recoverable UI feedback covers empty/oversized/unsupported/corrupt sources, invalid dimensions or pixel area, invalid quality, missing canvas context, failed encoding and wrong output MIME. Canvas failures identify compression; encoding failures name the detected
+format. Quality feedback states 10–100 in steps of 5. Unknown failures identify
+reading/compressing and suggest Reset. No reduction remains a successful outcome,
+not an error. See ImageFileProcessing for shared source feedback. Never expose
+raw exceptions or send file metadata to logs. Expected failures stay in the tool; unexpected React failures remain owned by ToolErrorBoundary.
 
 Label file and Quality inputs, Compress image and Reset buttons, previews and download. Blocking feedback uses role=alert. Use existing semantic surfaces/tokens and natural document scrolling, with contained previews and reachable actions/footer at desktop and mobile sizes.
 
@@ -47,5 +51,6 @@ Implement the Compressor independently before comparing it with Resizer. Only pr
 The passing independent implementations confirmed all ten authorized source
 concerns equivalent. They now use [ImageFile](ImageFile.md); imageCompressor.ts
 retains quality, savings and filename rules, and imageCompressor.client.ts
-retains the operation-specific same-size encoder. Presentation and lifecycle
-remain in ImageCompressorTool.tsx.
+retains the operation-specific same-size encoder. Lifecycle, operation controls
+and result UI remain in ImageCompressorTool.tsx. Only identical source
+presentation delegates to the presentation-only ImageSourcePanel.

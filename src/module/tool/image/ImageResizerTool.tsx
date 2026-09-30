@@ -99,7 +99,7 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
             setState("selected");
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof ImageResizerError ? failure.message : "This image could not be read. Select another image and try again.");
+            setError(failure instanceof ImageResizerError ? failure.message : "An unexpected browser error occurred while reading this image. Reset the tool and try again.");
             setState("validation failure");
         } finally {
             if (token === generation.current) setSelecting(false);
@@ -139,7 +139,7 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
             trackEvent("tool_executed", { toolId, slug: "image-resizer" });
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof ImageResizerError ? failure.message : "The image could not be resized. Try again or select another image.");
+            setError(failure instanceof ImageResizerError ? failure.message : "An unexpected browser error occurred while resizing this image. Reset the tool and try again.");
             setState("processing failure");
         } finally {
             if (token === generation.current) resizing.current = false;

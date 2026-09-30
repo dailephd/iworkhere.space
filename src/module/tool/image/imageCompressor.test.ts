@@ -21,7 +21,7 @@ describe("Compressor common source rules after proven extraction", () => {
     it.each([{ width: 0, height: 1 }, { width: -1, height: 1 }, { width: 1.5, height: 2 }, { width: 1, height: 0 }, { width: 1, height: Infinity }])("rejects invalid source dimensions %j", dimension => expect(validateImageCompressorDimension(dimension)).toContain("invalid dimensions"));
     it("accepts positive dimensions", () => expect(validateImageCompressorDimension({ width: 240, height: 180 })).toBeNull());
     it("accepts exactly 30 MP", () => expect(validateImageCompressorDimension({ width: 6000, height: 5000 })).toBeNull());
-    it("rejects more than 30 MP", () => expect(validateImageCompressorDimension({ width: 6000, height: 5001 })).toContain("30 megapixels"));
+    it("rejects more than 30 MP", () => expect(validateImageCompressorDimension({ width: 6000, height: 5001 })).toContain("30,000,000 pixels (30 MP)"));
 });
 
 describe("Compressor quality and measured outcomes", () => {

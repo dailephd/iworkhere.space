@@ -70,7 +70,7 @@ describe("Image Resizer local lifecycle and telemetry", () => {
 
     it("keeps unexpected browser operation failures recoverable without telemetry or query writes", async () => {
         await select(); operation.resize.mockRejectedValueOnce(new Error("private browser details")); await submit();
-        expect(host.querySelector('[role="alert"]')?.textContent).toContain("could not be resized");
+        expect(host.querySelector('[role="alert"]')?.textContent).toContain("unexpected browser error occurred while resizing");
         expect(host.textContent).not.toContain("private browser details");
         expect(operation.track).not.toHaveBeenCalled(); expect(setQuery).not.toHaveBeenCalled();
         expect(createUrl).toHaveBeenCalledTimes(1);

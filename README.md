@@ -29,14 +29,18 @@ directory.
 
 ## CI
 
-GitHub Actions keeps the four validation jobs independent:
+GitHub Actions keeps the five validation jobs independent:
 
 - `typecheck.yaml` — `npm run typecheck`
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
+- `e2e.yaml` — `npm run test:e2e` (production browser gate)
 
-All four jobs must pass. The local aggregate command does not replace them.
+`npm run verify` runs typecheck, lint, test and build; E2E remains separate.
+Hosted E2E on the final version PR is pending because no release PR exists.
+
+All five jobs must pass. The local aggregate command does not replace them.
 
 ## Architecture
 

@@ -5,7 +5,7 @@ export class ImageFileError extends Error {}
 export async function readImageFileFormat(file: File): Promise<ImageFileFormat> {
     const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
     const format = detectImageFileFormat(bytes);
-    if (!format) throw new ImageFileError("Select a JPEG, PNG or WebP image. The file encoding is not supported.");
+    if (!format) throw new ImageFileError("This file is not valid JPEG, PNG, or WebP image content. Choose a supported image.");
     return format;
 }
 
@@ -13,7 +13,7 @@ export async function decodeImageFile(file: File): Promise<ImageBitmap> {
     try {
         return await createImageBitmap(file);
     } catch {
-        throw new ImageFileError("This image could not be decoded. It may be corrupt or unsupported by your browser.");
+        throw new ImageFileError("The file format is supported, but the image data could not be decoded. The file may be damaged or use an image variant this browser does not support. Choose another image.");
     }
 }
 

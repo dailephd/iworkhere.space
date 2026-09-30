@@ -12,12 +12,12 @@ describe("common image source browser boundaries", () => {
         expect(slice).toHaveBeenCalledWith(0, 12);
     });
     it("normalizes unsupported signature feedback", async () => {
-        await expect(readImageFileFormat({ slice: () => ({ arrayBuffer: async () => new Uint8Array([0]).buffer }) } as unknown as File)).rejects.toThrow("file encoding is not supported");
+        await expect(readImageFileFormat({ slice: () => ({ arrayBuffer: async () => new Uint8Array([0]).buffer }) } as unknown as File)).rejects.toThrow("not valid JPEG, PNG, or WebP image content");
     });
     it("normalizes decode exceptions without exposing source details", async () => {
         vi.stubGlobal("createImageBitmap", vi.fn().mockRejectedValue(new Error("private browser detail")));
         await expect(decodeImageFile(file)).rejects.toThrow(ImageFileError);
-        await expect(decodeImageFile(file)).rejects.toThrow("This image could not be decoded.");
+        await expect(decodeImageFile(file)).rejects.toThrow("image data could not be decoded.");
     });
     it("returns dimensions and closes an inspected bitmap", async () => {
         const close = vi.fn(); vi.stubGlobal("createImageBitmap", vi.fn().mockResolvedValue({ width: 240, height: 180, close }));

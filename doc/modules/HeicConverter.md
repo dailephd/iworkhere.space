@@ -22,9 +22,18 @@ Metadata preservation is not guaranteed, including EXIF, GPS, camera information
 
 ## Ownership, failure and privacy
 
-Each worker terminates on its first terminal response or browser error, and immediately on cancellation, source replacement, Reset or unmount. Cancellation settles its pending promise; generation checks prevent late responses adopting state or emitting telemetry. The tool states are idle, selected, processing, success, validation failure and processing failure. Safe error categories describe unsupported content, decode failure, source dimension limits, missing canvas, encode failure or unexpected worker failure; no raw Error, stack or metadata is posted.
+Batch 6 distinguishes worker creation/start failure, runtime failure and invalid
+response. Error responses remain bounded: only the source-dimension-limit
+category may additionally carry positive integer sourceWidth/sourceHeight for
+an actual area over 30 MP. Invalid dimensions use the bounded category without
+dimension fields. The client validates this exact category-specific shape and
+uses its own request target for encoding feedback; no arbitrary diagnostics are
+transferred. Alerts describe detection/decode/canvas/encoding stages and useful
+recovery. Cancelled or stale operations never show an alert.
 
-Source-preview URLs are revoked on replacement, Reset and unmount. Results are revoked on output/Quality changes, conversion replacement, source replacement, Reset and unmount. Downloads reuse the owned result URL. Existing shared image-file primitives and ImageSourcePanel remain unchanged; the materially different HEIC source UI is local.
+Each worker terminates on its first terminal response or browser error, and immediately on cancellation, source replacement, Reset or unmount. Cancellation settles its pending promise; generation checks prevent late responses adopting state or emitting telemetry. The tool states are idle, selected, processing, success, validation failure and processing failure. Safe error categories describe unsupported content, decode failure, source dimension limits, missing canvas, encode failure, worker-start failure, worker-runtime failure or invalid response; no raw Error, stack or metadata is posted.
+
+Source-preview URLs are revoked on replacement, Reset and unmount. Results are revoked on output/Quality changes, conversion replacement, source replacement, Reset and unmount. Downloads reuse the owned result URL. Shared image-file primitives remain narrow and ImageSourcePanel is unchanged; the materially different HEIC source UI is local.
 
 Only current successful conversion emits one `tool_executed` event with `{ toolId, slug: "heic-converter" }`. Inspection emits none; ToolClientFrame owns tool_opened. Files, filenames, dimensions, MIME, Blobs and image contents never enter URL, storage, logging, application APIs or analytics metadata. Worker transfer is local. Decoder assets are served from the application origin without CDN or external processing requests.
 

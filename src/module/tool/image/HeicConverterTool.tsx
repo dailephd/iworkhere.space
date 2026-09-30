@@ -81,14 +81,14 @@ export function HeicConverterTool({ toolId }: ToolComponentProp) {
             active.current = operation;
             const response = await operation.promise;
             if (token !== generation.current) return;
-            if (response.status !== "inspected") throw new HeicProcessingError("unexpected-worker-failure");
+            if (response.status !== "inspected") throw new HeicProcessingError("worker-response-invalid");
             const url = URL.createObjectURL(response.previewBlob);
             sourceUrl.current = url;
             setSource({ file, width: response.sourceWidth, height: response.sourceHeight, url });
             setState("selected");
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof HeicProcessingError ? failure.message : "This HEIC image could not be read. Try again or select another image.");
+            setError(failure instanceof HeicProcessingError ? failure.message : "An unexpected browser error occurred while reading this HEIC image. Reset the tool and try again.");
             setState("validation failure");
         } finally {
             if (token === generation.current) { active.current = null; setReading(false); }
@@ -116,7 +116,7 @@ export function HeicConverterTool({ toolId }: ToolComponentProp) {
             const response = await operation.promise;
             if (token !== generation.current) return;
             if (response.status !== "converted" || response.sourceWidth !== source.width || response.sourceHeight !== source.height) {
-                throw new HeicProcessingError("encode-failed");
+                throw new HeicProcessingError("worker-response-invalid");
             }
             const url = URL.createObjectURL(response.blob);
             resultUrl.current = url;
@@ -125,7 +125,7 @@ export function HeicConverterTool({ toolId }: ToolComponentProp) {
             trackEvent("tool_executed", { toolId, slug: "heic-converter" });
         } catch (failure) {
             if (token !== generation.current) return;
-            setError(failure instanceof HeicProcessingError ? failure.message : "The image could not be converted. Try again or select another image.");
+            setError(failure instanceof HeicProcessingError ? failure.message : "An unexpected browser error occurred while converting this HEIC image. Reset the tool and try again.");
             setState("processing failure");
         } finally { if (token === generation.current) active.current = null; }
     }

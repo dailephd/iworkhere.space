@@ -125,7 +125,8 @@ preview/download ownership, privacy and validation evidence.
 ### modules/ImageFileProcessing.md
 **Summary:** Frozen browser image-file validation, privacy, state, resource-limit,
 Blob/download and object-URL lifecycle contracts. No shared production engine is
-authorized. Includes HEIC proof and production-license boundaries.
+authorized. Includes production HEIC worker isolation, local actionable errors and separate
+production-license release boundaries.
 **When to read:** Before implementing or testing any v0.2 image tool.
 **Relations:** Uses TESTING.md and the deterministic image-fixture convention;
 preserves registry, storage and observability contracts in architecture.md.
@@ -300,6 +301,19 @@ or to see the classifier's raw file-role output.
 hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
 
 ---
+
+### THIRD_PARTY_NOTICES.md and license copies
+
+**Authority:** Factual third-party dependency notices, not legal release approval.
+Production license copies are under public/licenses; the synthetic MIT fixture
+license and provenance are under test/fixtures/images.
+
+### Historical reports and inventories
+
+EXISTING_PROJECT_INVENTORY_REPORT.md and ignored batch/validation reports are
+historical snapshots. Their old counts do not override project-status.md,
+TESTING.md, current module contracts or final Batch 6 evidence. The absent v0.2
+version plan remains historical process debt; no retrospective plan was authored.
 
 ## 11. Gaps & Observations
 

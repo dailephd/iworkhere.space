@@ -115,7 +115,7 @@ test("unlocked dimensions change the aspect ratio and fit the responsive workspa
 test("unsupported and empty files produce recoverable validation feedback", async ({ page }) => {
     await page.goto("/tool/image-resizer");
     await page.getByLabel("Choose image").setInputFiles({ name: "wrong.jpg", mimeType: "image/jpeg", buffer: Buffer.from("not an image") });
-    await expect(page.getByRole("main").getByRole("alert")).toContainText("file encoding is not supported");
+    await expect(page.getByRole("main").getByRole("alert")).toContainText("not valid JPEG, PNG, or WebP image content");
     await page.getByLabel("Choose image").setInputFiles({ name: "empty.png", mimeType: "image/png", buffer: Buffer.alloc(0) });
     await expect(page.getByRole("main").getByRole("alert")).toContainText("non-empty");
     await expect(page.getByRole("img")).toHaveCount(0);
@@ -147,7 +147,7 @@ test("target resource limit and invalid dimensions block processing", async ({ p
     await page.getByLabel("Width", { exact: true }).fill("6000");
     await page.getByLabel("Height", { exact: true }).fill("5001");
     await page.getByRole("button", { name: "Resize image", exact: true }).click();
-    await expect(page.getByRole("main").getByRole("alert")).toContainText("30 megapixels");
+    await expect(page.getByRole("main").getByRole("alert")).toContainText("30,000,000 pixels (30 MP)");
     await page.getByLabel("Width", { exact: true }).fill("0");
     await page.getByRole("button", { name: "Resize image", exact: true }).click();
     await expect(page.getByRole("main").getByRole("alert")).toContainText("Width must be a positive whole number");
@@ -242,7 +242,7 @@ for (const failure of ["context", "encoding"] as const) {
             else HTMLCanvasElement.prototype.toBlob = callback => callback(null);
         }, failure);
         await page.getByRole("button", { name: "Resize image", exact: true }).click();
-        await expect(page.getByRole("main").getByRole("alert")).toContainText(failure === "context" ? "could not create a canvas" : "could not encode");
+        await expect(page.getByRole("main").getByRole("alert")).toContainText(failure === "context" ? "could not create the canvas" : "could not encode");
         await expect(page.getByRole("button", { name: "Reset", exact: true })).toBeVisible();
         await expect(page.getByRole("img", { name: "Resized image preview" })).toHaveCount(0);
     });

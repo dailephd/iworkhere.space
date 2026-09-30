@@ -52,6 +52,14 @@ them on replacement, Reset and unmount and revoking results on settings changes.
 Each current successful conversion emits exactly one tool_executed event with
 only toolId and slug image-converter. Opening telemetry remains in ToolClientFrame.
 
+## Operation feedback
+
+Same-format conversion asks for a different output format. Canvas failure
+identifies conversion. Null, empty or MIME-mismatched output is rejected with
+the requested target format and Reset/other-format/current-browser actions.
+Unknown errors identify reading/converting. Shared source feedback follows
+ImageFileProcessing; cancellation and stale work show no alert.
+
 ## Validation and acceptance
 
 Pure tests cover options, defaults, all six pairs, same-format rejection,

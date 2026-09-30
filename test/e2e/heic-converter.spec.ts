@@ -73,6 +73,7 @@ async function select(page: Page, name?: string) {
     await expect.poll(async () => (await snapshot(page)).workers.length).toBe(count + 1);
     await expect.poll(async () => (await snapshot(page)).workers.at(-1)?.terminated).toBe(true);
     await expect(page.getByAltText("Selected HEIC source preview")).toBeVisible();
+    await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0);
     await expect(page.getByRole("region", { name: "Source HEIC image" })).toContainText("480 × 320");
 }
 async function decoded(page: Page, alt: string) {
@@ -154,7 +155,7 @@ test.describe("HEIC converter", () => {
         await instrument(page);
         await page.goto("/tool/heic-converter");
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: "fake.heic", mimeType: "image/heic", buffer: readFileSync("test/fixtures/images/compressor-source.jpg") });
-        await expect(page.getByRole("main").getByRole("alert")).toBeVisible();
+        await expect(page.getByRole("main").getByRole("alert")).toHaveText("This file is not valid HEIC or HEIF content. Choose a HEIC or HEIF image.");
         await expect(page.getByAltText("Selected HEIC source preview")).toHaveCount(0);
         expect((await snapshot(page)).workers[0].terminated).toBe(true);
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: "misleading.jpg", mimeType: "image/jpeg", buffer: readFileSync(fixture) });
@@ -176,6 +177,7 @@ test.describe("HEIC converter", () => {
             expect((await snapshot(page)).workers[0].terminated).toBe(true);
             await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.release(); });
             await expect(page.getByAltText("Selected HEIC source preview")).toHaveCount(0);
+            if (action !== "replace") await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0);
             await expect(page.getByRole("heading", { name: "Converted image ready" })).toHaveCount(0);
         });
     }
@@ -224,13 +226,32 @@ test.describe("HEIC converter", () => {
         await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.hold = true; });
         await page.getByRole("button", { name: "Convert image", exact: true }).click();
         await expect.poll(async () => (await snapshot(page)).held).toBe(1);
-        await expect(page.getByRole("button", { name: "Converting…", exact: true })).toBeVisible();
+        await expect(page.getByRole("button", { name: "Converting\u2026", exact: true })).toBeVisible();
         await page.getByRole("button", { name: "Reset", exact: true }).click();
         expect((await snapshot(page)).workers.every(worker => worker.terminated)).toBe(true);
         await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.release(); });
         await expect(page.getByAltText("Converted image preview")).toHaveCount(0);
         await expect(page.getByAltText("Selected HEIC source preview")).toHaveCount(0);
         expect(await page.evaluate(() => JSON.parse(localStorage.getItem("analytic_event_count") ?? "{}").tool_executed ?? 0)).toBe(count);
+        await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0);
+    });
+
+    test("settings are guarded during conversion and invalidate results without alerts", async ({ page }) => {
+        await instrument(page);
+        await page.goto("/tool/heic-converter");
+        await select(page);
+        await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.hold = true; });
+        await page.getByRole("button", { name: "Convert image", exact: true }).click();
+        await expect.poll(async () => (await snapshot(page)).held).toBe(1);
+        await expect(page.getByLabel("Quality", { exact: true })).toBeDisabled();
+        await expect(page.getByLabel("Output format", { exact: true })).toBeDisabled();
+        await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.release(); });
+        await expect(page.getByAltText("Converted image preview")).toBeVisible();
+        const resultUrl = await page.getByAltText("Converted image preview").getAttribute("src");
+        await page.getByLabel("Quality", { exact: true }).fill("60");
+        await expect(page.getByAltText("Converted image preview")).toHaveCount(0);
+        expect((await snapshot(page)).revoked).toContain(resultUrl);
+        await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0);
     });
 
     test("processing stays local and private filename never enters requests", async ({ page }) => {

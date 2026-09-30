@@ -51,22 +51,40 @@ it("bounded worker error terminates and rejects without diagnostic leakage", asy
 });
 it("conversion MIME mismatch is a recoverable encode failure", async () => {
     const operation = startHeicOperation({ id: 1, operation: "convert", file, target: "jpeg", quality: 60 });
-    const failure = expect(operation.promise).rejects.toMatchObject({ category: "encode-failed" });
+    const failure = expect(operation.promise).rejects.toMatchObject({ category: "worker-response-invalid" });
     WorkerFixture.instance[0].respond({ id: 1, status: "converted", sourceWidth: 50, sourceHeight: 25, blob: new Blob(["png"], { type: "image/png" }) });
     await failure;
     expect(WorkerFixture.instance[0].terminate).toHaveBeenCalledOnce();
 });
 it("malformed terminal response terminates as a safe failure", async () => {
     const operation = startHeicOperation({ id: 1, operation: "inspect", file });
-    const failure = expect(operation.promise).rejects.toMatchObject({ category: "unexpected-worker-failure" });
+    const failure = expect(operation.promise).rejects.toMatchObject({ category: "worker-response-invalid" });
     WorkerFixture.instance[0].respond({ ...success, stack: "private" });
     await failure;
     expect(WorkerFixture.instance[0].terminate).toHaveBeenCalledOnce();
 });
 it("browser worker errors terminate without exposing their message", async () => {
     const operation = startHeicOperation({ id: 1, operation: "inspect", file });
-    const failure = expect(operation.promise).rejects.toMatchObject({ category: "unexpected-worker-failure" });
+    const failure = expect(operation.promise).rejects.toMatchObject({ category: "worker-runtime-failed" });
     WorkerFixture.instance[0].onerror?.({ preventDefault: vi.fn(), message: "private" } as unknown as ErrorEvent);
     await failure;
+    expect(WorkerFixture.instance[0].terminate).toHaveBeenCalledOnce();
+});
+it("worker construction failure gives startup recovery without the browser exception", () => {
+    vi.stubGlobal("Worker", class { constructor() { throw new Error("PRIVATE_DETAIL"); } });
+    expect(() => startHeicOperation({ id: 1, operation: "inspect", file })).toThrow("browser could not create the decoder worker. Reload the page");
+});
+it("message deserialization failure terminates as a runtime failure", async () => {
+    const operation = startHeicOperation({ id: 1, operation: "inspect", file });
+    const rejected = expect(operation.promise).rejects.toMatchObject({ category: "worker-runtime-failed" });
+    WorkerFixture.instance[0].onmessageerror?.();
+    await rejected;
+    expect(WorkerFixture.instance[0].terminate).toHaveBeenCalledOnce();
+});
+it("worker source limit feedback retains bounded actual dimensions", async () => {
+    const operation = startHeicOperation({ id: 1, operation: "inspect", file });
+    const rejected = expect(operation.promise).rejects.toThrow("8256 × 5504 px (45,441,024 pixels)");
+    WorkerFixture.instance[0].respond({ id: 1, status: "error", category: "source-dimension-limit", sourceWidth: 8256, sourceHeight: 5504 });
+    await rejected;
     expect(WorkerFixture.instance[0].terminate).toHaveBeenCalledOnce();
 });

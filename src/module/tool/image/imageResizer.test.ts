@@ -28,10 +28,10 @@ describe("Image Resizer limits", () => {
     it.each([0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY])("rejects invalid width and height %s", value => {
         expect(validateImageResizerDimension({ width: value, height: 60 })).toContain("Width");
         expect(validateImageResizerDimension({ width: 80, height: value })).toContain("Height");
-        expect(validateImageResizerDimension({ width: value, height: 60 }, true)).toContain("source");
+        expect(validateImageResizerDimension({ width: value, height: 60 }, true)).toContain("invalid dimensions");
     });
     it.each([true, false])("accepts exactly 30 MP (source=%s)", source => expect(validateImageResizerDimension({ width: 6000, height: 5000 }, source)).toBeNull());
-    it.each([true, false])("rejects above 30 MP (source=%s)", source => expect(validateImageResizerDimension({ width: 6000, height: 5001 }, source)).toContain("30 megapixels"));
+    it.each([true, false])("rejects above 30 MP (source=%s)", source => expect(validateImageResizerDimension({ width: 6000, height: 5001 }, source)).toContain("30,000,000 pixels (30 MP)"));
 });
 
 describe("Image Resizer original aspect ratio", () => {

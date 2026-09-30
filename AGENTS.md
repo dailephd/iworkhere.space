@@ -11,7 +11,8 @@ npm run typecheck    # TypeScript type checking (tsc --noEmit)
 npm run test         # Unit tests (vitest run)
 npm run verify       # Aggregate local validation with shared reports
 
-CI runs: typecheck, lint, test, build (all must pass). Separate GitHub Actions workflow per step.
+CI runs five independent gates: typecheck, lint, test, build, and E2E (all must pass).
+`npm run verify` runs the first four; `npm run test:e2e` is separate. Separate GitHub Actions workflow per step.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 
@@ -267,8 +268,19 @@ CI enforces:
 - Lint
 - Test
 - Build
+- E2E (separate from `npm run verify`)
 
-Agents must assume CI will enforce all four.
+Agents must assume CI will enforce all five.
+
+## Image error feedback
+
+Recoverable failures stay inside the owning tool with role="alert". Identify the
+known processing stage, relevant local size/dimensions/output format, and a
+realistic next action. Do not invent corruption, expose raw diagnostics, or
+send file details to observability, URL state, storage or network requests.
+Cancellation/stale work is not an error. Keep shared source feedback in ImageFile,
+operation feedback local, and bounded HEIC error categories at the worker boundary;
+do not introduce a global error framework.
 
 ## Documentation Discipline
 

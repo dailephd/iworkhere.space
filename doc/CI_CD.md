@@ -25,7 +25,7 @@ Deployment must never change behavior silently.
 
 ## 2. Required CI Jobs
 
-Four jobs run on every push and pull request:
+Five jobs run on every push and pull request:
 
 | Job | Command | Enforces |
 |-----|---------|----------|
@@ -33,13 +33,14 @@ Four jobs run on every push and pull request:
 | `lint` | `npm run lint` | ESLint rules, import discipline |
 | `test` | `npm run test` | Unit, contract, and integration tests |
 | `build` | `npm run build` | Next.js production build, RSC correctness |
+| `e2e` | `npm run test:e2e` after build | Production desktop/mobile Chromium behavior and diagnostics |
 
-All four jobs must pass.
+All five jobs must pass.
 If any job fails, merge is blocked.
 
 For local aggregate validation, run `npm run verify`. This command runs the
 same four checks sequentially with a shared `RUN_ID` and per-command logs; it
-does not replace the four independent GitHub Actions jobs.
+does not replace the five independent GitHub Actions jobs.
 
 Each job runs in a separate GitHub Actions workflow file under `.github/workflows/`.
 
@@ -155,7 +156,7 @@ warnings/errors. See TESTING.md for report ownership and diagnostic discipline.
 
 Pull requests must:
 
-1. Pass all four CI jobs
+1. Pass all five CI jobs
 2. Not skip tests or suppress type errors
 3. Include tests for new logic (see TESTING.md)
 4. Not introduce direct layer violations

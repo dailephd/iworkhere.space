@@ -80,7 +80,11 @@ ToolClientFrame; the tool does not call setQuery.
 Expected failures stay inside the tool with role=alert: empty/oversized file,
 unsupported signature, undecodable/corrupt image, source area over 30 MP, invalid
 width/height, target area over 30 MP, missing canvas context and encoding failure.
-Raw browser exceptions and file metadata are not logged or shown. Unexpected
+Raw browser exceptions are not shown or logged; file metadata remains local.
+Source and requested-area limits show actual dimensions/pixels. Canvas failures
+identify resizing; encoding failures name the detected output format. Unknown
+failures identify reading/resizing and suggest Reset. See ImageFileProcessing
+for the shared source-feedback policy. Unexpected
 React failures remain owned by ToolErrorBoundary.
 
 All controls have labels, previews have meaningful alt text, actions support

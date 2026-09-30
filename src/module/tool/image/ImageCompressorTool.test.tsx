@@ -92,7 +92,7 @@ describe("Image Compressor local lifecycle and telemetry", () => {
 
     it("keeps unexpected browser operation failures recoverable without telemetry or query writes", async () => {
         await select(); operation.compress.mockRejectedValueOnce(new Error("private browser details")); await submit();
-        expect(host.querySelector('[role="alert"]')?.textContent).toContain("could not be compressed");
+        expect(host.querySelector('[role="alert"]')?.textContent).toContain("unexpected browser error occurred while compressing");
         expect(host.textContent).not.toContain("private browser details");
         expect(operation.track).not.toHaveBeenCalled(); expect(setQuery).not.toHaveBeenCalled();
         expect(createUrl).toHaveBeenCalledTimes(1);

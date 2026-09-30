@@ -31,17 +31,17 @@ export function detectImageFileFormat(bytes: Uint8Array): ImageFileFormat | null
 }
 
 export function validateImageFileSize(size: number): string | null {
-    if (!Number.isFinite(size) || size <= 0) return "Select a non-empty image file.";
-    if (size > MAX_SOURCE_BYTES) return "The source image must be 25 MiB or smaller.";
+    if (!Number.isFinite(size) || size <= 0) return "This file is empty. Choose a non-empty image.";
+    if (size > MAX_SOURCE_BYTES) return `This image is ${formatImageFileBytes(size)}. The maximum file size is 25 MiB. Choose a smaller image.`;
     return null;
 }
 
 export function validateImageFileDimension(dimension: ImageFileDimension): string | null {
     if (!Number.isFinite(dimension.width) || !Number.isInteger(dimension.width) || dimension.width <= 0 ||
         !Number.isFinite(dimension.height) || !Number.isInteger(dimension.height) || dimension.height <= 0) {
-        return "The source image has invalid dimensions.";
+        return "The image reported invalid dimensions and cannot be processed. Choose another image.";
     }
-    if (dimension.width * dimension.height > MAX_PIXEL_AREA) return "The source image must contain 30 megapixels or fewer.";
+    if (dimension.width * dimension.height > MAX_PIXEL_AREA) return `This image is ${dimension.width} \u00d7 ${dimension.height} px (${(dimension.width * dimension.height).toLocaleString("en-US")} pixels). The maximum is 30,000,000 pixels (30 MP). Choose a smaller image.`;
     return null;
 }
 

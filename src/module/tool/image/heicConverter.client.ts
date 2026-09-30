@@ -6,7 +6,9 @@ export interface HeicOperation { promise: Promise<HeicWorkerResponse>; cancel():
 export function startHeicOperation(request: HeicWorkerRequest): HeicOperation {
     const sizeError = validateImageFileSize(request.file.size);
     if (sizeError) throw new Error(sizeError);
-    const worker = new Worker(new URL("./heicConverter.worker.ts", import.meta.url), { type: "module" });
+    let worker: Worker;
+    try { worker = new Worker(new URL("./heicConverter.worker.ts", import.meta.url), { type: "module" }); }
+    catch { throw new HeicProcessingError("worker-start-failed"); }
     let settled = false;
     let rejectOperation: (error: Error) => void = () => {};
     function terminate() {
@@ -25,14 +27,18 @@ export function startHeicOperation(request: HeicWorkerRequest): HeicOperation {
             if (event.data?.id !== request.id) return;
             try {
                 const response = readHeicResponse(event.data, request);
-                if (!response) { fail(new HeicProcessingError("unexpected-worker-failure")); return; }
-                if (response.status === "error") { fail(new HeicProcessingError(response.category)); return; }
+                if (!response) { fail(new HeicProcessingError("worker-response-invalid")); return; }
+                if (response.status === "error") {
+                    const dimension = response.sourceWidth !== undefined && response.sourceHeight !== undefined
+                        ? { width: response.sourceWidth, height: response.sourceHeight } : undefined;
+                    fail(new HeicProcessingError(response.category, dimension, request.operation === "convert" ? request.target : "png", request.operation)); return;
+                }
                 terminate(); resolve(response);
-            } catch (failure) { fail(failure instanceof HeicProcessingError ? failure : new HeicProcessingError("unexpected-worker-failure")); }
+            } catch { fail(new HeicProcessingError("worker-response-invalid")); }
         };
-        worker.onerror = event => { event.preventDefault(); fail(new HeicProcessingError("unexpected-worker-failure")); };
-        worker.onmessageerror = () => fail(new HeicProcessingError("unexpected-worker-failure"));
-        try { worker.postMessage(request); } catch { fail(new HeicProcessingError("unexpected-worker-failure")); }
+        worker.onerror = event => { event.preventDefault(); fail(new HeicProcessingError("worker-runtime-failed")); };
+        worker.onmessageerror = () => fail(new HeicProcessingError("worker-runtime-failed"));
+        try { worker.postMessage(request); } catch { fail(new HeicProcessingError("worker-start-failed")); }
     });
     return { promise, cancel() {
         if (settled) return;

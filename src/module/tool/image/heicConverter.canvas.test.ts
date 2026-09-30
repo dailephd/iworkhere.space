@@ -47,3 +47,13 @@ it("recovers from missing context and failed encoding", async () => {
     canvas.convertToBlob.mockRejectedValue(new Error("browser encoder failed"));
     await expect(encodeHeicBitmap(bitmap, 10, 10, "png")).rejects.toMatchObject({ category: "encode-failed" });
 });
+it.each(["construction", "context"])("classifies thrown canvas %s failures without exposing diagnostics", async stage => {
+    vi.stubGlobal("OffscreenCanvas", class {
+        constructor() { if (stage === "construction") throw new Error("PRIVATE_CANVAS_DETAIL"); }
+        getContext() { throw new Error("PRIVATE_CANVAS_DETAIL"); }
+    });
+    await expect(encodeHeicBitmap(bitmap, 10, 10, "png")).rejects.toMatchObject({
+        category: "canvas-unavailable",
+        message: "This browser does not provide the off-screen canvas required for HEIC conversion. Use another current browser with OffscreenCanvas support.",
+    });
+});

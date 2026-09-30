@@ -159,7 +159,7 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 ## Version 0.2.0 — Image Utility Foundation
 
-Status: In progress
+Status: Implementation complete; release blocked pending HEIC production-license approval
 
 ### Goal
 
@@ -216,14 +216,13 @@ v0.2.0 is complete when:
 
 ### Unresolved planning decisions
 
-Browser E2E uses pinned Playwright Chromium with a separate command and CI gate.
-The selected HEIC technical candidate is `heic-to@1.5.2`; production license
-approval, real conversion and final application isolation remain required.
+Browser E2E implementation, shared ImageFile source primitives, presentation-only
+ImageSourcePanel, real HEIC conversion, dedicated worker architecture and
+application-level decoder isolation are resolved and validated. The exact
+production decoder is `heic-to@1.5.2`.
 
-Remaining decisions/evidence:
-
-- HEIC production license approval and acceptable measured application runtime cost;
-- shared file-input/result primitives justified by the selected implementations.
+Remaining release decision: HEIC production-license approval. Technical
+completeness does not authorize release.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
@@ -481,7 +480,7 @@ The following capabilities support product versions and should be implemented wh
 
 ### Browser end-to-end validation
 
-Browser-level validation is planned testing infrastructure. Establish the minimum required browser test capability during v0.2.0 and extend it proportionately for later browser-visible releases.
+Browser-level validation is implemented in v0.2.0 with separate production desktop/mobile Chromium and CI gates. Extend it proportionately for later browser-visible releases.
 
 Static/unit checks must not be presented as browser proof when the acceptance requirement is browser-visible behavior.
 
@@ -698,17 +697,12 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-The integrated v0.1.1 validation hardening is the accepted development baseline.
-The package version remains `0.1.0`; this integration is not an npm publication
-or external product release.
+The v0.2 implementation is technically complete. The package remains `0.1.0`;
+no release PR, publication or deployment is authorized. Obtain explicit HEIC
+production-license approval before the normal pre-release audit and
+release-preparation workflow. Hosted E2E on the final version PR remains pending.
 
-The next project action is to create a fresh design-reconciliation branch from
-the updated `master`, preserve only the intended design changes from PR #1,
-validate that branch, and integrate it. Do not merge PR #1 as-is. Only after
-that design reconciliation should v0.2.0 planning begin:
-
-1. inspect the exact accepted repository state;
-2. refresh my-dev-kit evidence;
-3. resolve the v0.2.0 open planning decisions;
-4. create and freeze `doc/plans/v0.2.0-implementation-plan.md`;
-5. only then issue bounded coding-agent implementation prompts.
+Historical process debt: the referenced
+`doc/plans/v0.2.0-implementation-plan.md` is absent from the repository and its
+available history. No retroactive version plan was created. Future versions
+should freeze their implementation plan before coding prompts are issued.

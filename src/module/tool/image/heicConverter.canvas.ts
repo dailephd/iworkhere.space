@@ -4,8 +4,12 @@ import { HeicProcessingError, requireHeicBlob } from "./heicConverter.workerType
 // Worker-local output composition; also used for the presentation-only PNG preview.
 export async function encodeHeicBitmap(bitmap: ImageBitmap, width: number, height: number, target: HeicConverterTarget, quality?: number): Promise<Blob> {
     if (typeof OffscreenCanvas === "undefined") throw new HeicProcessingError("canvas-unavailable");
-    const canvas = new OffscreenCanvas(width, height);
-    const context = canvas.getContext("2d");
+    let canvas: OffscreenCanvas;
+    let context: OffscreenCanvasRenderingContext2D | null;
+    try {
+        canvas = new OffscreenCanvas(width, height);
+        context = canvas.getContext("2d");
+    } catch { throw new HeicProcessingError("canvas-unavailable"); }
     if (!context) throw new HeicProcessingError("canvas-unavailable");
     if (heicRequiresWhite(target)) {
         context.fillStyle = "#ffffff";
