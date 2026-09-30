@@ -284,6 +284,15 @@ module-domain behavior and owns no state, File APIs, validation, URLs, Reset,
 result or operation controls. All other React UI stays local.
 Do not expand these owners into a generic processor or shared React framework.
 
+HEIC decoding is an explicit worker-only exception: only
+`src/module/tool/image/heicConverter.worker.ts` may import `heic-to/next`.
+Do not import heic-to root/CSP entries on the main thread. Construct one
+short-lived worker per operation only after non-empty/25 MiB source prechecks;
+terminate on terminal response, stale generation, replacement, Reset and
+unmount. Keep HEIC composition and source UI local; do not broaden the shared
+image owners. See `doc/modules/HeicConverter.md`. Decoder release approval
+remains a separate explicit human/legal gate.
+
 - Architecture changes require updating doc/architecture.md first
 - Style changes require updating doc/DESIGN.md first
 - New abstractions require updating this file

@@ -37,10 +37,10 @@ test("Converter registry, SEO, category and discovery", async ({ page }) => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/tool\/image-converter$/);
     await page.goto("/category/image");
     const links = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(links).toHaveCount(3);
+    await expect(links).toHaveCount(4);
     await expect(links).toContainText(["Image Resizer", "Image Compressor", "JPG / PNG / WebP Converter"]);
     await page.goto("/discover");
-    await expect(page.getByRole("main").locator("ul button")).toHaveCount(9);
+    await expect(page.getByRole("main").locator("ul button")).toHaveCount(10);
     await page.getByRole("main").getByRole("button", { name: /JPG \/ PNG \/ WebP Converter/ }).click();
     await expect(page).toHaveURL(/\/tool\/image-converter$/);
 });

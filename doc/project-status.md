@@ -1,5 +1,13 @@
 # PROJECT STATUS
 
+## Batch 5 - HEIC worker converter
+
+Batch 5 adds HEIC to JPG / PNG Converter, bringing the registry to **10 tools / 4 image tools**, with exact heic-to 1.5.2 isolated inside a lazily created short-lived worker. The synthetic MIT 3,554-byte positive fixture decodes to 480 x 320 and converts to JPEG/PNG at exact dimensions. Source limits remain 25 MiB / 30 MP.
+
+Two planner fixture-selection specification gaps are DEGRADED / WORKED_AROUND: ambiguous image redistribution permission in the first fixture, then a redistributable replacement that exceeded the 30 MP contract. EXTRA_PROMPT_REQUIRED=YES. The previous 45 MP rejection remains actual limit evidence in the ignored corrected Batch 5 report. Feature acceptance is technical; HEIC_RELEASE_LICENSE_APPROVAL=REQUIRED and HEIC_RELEASE_READY=NO. Technical feature result PASS; ecosystem result DEGRADED. Final validation: 396 Vitest tests in 30 files and 146 E2E cases (73 desktop / 73 mobile), including all inherited tests; Typecheck, Lint, Build, protected Observer acceptance and impact/isolation review PASS. Complete evidence is in `.my-dev-kit-context/reports/batch-5-final/final-report.md`.
+
+Next action after planner review: Batch 6 - Integrated completeness and documentation reconciliation. Do not begin it before planner review. No PR, merge, deployment or legal release approval is part of Batch 5.
+
 ## Current Phase
 v0.1.1 development-validation hardening is integrated into `master` and is the
 accepted validation/development baseline. The package metadata remains at
@@ -10,8 +18,8 @@ fixture provenance policy and image lifecycle specification. CI now defines
 Typecheck, Lint, Test, Build and E2E; hosted E2E execution is pending the final
 version PR. The package remains `0.1.0`. Batch 2 adds Image Resizer;
 Batch 3 adds Image Compressor as the eighth registered tool. Batch 4 adds
-JPG / PNG / WebP Converter as the ninth registered tool. Registered tools = 9;
-image tools = 3. Existing tool behavior remains protected.
+JPG / PNG / WebP Converter as the ninth registered tool. Batch 5 adds HEIC to JPG / PNG Converter. Registered tools = 10;
+image tools = 4. Existing tool behavior remains protected.
 
 The approved design-system modernization intent from historical PR #1 has been reconciled onto this accepted baseline through the fresh design-reconciliation branch. PR #1 was not merged as-is because its branch was stale and divergent; it is superseded after replacement integration. `doc/DESIGN.md` is now the canonical visual authority and the current shell, theme controls, footer, and route composition follow it.
 

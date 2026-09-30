@@ -7,7 +7,11 @@ runtime. The first production file workflow is Batch 2 — Image Resizer.
 ## Processing and formats
 
 Processing takes place in the browser/client. Normal formats are JPEG, PNG and
-WebP. HEIC/HEIF belongs to the dedicated future converter. No server image
+WebP. HEIC/HEIF belongs to the dedicated worker converter specified in
+[HeicConverter](HeicConverter.md). Batch 5 keeps decoder imports solely
+inside that worker, with lazy construction after source-size prechecks and
+termination per operation. Its synthetic 480 x 320 positive fixture stays within
+the frozen 30 MP limit. No server image
 endpoint, external processing API or cloud upload is authorized.
 
 Initial resource-safety targets are a **25 MiB source file ceiling** (26,214,400

@@ -1,5 +1,19 @@
 # Deterministic image fixtures
 
+## HEIC fixture - positive decoder/converter acceptance
+
+Local fixture: `heic-source.heic`. Source: [su-engineering/heic-web](https://github.com/su-engineering/heic-web), pinned commit `3261b10a31625dcb395b82081b3e9f7d10c9fc2c`, upstream path `test/fixtures/generated/asym-base.heic`.
+
+Upstream Git blob and local `git hash-object`: `c6da5cea205f31fe2eab42c704583ee35f1dd27f`. Exact upstream/local size: **3,554 bytes**. Local SHA-256: `b8cc78079ada0b88066eb6e406735946064b51f5690389eebd556614a1133119`.
+
+License: **MIT**. The pinned upstream LICENSE is copied verbatim to `licenses/heic-web-MIT.txt`. The pinned CONTRIBUTING.md requires permission to redistribute committed fixtures, excludes personal/private photographs, and licenses contributions under MIT. The fixture README identifies generated fixtures as committed and reproducible.
+
+Generation: synthetic asymmetric geometric pattern, generated from scratch by `tools/make-fixtures.sh` using ImageMagick background, rectangles, circle, polygon and bar; encoded with `heif-enc -q 92`. The pinned generated manifest records **480 x 320**, **153,600 pixels**, bit depth **10**, brand **heix**, rotation 0 and no mirroring. Actual heic-to 1.5.2 worker inspection and JPEG/PNG browser output decode also measure **480 x 320**. Preview is PNG at 480 x 320 (no upscaling). Consumer: `test/e2e/heic-converter.spec.ts`.
+
+Provenance sources at that exact commit: [LICENSE](https://github.com/su-engineering/heic-web/blob/3261b10a31625dcb395b82081b3e9f7d10c9fc2c/LICENSE), [contribution policy](https://github.com/su-engineering/heic-web/blob/3261b10a31625dcb395b82081b3e9f7d10c9fc2c/CONTRIBUTING.md), [generation script](https://github.com/su-engineering/heic-web/blob/3261b10a31625dcb395b82081b3e9f7d10c9fc2c/tools/make-fixtures.sh), [manifest](https://github.com/su-engineering/heic-web/blob/3261b10a31625dcb395b82081b3e9f7d10c9fc2c/test/fixtures/generated/manifest.json).
+
+No real-alpha or metadata-preservation proof is claimed. This test-fixture license is separate from the production decoder release-license gate. Earlier rejected fixture evidence remains in the ignored Batch 5 reports; those superseded binaries are not committed.
+
 Fixtures enter this directory when a real tool test first needs them. Batch 1
 adds the convention only; no conversion or image product fixture is implied.
 

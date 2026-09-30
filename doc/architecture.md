@@ -15,6 +15,17 @@ controls/results, object URL ownership and execution telemetry local.
 This adds no route, server or generic
 processing framework owner.
 
+HEIC Converter introduces a dedicated image worker boundary (see
+`modules/HeicConverter.md`). Only `heicConverter.worker.ts` imports
+`heic-to/next` from pinned `heic-to@1.5.2`. The wrapper creates a worker lazily
+after a selected file passes non-empty/25 MiB prechecks; the decoder is not
+part of normal route execution or initial HEIC rendering. Each inspect or
+convert operation owns a short-lived worker, terminated on terminal response,
+cancellation, replacement, Reset or unmount. Main-thread UI receives only
+bounded inspection/result messages and Blobs. HEIC source UI remains local;
+the existing shared image owners are not expanded. Production release is
+subject to explicit human/legal decoder-license approval.
+
 Build a scalable, full-stack utility platform using Next.js App Router,
 with strict separation between:
 - routing/composition

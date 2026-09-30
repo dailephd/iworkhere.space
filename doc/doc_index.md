@@ -2,6 +2,12 @@
 
 # Documentation Index
 
+### doc/modules/HeicConverter.md
+
+**Summary:** Batch 5 HEIC/HEIF worker-only decoding, bounded inspection,
+JPEG/PNG composition, lifecycle, privacy, synthetic MIT fixture identity and separate
+production-license release gate. The generated positive fixture is within the frozen decoded-area limit.
+
 ## 1. Overview
 
 This documentation system defines the architecture, development standards, and

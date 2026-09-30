@@ -88,13 +88,13 @@ describe("registry invariants", () => {
         expect(tool?.name).toBe("Time Arithmetic")
     })
 
-    it("registers the local offline Image Compressor and all three image tools", () => {
+    it("registers the local offline Image Compressor and all four image tools", () => {
         const tool = getToolBySlug("image-compressor")
         expect(tool).toMatchObject({ id: "image-compressor", slug: "image-compressor", name: "Image Compressor", category: "image",
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
-        expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter"])
-        expect(tool_definition_list).toHaveLength(9)
+        expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter", "heic-converter"])
+        expect(tool_definition_list).toHaveLength(10)
     })
 
     it("registers Converter with its exact offline contract", () => {
@@ -110,6 +110,16 @@ describe("registry invariants", () => {
 
     it("returns undefined for an unknown slug", () => {
         expect(getToolBySlug("unknown-tool")).toBeUndefined()
+    })
+
+    it("registers HEIC with its exact local offline contract", () => {
+        expect(getToolBySlug("heic-converter")).toMatchObject({
+            id: "heic-converter", slug: "heic-converter", name: "HEIC → JPG / PNG Converter", category: "image",
+            description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+            seo: { title: "HEIC to JPG / PNG Converter", description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.", canonicalPath: "/tool/heic-converter" },
+            capability: ["client-only", "offline"], tag: ["image", "converter", "heic", "heif", "jpg", "png"],
+            statePolicy: { persist: "none", shareableQuery: false },
+        })
     })
 
     it("includes the time arithmetic tool in the time category", () => {

@@ -8,6 +8,7 @@ import { TimeArithmeticTool } from "./time/TimeArithmeticTool";
 import { ImageResizerTool } from "./image/ImageResizerTool";
 import { ImageCompressorTool } from "./image/ImageCompressorTool";
 import { ImageConverterTool } from "./image/ImageConverterTool";
+import { HeicConverterTool } from "./image/HeicConverterTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -169,6 +170,22 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["image", "converter", "jpg", "png", "webp"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: ImageConverterTool,
+    },
+    {
+        id: "heic-converter",
+        slug: "heic-converter",
+        name: "HEIC → JPG / PNG Converter",
+        description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+        category: "image",
+        seo: {
+            title: "HEIC to JPG / PNG Converter",
+            description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+            canonicalPath: "/tool/heic-converter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "converter", "heic", "heif", "jpg", "png"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: HeicConverterTool,
     },
 ];
 

@@ -15,9 +15,10 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 ## Contract (added 2026-08-07 reconciliation)
 
 The single source of truth for tool data — `tool_definition_list`, an array
-of `ToolDefinition` (`src/module/tool/type.ts`). Currently registers nine
+of `ToolDefinition` (`src/module/tool/type.ts`). Batch 5 registers ten
 tools: `slugify`, `calculator`, `length-converter`, `html-text-extractor`,
-`weight-converter`, `time-arithmetic`, `image-resizer`, `image-compressor`, `image-converter`.
+`weight-converter`, `time-arithmetic`, `image-resizer`, `image-compressor`, `image-converter`, `heic-converter`.
+There are four image tools. The dedicated HEIC worker contract and separate release-license gate are specified in `HeicConverter.md`.
 
 ```typescript
 function getToolBySlug(slug: string): ToolDefinition | undefined
