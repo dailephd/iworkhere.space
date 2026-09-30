@@ -45,3 +45,37 @@ signatures, decoded with createImageBitmap, sampled alpha and calculated SHA-256
 Provenance for every row: generated using the recipe above; creator/owner is the
 repository project author. The PNG output test samples (2,2) after resizing to
 40×30, safely inside the corresponding transparent region.
+
+## Image Compressor fixtures
+
+Generated once by the repository project author with Playwright **1.63.0** and
+headless Chromium **153.0.8010.12**. All content is project-owned geometric test
+artwork, with no third-party content, license or attribution requirement.
+Tests consume fixed committed bytes; they never regenerate the fixtures.
+
+Recipe: create a 240×180 off-DOM canvas with a diagonal linear gradient from
+`#5b4bd8` at (0,0) to `#0891b2` at (240,180). At each (x,y) where x and y are
+multiples of six, fill a 3×3 square with RGB((17x+3y)%256,(7x+11y)%256,
+(5x+19y)%256). JPEG and WebP encode using `toDataURL(actualMime, 1)`.
+For PNG, clear the top-left 30×30 region before lossless encoding. Insert one
+safe, nonessential `tEXt` chunk before IEND: Latin-1 keyword `Fixture provenance`,
+NUL, then 160 repetitions of `iworkhere.space deterministic owned geometric test fixture. `.
+The PNG chunk CRC is CRC-32 (polynomial 0xedb88320, initial/final XOR 0xffffffff)
+over the chunk type and payload. This deliberately non-minimal PNG proves that
+native re-encoding can remove nonessential payload; it does not imply every PNG
+can become smaller or that metadata is preserved.
+
+Independent verification read the saved files, checked signatures and every PNG
+chunk CRC, decoded with createImageBitmap, checked 240×180 dimensions and alpha
+at (2,2), calculated SHA-256, and performed native same-size encoding at quality
+60 for JPEG/WebP and without a quality parameter for PNG.
+
+| Fixture | Purpose / consumer | Actual format / source bytes | Dimensions / area | Transparency | SHA-256 |
+| --- | --- | --- | --- | --- | --- |
+| compressor-source.jpg | Image Compressor quality-60 reduction, downloads, metrics, lifecycle and privacy; test/e2e/image-compressor.spec.ts | JPEG, image/jpeg / 107,911 | 240×180 / 43,200 pixels | Opaque, alpha (2,2) = 255 | 2436b9fcce72d32d50b14a5dfe73b365730b7108efca259aea039f41c8ad2af4 |
+| compressor-source.png | Image Compressor native lossless reduction and alpha preservation; test/e2e/image-compressor.spec.ts | PNG, image/png / 70,798 | 240×180 / 43,200 pixels | Top-left 30×30 transparent, alpha (2,2) = 0 | d3081b6e2dad9436a04a701bbc460796364b9e62b9048e3ea656717125895641 |
+| compressor-source.webp | Image Compressor quality-60 reduction and downloads; test/e2e/image-compressor.spec.ts | WebP, image/webp / 26,982 | 240×180 / 43,200 pixels | Opaque, alpha (2,2) = 255 | 86e9a7238386d93cce18094167a31dd6dae79edb6de5f93432f822df52edae33 |
+
+The existing `resizer-source.png` is also consumed by Image Compressor's
+no-reduction test: same-size native encoding produces the same 309-byte file,
+with no result URL or download. Its original provenance and checksum remain above.

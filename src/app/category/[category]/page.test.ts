@@ -17,6 +17,8 @@ describe("category route", () => {
         expect(html).toContain("Image &amp; Media Tool");
         expect(html).toContain('href="/tool/image-resizer"');
         expect(html).toContain("Image Resizer");
+        expect(html).toContain('href="/tool/image-compressor"');
+        expect(html).toContain("Image Compressor");
         expect(html).not.toContain("No tool available");
     });
     it("renders existing category tools inside the shell's single main landmark", async () => {

@@ -82,6 +82,20 @@ implementation detail.
 platform services like the registry, observability, or storage.
 **Relations:** Implements the contracts defined in `SCHEMA.md`.
 
+### modules/ImageCompressor.md
+**Summary:** Local JPEG/PNG/WebP compression with actual byte comparison,
+JPEG/WebP quality controls, native PNG re-encoding, truthful no-reduction outcomes,
+safe telemetry and resource cleanup.
+**When to read:** Implementing or validating Image Compressor.
+**Relations:** Uses ImageFile.md and the existing registry/browser validation owners.
+
+### modules/ImageFile.md
+**Summary:** Narrow source-file primitives proven equivalent by independent
+Resizer/Compressor implementations: signatures, metadata, limits, formatting,
+basename, native decode and inspection. No shared React framework or encoder.
+**When to read:** Changing common source validation or decoding.
+**Relations:** Shared by ImageResizer.md and ImageCompressor.md.
+
 ### modules/ImageResizer.md
 **Summary:** Browser-native JPEG/PNG/WebP resizing, authoritative signatures,
 25 MiB and 30 MP limits, original aspect ratio, local state, fixed encoding,
@@ -282,10 +296,9 @@ hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
   8) — a known, tracked gap rather than a completeness claim.
 - **Naming:** Consistent use of singular naming is enforced in
   `code-generation-guidelines.md` and visible in the file structure.
-- **Aspirational content:** `TESTING.md` §2.4 (Playwright E2E) describes a
-  planned test category with no current implementation (no `@playwright/test`
-  dependency or spec files exist). Marked explicitly in that document as of
-  2026-08-07; do not treat it as evidence E2E coverage exists today.
+- **Browser validation:** `TESTING.md` documents the implemented production
+  desktop/mobile Chromium gate and current image-tool browser proofs. Hosted
+  E2E execution remains pending the final version PR.
 - **Theme token detail remains implementation-owned:** `DESIGN.md` records the
   cross-theme contract; exact per-theme token values remain defined in
   `src/style/theme.css`.

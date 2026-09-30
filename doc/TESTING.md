@@ -206,7 +206,7 @@ Specs in `test/e2e/` use a shared fixture that attaches listeners before navigat
 Every applicable route fails on `pageerror`, console errors and React hydration
 warnings/errors, without suppression or arbitrary allowlists. Expected 404 status
 is tested through a request to avoid treating an intentional failed resource as an
-unapproved browser diagnostic. Health response, all seven catalog button flows, calculator
+unapproved browser diagnostic. Health response, all eight catalog button flows, calculator
 and time arithmetic interactions, responsive shell/skip/navigation/footer,
 document scrolling, theme reload persistence and production SW are covered.
 

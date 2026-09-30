@@ -272,6 +272,13 @@ Agents must assume CI will enforce all four.
 
 ## Documentation Discipline
 
+The image family shares only source-file primitives through
+`src/module/tool/image/imageFile.ts` and `imageFile.client.ts`, specified in
+`doc/modules/ImageFile.md`: encoding metadata, signatures, source limits,
+byte/basename formatting, signature reading, decode and inspection. Operation
+encoders, React UI, state, object URLs, async generations and telemetry stay local.
+Do not expand these owners into a generic processor or shared React framework.
+
 - Architecture changes require updating doc/architecture.md first
 - Style changes require updating doc/DESIGN.md first
 - New abstractions require updating this file

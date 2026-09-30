@@ -4,8 +4,10 @@
 
 `src/module/tool/image/ImageResizerTool.tsx` owns local React state, selection,
 previews, actions, recoverable feedback and object URLs. `imageResizer.ts` owns
-pure format, limit, dimension, ratio and filename rules. `imageResizer.client.ts`
-owns browser File, ImageBitmap and off-DOM canvas operations. The existing
+target-dimension, ratio and filename rules. `imageResizer.client.ts`
+owns operation-specific off-DOM canvas resizing. Proven common source signatures,
+limits, formatting, decode and inspection are owned by `imageFile.ts` and
+`imageFile.client.ts`, specified in [ImageFile](ImageFile.md). The existing
 registry, server tool/category routes, ToolClientFrame and ToolErrorBoundary
 remain the routing, lifecycle and unexpected React failure owners.
 

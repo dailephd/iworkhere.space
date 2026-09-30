@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import type { ToolComponentProp } from "../type";
 import { trackEvent } from "@/module/observability";
-import {
-    formatImageResizerBytes, heightFromWidth, widthFromHeight, imageResizerFilename,
-    IMAGE_RESIZER_ENCODING, validateImageResizerDimension, validateImageResizerSize,
-    type ImageResizerDimension, type ImageResizerFormat,
-} from "./imageResizer";
-import { ImageResizerError, inspectImageResizer, readImageResizerFormat, resizeImage } from "./imageResizer.client";
+import { heightFromWidth, widthFromHeight, imageResizerFilename, validateImageResizerDimension } from "./imageResizer";
+import { formatImageFileBytes as formatImageResizerBytes, IMAGE_FILE_ENCODING as IMAGE_RESIZER_ENCODING,
+    validateImageFileSize as validateImageResizerSize, type ImageFileDimension as ImageResizerDimension,
+    type ImageFileFormat as ImageResizerFormat } from "./imageFile";
+import { ImageFileError as ImageResizerError, inspectImageFile as inspectImageResizer, readImageFileFormat as readImageResizerFormat } from "./imageFile.client";
+import { resizeImage } from "./imageResizer.client";
 
 type ImageResizerState = "idle" | "selected" | "processing" | "success" | "validation failure" | "processing failure";
 

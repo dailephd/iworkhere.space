@@ -8,15 +8,19 @@ obsolete local repository orchestrator is retired. v0.2.0 Image Utility Foundati
 is in progress. Batch 1 implements a separate production Chromium browser gate,
 fixture provenance policy and image lifecycle specification. CI now defines
 Typecheck, Lint, Test, Build and E2E; hosted E2E execution is pending the final
-version PR. The package remains `0.1.0`. Batch 2 adds Image Resizer as the seventh
-registered tool; the original six tools retain their behavior.
+version PR. The package remains `0.1.0`. Batch 2 adds Image Resizer;
+Batch 3 adds Image Compressor as the eighth registered tool. Existing tool
+behavior remains protected.
 
 The approved design-system modernization intent from historical PR #1 has been reconciled onto this accepted baseline through the fresh design-reconciliation branch. PR #1 was not merged as-is because its branch was stale and divergent; it is superseded after replacement integration. `doc/DESIGN.md` is now the canonical visual authority and the current shell, theme controls, footer, and route composition follow it.
 
 The accepted Batch 1 foundation supports the planner-owned Batch 2 Image Resizer
 vertical slice: browser-native JPEG/PNG/WebP resizing with local selection,
 validation, previews and downloads. No generic file-processing framework is
-implemented. Batch 3 requires planner review of the repeated file-workflow evidence.
+implemented. Batch 3 independently proves browser-native compression and shares
+only the ten equivalent source-file primitives through ImageFile. React UI,
+state, object URLs and operation encoding remain local. Both corrected Observer
+lanes pass; the historical workflow integration gap remains recorded as degraded.
 ---
 
 ## Completed
@@ -80,18 +84,20 @@ implemented. Batch 3 requires planner review of the repeated file-workflow evide
 - **Weight Converter** (`/tool/weight-converter`) — everyday category
 - **Time Arithmetic** (`/tool/time-arithmetic`) — time category
 - **Image Resizer** (`/tool/image-resizer`) — image category
+- **Image Compressor** (`/tool/image-compressor`) — image category; actual JPEG,
+  PNG and WebP byte reduction, with truthful no-reduction outcomes
 
 ### Test coverage
-(latest local validation on 2026-09-30: 20 Vitest files, 245 tests, all passing;
-64 browser tests passing, 32 per Chromium project)
+(latest local validation on 2026-09-30: 23 Vitest files, 305 tests, all passing;
+94 browser tests passing, 47 per Chromium project)
 - `src/module/theme/themeRegistry.test.ts` — 30 tests
 - `src/app/api/log/route.test.ts` — 9 tests
 - `src/lib/storage.test.ts` — 12 tests
 - `src/module/analytics/analytics.test.ts` — 10 tests
-- `src/module/tool/metadata.test.ts` — 18 tests
+- `src/module/tool/metadata.test.ts` — 19 tests
 - `src/module/tool/time/timeArithmetic.test.ts` — 31 tests
 - `src/module/tool/recentlyUsed.test.ts` — 10 tests
-- `src/module/tool/registry.test.ts` — 12 tests
+- `src/module/tool/registry.test.ts` — 13 tests
 - `script/verify.test.ts` — focused validation-runner tests
 - `src/lib/seo.test.ts` — 9 tests
 - `src/module/tool/text/extractHtmlText.test.ts` — 21 tests
@@ -104,8 +110,12 @@ implemented. Batch 3 requires planner review of the repeated file-workflow evide
 - `script/e2eDiagnostic.test.ts` — 6 tests
 - `src/module/tool/image/imageResizer.test.ts` — 40 pure rule tests
 - `src/module/tool/image/ImageResizerTool.test.tsx` — 3 local lifecycle/telemetry tests
-- Total: 245 tests, all passing across 20 discovered Vitest files; all accepted
-  Batch 1 tests retained. Production E2E passes 64 tests across both required viewports.
+- `src/module/tool/image/imageCompressor.test.ts` — 46 pure rule tests
+- `src/module/tool/image/ImageCompressorTool.test.tsx` — 5 lifecycle/telemetry tests
+- `src/module/tool/image/imageFile.client.test.ts` — 7 boundary/cleanup tests
+- Total: 305 tests, all passing across 23 discovered Vitest files; all accepted
+  Batch 2 tests retained. Production E2E passes 94 tests across both required viewports,
+  including all 64 inherited browser cases and 30 Compressor cases.
 
 ---
 
@@ -143,9 +153,9 @@ implemented. Batch 3 requires planner review of the repeated file-workflow evide
 
 ## Next Steps
 
-Return the Batch 2 report to the planner. Do not start Batch 3 — Image Compressor
-until the planner reviews Image Resizer implementation and repeated file-workflow
-evidence. Preserve the shared feature branch and the planner-owned scope.
+Return the Batch 3 report to the planner. Do not begin Batch 4 — JPG / PNG / WebP
+Converter until the planner reviews Compressor behavior, both Observer lanes,
+and the shared-extraction result. Preserve the shared feature branch and planner-owned scope.
 
 Other unassigned scope remains under Version TBD until an explicit planning
 decision assigns it: security headers, recently-used integration,

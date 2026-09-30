@@ -1,44 +1,15 @@
-import {
-    detectImageResizerFormat, IMAGE_RESIZER_ENCODING, validateImageResizerDimension,
-    type ImageResizerDimension, type ImageResizerFormat,
-} from "./imageResizer";
-
-export class ImageResizerError extends Error {}
-
-export async function readImageResizerFormat(file: File): Promise<ImageResizerFormat> {
-    const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
-    const format = detectImageResizerFormat(bytes);
-    if (!format) throw new ImageResizerError("Select a JPEG, PNG or WebP image. The file encoding is not supported.");
-    return format;
-}
-
-async function decodeImageResizer(file: File): Promise<ImageBitmap> {
-    try {
-        return await createImageBitmap(file);
-    } catch {
-        throw new ImageResizerError("This image could not be decoded. It may be corrupt or unsupported by your browser.");
-    }
-}
-
-export async function inspectImageResizer(file: File): Promise<ImageResizerDimension> {
-    const bitmap = await decodeImageResizer(file);
-    try {
-        const dimension = { width: bitmap.width, height: bitmap.height };
-        const error = validateImageResizerDimension(dimension, true);
-        if (error) throw new ImageResizerError(error);
-        return dimension;
-    } finally {
-        bitmap.close();
-    }
-}
+import { IMAGE_FILE_ENCODING as IMAGE_RESIZER_ENCODING, validateImageFileDimension,
+    type ImageFileDimension as ImageResizerDimension, type ImageFileFormat as ImageResizerFormat } from "./imageFile";
+import { ImageFileError as ImageResizerError, decodeImageFile } from "./imageFile.client";
+import { validateImageResizerDimension } from "./imageResizer";
 
 export async function resizeImage(file: File, format: ImageResizerFormat, dimension: ImageResizerDimension): Promise<Blob> {
     const error = validateImageResizerDimension(dimension);
     if (error) throw new ImageResizerError(error);
-    const bitmap = await decodeImageResizer(file);
+    const bitmap = await decodeImageFile(file);
     let canvas: HTMLCanvasElement | undefined;
     try {
-        const sourceError = validateImageResizerDimension({ width: bitmap.width, height: bitmap.height }, true);
+        const sourceError = validateImageFileDimension({ width: bitmap.width, height: bitmap.height });
         if (sourceError) throw new ImageResizerError(sourceError);
         canvas = document.createElement("canvas");
         canvas.width = dimension.width;

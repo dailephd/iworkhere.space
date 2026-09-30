@@ -5,6 +5,12 @@ Any generated code MUST follow this structure.
 
 ## Core Goal
 
+Image Resizer and Image Compressor share narrow source-file rules and browser
+inspection in `module/tool/image/imageFile.ts` and `imageFile.client.ts` (see
+`modules/ImageFile.md`). Both keep operation encoders, React state/UI, object URL
+ownership and execution telemetry local. This adds no route, server or generic
+processing framework owner.
+
 Build a scalable, full-stack utility platform using Next.js App Router,
 with strict separation between:
 - routing/composition

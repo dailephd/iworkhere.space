@@ -8,12 +8,12 @@ test("home loads with one main landmark", async ({ page }) => {
     await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
 });
 
-test("discover exposes all seven registered tools and reachable routes", async ({ page }) => {
+test("discover exposes all eight registered tools and reachable routes", async ({ page }) => {
     expect((await page.goto("/discover"))?.status()).toBe(200);
     const catalog = page.getByRole("main").locator("ul button");
-    await expect(catalog).toHaveCount(7);
+    await expect(catalog).toHaveCount(8);
     const reached = new Set<string>();
-    for (let index = 0; index < 7; index += 1) {
+    for (let index = 0; index < 8; index += 1) {
         if (index > 0) await page.goto("/discover");
         await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
         await catalog.nth(index).click();
@@ -22,7 +22,7 @@ test("discover exposes all seven registered tools and reachable routes", async (
         reached.add(new URL(page.url()).pathname);
     }
     expect([...reached].sort()).toEqual([
-        "/tool/calculator", "/tool/html-text-extractor", "/tool/image-resizer",
+        "/tool/calculator", "/tool/html-text-extractor", "/tool/image-compressor", "/tool/image-resizer",
         "/tool/length-converter", "/tool/slugify", "/tool/time-arithmetic", "/tool/weight-converter",
     ]);
 });

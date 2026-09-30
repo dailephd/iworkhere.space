@@ -88,6 +88,15 @@ describe("registry invariants", () => {
         expect(tool?.name).toBe("Time Arithmetic")
     })
 
+    it("registers the local offline Image Compressor and both image tools", () => {
+        const tool = getToolBySlug("image-compressor")
+        expect(tool).toMatchObject({ id: "image-compressor", slug: "image-compressor", name: "Image Compressor", category: "image",
+            seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
+            capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
+        expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor"])
+        expect(tool_definition_list).toHaveLength(8)
+    })
+
     it("returns undefined for an unknown slug", () => {
         expect(getToolBySlug("unknown-tool")).toBeUndefined()
     })

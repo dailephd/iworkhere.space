@@ -32,6 +32,14 @@ describe("tool metadata index", () => {
         })
     })
 
+    it("derives Image Compressor SEO from the registry", () => {
+        expect(getToolSeoBySlug("image-compressor")).toEqual({
+            title: "Image Compressor",
+            description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-compressor",
+        })
+    })
+
     describe("getToolSeoBySlug", () => {
         it("returns seo for existing slug", () => {
             const seo = getToolSeoBySlug("slugify")

@@ -6,6 +6,7 @@ import { LengthConverterTool } from "./everyday/LengthConverterTool";
 import { WeightConverterTool } from "./everyday/WeightConverterTool";
 import { TimeArithmeticTool } from "./time/TimeArithmeticTool";
 import { ImageResizerTool } from "./image/ImageResizerTool";
+import { ImageCompressorTool } from "./image/ImageCompressorTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -135,6 +136,22 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["image", "resize", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: ImageResizerTool,
+    },
+    {
+        id: "image-compressor",
+        slug: "image-compressor",
+        name: "Image Compressor",
+        description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+        category: "image",
+        seo: {
+            title: "Image Compressor",
+            description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-compressor",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "compress", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImageCompressorTool,
     },
 ];
 

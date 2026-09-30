@@ -61,6 +61,10 @@ No shared image-family components are authorized yet. Repeated implementation
 evidence is required before introducing shared presentation. Do not implement a
 universal engine, generic processor, plugin architecture or processing runtime.
 
+Batch 3's independently passing Resizer/Compressor comparison authorizes only
+common source-file primitives, specified in [ImageFile](ImageFile.md). Operation
+encoding, React UI/state, object URLs and generation tokens remain local.
+
 Fixture provenance follows [the fixture convention](../../test/fixtures/images/README.md).
 Heavy decoder work must measure production build chunks and fresh-context browser
 JavaScript resources on unrelated routes and before/after explicit decoder loading.

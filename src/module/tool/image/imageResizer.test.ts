@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
-import {
-    detectImageResizerFormat, formatImageResizerBytes, heightFromWidth, widthFromHeight,
-    imageResizerFilename, MAX_SOURCE_BYTES, validateImageResizerSize, validateImageResizerDimension,
-    type ImageResizerFormat,
-} from "./imageResizer";
+import { heightFromWidth, widthFromHeight, imageResizerFilename, validateImageResizerDimension } from "./imageResizer";
+import { detectImageFileFormat as detectImageResizerFormat, formatImageFileBytes as formatImageResizerBytes,
+    MAX_SOURCE_BYTES, validateImageFileSize as validateImageResizerSize, type ImageFileFormat as ImageResizerFormat } from "./imageFile";
+
 
 describe("Image Resizer signatures", () => {
     it.each([
