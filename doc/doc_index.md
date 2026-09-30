@@ -82,6 +82,14 @@ implementation detail.
 platform services like the registry, observability, or storage.
 **Relations:** Implements the contracts defined in `SCHEMA.md`.
 
+### modules/ImageFileProcessing.md
+**Summary:** Frozen browser image-file validation, privacy, state, resource-limit,
+Blob/download and object-URL lifecycle contracts. No shared production engine is
+authorized. Includes HEIC proof and production-license boundaries.
+**When to read:** Before implementing or testing any v0.2 image tool.
+**Relations:** Uses TESTING.md and the deterministic image-fixture convention;
+preserves registry, storage and observability contracts in architecture.md.
+
 ### project-tree.txt
 **Summary:** A text representation of the file structure.
 **When to read:** To understand where files are located.

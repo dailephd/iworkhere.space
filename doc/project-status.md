@@ -4,13 +4,17 @@
 v0.1.1 development-validation hardening is integrated into `master` and is the
 accepted validation/development baseline. The package metadata remains at
 `0.1.0`; this integration does not perform a package-version release. The
-obsolete local repository orchestrator is retired. The four active CI jobs are
-Typecheck, Lint, Test, and Build. Browser E2E remains planned for v0.2.0 and is
-not currently implemented.
+obsolete local repository orchestrator is retired. v0.2.0 Image Utility Foundation
+is in progress. Batch 1 implements a separate production Chromium browser gate,
+fixture provenance policy and image lifecycle specification. CI now defines
+Typecheck, Lint, Test, Build and E2E; hosted E2E execution is pending the final
+version PR. The package remains `0.1.0` and the six product tools are unchanged.
 
 The approved design-system modernization intent from historical PR #1 has been reconciled onto this accepted baseline through the fresh design-reconciliation branch. PR #1 was not merged as-is because its branch was stale and divergent; it is superseded after replacement integration. `doc/DESIGN.md` is now the canonical visual authority and the current shell, theme controls, footer, and route composition follow it.
 
-The next project action is to prepare and freeze the v0.2.0 implementation plan from the accepted reconciled `master` using fresh repository evidence. Do not begin v0.2 implementation until that plan is complete.
+The planner-owned Batch 1 execution packet governs this foundation. After planner
+review of its report, the next action is Batch 2 — Image Resizer. No image utility
+or generic file-processing framework is implemented in Batch 1.
 ---
 
 ## Completed
@@ -52,11 +56,17 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 - `/api/log` endpoint for RustLogProvider log ingestion
 - `/api/health` health check endpoint
 - CI/CD pipeline — separate GitHub Actions workflows (typecheck, lint, test,
-  build)
+  build, e2e)
 - Test infrastructure with Vitest and unique report generation
   (`test-report/<RUN_ID>/`)
 - Aggregate local validation runner (`script/verify.ts`) with shared RUN_ID,
   command logs, and Vitest reports
+- Separate Playwright `test:e2e` command, desktop/mobile Chromium production
+  regression suite, diagnostic gate and reports under `test-report/e2e/<RUN_ID>/`
+- Image fixture provenance convention and `modules/ImageFileProcessing.md`
+- Ignored `heic-to@1.5.2` technical loading proof: CSP entry, lazy import and worker
+  entry pass. Functional HEIC conversion and final registry route isolation are
+  not claimed; LGPL-3.0 production license approval is required.
 - Project documentation updated (architecture, canonical design, code generation
   guidelines)
 
@@ -69,7 +79,8 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 - **Time Arithmetic** (`/tool/time-arithmetic`) — time category
 
 ### Test coverage
-(latest local validation on 2026-09-29: 16 test files, 188 tests, all passing)
+(latest local validation on 2026-09-30: 18 Vitest files, 199 tests, all passing;
+36 browser tests passing, 18 per Chromium project)
 - `src/module/theme/themeRegistry.test.ts` — 30 tests
 - `src/app/api/log/route.test.ts` — 9 tests
 - `src/lib/storage.test.ts` — 12 tests
@@ -86,7 +97,10 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 - `src/component/common/ThemeToggle.test.tsx` — 2 tests
 - `src/component/layout/AppShell.test.tsx` — 1 test
 - `src/component/layout/VerticalNav.test.tsx` — 1 test
-- Total: 188 tests, all passing across 16 discovered files
+- `src/component/layout/ServiceWorkerRegister.test.tsx` — 5 tests
+- `script/e2eDiagnostic.test.ts` — 6 tests
+- Total: 199 tests, all passing across 18 discovered Vitest files; original 188
+  tests retained. Production E2E passes 36 tests across both required viewports.
 
 ---
 
@@ -106,8 +120,8 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 
 ## Open Decisions
 
-- v0.2.0 browser E2E implementation details and ownership
-- v0.2.0 HEIC decoding approach and dependency/runtime cost
+- v0.2.0 HEIC production license approval, functional conversion and final
+  application dependency/runtime isolation acceptance
 - v0.4.0/v0.5.0 canonical category model for developer-oriented utilities
 - Auth (not needed for the Priority A+B catalog)
 - Payments (future)
@@ -124,9 +138,8 @@ The next project action is to prepare and freeze the v0.2.0 implementation plan 
 
 ## Next Steps
 
-Prepare and freeze `doc/plans/v0.2.0-implementation-plan.md` from the accepted
-reconciled `master` using fresh repository evidence. Do not implement v0.2
-until that plan is complete.
+Proceed to v0.2.0 Batch 2 — Image Resizer only after planner review of the Batch 1
+report. Preserve the shared feature branch and the planner-owned execution scope.
 
 Other unassigned scope remains under Version TBD until an explicit planning
 decision assigns it: security headers, recently-used integration,

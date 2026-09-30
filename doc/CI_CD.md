@@ -122,8 +122,16 @@ Violating test report uniqueness is a CI failure.
 
 ## 5. SSR and Hydration Safety Enforcement
 
-Current CI enforces the available build-time and Vitest checks. Browser-runtime
-hydration enforcement is planned for v0.2.0 and is not active in v0.1.1.
+CI defines five independent gates: Typecheck, Lint, Test, Build and E2E.
+`e2e.yaml` uses Node 20, `npm ci`, pinned Playwright Chromium installation with
+Linux dependencies, a production build, and `npm run test:e2e`. It triggers on
+pull requests and pushes to main/master, consistently with the existing gates.
+Reports under `test-report/e2e/` are always uploaded with a distinct run/attempt
+artifact name and 30-day retention. Local aggregate verification remains the
+original four steps; E2E is separate.
+
+E2E_CI_EXECUTION = PENDING_FINAL_VERSION_PR. Intermediate v0.2 feature-branch
+local validation does not establish a successful hosted workflow execution.
 
 **Build-time** (enforced by `npm run build` and type checking):
 
@@ -131,16 +139,15 @@ hydration enforcement is planned for v0.2.0 and is not active in v0.1.1.
 - `"use client"` must not be placed on pages or layouts
 - Import violations are caught by TypeScript
 
-**Runtime browser gate** (planned; requires Playwright E2E infrastructure):
+**Runtime browser gate** (implemented with Playwright production Chromium):
 
 - No hydration warnings permitted in the browser console
 - No `Date.now()` or unseeded `Math.random()` in render paths
 - Client-only behavior must render a stable placeholder on the server first
 
-Until the planned browser E2E gate is implemented, build and Vitest success
-must not be presented as browser-runtime proof. Once that gate is active, a
-hydration mismatch detected by the browser suite is a CI failure. See
-TESTING.md for the planned E2E hydration discipline.
+Build and Vitest success alone must not be presented as browser-runtime proof.
+The separate browser suite fails on page errors, console errors and hydration
+warnings/errors. See TESTING.md for report ownership and diagnostic discipline.
 
 ---
 

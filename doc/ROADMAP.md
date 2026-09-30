@@ -159,7 +159,7 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 ## Version 0.2.0 — Image Utility Foundation
 
-Status: Planned
+Status: In progress
 
 ### Goal
 
@@ -216,10 +216,13 @@ v0.2.0 is complete when:
 
 ### Unresolved planning decisions
 
-Resolve during v0.2.0 implementation-plan preparation:
+Browser E2E uses pinned Playwright Chromium with a separate command and CI gate.
+The selected HEIC technical candidate is `heic-to@1.5.2`; production license
+approval, real conversion and final application isolation remain required.
 
-- exact browser E2E tooling and command/CI ownership;
-- HEIC decoding approach and acceptable dependency/runtime cost;
+Remaining decisions/evidence:
+
+- HEIC production license approval and acceptable measured application runtime cost;
 - shared file-input/result primitives justified by the selected implementations.
 
 ## Version 0.3.0 — PDF & Document Essentials

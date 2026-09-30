@@ -1,0 +1,49 @@
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.my-dev-kit-workflow/playwright-browsers
+      npm_config_cache: ${{ github.workspace }}/.my-dev-kit-workflow/npm-cache
+      TEMP: ${{ github.workspace }}/.my-dev-kit-workflow/tmp
+      TMP: ${{ github.workspace }}/.my-dev-kit-workflow/tmp
+      TMPDIR: ${{ github.workspace }}/.my-dev-kit-workflow/tmp
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare project-local workflow storage
+        run: mkdir -p .my-dev-kit-workflow/{tools,tmp,npm-cache,playwright-browsers,worktrees}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx --no-install playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: E2E
+        run: npm run test:e2e
+
+      - name: Upload E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-report/e2e/
+          retention-days: 30

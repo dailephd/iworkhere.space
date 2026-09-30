@@ -391,7 +391,7 @@ Dynamic metadata generation from tool definitions.
 
 ### Framework
 - Vitest with Node environment
-- Tests follow `*.test.ts` convention alongside source files
+- Tests follow `*.test.ts` and `*.test.tsx` conventions alongside source files
 
 ### Unique test report
 - Every test run generates a unique report directory under
@@ -409,9 +409,25 @@ Dynamic metadata generation from tool definitions.
   directory
 - Contains no governance context, prompt, or coding-agent invocation
 
+### Browser validation foundation
+- Playwright is a separate production-browser validation subsystem in
+  `playwright.config.ts` and `test/e2e/`; it is not part of `script/verify.ts`.
+- `npm run build` precedes `npm run test:e2e`. Playwright owns a fresh production
+  server at `http://127.0.0.1:3100` and never reuses an existing server.
+- Desktop and mobile Chromium contexts protect existing routes, shell,
+  document scrolling, theme persistence, diagnostics and service worker.
+- Unique browser evidence belongs in `test-report/e2e/<RUN_ID>/`.
+- Future image lifecycle contracts are specified in
+  [ImageFileProcessing](modules/ImageFileProcessing.md). No shared production
+  file-processing runtime or component is introduced by this foundation.
+- Heavy decoder feasibility is measured in an ignored isolated harness. The
+  static tool registry is preserved; final application isolation must be
+  measured again when the future HEIC tool is registered.
+
 ### CI pipeline
-Four separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,
-`test.yaml`, `build.yaml`. All must pass.
+Five separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,
+`test.yaml`, `build.yaml`, `e2e.yaml`. All must pass when exercised. E2E workflow
+execution for the intermediate v0.2 branch is pending the final version PR.
 
 ---
 

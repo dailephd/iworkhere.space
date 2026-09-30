@@ -180,13 +180,39 @@ Rules:
 
 ## 2.4 E2E Browser Tests (Playwright)
 
-**Status: planned, not yet implemented.** As of this reconciliation pass there
-is no `@playwright/test` dependency, Playwright config, or `*.spec.ts` file in
-the repository, and `npm run test` only executes Vitest (`vitest run`). The
-rules below define the intended discipline for when Playwright is introduced;
-until then, layout, routing, and hydration behavior are exercised only through
-Vitest unit/contract tests and manual verification. Do not treat this section
-as evidence that E2E coverage currently exists.
+**Status: implemented in v0.2.0 Batch 1.** `@playwright/test@1.63.0` is pinned as
+an exact devDependency. `npm test` remains Vitest only; `npm run verify` remains
+Typecheck → Lint → Vitest → Build. Browser validation is a separate heavier gate:
+
+```text
+npm run build
+npm run test:e2e
+```
+
+`playwright.config.ts` owns a fresh production server using
+`npm run start -- --hostname 127.0.0.1 --port 3100`. Existing servers are never
+reused. The suite runs headless Chromium only, one worker, zero retries, with
+`desktop-chromium` (1280 × 720) and `mobile-chromium` (390 × 844) projects.
+Install Chromium through the pinned local Playwright CLI; keep local browser
+binaries under `.my-dev-kit-workflow/playwright-browsers` and set
+`PLAYWRIGHT_BROWSERS_PATH` accordingly.
+
+Each invocation generates a timestamp/random RUN_ID shared by its workers.
+Reports live under `test-report/e2e/<RUN_ID>/`: `results.json`, `results.xml`,
+`html/`, and `artifacts/`. HTML uses `open: never`; traces and screenshots are
+retained only on failure; videos are disabled. CI always uploads the E2E hierarchy.
+
+Specs in `test/e2e/` use a shared fixture that attaches listeners before navigation.
+Every applicable route fails on `pageerror`, console errors and React hydration
+warnings/errors, without suppression or arbitrary allowlists. Expected 404 status
+is tested through a request to avoid treating an intentional failed resource as an
+unapproved browser diagnostic. Health response, all six catalog button flows, calculator
+and time arithmetic interactions, responsive shell/skip/navigation/footer,
+document scrolling, theme reload persistence and production SW are covered.
+
+Image fixtures follow [the provenance convention](../test/fixtures/images/README.md).
+No internet image downloads occur during tests. File lifecycle requirements are
+specified in [ImageFileProcessing](modules/ImageFileProcessing.md).
 
 Playwright is a first-class discipline in this project, not optional decoration.
 
@@ -255,7 +281,7 @@ E2E tests must verify layout at two viewports:
 
 | Viewport | Dimensions | What to Check |
 |----------|-----------|---------------|
-| Mobile | 390×844 | Header visible, vertical nav hidden or collapsed, content visible, no overflow |
+| Mobile | 390×844 | Header and responsive navigation usable, content visible, footer reachable, no horizontal overflow |
 | Desktop | 1280×720 | Vertical nav visible, banner slots present, content area renders correctly |
 
 Use structural assertions, not pixel-perfect comparisons:
