@@ -244,6 +244,7 @@ test("file information stays outside URL, storage and application network reques
     const requests: { url: string; body: string | null }[] = [];
     page.on("request", request => requests.push({ url: request.url(), body: request.postData() }));
     await page.goto("/tool/image-converter");
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("analytic_event_count") ?? "{}").tool_opened ?? 0)).toBe(1);
     const storageBefore = await page.evaluate(() => ({ local: { ...localStorage }, session: { ...sessionStorage } }));
     await page.getByLabel("Choose image").setInputFiles({ name: `${marker}.jpg`, mimeType: "image/jpeg", buffer: await readFile(fixturePath("jpg")) });
     await expect(page.getByText(/Source: 240 × 180 px/)).toBeVisible(); await convert(page);

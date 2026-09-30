@@ -25,7 +25,7 @@ Deployment must never change behavior silently.
 
 ## 2. Required CI Jobs
 
-Five jobs run on every push and pull request:
+Six jobs run on every push and pull request:
 
 | Job | Command | Enforces |
 |-----|---------|----------|
@@ -34,13 +34,15 @@ Five jobs run on every push and pull request:
 | `test` | `npm run test` | Unit, contract, and integration tests |
 | `build` | `npm run build` | Next.js production build, RSC correctness |
 | `e2e` | `npm run test:e2e` after build | Production desktop/mobile Chromium behavior and diagnostics |
+| `container` | `npm run test:container` | Built Docker runtime, health, image hygiene, and the same browser suite against the container |
 
-All five jobs must pass.
+All six jobs must pass.
 If any job fails, merge is blocked.
 
 For local aggregate validation, run `npm run verify`. This command runs the
 same four checks sequentially with a shared `RUN_ID` and per-command logs; it
-does not replace the five independent GitHub Actions jobs.
+does not include E2E or Container and does not replace the six independent
+GitHub Actions jobs. `npm run test:container` is the production-container gate.
 
 Each job runs in a separate GitHub Actions workflow file under `.github/workflows/`.
 
@@ -123,13 +125,13 @@ Violating test report uniqueness is a CI failure.
 
 ## 5. SSR and Hydration Safety Enforcement
 
-CI defines five independent gates: Typecheck, Lint, Test, Build and E2E.
-`e2e.yaml` uses Node 20, `npm ci`, pinned Playwright Chromium installation with
-Linux dependencies, a production build, and `npm run test:e2e`. It triggers on
-pull requests and pushes to main/master, consistently with the existing gates.
-Reports under `test-report/e2e/` are always uploaded with a distinct run/attempt
-artifact name and 30-day retention. Local aggregate verification remains the
-original four steps; E2E is separate.
+CI defines six independent gates: Typecheck, Lint, Test, Build, E2E and Container.
+Active workflows use Node 24.21.0. The E2E gate installs pinned Chromium,
+builds, and runs `npm run test:e2e`; the Container gate checks Docker, installs
+Chromium, and runs `npm run test:container`. Both trigger on pull requests and
+pushes to main/master. E2E and container reports are uploaded with distinct
+run/attempt artifact names and 30-day retention. Local aggregate verification
+remains the original four steps; E2E and Container are separate.
 
 E2E_CI_EXECUTION = PENDING_FINAL_VERSION_PR. Intermediate v0.2 feature-branch
 local validation does not establish a successful hosted workflow execution.
@@ -156,7 +158,7 @@ warnings/errors. See TESTING.md for report ownership and diagnostic discipline.
 
 Pull requests must:
 
-1. Pass all five CI jobs
+1. Pass all six CI jobs
 2. Not skip tests or suppress type errors
 3. Include tests for new logic (see TESTING.md)
 4. Not introduce direct layer violations

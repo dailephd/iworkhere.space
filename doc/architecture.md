@@ -3,6 +3,14 @@
 This document defines the architectural boundaries of the project.
 Any generated code MUST follow this structure.
 
+## Deployment Runtime Boundary
+
+Production packaging follows `Next.js standalone server → Docker runtime →
+public/static assets → browser`. Containerization changes deployment packaging,
+not application domain architecture. The generated standalone server serves the
+same-origin Worker, decoder, service-worker, manifest, and license assets. See
+`doc/DEPLOYMENT.md` for the runtime guide.
+
 ## Core Goal
 
 Image Resizer, Image Compressor and Image Converter share narrow source-file rules and browser
@@ -467,3 +475,17 @@ execution for the intermediate v0.2 branch is pending the final version PR.
 - lib/ importing from module/
 
 If unsure, STOP and ask for clarification.
+# Deployment runtime boundary
+
+Production packaging adds this deployment path without changing application
+domain architecture:
+
+```text
+Next.js standalone server → Docker runtime → public/static assets → browser
+```
+
+The runtime uses the Next-generated standalone server and serves Worker,
+decoder, service-worker, manifest, and public license assets from the same
+application origin. Docker is an optional packaging/runtime layer; it does not
+move tool logic out of the existing application layers. See
+`doc/DEPLOYMENT.md` for operation details.

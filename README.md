@@ -29,18 +29,24 @@ directory.
 
 ## CI
 
-GitHub Actions keeps the five validation jobs independent:
+GitHub Actions keeps six validation jobs independent:
 
 - `typecheck.yaml` — `npm run typecheck`
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
 - `e2e.yaml` — `npm run test:e2e` (production browser gate)
+- `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
 `npm run verify` runs typecheck, lint, test and build; E2E remains separate.
-Hosted E2E on the final version PR is pending because no release PR exists.
+`npm run test:container` reuses the browser suite against a built Docker image.
+Neither E2E nor Container is part of `npm run verify`. Hosted final-version PR
+gates remain pending because no release PR exists.
 
-All five jobs must pass. The local aggregate command does not replace them.
+All six jobs must pass. The local aggregate command does not replace them.
+
+Docker is optional for local development. See [doc/DEPLOYMENT.md](doc/DEPLOYMENT.md)
+for the production-style preview, readiness helper, and container validation commands.
 
 ## Architecture
 

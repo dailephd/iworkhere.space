@@ -7,6 +7,7 @@ test.use({ serviceWorkers: "block" });
 for (const route of ["/", "/discover", "/tool/calculator", "/category/text"]) {
     test(`record production JavaScript resources on ${route}`, async ({ page }, testInfo) => {
         expect((await page.goto(route, { waitUntil: "networkidle" }))?.status()).toBe(200);
+        const pageOrigin = new URL(page.url()).origin;
         const resources = await page.evaluate(() =>
             performance.getEntriesByType("resource")
                 .filter(entry => new URL(entry.name).pathname.endsWith(".js"))
@@ -22,7 +23,7 @@ for (const route of ["/", "/discover", "/tool/calculator", "/category/text"]) {
         );
         expect(resources.length).toBeGreaterThan(0);
         for (const resource of resources) {
-            expect(new URL(resource.url).origin).toBe("http://127.0.0.1:3100");
+            expect(new URL(resource.url).origin).toBe(pageOrigin);
             expect(resource.encodedBodySize).toBeGreaterThan(0);
         }
         await testInfo.attach("javascript-loading", {

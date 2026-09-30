@@ -30,9 +30,19 @@ Only the dedicated HEIC worker imports heic-to/next; it activates after source
 size checks, never on initial routes, and terminates after each operation or
 invalidation. No generic file framework is implemented.
 
-CI has five independent gates: Typecheck, Lint, Test, Build and E2E.
-`npm run verify` runs the first four; `npm run test:e2e` remains separate.
+CI has six independent gates: Typecheck, Lint, Test, Build, E2E and Container.
+Active workflows use Node 24.21.0. `npm run verify` runs the first four;
+`npm run test:e2e` and optional Docker `npm run test:container` are separate.
 Current counts and responsibility details are in TESTING.md.
+
+Batch 7 container runtime hardening: PASS. Next standalone output, a
+digest-pinned Node 24 Docker image, optional Compose preview, Windows Docker
+Desktop readiness helper, container smoke orchestration, external Playwright
+runtime targeting, and the sixth Container workflow are implemented. The
+container runs non-root with a read-only filesystem and passed health, route,
+PWA/HEIC, full desktop/mobile E2E, image-hygiene, and graceful-shutdown checks.
+Evidence is in the unique `test-report/container/` run directory. Container
+runtime validation does not resolve the separate HEIC license or release gate.
 
 ## Completed
 

@@ -4,13 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "docker:ready": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-DockerDesktop.ps1",
+    "dev:docker": "npm run docker:ready && docker compose up --build -d",
+    "dev:docker:down": "npm run docker:ready && docker compose down --remove-orphans",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:container": "tsx script/containerSmoke.ts",
     "verify": "tsx script/verify.ts"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
     "heic-to": "1.5.2",

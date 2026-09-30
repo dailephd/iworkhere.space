@@ -260,6 +260,7 @@ test.describe("HEIC converter", () => {
         const requests: { url: string; body: string; method: string }[] = [];
         page.on("request", request => requests.push({ url: request.url(), body: request.postData() ?? "", method: request.method() }));
         await page.goto("/tool/heic-converter");
+        await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("analytic_event_count") ?? "{}").tool_opened ?? 0)).toBe(1);
         const storageBefore = await page.evaluate(() => ({ local: { ...localStorage }, session: { ...sessionStorage } }));
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: `${marker}.heic`, mimeType: "image/heic", buffer: readFileSync(fixture) });
         await expect(page.getByAltText("Selected HEIC source preview")).toBeVisible();
@@ -267,7 +268,8 @@ test.describe("HEIC converter", () => {
         await expect(page.getByAltText("Converted image preview")).toBeVisible();
         expect(page.url()).not.toContain(marker);
         expect(JSON.stringify(requests)).not.toContain(marker);
-        expect(requests.filter(request => !request.url.startsWith("blob:") && new URL(request.url).origin !== "http://127.0.0.1:3100")).toEqual([]);
+        const applicationOrigin = new URL(page.url()).origin;
+        expect(requests.filter(request => !request.url.startsWith("blob:") && new URL(request.url).origin !== applicationOrigin)).toEqual([]);
         expect(requests.filter(request => request.method === "POST").every(request => request.url.endsWith("/api/log") && !request.body.includes("image/heic") && !request.body.includes("480"))).toBe(true);
         const counter = JSON.parse(storageBefore.local.analytic_event_count ?? "{}");
         const expectedCounter = { ...counter, tool_executed: (counter.tool_executed ?? 0) + 1 };

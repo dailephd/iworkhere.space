@@ -9,6 +9,7 @@ test("production registers the served JavaScript service worker", async ({ page,
         const ready = await navigator.serviceWorker.ready;
         return { scope: ready.scope, script: ready.active?.scriptURL };
     });
-    expect(registration.scope).toBe("http://127.0.0.1:3100/");
-    expect(registration.script).toBe("http://127.0.0.1:3100/sw.js");
+    const pageOrigin = new URL(page.url()).origin;
+    expect(registration.scope).toBe(`${pageOrigin}/`);
+    expect(registration.script).toBe(`${pageOrigin}/sw.js`);
 });

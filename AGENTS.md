@@ -10,9 +10,13 @@ npm run lint         # ESLint
 npm run typecheck    # TypeScript type checking (tsc --noEmit)
 npm run test         # Unit tests (vitest run)
 npm run verify       # Aggregate local validation with shared reports
+npm run test:container # Optional Docker production-runtime gate
 
-CI runs five independent gates: typecheck, lint, test, build, and E2E (all must pass).
-`npm run verify` runs the first four; `npm run test:e2e` is separate. Separate GitHub Actions workflow per step.
+CI runs six independent gates: typecheck, lint, test, build, E2E, and Container.
+`npm run verify` runs the first four; `npm run test:e2e` and `npm run test:container`
+are separate. Docker is optional for normal development. Active CI uses Node 24;
+production Docker packaging uses Next standalone output. Do not bypass the
+container gate for deployment-runtime changes.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 
@@ -270,7 +274,7 @@ CI enforces:
 - Build
 - E2E (separate from `npm run verify`)
 
-Agents must assume CI will enforce all five.
+Agents must assume CI will enforce all six.
 
 ## Image error feedback
 

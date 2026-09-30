@@ -182,6 +182,11 @@ accompanying tests as defined here.
 
 ## 5. Operational / Debugging Documents
 
+### DEPLOYMENT.md
+
+Authoritative Docker and self-hosted runtime guide: standalone image, optional
+local preview, runtime requirements, browser assets, and release boundaries.
+
 ### debugging.md
 **Summary:** A systematic protocol for isolating root causes. It mandates
 reading code before reasoning, classifying failures, and applying the smallest
