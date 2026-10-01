@@ -2,6 +2,8 @@
 
 This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `doc/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
 
+The planned UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). Current behavior and the proposed pilot are separated below; documenting a proposal does not mark it implemented or visually approved.
+
 ## Product direction
 
 The interface is utility-first, modern, polished, calm, technically precise, trustworthy, efficient, and product-grade. Prefer solid semantic surfaces, restrained elevation, system sans-serif typography, and predictable spacing and shape scales. Clarity outranks cleverness; use explicit, composable UI and keep data flow visible.
@@ -25,6 +27,8 @@ Use a consistent spacing rhythm instead of dense layouts or per-tool pixel tunin
 The shared conceptual color tokens are background, surface, surface-alt, border, text, text-muted, accent, accent-hover, danger, success, warning, and focus-ring. Add or change a token only when the system requires it and update this contract. Keep base tokens in `src/app/global.css` and theme overrides in `src/style/theme.css`; do not put random colors in tool code.
 
 ## Application layout and scrolling
+
+This section describes the current implemented layout, not the proposed top-navigation pilot.
 
 `AppShell` owns the shared page layout. The header target is about 64px. Desktop `VerticalNav` targets 176px, with an acceptable range of roughly 168–184px. Optional advertising rails target 112px and must not exceed 120px each; the active application supplies only the right rail. The main workspace receives the remaining width through a flexible `minmax(0, 1fr)`-equivalent track. Main content is capped near 1280px; when the viewport permits, tool workspaces should generally have 800–1040px available.
 
@@ -58,6 +62,20 @@ Keep a working skip link to `#main-content` and exactly one main landmark. Inter
 Assume mobile devices and slow networks. Prefer the system font stack and minimal JavaScript. Do not add animation libraries, icon packages solely for visual polish, WebGL, canvas effects, large background imagery, client-side visual frameworks, or styling frameworks. Do not turn Server Components into Client Components just to style them. Do not add a runtime dependency solely for visual modernization.
 
 All analytics go through the existing `track()` abstraction and declared event names. Persistent state continues through the existing storage abstraction. Treat inputs as untrusted, prefer current client-side processing, and do not add dynamic execution. These implementation boundaries are governed by the architecture and retrieval-first instructions; design work does not authorize changes to them.
+
+## Planned workspace-first pilot
+
+Status: proposed for visual review, not implemented. The planner-authored [UI/discovery plan](plans/ui-discovery-growth-plan.md) owns scope, research, rollout, and search requirements.
+
+The candidate changes the working composition: compact top navigation in place of the permanent left navigation rail; a functional search entry point rather than the inactive header search field; and compact image settings beside a larger preview/result stage. Mobile uses a logical stacked workspace and compact wrapping navigation, not a new drawer or modal system. Existing route identities and AppShell ownership remain.
+
+The homepage becomes a compact launcher with one working search surface, populated categories, real linked tool cards, and a curated image-tool group. It must not become a full-screen promotional hero. Do not describe curated tools as popular without usage evidence.
+
+Pilot values are approximately 280–320px for the desktop settings column and 28–32px for tool titles, with a flexible preview stage, the existing near-1280px content maximum, and existing semantic tokens. These are review targets, not new global CSS requirements until the visual reference is accepted. Preserve all eight themes, accessible focus, error quality, actual image aspect ratios, truthful result metrics, and natural document scrolling.
+
+Header and left banners stay absent. Right/footer banners remain protected by the last explicit banner instruction. The initial pilot must account for them; an optional no-placeholder comparison is a proposal requiring explicit approval, not permission to remove them silently.
+
+Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before rolling the pattern to the other image tools. Functional or Observer PASS is not a substitute for visual approval. After approval, update the applicable current-layout and affected component contracts before implementation; do not leave contradictory current/proposed requirements.
 
 ## Change and documentation rules
 

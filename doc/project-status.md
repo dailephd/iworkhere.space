@@ -83,7 +83,7 @@ runtime validation does not resolve the separate HEIC license or release gate.
 - `/api/log` endpoint for RustLogProvider log ingestion
 - `/api/health` health check endpoint
 - CI/CD pipeline — separate GitHub Actions workflows (typecheck, lint, test,
-  build, e2e)
+  build, e2e, container)
 - Test infrastructure with Vitest and unique report generation
   (`test-report/<RUN_ID>/`)
 - Aggregate local validation runner (`script/verify.ts`) with shared RUN_ID,
@@ -130,16 +130,51 @@ from the current tree and available Git history. V0_2_VERSION_PLAN_PRESENT=NO;
 RETROACTIVE_VERSION_PLAN_CREATED=NO. Historical Batch 3–5 reports and ecosystem
 learning remain snapshots; they are not current-state authorities or new Batch 6 gaps.
 
+## UI and discovery planning — 2026-10-01
+
+Source review at `4dcdcd2c64bfbbcacbb37c069090fce8921f310e` confirms that the
+header and left banners are removed and their optional slot support remains.
+The site header, primary navigation, right banner, footer banner, and footer
+remain. This is implemented banner cleanup, not the broader visual redesign.
+
+The planner has added [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md)
+after current repository review and public design/search research. The next
+visual direction is a compact top-navigation and preview-first workspace pilot
+for the homepage and Image Resizer, followed by visual approval before broader
+rollout. The initial scope retains the right/footer banners unless a later
+explicit visual decision changes them.
+
+Search/navigation gaps identified in current source include an inactive header
+search input, script-button catalog navigation, a minimal ToolPageTemplate,
+and absent sitemap/robots implementations in the inspected app/public listings.
+These findings are planned work, not fixes performed by this documentation
+update. Basic crawlability moves earlier; large content programs, new tools,
+AI-search extras, and new analytics infrastructure are not prerequisites.
+
+No new visual implementation, application test run, public deployment, ranking
+measurement, or traffic improvement is claimed by this planning update. The
+plan is not a retrospective v0.2 version plan. Existing technical acceptance
+and the unresolved release/license gate remain separate.
+
 ## Remaining decisions
 
+- Visual approval of the homepage/Image Resizer pilot before image-family rollout.
+- Any removal of the currently retained right/footer banners requires explicit approval.
 - HEIC production-license approval before release.
-- Final-version PR hosted E2E after explicit release-preparation authorization.
+- Final-version PR hosted gates after explicit release-preparation authorization.
+- First-party traffic, indexing, and performance baselines after authorized public availability.
 - Later-version/Version-TBD scope remains in ROADMAP.md: authentication, payments,
-  analytics/ad providers, server storage, recently-used integration, metadata
-  enrichment, About content and RustLogProvider activation.
+  analytics/ad providers, server storage, recently-used integration, broader metadata
+  enrichment, About content and RustLogProvider activation. The new plan defines
+  only the bounded near-term discovery subset, not these entire workstreams.
 
 ## Next action
 
-Return the Batch 6 report to the planner. Do not create a release PR, merge,
-version bump, publish or deploy. After explicit HEIC production-license approval,
-proceed to the normal pre-release audit and release-preparation workflow.
+Prepare the homepage and Image Resizer visual pilot from
+[the UI/discovery plan](plans/ui-discovery-growth-plan.md), then obtain visual
+approval before extending the pattern to the other image tools. Do not start a
+site-wide restyle, new catalog version, or separate AI-optimization project.
+
+Do not create a release PR, merge, bump the version, publish or deploy from this
+planning task. The normal pre-release audit and release-preparation workflow
+remain separate and still require the explicit HEIC release-license decision.

@@ -46,6 +46,18 @@ yet, do not invent batches from the roadmap; prepare the plan first.
 **Relations:** Subordinate to the roadmap's version-level scope. It is planning
 authority, not evidence that a batch or version was implemented.
 
+### plans/ui-discovery-growth-plan.md
+**Summary:** Planner-authored, research-backed 2026-10-01 plan for a small
+homepage/Image Resizer visual pilot, approved-pattern image-family rollout,
+basic crawlability and useful tool-page content, followed by authorized launch
+measurement. Records current source findings, current public research,
+explicitly proposed visual changes, exclusions, and unresolved evidence.
+**When to read:** Before preparing the next UI/discovery implementation prompt.
+**Relations:** [Detailed plan](plans/ui-discovery-growth-plan.md), DESIGN.md,
+ROADMAP.md and project-status.md. It is not the missing historical v0.2 version
+plan, does not reorder the A+B catalog, and does not authorize release or claim
+traffic gains. Visual approval precedes broad rollout.
+
 ### project-status.md
 **Summary:** Tracks actual current implementation, validation state, open
 decisions, and exact next action. It does not own future version scope.
@@ -66,7 +78,8 @@ new modules or changing layer boundaries.
 ### DESIGN.md
 **Summary:** The canonical product design and styling contract, including
 visual identity, themes, layout, scrolling, accessibility, performance, and
-current implementation boundaries.
+current implementation boundaries. Separates the current implemented shell
+from the proposed workspace-first pilot awaiting visual approval.
 **When to read:** Before changing product visual design, styling, interaction
 presentation, responsive behavior, or visual accessibility rules.
 **Relations:** Works with `architecture.md`, agent guidance, and
@@ -158,10 +171,10 @@ repository files that are already available to the coding environment.
 architecture, roadmap, and version plan.
 
 ### CI_CD.md
-**Summary:** Defines the mandatory CI checks (typecheck, lint, test, build) that
-run independently on every PR. It also documents `npm run verify` as the
-aggregate local validation command, test report discipline, and the prohibition
-on suppressing errors.
+**Summary:** Defines six independent CI gates: typecheck, lint, test, build,
+E2E and Container. It documents `npm run verify` as the first four local checks,
+with separate browser/container commands, report discipline, and the
+prohibition on suppressing errors.
 **When to read:** When setting up a PR or debugging a CI failure.
 **Relations:** Enforces the standards defined in `TESTING.md`.
 
@@ -171,7 +184,7 @@ on suppressing errors.
 
 ### TESTING.md
 **Summary:** The comprehensive testing strategy. It defines the current Vitest
-unit/contract/integration disciplines plus the planned Playwright E2E browser
+unit/contract/integration disciplines and implemented Playwright E2E browser
 discipline, the requirement for unique test reports, and the rules for SSR
 safety and hydration mismatch detection.
 **When to read:** Before writing any code. Every new feature must have
@@ -205,6 +218,14 @@ and `TESTING.md`.
 3. `project-status.md` - See what is actually built now.
 4. `ROADMAP.md` - Understand the approved product/version direction.
 5. `TESTING.md` - Learn how to verify your work.
+
+### For UI and discovery planning
+1. `project-status.md` - Establish actual implementation and release state.
+2. `plans/ui-discovery-growth-plan.md` - Review source evidence, proposed pilot,
+   research, delivery boundaries and measurement limits.
+3. `DESIGN.md` - Separate current layout from the pilot requiring approval.
+4. Refresh affected source/contracts through my-dev-kit before implementation;
+   approve the visual reference before rollout.
 
 ### For planning a version
 1. `ROADMAP.md` - Preserve the approved version goal, scope, dependencies,
@@ -259,10 +280,10 @@ only generation metadata (representative file, member files, inferred role,
 merge signals) with **no real contract content** — every unreconciled file
 ends with "Manual review and updates are encouraged to add implementation
 details." This reconciliation pass added a `## Contract` section with real
-exported signatures, storage keys, and dependencies to the files judged most
-architecturally load-bearing: `Registry.md`, `Metadata.md`, `Storage.md`,
-`RecentlyUsed.md`, `Observability.md`, `Seo.md`, `ThemeRegistry.md`,
-`ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
+exported signatures, storage keys, dependencies, and known implementation gaps
+to the files judged most architecturally load-bearing: `Registry.md`,
+`Metadata.md`, `Storage.md`, `RecentlyUsed.md`, `Observability.md`, `Seo.md`,
+`ThemeRegistry.md`, `ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
 `TimeArithmeticTool.md` (previously undocumented despite being a registered
 tool). The remaining ~36 files (all `doc/components/*.md` except
 `TimeArithmeticTool.md`, and `doc/modules/{Analytics,Button,ExtractHtmlText,

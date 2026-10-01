@@ -6,7 +6,7 @@
 
 The current repository package version is `0.1.0`.
 
-The existing product baseline provides six registered utilities:
+The original v0.1.0 product baseline provides six registered utilities:
 
 - Slugify Text
 - HTML Text Extractor
@@ -14,6 +14,8 @@ The existing product baseline provides six registered utilities:
 - Length Converter
 - Weight Converter
 - Time Arithmetic
+
+The implemented, unreleased v0.2 image family brings the current feature-branch catalog to ten tools. Package version and release status remain separate from implemented scope.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -87,11 +89,11 @@ Future versions must preserve the following established principles:
 
 ## Current baseline — v0.1.0
 
-Status: Current package/source baseline
+Status: Original product foundation; current package metadata remains 0.1.0
 
-Version 0.1.0 establishes the current product and architecture.
+Version 0.1.0 establishes the original product and architecture.
 
-Current capabilities include:
+Baseline capabilities include:
 
 - six working utility tools;
 - registry-based tool definition and discovery;
@@ -496,7 +498,21 @@ Measure production bundle/dependency impact when image/PDF/developer tools intro
 
 ### SEO/catalog growth support
 
-Current per-tool/category metadata remains adequate for the A+B sequence. Sitemap, structured data, internal-linking, and richer catalog discovery work may be introduced when catalog size or crawl evidence justifies them.
+Existing per-tool/category metadata is a foundation, not evidence that discovery is complete. The 2026-10-01 repository review identified script-button catalog navigation, an inactive header search field, minimal tool-page presentation, and no sitemap/robots implementation in the inspected app/public listings.
+
+Basic crawlable links, useful image-tool landing-page text, metadata consistency, and sitemap/crawler policy are now planned alongside the near-term visual pilot. They must not wait solely for the catalog to reach thirty tools. See [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md) for the source evidence, research, bounded delivery sequence, and measurement limits.
+
+This changes the priority of a bounded discovery subset, not the catalog version sequence. Broader ranking/recommendation systems, new analytics vendors, and server-backed search remain deferred. Neither search eligibility nor modern styling guarantees rankings, traffic, or LLM citations.
+
+### Near-term UI and discovery pilot
+
+Status: Planned; visual approval and implementation remain pending.
+
+Goal: make the existing tools more useful and visually distinct before expanding the amount of redesign work. Start with the homepage and Image Resizer, proposing compact top navigation and a settings-plus-preview workspace rather than repeating the existing permanent-sidebar composition. Preserve the registry, routes, themes, local-processing/privacy contracts, and existing banner decisions unless explicitly revised.
+
+After visual approval, roll the accepted pattern across the other three image tools and add the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The HEIC production-license gate remains unresolved.
+
+The [detailed plan](plans/ui-discovery-growth-plan.md) owns this enhancement's delivery boundaries. It is not a retroactive v0.2 implementation plan or a new numbered catalog version. No new utility, bulk processing, target-size compression, generic file framework, large content program, or AI-specific integration is added to the first delivery.
 
 ## Documentation and specification debt policy
 
@@ -556,6 +572,8 @@ Do not add a recently-used UI surface without an explicit product decision.
 Tags/popularity support exists in the current architecture, but consumer/ranking/featured semantics remain unresolved.
 
 Do not introduce recommendation/ranking behavior until the consumer surface and semantics are explicitly defined.
+
+The near-term UI/discovery plan defines only functional search entry, real destination links, populated-category discovery, a curated image-tool group without popularity claims, related image-tool links, and basic SEO. It does not authorize personalized ranking, a new recommendation engine, or the full deferred enrichment workstream.
 
 ### RustLogProvider startup activation
 
@@ -696,6 +714,12 @@ This roadmap does not authorize a coding agent to:
 Where a version has unresolved planning decisions, resolve them before its implementation plan is frozen.
 
 ## Next planning action
+
+Prepare the homepage and Image Resizer visual pilot from
+[UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md).
+Obtain visual approval before extending the design to the other image tools.
+Basic discovery improvements accompany the accepted rollout; no new catalog
+version or site-wide rewrite is authorized by this planning update.
 
 The v0.2 implementation is technically complete. The package remains `0.1.0`;
 no release PR, publication or deployment is authorized. Obtain explicit HEIC
