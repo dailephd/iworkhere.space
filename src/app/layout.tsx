@@ -29,19 +29,9 @@ export default function RootLayout({
         <ThemeProvider>
             <AppShell
                 navItem={defaultNavItem}
-                headerBannerSlot={
-                    <div className="text-sm text-[var(--text-muted)]">
-                        Header banner
-                    </div>
-                }
                 footerBannerSlot={
                     <div className="text-sm text-[var(--text-muted)]">
                         Footer banner
-                    </div>
-                }
-                leftBannerSlot={
-                    <div className="text-sm text-[var(--text-muted)]">
-                        Left banner
                     </div>
                 }
                 rightBannerSlot={

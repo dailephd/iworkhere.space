@@ -6,15 +6,28 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         const main = page.getByRole("main");
         await expect(main).toHaveCount(1);
         await expect(main).toBeVisible();
-        await expect(page.getByRole("banner")).toBeVisible();
+        const siteHeader = page.getByRole("banner");
+        await expect(siteHeader).toBeVisible();
+        await expect(siteHeader.getByText("iworkhere.space", { exact: true })).toBeVisible();
+        await expect(siteHeader.getByRole("button", { name: "Themes", exact: true })).toBeVisible();
+        await expect(page.getByText("Header banner", { exact: true })).toHaveCount(0);
+        await expect(page.getByText("Left banner", { exact: true })).toHaveCount(0);
         const navigation = page.getByRole("navigation", { name: "Primary navigation", exact: true });
         await expect(navigation).toBeVisible();
         const desktop = testInfo.project.name === "desktop-chromium";
-        for (const name of ["Left advertising area", "Right advertising area"]) {
-            const area = page.getByRole("complementary", { name });
-            if (desktop) await expect(area).toBeVisible();
-            else await expect(area).toBeHidden();
+        await expect(page.getByRole("complementary", { name: "Left advertising area" })).toHaveCount(0);
+        const rightAdvertisingArea = page.getByRole("complementary", { name: "Right advertising area" });
+        const rightBanner = page.getByText("Right banner", { exact: true });
+        const footerBanner = page.getByText("Footer banner", { exact: true });
+        if (desktop) {
+            await expect(rightAdvertisingArea).toBeVisible();
+            await expect(rightBanner).toBeVisible();
+            await expect(siteHeader.getByRole("searchbox", { name: "Search tools" })).toBeVisible();
+        } else {
+            await expect(rightAdvertisingArea).toBeHidden();
+            await expect(rightBanner).toBeHidden();
         }
+        await expect(footerBanner).toBeVisible();
 
         await page.keyboard.press("Tab");
         const skip = page.getByRole("link", { name: "Skip to main content", exact: true });
@@ -28,8 +41,11 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         const geometry = await page.evaluate(() => {
             const main = document.querySelector("main")!;
             const footer = document.querySelector("footer")!;
+            const grid = main.parentElement!;
+            const navigation = document.querySelector('nav[aria-label="Primary navigation"]')!.parentElement!;
             const shell = document.querySelector("body > div:has(>header)")!;
             const style = getComputedStyle(main);
+            const gridStyle = getComputedStyle(grid);
             const shellStyle = getComputedStyle(shell);
             return {
                 scrollOwner: document.scrollingElement === document.documentElement,
@@ -39,6 +55,8 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
                 mainScrollHeight: main.scrollHeight,
                 horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
                 footerFollowsMain: footer.getBoundingClientRect().top >= main.getBoundingClientRect().bottom,
+                desktopGridTrackCount: gridStyle.gridTemplateColumns.split(" ").length,
+                navigationStartsAtGridStart: Math.abs(navigation.getBoundingClientRect().left - grid.getBoundingClientRect().left) < 1,
             };
         });
         expect(geometry.scrollOwner).toBe(true);
@@ -47,6 +65,10 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         expect(geometry.mainScrollHeight).toBeLessThanOrEqual(geometry.mainClientHeight);
         expect(geometry.horizontalOverflow).toBe(false);
         expect(geometry.footerFollowsMain).toBe(true);
+        if (desktop) {
+            expect(geometry.desktopGridTrackCount).toBe(3);
+            expect(geometry.navigationStartsAtGridStart).toBe(true);
+        }
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         await expect(page.getByRole("contentinfo")).toBeInViewport();
         const scroll = await page.evaluate(() => ({ y: window.scrollY, maximum: document.documentElement.scrollHeight - window.innerHeight }));

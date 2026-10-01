@@ -26,7 +26,7 @@ The shared conceptual color tokens are background, surface, surface-alt, border,
 
 ## Application layout and scrolling
 
-`AppShell` owns the shared page layout. The header target is about 64px. Desktop `VerticalNav` targets 176px, with an acceptable range of roughly 168–184px. Side advertising rails target 112px and must not exceed 120px each. The main workspace receives the remaining width through a flexible `minmax(0, 1fr)`-equivalent track. Main content is capped near 1280px; when the viewport permits, tool workspaces should generally have 800–1040px available.
+`AppShell` owns the shared page layout. The header target is about 64px. Desktop `VerticalNav` targets 176px, with an acceptable range of roughly 168–184px. Optional advertising rails target 112px and must not exceed 120px each; the active application supplies only the right rail. The main workspace receives the remaining width through a flexible `minmax(0, 1fr)`-equivalent track. Main content is capped near 1280px; when the viewport permits, tool workspaces should generally have 800–1040px available.
 
 Mobile stays a single column with about 20px page padding. Preserve the current navigation mechanism; do not add a drawer, hamburger, or modal navigation system.
 

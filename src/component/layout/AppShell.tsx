@@ -21,6 +21,14 @@ export default function AppShell({
     leftBannerSlot,
     rightBannerSlot,
 }: AppShellProps) {
+    const desktopGridColumns = leftBannerSlot
+        ? rightBannerSlot
+            ? "lg:grid-cols-[112px_minmax(0,176px)_minmax(0,1fr)_112px]"
+            : "lg:grid-cols-[112px_minmax(0,176px)_minmax(0,1fr)]"
+        : rightBannerSlot
+            ? "lg:grid-cols-[minmax(0,176px)_minmax(0,1fr)_112px]"
+            : "lg:grid-cols-[minmax(0,176px)_minmax(0,1fr)]"
+
     return (
         <div className="min-h-screen w-full bg-background text-text">
             <a
@@ -39,19 +47,23 @@ export default function AppShell({
                 </div>
             ) : null}
 
-            <div className="grid min-w-0 grid-cols-1 lg:grid-cols-[112px_minmax(0,176px)_minmax(0,1fr)_112px]">
-                <aside className="hidden border-r border-border px-2 py-4 lg:block" aria-label="Left advertising area">
-                    {leftBannerSlot}
-                </aside>
+            <div className={`grid min-w-0 grid-cols-1 ${desktopGridColumns}`}>
+                {leftBannerSlot ? (
+                    <aside className="hidden border-r border-border px-2 py-4 lg:block" aria-label="Left advertising area">
+                        {leftBannerSlot}
+                    </aside>
+                ) : null}
                 <aside className="border-b border-border bg-surface px-3 py-2 lg:border-b-0 lg:border-r lg:px-3 lg:py-4">
                     {navItem?.length ? <VerticalNav item={navItem} ariaLabel="Primary navigation" /> : null}
                 </aside>
                 <main id="main-content" className="min-w-0 px-5 py-6 sm:px-6 lg:px-8">
                     <div className="mx-auto w-full max-w-[1280px]">{children}</div>
                 </main>
-                <aside className="hidden border-l border-border px-2 py-4 lg:block" aria-label="Right advertising area">
-                    {rightBannerSlot}
-                </aside>
+                {rightBannerSlot ? (
+                    <aside className="hidden border-l border-border px-2 py-4 lg:block" aria-label="Right advertising area">
+                        {rightBannerSlot}
+                    </aside>
+                ) : null}
             </div>
 
             {footerBannerSlot ? (

@@ -34,4 +34,4 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current layout and scroll contract
 
-`AppShell` is the sole owner of the page `main` landmark (`id="main-content"`) and the skip-link target. It owns natural document flow: the browser document scrolls, with no fixed viewport shell or nested `.MainScroll`. Desktop content is arranged as 112px advertising rails, a 176px navigation rail, and a flexible workspace; mobile collapses to one column. The content area is capped near 1280px. See `doc/DESIGN.md`.
+`AppShell` is the sole owner of the page `main` landmark (`id="main-content"`) and the skip-link target. It owns natural document flow: the browser document scrolls, with no fixed viewport shell or nested `.MainScroll`. Desktop content includes a 176px navigation rail and flexible workspace, with optional 112px advertising rails only when their slots are supplied. The active application supplies only the right advertising rail. Mobile collapses to one column. The content area is capped near 1280px. See `doc/DESIGN.md`.
