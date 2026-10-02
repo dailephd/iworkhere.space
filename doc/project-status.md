@@ -4,9 +4,13 @@
 
 Reconciled 2026-10-02. Repository: branch `feature/v0.2.0-image-utility-foundation`;
 target release v0.2.0; root package version 0.1.0; dashboard package version
-0.1.0. The implementation candidate is uncommitted and dirty. No exact candidate
-SHA has been frozen and the standardized pre-release readiness workflow has not
-run. This status does not describe the candidate as pre-release-ready.
+0.1.0. The v0.2 implementation candidate was frozen and audited at
+`53a22cb4d677ba4cb3f47fe4cd7eb7d7d9355d3f`. Its first exact-SHA readiness run
+was BLOCKED by runtime dependency advisories, missing hosted exact-SHA CI
+evidence, and unresolved HEIC production-license approval. Functional, browser,
+container, and database acceptance passed. This bounded correction updates the
+approved Next.js dependency contract and validation-branch triggers; a new
+candidate SHA is required before readiness is rerun.
 
 The registry contains **10 tools / 4 image tools**. The theme registry contains
 **4 themes**: System, Light, Dark and One Dark. The v0.2 implementation includes
@@ -25,10 +29,11 @@ and migration, dashboard read-only credential, Vercel dashboard project and
 All Deployments protection, dashboard domain/DNS, production variables, live
 telemetry and ads serving are external and unverified.
 
-**Next workflow after this batch passes:** freeze the reconciled working tree as
-an exact candidate commit SHA and push the feature branch, then run the
-standardized pre-release readiness workflow against that SHA. This is not
-release or deployment authorization.
+This correction changes the candidate tree, so the first candidate SHA is
+superseded by the commit containing this correction. The standardized exact-SHA
+readiness workflow must run against that corrected candidate. HEIC
+production-license approval remains unresolved, and production / deployment
+gates remain external. This is not release or deployment authorization.
 
 ### Prior validation evidence (historical snapshots)
 
@@ -70,6 +75,8 @@ runtime validation does not resolve the separate HEIC license or release gate.
 
 - Folder structure defined (four-layer: app, module, component, lib)
 - Next.js 16 App Router with React 19, TypeScript 5, Tailwind CSS v4
+- Root and dashboard Next.js / eslint-config-next dependency contract: 16.3.8;
+  React and React DOM remain 19.2.3.
 - PWA icons created
 - manifest.webmanifest created
 - Tool registry pattern established (`src/module/tool/registry.ts`)

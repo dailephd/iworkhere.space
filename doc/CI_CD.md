@@ -5,6 +5,11 @@ This document defines the CI discipline for this Next.js project.
 CI is not optional.
 Every pull request must pass all checks before merge.
 
+All eight workflows trigger on `pull_request` and pushes to `main`, `master`,
+and `validation/**`. The narrow `validation/**` push namespace exists for
+immutable exact-SHA pre-release validation: a validation ref can point to a
+frozen candidate commit without changing that commit, opening a PR, or merging.
+
 ---
 
 ## 1. Objectives
@@ -142,9 +147,10 @@ E2E and Container. The repository also runs separate Dashboard and Observability
 database workflows, for eight workflow jobs total. Active workflows use Node
 24.21.0 (the dashboard/database workflows specify Node 24). The E2E gate installs pinned Chromium,
 builds, and runs `npm run test:e2e`; the Container gate checks Docker, installs
-Chromium, and runs `npm run test:container`. Both trigger on pull requests and
-pushes to main/master. E2E and container reports are uploaded with distinct
-run/attempt artifact names and 30-day retention. Local aggregate verification
+Chromium, and runs `npm run test:container`. All eight workflows trigger on
+pull requests and pushes to `main`, `master`, and `validation/**`. E2E and
+container reports are uploaded with distinct run/attempt artifact names and
+30-day retention. Local aggregate verification
 remains the original four steps; E2E and Container are separate.
 
 E2E_CI_EXECUTION = PENDING_FINAL_VERSION_PR. Intermediate v0.2 feature-branch

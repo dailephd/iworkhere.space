@@ -2,7 +2,7 @@ name: Observability database
 on:
   pull_request:
   push:
-    branches: [main, master]
+    branches: [main, master, "validation/**"]
 jobs:
   observability-db:
     runs-on: ubuntu-latest

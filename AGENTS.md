@@ -18,6 +18,9 @@ are separate. Docker is optional for normal development. Active CI uses Node 24;
 production Docker packaging uses Next standalone output. Do not bypass the
 container gate for deployment-runtime changes. Normal development uses
 `npm run dev`; Docker preview is opt-in through `npm run dev:docker`.
+All eight GitHub Actions workflows trigger on `pull_request` and pushes to
+`main`, `master`, and `validation/**`. The validation namespace is for immutable
+exact-SHA pre-release checks.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 

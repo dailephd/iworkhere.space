@@ -11,7 +11,10 @@ npm run typecheck    # TypeScript type checking (tsc --noEmit)
 npm run test         # Unit tests (vitest run)
 npm run verify       # Aggregate local validation with shared reports
 
-CI runs: typecheck, lint, test, build (all must pass). Separate GitHub Actions workflow per step.
+CI runs six public-app gates (typecheck, lint, test, build, E2E, Container) plus
+dashboard and observability-database workflows. All eight trigger on
+`pull_request` and pushes to `main`, `master`, and `validation/**`; validation
+branches support immutable exact-SHA pre-release checks.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 

@@ -67,6 +67,10 @@ private dashboard and disposable PostgreSQL schema/maintenance path. The
 repository therefore has eight independent workflow jobs in total; see
 [CI/CD](doc/CI_CD.md) for artifact and trigger details.
 
+All eight workflows run on pull requests and pushes to `main`, `master`, and
+`validation/**`. The validation namespace is reserved for immutable exact-SHA
+pre-release checks; see [CI/CD](doc/CI_CD.md).
+
 `npm run verify` runs typecheck, lint, test and build; E2E remains separate.
 `npm run test:container` reuses the browser suite against a built Docker image.
 Neither E2E nor Container is part of `npm run verify`. Hosted final-version PR

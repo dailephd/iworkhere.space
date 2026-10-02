@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+      - "validation/**"
 
 jobs:
   e2e:
