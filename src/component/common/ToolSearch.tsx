@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
+import Link from "next/link"
 
 export interface ToolSearchItem {
     slug: string
@@ -13,8 +14,9 @@ export interface ToolSearchItem {
 
 export interface ToolSearchProps {
     item: ToolSearchItem[]
-    onOpen: (slug: string) => void
     emptyLabel?: ReactNode
+    showResultsWhenEmpty?: boolean
+    showTagFilters?: boolean
 }
 
 function norm(s: string): string {
@@ -22,18 +24,19 @@ function norm(s: string): string {
 }
 
 export default function ToolSearch(props: ToolSearchProps) {
-    const { item, onOpen, emptyLabel } = props
+    const { item, emptyLabel, showResultsWhenEmpty = true, showTagFilters = false } = props
     const [query, setQuery] = useState("")
+    const [selectedTag, setSelectedTag] = useState<string | null>(null)
+    const allTags = useMemo(() => Array.from(new Set(item.flatMap((one) => one.tag ?? []))).sort(), [item])
 
     const viewItem = useMemo(() => {
         const q = norm(query)
-        if (!q) return item
-
         return item.filter((one) => {
-            const hay = `${one.name} ${one.description} ${one.category}`
-            return norm(hay).includes(q)
+            const hay = `${one.name} ${one.description} ${one.category} ${(one.tag ?? []).join(" ")}`
+            return (!q || norm(hay).includes(q)) && (!selectedTag || one.tag?.includes(selectedTag))
         })
-    }, [item, query])
+    }, [item, query, selectedTag])
+    const showResults = showResultsWhenEmpty || query.trim().length > 0 || selectedTag !== null
 
     return (
         <div className="space-y-3">
@@ -45,23 +48,29 @@ export default function ToolSearch(props: ToolSearchProps) {
                     id="tool-search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search tool"
-                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    type="search"
+                    placeholder="Search tools by name, description, category or tag"
+                    className="w-full rounded-xl border border-search-border bg-search-bg px-3 py-2 text-[var(--text)] placeholder:text-text-muted outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                 />
             </div>
 
-            {viewItem.length === 0 ? (
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-sm text-[var(--text-muted)]">
+            {showTagFilters && allTags.length > 0 && <div className="flex flex-wrap gap-2" aria-label="Filter by tag">
+                <button type="button" onClick={() => setSelectedTag(null)} aria-pressed={selectedTag === null} className="rounded-full bg-surface-alt px-3 py-1.5 text-xs text-text">All tags</button>
+                {allTags.map((tag) => <button type="button" key={tag} onClick={() => setSelectedTag(tag)} aria-pressed={selectedTag === tag} className="rounded-full bg-surface-alt px-3 py-1.5 text-xs text-text">#{tag}</button>)}
+            </div>}
+
+            {showResults && (viewItem.length === 0 ? (
+                <div className="rounded-xl border border-card-border bg-card-bg p-4 text-sm text-[var(--text-muted)]">
                     {emptyLabel ?? "No match."}
                 </div>
             ) : (
-                <ul className="divide-y divide-[var(--border)] rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+                <ul className="divide-y divide-card-border rounded-xl border border-card-border bg-card-bg">
                     {viewItem.map((one) => (
                         <li key={one.slug} className="p-3">
-                            <button
-                                type="button"
-                                onClick={() => onOpen(one.slug)}
-                                className="w-full text-left outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                            <Link
+                                data-category={one.category}
+                                href={`/tool/${one.slug}`}
+                                className="block rounded-md text-left hover:bg-[var(--category-soft)] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
                             >
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="min-w-0">
@@ -72,15 +81,15 @@ export default function ToolSearch(props: ToolSearchProps) {
                                             {one.description}
                                         </div>
                                     </div>
-                                    <div className="shrink-0 rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] px-2 py-1 text-xs text-[var(--text-muted)]">
+                                    <div className="shrink-0 rounded-xl border border-[var(--category-color)] bg-[var(--category-soft)] px-2 py-1 text-xs text-[var(--category-color)]">
                                         {one.category}
                                     </div>
                                 </div>
-                            </button>
+                            </Link>
                         </li>
                     ))}
                 </ul>
-            )}
+            ))}
         </div>
     )
 }

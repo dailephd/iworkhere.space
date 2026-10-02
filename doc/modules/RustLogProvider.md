@@ -2,6 +2,10 @@
 
 **Kind:** Module
 
+## Production transport contract
+
+Explicit `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true` enables same-origin `/api/log`. The provider catches synchronous/asynchronous failures, uses keepalive, omits credentials/referrer and sends safe pathname only. Arbitrary messages become fixed event/failure categories; metadata passes the allowlist in module/observability/logSafety. File/Blob, filename, input/output, query/hash, full URL and arbitrary nested values are dropped. Only application asset stack locations survive. See [OBSERVABILITY](../OBSERVABILITY.md).
+
 <!-- section-id: representative-file -->
 ## Representative File
 

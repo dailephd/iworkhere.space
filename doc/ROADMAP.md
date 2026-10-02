@@ -161,7 +161,7 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 ## Version 0.2.0 — Image Utility Foundation
 
-Status: Implementation complete; release blocked pending HEIC production-license approval
+Status: Implementation complete; release preparation has not run. HEIC production-license approval remains a mandatory external release gate.
 
 ### Goal
 
@@ -175,6 +175,15 @@ Priority A utilities:
 - Image Compressor
 - JPG / PNG / WebP Converter
 - HEIC → JPG / PNG Converter
+
+The accepted v0.2.0 repository scope also includes explicitly authorized
+implementation extensions: the compact discovery/homepage layout and One Dark
+material pilot; production-gated AdSense placement; opt-in production
+observability; Neon persistence and daily maintenance; and the separate private
+observability dashboard. These extend the original image-utility plan without
+changing the future catalog sequence. Design visual approval remains pending
+where specified in `DESIGN.md`; external deployment and account setup remain
+unperformed.
 
 ### Dependencies
 
@@ -223,7 +232,9 @@ ImageSourcePanel, real HEIC conversion, dedicated worker architecture and
 application-level decoder isolation are resolved and validated. The exact
 production decoder is `heic-to@1.5.2`.
 
-Remaining release decision: HEIC production-license approval. Technical
+Remaining release decision: HEIC production-license approval. AdSense readiness,
+database provisioning, dashboard protection/domain setup and production
+environment configuration also remain external deployment work. Technical
 completeness does not authorize release.
 
 ## Version 0.3.0 — PDF & Document Essentials
@@ -534,16 +545,12 @@ Therefore:
 
 ## Theme specification debt
 
-The application currently supports eight theme selections:
+The application currently supports four theme selections:
 
 - system
 - light
 - dark
 - onedark
-- vscode-modern
-- dracula
-- amethyst-haze
-- mercury-fog
 
 Theme implementation is functional. Theme/design documentation must remain current before future visual-system behavior changes.
 
@@ -715,16 +722,17 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-Prepare the homepage and Image Resizer visual pilot from
-[UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md).
-Obtain visual approval before extending the design to the other image tools.
-Basic discovery improvements accompany the accepted rollout; no new catalog
-version or site-wide rewrite is authorized by this planning update.
+Complete the human visual review of the implemented homepage/navigation and
+Image Resizer pilot from [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md).
+Obtain that approval before extending the presentation pattern to the other
+image tools. Basic discovery improvements accompany the accepted rollout; no
+new catalog version or site-wide rewrite is authorized by this planning update.
 
 The v0.2 implementation is technically complete. The package remains `0.1.0`;
-no release PR, publication or deployment is authorized. Obtain explicit HEIC
-production-license approval before the normal pre-release audit and
-release-preparation workflow. Hosted E2E on the final version PR remains pending.
+no release PR, publication or deployment is authorized. This documentation
+reconciliation must pass before the working tree is frozen to an exact candidate
+SHA. The separate standardized pre-release readiness workflow then evaluates
+that SHA. HEIC production-license approval remains required before publication.
 
 Historical process debt: the referenced
 `doc/plans/v0.2.0-implementation-plan.md` is absent from the repository and its

@@ -20,14 +20,11 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         const rightBanner = page.getByText("Right banner", { exact: true });
         const footerBanner = page.getByText("Footer banner", { exact: true });
         if (desktop) {
-            await expect(rightAdvertisingArea).toBeVisible();
-            await expect(rightBanner).toBeVisible();
-            await expect(siteHeader.getByRole("searchbox", { name: "Search tools" })).toBeVisible();
-        } else {
-            await expect(rightAdvertisingArea).toBeHidden();
-            await expect(rightBanner).toBeHidden();
+            await expect(siteHeader.getByRole("link", { name: "Search tools", exact: true })).toBeVisible();
         }
-        await expect(footerBanner).toBeVisible();
+        await expect(rightAdvertisingArea).toHaveCount(0);
+        await expect(rightBanner).toHaveCount(0);
+        await expect(footerBanner).toHaveCount(0);
 
         await page.keyboard.press("Tab");
         const skip = page.getByRole("link", { name: "Skip to main content", exact: true });
@@ -42,7 +39,8 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
             const main = document.querySelector("main")!;
             const footer = document.querySelector("footer")!;
             const grid = main.parentElement!;
-            const navigation = document.querySelector('nav[aria-label="Primary navigation"]')!.parentElement!;
+            const navigation = document.querySelector('nav[aria-label="Primary navigation"]')!;
+            const header = document.querySelector("header")!;
             const shell = document.querySelector("body > div:has(>header)")!;
             const style = getComputedStyle(main);
             const gridStyle = getComputedStyle(grid);
@@ -56,7 +54,7 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
                 horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
                 footerFollowsMain: footer.getBoundingClientRect().top >= main.getBoundingClientRect().bottom,
                 desktopGridTrackCount: gridStyle.gridTemplateColumns.split(" ").length,
-                navigationStartsAtGridStart: Math.abs(navigation.getBoundingClientRect().left - grid.getBoundingClientRect().left) < 1,
+                navigationInsideHeader: header.contains(navigation),
             };
         });
         expect(geometry.scrollOwner).toBe(true);
@@ -66,14 +64,14 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         expect(geometry.horizontalOverflow).toBe(false);
         expect(geometry.footerFollowsMain).toBe(true);
         if (desktop) {
-            expect(geometry.desktopGridTrackCount).toBe(3);
-            expect(geometry.navigationStartsAtGridStart).toBe(true);
+            expect(geometry.desktopGridTrackCount).toBe(1);
+            expect(geometry.navigationInsideHeader).toBe(true);
         }
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         await expect(page.getByRole("contentinfo")).toBeInViewport();
         const scroll = await page.evaluate(() => ({ y: window.scrollY, maximum: document.documentElement.scrollHeight - window.innerHeight }));
         expect(scroll.y).toBeGreaterThanOrEqual(Math.max(0, scroll.maximum - 1));
-        await navigation.getByRole("link", { name: "Discover Browse all tool", exact: true }).click();
+        await navigation.getByRole("link", { name: "All tools", exact: true }).click();
         await expect(page).toHaveURL(/\/discover$/);
     });
 }

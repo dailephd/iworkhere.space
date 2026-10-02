@@ -25,8 +25,8 @@ interface ImageResizerResult extends ImageResizerDimension {
     filename: string;
 }
 
-const SURFACE_CLASS = "min-w-0 space-y-4 rounded-xl border border-border bg-surface p-4";
-const INPUT_CLASS = "w-full min-w-0 rounded-lg border border-border bg-surface-alt px-3 py-2 text-text";
+const SURFACE_CLASS = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
+const INPUT_CLASS = "w-full min-w-0 rounded-lg border border-input-border bg-input-bg px-3 py-2 text-text";
 
 export function ImageResizerTool({ toolId }: ToolComponentProp) {
     const [state, setState] = useState<ImageResizerState>("idle");
@@ -149,35 +149,53 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
     const busy = state === "processing";
     return (
         <div className="min-w-0 space-y-4">
-            <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
-            <ImageSourcePanel titleId="resizer-source-title" inputRef={fileInput} onChange={selectFile} selecting={selecting}
-            source={source ? { name: source.file.name, width: source.width, height: source.height,
-                formattedBytes: formatImageResizerBytes(source.file.size), formatLabel: IMAGE_RESIZER_ENCODING[source.format].label, previewUrl: source.url } : null} />
-            <form onSubmit={resize} noValidate className={SURFACE_CLASS} aria-labelledby="resizer-dimension-title">
-                <h2 id="resizer-dimension-title" className="font-semibold">Resize dimensions</h2>
-                <div className="grid min-w-0 gap-3 sm:grid-cols-2">
-                    <label className="space-y-2"><span className="block font-medium">Width</span>
-                        <input type="number" min="1" step="1" value={width} onChange={event => changeWidth(event.target.value)} disabled={!source || busy} className={INPUT_CLASS} />
-                    </label>
-                    <label className="space-y-2"><span className="block font-medium">Height</span>
-                        <input type="number" min="1" step="1" value={height} onChange={event => changeHeight(event.target.value)} disabled={!source || busy} className={INPUT_CLASS} />
-                    </label>
+            <p className="text-sm text-accent-secondary">Processed locally in your browser. Your image is not uploaded.</p>
+            <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(280px,320px)_minmax(0,1fr)] lg:items-start">
+                <div className="contents order-1 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
+                <div className="order-1 min-w-0 lg:order-none">
+                    <ImageSourcePanel titleId="resizer-source-title" inputRef={fileInput} onChange={selectFile} selecting={selecting} showPreview={false}
+                    source={source ? { name: source.file.name, width: source.width, height: source.height,
+                        formattedBytes: formatImageResizerBytes(source.file.size), formatLabel: IMAGE_RESIZER_ENCODING[source.format].label, previewUrl: source.url } : null} />
                 </div>
-                <label className="flex items-center gap-2"><input type="checkbox" checked={locked} onChange={event => setLocked(event.target.checked)} disabled={!source || busy} />Preserve aspect ratio</label>
-                <div className="flex flex-wrap gap-3">
-                    <button type="submit" disabled={!source || busy} className="rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !selecting ? "Resizing…" : "Resize image"}</button>
-                    <button type="button" onClick={reset} className="rounded-lg border border-border bg-surface-alt px-4 py-2">Reset</button>
+                <form onSubmit={resize} noValidate className={`order-3 ${SURFACE_CLASS} lg:order-none`} aria-labelledby="resizer-dimension-title">
+                    <h2 id="resizer-dimension-title" className="font-semibold text-category-image">Resize dimensions</h2>
+                    <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                        <label className="space-y-2"><span className="block font-medium">Width</span>
+                            <input type="number" min="1" step="1" value={width} onChange={event => changeWidth(event.target.value)} disabled={!source || busy} className={INPUT_CLASS} />
+                        </label>
+                        <label className="space-y-2"><span className="block font-medium">Height</span>
+                            <input type="number" min="1" step="1" value={height} onChange={event => changeHeight(event.target.value)} disabled={!source || busy} className={INPUT_CLASS} />
+                        </label>
+                    </div>
+                    <label className="flex items-center gap-2"><input type="checkbox" className="accent-accent" checked={locked} onChange={event => setLocked(event.target.checked)} disabled={!source || busy} />Preserve aspect ratio</label>
+                    <div className="flex flex-wrap gap-3">
+                        <button type="submit" disabled={!source || busy} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !selecting ? "Resizing…" : "Resize image"}</button>
+                        <button type="button" onClick={reset} className="material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-4 py-2">Reset</button>
+                    </div>
+                    <p className="text-sm text-text-muted">The output keeps the original image format. Metadata preservation is not guaranteed.</p>
+                </form>
                 </div>
-                <p className="text-sm text-text-muted">The output keeps the original image format. Metadata preservation is not guaranteed.</p>
-            </form>
-            {error && <div role="alert" className="rounded-xl border border-danger bg-surface p-4 text-danger">{error}</div>}
-            {result && source && <section className={SURFACE_CLASS} aria-labelledby="resizer-result-title" aria-live="polite">
-                <h2 id="resizer-result-title" className="font-semibold">Resized image ready</h2>
-                <p className="text-sm">Output: {result.width} × {result.height} px · {formatImageResizerBytes(result.blob.size)} · {IMAGE_RESIZER_ENCODING[source.format].label}</p>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={result.url} alt="Resized image preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />
-                <a href={result.url} download={result.filename} className="inline-block rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download resized image</a>
-            </section>}
+                <div className="contents order-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
+                <section aria-label="Image preview and result" data-surface={result ? "result-stage" : "preview-stage"} className={`material-glass order-2 flex min-h-[300px] min-w-0 items-center justify-center overflow-hidden rounded-xl border ${result ? "border-result-border bg-result-bg" : "border-preview-border bg-preview-bg"} p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6`}>
+                    {result ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={result.url} alt="Resized image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
+                    ) : source ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={source.url} alt="Selected source image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
+                    ) : (
+                        <p className="max-w-xs text-center text-sm text-text-muted">Choose an image to see its preview here. Your image stays in this browser.</p>
+                    )}
+                    {busy && <p role="status" className="sr-only">{selecting ? "Reading image…" : "Resizing image…"}</p>}
+                </section>
+                {result && source && <section data-surface="result-stage" className={`material-glass order-5 min-w-0 space-y-4 rounded-xl border border-result-border bg-result-bg p-4 lg:order-none`} aria-labelledby="resizer-result-title" aria-live="polite">
+                    <h2 id="resizer-result-title" className="font-semibold text-success">Resized image ready</h2>
+                    <p className="text-sm">Output: {result.width} × {result.height} px · {formatImageResizerBytes(result.blob.size)} · {IMAGE_RESIZER_ENCODING[source.format].label}</p>
+                    <a href={result.url} download={result.filename} className="material-primary inline-flex min-h-11 items-center rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download resized image</a>
+                </section>}
+                </div>
+                {error && <div role="alert" className="order-4 rounded-xl border border-danger bg-danger-soft p-4 text-danger lg:col-span-2">{error}</div>}
+            </div>
         </div>
     );
 }

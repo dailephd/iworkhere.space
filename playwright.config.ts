@@ -34,6 +34,7 @@ export default defineConfig({
         { name: "mobile-chromium", use: { viewport: { width: 390, height: 844 } } },
     ],
     ...(externalBaseUrl ? {} : { webServer: {
+        env: { NEXT_PUBLIC_OBSERVABILITY_ENABLED: "false", OBSERVABILITY_PERSISTENCE_ENABLED: "false", OBSERVABILITY_DATABASE_URL: "" },
         command: "npm run start -- --hostname 127.0.0.1 --port 3100",
         url: "http://127.0.0.1:3100/api/health",
         reuseExistingServer: false,

@@ -19,18 +19,17 @@ The single source of truth for which themes exist — analogous in spirit to
 
 ```typescript
 type ThemeId =
-    | "system" | "light" | "dark" | "onedark" | "vscode-modern"
-    | "dracula" | "amethyst-haze" | "mercury-fog";
+    | "system" | "light" | "dark" | "onedark";
 
 function listThemes(): ThemeEntry[]   // { id, label, description? }
 function isThemeId(x: unknown): x is ThemeId
 ```
 
-- `theme_definition_list` is a private array of eight `ThemeEntry` objects
+- `theme_definition_list` is a private array of four `ThemeEntry` objects
   (id/label/optional description); `listThemes()` is the only accessor.
 - `isThemeId()` is a runtime type guard used by `themeStorage.loadTheme()` to
   validate values read back from `storage` before trusting them as `ThemeId`.
-- `doc/DESIGN.md` records all eight canonical themes and shared cross-theme
+- `doc/DESIGN.md` records all four canonical themes and shared cross-theme
   visual rules; token values remain implementation-owned in `src/style/theme.css`.
 
 <!-- section-id: member-files -->

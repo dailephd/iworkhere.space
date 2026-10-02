@@ -151,7 +151,7 @@ ToolClientFrame in src/component/tool/ToolClientFrame.tsx syncs tool state with 
 
 ### Theming
 
-Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, onedark, vscode-modern, dracula, amethyst-haze, and mercury-fog; theme selection changes color tokens without changing layout.
+Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, and onedark; theme selection changes color tokens without changing layout.
 
 ## Analytics and Observability Policy
 
@@ -213,7 +213,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 
 - Use Tailwind classes for styling
 - Use only existing CSS variable tokens
-- Violet for primary emphasis; cyan for focus and information; no third decorative accent
+- Themes define palette; components consume semantic visual roles; category colors provide catalog identity
 - Theme switch changes color only
 - Subtle shadow only
 - No surprise animations
@@ -275,7 +275,7 @@ CI enforces:
 - Build
 - E2E (separate from `npm run verify`)
 
-Agents must assume CI will enforce all six.
+Agents must assume CI will enforce all four.
 
 ## Image error feedback
 
@@ -315,3 +315,26 @@ remains a separate explicit human/legal gate.
 - New abstractions require updating this file
 - Project status tracked in doc/project-status.md
 - Do not skip documentation when adding new tools
+
+
+### Island/material pilot
+
+SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry stays theme-independent. See DESIGN.md for fallbacks and contrast.
+
+## Production integration policy
+
+Persistent measurements extend module/observability through the server-only
+Neon driver pinned to @neondatabase/serverless@1.1.0. `/api/metric` is the only
+durable ingestion owner; `/api/log` and RustLogProvider retain diagnostic logging.
+Client-error measurements take explicitly typed safe fields, never diagnostic
+metadata. Optional deviceClass is CSS viewport width only. Database schema,
+transactional rollup and 90-day raw retention live in database/observability;
+never prune unrolled days. Daily history retains indefinitely. Cron stays in
+the public project and requires CRON_SECRET. `dashboard/` is a separate deployable,
+with independent install/build/CI, server-only read-only production credentials,
+no app auth and mandatory external Vercel Authentication on All Deployments.
+Do not import dashboard into public app source. Public automated tests disable
+persistence and never use real Neon. Run test:observability-db for real SQL
+changes and independent dashboard verify for dashboard changes. See their READMEs.
+
+See doc/OBSERVABILITY.md and doc/ADVERTISING.md. Existing observability facade/providers own telemetry; production transport uses explicit NEXT_PUBLIC_OBSERVABILITY_ENABLED=true and same-origin validated endpoints. Do not send user/file/input/output/full URL/query/hash/identity data. Public ad configuration belongs to module/ad; slots compose through AppShell. NEXT_PUBLIC_ADSENSE_ENABLED=true additionally requires production and external AdSense/CMP readiness. Defaults and automated/container validation never load live ads; never click ads. Root has no fake footer/right banner. Runtime/API/public asset changes require the container gate. No new vendor SDK is authorized.

@@ -16,12 +16,15 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:container": "tsx script/containerSmoke.ts",
-    "verify": "tsx script/verify.ts"
+    "verify": "tsx script/verify.ts",
+    "observability:migrate": "tsx script/observabilityMigrate.ts",
+    "test:observability-db": "tsx script/observabilityDbSmoke.ts"
   },
   "engines": {
     "node": "24.x"
   },
   "dependencies": {
+    "@neondatabase/serverless": "1.1.0",
     "heic-to": "1.5.2",
     "next": "16.1.0",
     "react": "19.2.3",

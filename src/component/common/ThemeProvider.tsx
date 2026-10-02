@@ -19,9 +19,7 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) {
     useEffect(() => {
         const stored = loadTheme();
-        if (stored !== null) {
-            setTheme(stored);
-        }
+        setTheme(stored ?? "system");
     }, []);
 
     return <>{children}</>;

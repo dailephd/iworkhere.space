@@ -2,7 +2,7 @@
 
 Batch 5 uses a verified synthetic MIT positive fixture within the frozen limits. Technical acceptance covers real worker inspection and JPEG/PNG conversion; release approval remains a separate human/legal gate.
 
-The registry exposes `/tool/heic-converter` as a client-only, offline, local single-image HEIC/HEIF utility. The application stays at version 0.1.0. No server processing, persistence, shareable query, metadata migration, sequence extraction, resize, or HEIC output is supported.
+For target release v0.2.0, the registry exposes `/tool/heic-converter` as a client-only, offline, local single-image HEIC/HEIF utility. The root package metadata remains 0.1.0 until release preparation. No server processing, persistence, shareable query, metadata migration, sequence extraction, resize, or HEIC output is supported.
 
 ## Runtime boundary
 

@@ -173,7 +173,7 @@ test.describe("HEIC converter", () => {
             await expect(page.getByText("Reading HEIC…", { exact: true })).toBeVisible();
             if (action === "reset") await page.getByRole("button", { name: "Reset", exact: true }).click();
             if (action === "replace") await page.getByLabel("Choose HEIC image").setInputFiles({ name: "empty.heic", mimeType: "image/heic", buffer: Buffer.alloc(0) });
-            if (action === "navigate") { await page.getByRole("link", { name: "Discover Browse all tool", exact: true }).first().click(); await expect(page).toHaveURL(/\/discover$/); await expect(page.getByLabel("Choose HEIC image")).toHaveCount(0); }
+            if (action === "navigate") { await page.getByRole("link", { name: "All tools", exact: true }).first().click(); await expect(page).toHaveURL(/\/discover$/); await expect(page.getByLabel("Choose HEIC image")).toHaveCount(0); }
             expect((await snapshot(page)).workers[0].terminated).toBe(true);
             await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.release(); });
             await expect(page.getByAltText("Selected HEIC source preview")).toHaveCount(0);
@@ -212,7 +212,7 @@ test.describe("HEIC converter", () => {
         expect(beforeReplacement.urls.every(item => state.revoked.includes(item.url))).toBe(true);
         await page.getByRole("button", { name: "Convert image", exact: true }).click();
         await expect(page.getByAltText("Converted image preview")).toBeVisible();
-        await page.getByRole("link", { name: "Discover Browse all tool", exact: true }).first().click();
+        await page.getByRole("link", { name: "All tools", exact: true }).first().click();
         await expect(page.getByLabel("Choose HEIC image")).toHaveCount(0);
         state = await snapshot(page);
         expect(state.urls.every(item => state.revoked.includes(item.url))).toBe(true);

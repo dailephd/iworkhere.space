@@ -1,7 +1,9 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import AppShell from "./AppShell";
+
+vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 
 describe("AppShell", () => {
     it("omits absent banner regions and preserves the main landmark and skip target", () => {
@@ -13,7 +15,7 @@ describe("AppShell", () => {
         expect(html).not.toContain("Left advertising area");
         expect(html).not.toContain("Right advertising area");
         expect(html).not.toContain("border-b border-border bg-surface-alt px-5 py-2 sm:px-6");
-        expect(html).toContain("lg:grid-cols-[minmax(0,176px)_minmax(0,1fr)]");
+        expect(html).toContain("lg:grid-cols-[minmax(0,1fr)]");
         expect(html).toContain('href="#main-content"');
         expect(html).toContain('id="main-content"');
         expect(html).toContain("Skip to main content");
@@ -30,6 +32,7 @@ describe("AppShell", () => {
                 headerBannerSlot={<span>Header slot content</span>}
                 leftBannerSlot={<span>Left slot content</span>}
                 rightBannerSlot={<span>Right slot content</span>}
+                navItem={[{ id: "discover", label: "All tools", href: "/discover" }]}
             >
                 <h1>Workspace</h1>
             </AppShell>,
@@ -41,6 +44,9 @@ describe("AppShell", () => {
         expect(html).toContain("Left slot content");
         expect(html).toContain('aria-label="Right advertising area"');
         expect(html).toContain("Right slot content");
-        expect(html).toContain("lg:grid-cols-[112px_minmax(0,176px)_minmax(0,1fr)_112px]");
+        expect(html).toContain("xl:grid-cols-[112px_minmax(0,1fr)_176px]");
+        expect(html).toContain("py-4 xl:block");
+        expect(html).toContain('aria-label="Primary navigation"');
+        expect(html).toContain('href="/discover"');
     });
 });

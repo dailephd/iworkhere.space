@@ -21,6 +21,18 @@ decoder dependency, upload, persistence, crop, rotation, quality control or form
 picker. Decorative canvas remains prohibited; the functional canvas is never
 appended to the UI.
 
+## Pilot presentation
+
+The visual pilot keeps source selection and settings in a compact desktop column
+beside a flexible preview/result stage. The stage shows an instruction when idle,
+the selected source while selected or processing, and the actual resized output
+after success. Result metrics and download remain actual output data. On mobile,
+source selection, preview, settings/action and result information stack in that
+order. `ImageSourcePanel` receives `showPreview={false}` only to avoid duplicating
+its small preview; the Resizer locally presents the same owned URL in its stage.
+This presentation is pending visual approval and does not change processing or
+lifecycle contracts.
+
 ## Validation and processing
 
 Actual initial bytes are authoritative: JPEG SOI, PNG's eight-byte signature,
@@ -102,3 +114,15 @@ recoverable errors, limits, stale results, URL cleanup, privacy and responsive
 flow. The complete existing browser suite protects prior behavior. Frontend
 Observer captures protected routes before edits and the resizer's source/result
 state afterward. Build and browser resource measurements compare with Batch 1.
+
+
+### Component-color correction (pending visual approval)
+
+Settings use panel-bg/border and input-bg/border. Preview uses inset preview roles; successful output switches to result-bg/border and a success heading with metrics/download. Reset uses secondary-action roles. Errors use danger-soft, danger boundary and existing actionable copy. Processing and geometry are unchanged.
+
+The local-processing notice uses the secondary blue informational accent; configuration heading uses the image category cyan. Neither changes processing or state semantics.
+
+
+### Island/material candidate
+
+One Dark settings and Reset use restrained paired shadows; primary actions use solid accent with hover/pressed states. Preview/result use structural glass with opaque fallback and unchanged image rendering. Light/Dark remain solid.

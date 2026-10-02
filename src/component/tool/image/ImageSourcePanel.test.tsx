@@ -26,3 +26,15 @@ it("presents caller-supplied source information and forwards the input ref/event
     expect(inputRef.current).toBe(host.querySelector("input"));
     await act(async () => root.unmount());
 });
+
+it("can omit its inline preview while retaining source presentation", async () => {
+    vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+    const host = document.createElement("div"), root = createRoot(host), inputRef = createRef<HTMLInputElement>();
+    await act(async () => root.render(createElement(ImageSourcePanel, {
+        titleId: "source-test", inputRef, onChange: vi.fn(), selecting: false, showPreview: false,
+        source: { name: "local.png", width: 240, height: 180, formattedBytes: "10 KiB", formatLabel: "PNG", previewUrl: "blob:local" },
+    })));
+    expect(host.textContent).toContain("local.png");
+    expect(host.querySelector("img")).toBeNull();
+    await act(async () => root.unmount());
+});

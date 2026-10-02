@@ -34,4 +34,9 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current presentation
 
-The home link displays `iworkhere.space`. The compact search input has an accessible label, and the shared theme trigger displays `Themes` without an icon. Header remains approximately 64px tall. See `doc/DESIGN.md`.
+The home link displays `iworkhere.space`. Compact navigation links are composed from the existing navigation owner and populated category metadata. A `Search tools` link leads to the existing Discover search instead of rendering an inactive search input. The shared theme trigger displays `Themes`. Navigation wraps on narrow screens. The pilot is pending visual approval. See `doc/DESIGN.md`.
+
+
+### Component-color correction (pending visual approval)
+
+Header consumes contrasting header-bg/text/muted. Brand stays near white; quiet search and Themes controls use shell text. Geometry is unchanged.

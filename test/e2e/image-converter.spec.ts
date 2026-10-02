@@ -40,8 +40,8 @@ test("Converter registry, SEO, category and discovery", async ({ page }) => {
     await expect(links).toHaveCount(4);
     await expect(links).toContainText(["Image Resizer", "Image Compressor", "JPG / PNG / WebP Converter"]);
     await page.goto("/discover");
-    await expect(page.getByRole("main").locator("ul button")).toHaveCount(10);
-    await page.getByRole("main").getByRole("button", { name: /JPG \/ PNG \/ WebP Converter/ }).click();
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(10);
+    await page.getByRole("main").getByRole("link", { name: /JPG \/ PNG \/ WebP Converter/ }).click();
     await expect(page).toHaveURL(/\/tool\/image-converter$/);
 });
 
@@ -133,7 +133,7 @@ test("format, quality, repetition, replacement, Reset and unmount revoke URLs", 
     await expect(page.getByLabel("Choose image")).toHaveValue("");
     await expect(page.getByRole("img")).toHaveCount(0);
     await selectSource(page); await convert(page);
-    await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Discover Browse all tool", exact: true }).click();
+    await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
     await expect.poll(async () => { const log = await urls(page); return log.revoked.length === log.created.length; }).toBe(true);
     const log = await urls(page); expect(log.revoked.slice().sort()).toEqual(log.created.slice().sort());

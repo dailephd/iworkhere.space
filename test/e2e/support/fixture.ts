@@ -4,6 +4,11 @@ import { getConsoleFailure } from "./browserDiagnostic";
 export const test = base.extend({
     page: async ({ page }, providePage, testInfo) => {
         const failures: string[] = [];
+        const advertisingRequests: string[] = [];
+        await page.context().route(/https?:\/\/([^/]*\.)?(googlesyndication\.com|doubleclick\.net|googleadservices\.com)\//, route => {
+            advertisingRequests.push(new URL(route.request().url()).hostname);
+            return route.abort();
+        });
         page.on("pageerror", error => failures.push(`pageerror: ${error.message}`));
         page.on("console", message => {
             const failure = getConsoleFailure({ type: message.type(), text: message.text() });
@@ -17,6 +22,7 @@ export const test = base.extend({
             });
         }
         expect(failures, "No page errors, console errors or hydration diagnostics").toEqual([]);
+        expect(advertisingRequests, "Ads disabled: no live Google advertising requests").toEqual([]);
     },
 });
 

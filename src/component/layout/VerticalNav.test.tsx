@@ -25,6 +25,6 @@ describe("VerticalNav", () => {
         expect(html).toContain('href="/discover"');
         expect(html).toContain('aria-current="page"');
         expect(html).toContain("Home");
-        expect(html).toContain("Discover");
+        expect(html).toContain("All tools");
     });
 });

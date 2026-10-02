@@ -10,6 +10,33 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
+Current persistent-observability references:
+
+- `OBSERVABILITY.md`: diagnostic/measurement split, bounded error metrics,
+  viewport classification, Neon configuration, daily maintenance and privacy.
+- `../database/observability/README.md` / `001-schema.sql`: dedicated schema,
+  90-day raw retention, indefinite aggregates, transactional SQL and read-only role.
+- `../dashboard/README.md`: independent app, seven ranges, sources, UTC bins,
+  honest percentile semantics, empty/failure states and isolated visual smoke.
+- `../dashboard/DEPLOYMENT.md`: two Vercel projects, one Neon database, exact
+  external authentication/secret/domain setup while the public site stays public.
+- `TESTING.md` / `CI_CD.md`: root/database/dashboard validation and unique artifacts.
+
+Current integration and deployment authority:
+
+- `ROADMAP.md` owns v0.2.0 scope, including explicitly authorized repository
+  extensions. `project-status.md` owns current implementation/deployment/release
+  state and the next workflow.
+- `DESIGN.md` is the canonical visual authority, including the current
+  workspace-first layout, four supported themes and scoped material pilot.
+- `DEPLOYMENT.md` owns root runtime, safe environment templates and the variable
+  matrix. `ADVERTISING.md` owns AdSense code/configuration and external activation
+  gates. `OBSERVABILITY.md` owns telemetry/privacy/persistence contracts.
+- `API.md` and `SCHEMA.md` describe public route/schema contracts;
+  `database/observability/README.md` owns SQL/migration/role details.
+- `dashboard/README.md` and `dashboard/DEPLOYMENT.md` own the isolated app and
+  its separate Vercel deployment/protection steps.
+
 This documentation system defines the architecture, development standards, and
 operational procedures for the Modular Utility Platform. Documentation is
 organized by function: architectural contracts, development workflows, testing
@@ -171,10 +198,11 @@ repository files that are already available to the coding environment.
 architecture, roadmap, and version plan.
 
 ### CI_CD.md
-**Summary:** Defines six independent CI gates: typecheck, lint, test, build,
-E2E and Container. It documents `npm run verify` as the first four local checks,
-with separate browser/container commands, report discipline, and the
-prohibition on suppressing errors.
+**Summary:** Defines six public-application CI gates (typecheck, lint, test,
+build, E2E and Container) plus independent dashboard and observability-database
+workflows. It documents `npm run verify` as the first four local checks, with
+separate browser/container commands, report discipline, and the prohibition on
+suppressing errors.
 **When to read:** When setting up a PR or debugging a CI failure.
 **Relations:** Enforces the standards defined in `TESTING.md`.
 
@@ -361,3 +389,8 @@ version plan remains historical process debt; no retrospective plan was authored
 - **Theme token detail remains implementation-owned:** `DESIGN.md` records the
   cross-theme contract; exact per-theme token values remain defined in
   `src/style/theme.css`.
+
+## Production integration contracts
+
+- [OBSERVABILITY](OBSERVABILITY.md): safe telemetry, explicit activation, provider boundaries, Web Vitals, client error/navigation instrumentation and structured runtime logs.
+- [ADVERTISING](ADVERTISING.md): frozen AdSense identities, conditional responsive slots, verification, CLS reservation, default network-safe tests and external CMP/readiness gate.

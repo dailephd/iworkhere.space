@@ -111,7 +111,7 @@ try {
   summary.dockerServerVersion = versions.Server?.Version ?? null;
 
   await runChecked("docker", ["compose", "config"]);
-  const build = await command("docker", ["build", "--pull", "--tag", imageName, "--file", "Dockerfile", "."]);
+  const build = await command("docker", ["build", "--pull", "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
   await writeFile(path.join(reportDir, "docker-build.log"), `${build.stdout}\n${build.stderr}`, "utf8");
   if (build.code !== 0) throw new Error(`Docker build failed (${build.code}).`);
   imageCreated = true;
@@ -149,12 +149,16 @@ try {
   summary.runtimeUid = runtimeUid;
   if (!Number.isInteger(runtimeUid) || runtimeUid <= 0) throw new Error("Runtime process is root or its UID could not be proven.");
 
-  const routes = ["/", "/discover", "/api/health", "/sw.js", "/manifest.webmanifest", "/tool/image-resizer", "/tool/image-compressor", "/tool/image-converter", "/tool/heic-converter", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
+  const routes = ["/", "/discover", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/tool/image-resizer", "/tool/image-compressor", "/tool/image-converter", "/tool/heic-converter", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {
     const response = await fetch(`${baseUrl}${route}`);
     routeResults[route] = response.status;
     if (!response.ok) throw new Error(`HTTP smoke ${route} returned ${response.status}.`);
+    if (route === "/ads.txt") {
+      if (await response.text() !== "google.com, pub-7976885058339852, DIRECT, f08c47fec0942fa0\n" || !response.headers.get("content-type")?.includes("text/plain")) throw new Error("ads.txt body or content type mismatch.");
+      summary.adsTxtResult = "PASS";
+    }
   }
   summary.httpSmokeResult = routeResults;
   summary.serviceWorkerResult = routeResults["/sw.js"] === 200 ? "PASS" : "FAIL";

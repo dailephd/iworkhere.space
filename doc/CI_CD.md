@@ -25,6 +25,17 @@ Deployment must never change behavior silently.
 
 ## 2. Required CI Jobs
 
+The standalone dashboard has an additional independent
+`.github/workflows/dashboard.yaml` workflow on Node 24. It runs
+`npm --prefix dashboard ci` and `npm --prefix dashboard run verify` without
+database secrets, uploads its full unique dashboard/test-report hierarchy and
+does not deploy. Root jobs do not compile the dashboard application.
+`.github/workflows/observability-db.yaml` independently runs the isolated
+Postgres 17 schema/rollup/query/role smoke and uploads each complete run directory.
+Together these are two additional workflows beyond the six public-app gates
+below. The dashboard and database workflows each have one required job; eight
+workflow jobs run in total.
+
 Six jobs run on every push and pull request:
 
 | Job | Command | Enforces |
@@ -36,13 +47,14 @@ Six jobs run on every push and pull request:
 | `e2e` | `npm run test:e2e` after build | Production desktop/mobile Chromium behavior and diagnostics |
 | `container` | `npm run test:container` | Built Docker runtime, health, image hygiene, and the same browser suite against the container |
 
-All six jobs must pass.
+All six public-app jobs plus the dashboard and database jobs must pass.
 If any job fails, merge is blocked.
 
 For local aggregate validation, run `npm run verify`. This command runs the
 same four checks sequentially with a shared `RUN_ID` and per-command logs; it
-does not include E2E or Container and does not replace the six independent
-GitHub Actions jobs. `npm run test:container` is the production-container gate.
+does not include E2E or Container and does not replace the six public-app or two
+additional GitHub Actions jobs. `npm run test:container` is the
+production-container gate.
 
 Each job runs in a separate GitHub Actions workflow file under `.github/workflows/`.
 
@@ -125,8 +137,10 @@ Violating test report uniqueness is a CI failure.
 
 ## 5. SSR and Hydration Safety Enforcement
 
-CI defines six independent gates: Typecheck, Lint, Test, Build, E2E and Container.
-Active workflows use Node 24.21.0. The E2E gate installs pinned Chromium,
+The public application has six independent gates: Typecheck, Lint, Test, Build,
+E2E and Container. The repository also runs separate Dashboard and Observability
+database workflows, for eight workflow jobs total. Active workflows use Node
+24.21.0 (the dashboard/database workflows specify Node 24). The E2E gate installs pinned Chromium,
 builds, and runs `npm run test:e2e`; the Container gate checks Docker, installs
 Chromium, and runs `npm run test:container`. Both trigger on pull requests and
 pushes to main/master. E2E and container reports are uploaded with distinct
@@ -158,7 +172,7 @@ warnings/errors. See TESTING.md for report ownership and diagnostic discipline.
 
 Pull requests must:
 
-1. Pass all six CI jobs
+1. Pass the six public application gates and the separate dashboard and database workflows
 2. Not skip tests or suppress type errors
 3. Include tests for new logic (see TESTING.md)
 4. Not introduce direct layer violations

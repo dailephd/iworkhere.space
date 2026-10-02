@@ -10,5 +10,6 @@ export function storeTheme(themeId: ThemeId): void {
 export function loadTheme(): ThemeId | null {
     const value = storage.get<string>(STORAGE_KEY);
     if (isThemeId(value)) return value;
+    storage.remove(STORAGE_KEY);
     return null;
 }

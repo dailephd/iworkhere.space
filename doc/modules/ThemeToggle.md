@@ -32,4 +32,4 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current interaction contract
 
-The trigger label is exactly `Themes` and has no palette icon. The existing picker continues to expose all eight registry choices and persists selection through the current theme storage/runtime. Theme selection changes colors only. See `doc/DESIGN.md`.
+The trigger label is exactly `Themes` and has no palette icon. The existing picker continues to expose all four registry choices and persists selection through the current theme storage/runtime. Theme selection changes colors only. See `doc/DESIGN.md`.

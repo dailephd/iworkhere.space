@@ -1,5 +1,31 @@
 # ARCHITECTURE
 
+## Persistent observability and separate dashboard
+
+The public application remains public at the repository root. Its existing
+observability facade/providers own browser telemetry. `/api/log` remains the
+sanitized technical diagnostic path; `/api/metric` alone persists allowlisted
+measurement events, including explicit `client-error` metrics, into Neon Postgres.
+No diagnostic message, stack, arbitrary metadata or client timestamp is stored.
+Server receipt time defines UTC aggregation and retention boundaries.
+
+`database/observability` owns the dedicated SQL schema and transactional daily
+maintenance. Raw events retain 90 days, with deletion permitted only for a
+successfully rolled-up UTC day. Daily event/vital history retains indefinitely.
+The operational maintenance route uses CRON_SECRET, not application users or
+sessions. Daily cron belongs to the public Vercel project.
+
+`dashboard/` is an independently installable Next.js application deployed as a
+second Vercel project. It reads the same database with a SELECT-only production
+role. All SQL stays server-side; no dashboard code enters public navigation,
+registry, sitemap, service worker or public build. Vercel Authentication with
+All Deployments protects only the dashboard project; there is no app auth.
+
+The metric contract adds optional coarse viewport class (width only) and an
+explicit error category/tool ID projection. Metric error identity deduplication
+is independent of diagnostic-log identity deduplication, preserving both sinks.
+See `OBSERVABILITY.md` and `../dashboard/DEPLOYMENT.md`.
+
 This document defines the architectural boundaries of the project.
 Any generated code MUST follow this structure.
 
@@ -128,7 +154,9 @@ graph TD
 - `/tool/[slug]` — Individual tool page (`tool/[slug]/page.tsx`)
 - `/category/[category]` — Category listing page (`category/[category]/page.tsx`)
 - `/api/health` — Health check endpoint (`api/health/route.ts`)
-- `/api/log` — Client log ingestion endpoint (`api/log/route.ts`)
+- `/api/log` — Sanitized technical diagnostics (`api/log/route.ts`)
+- `/api/metric` — Bounded measurement ingestion (`api/metric/route.ts`)
+- `/api/observability/maintenance` — Cron-protected rollup/retention (`api/observability/maintenance/route.ts`)
 
 **Supporting files:**
 - `navData.ts` — Navigation item definitions
@@ -152,7 +180,7 @@ graph TD
 **Subgroups:**
 - `common/` — Generic reusable components (Button, Input, StatusPanel,
   ToolSearch, ThemeToggle)
-- `layout/` — App shell, header, footer, navigation, ad banner placeholders,
+- `layout/` — App shell, header, footer, navigation and optional ad slots,
   layout types, ServiceWorkerRegister
 - `tool/` — Tool-specific presentation components (ToolPageTemplate,
   ToolClientFrame, ToolSection, ToolErrorBoundary)
@@ -299,7 +327,7 @@ Combined facade unifying analytics and logging.
 Server-side endpoint for client log events sent by `RustLogProvider`.
 
 ### Behavior
-- Accepts POST with JSON body: `{ level, message, timestamp, meta?, url? }`
+- Accepts bounded POST JSON: `{ level, message, timestamp, meta, pathname }`, with fixed message categories and allowlisted metadata; rejects arbitrary fields and full URLs.
 - Validates body shape and log level (`debug`, `info`, `warn`, `error`)
 - Writes to server `console.log` as a safe sink
 - Returns 204 on success, 400 on invalid input
@@ -310,9 +338,8 @@ Server-side endpoint for client log events sent by `RustLogProvider`.
 ## Theme module (`src/module/theme/`)
 
 The theme system is a multi-theme registry, not a binary light/dark switch.
-`ThemeId` (`themeRegistry.ts`) declares eight selectable themes: `system`,
-`light`, `dark`, `onedark`, `vscode-modern`, `dracula`, `amethyst-haze`, and
-`mercury-fog`. `doc/DESIGN.md` is the canonical visual authority and documents all eight
+`ThemeId` (`themeRegistry.ts`) declares four selectable themes: `system`,
+`light`, `dark`, and `onedark`. `doc/DESIGN.md` is the canonical visual authority and documents all four
 canonical themes alongside the current theme registry and runtime ownership.
 
 ### Structure
@@ -489,3 +516,7 @@ decoder, service-worker, manifest, and public license assets from the same
 application origin. Docker is an optional packaging/runtime layer; it does not
 move tool logic out of the existing application layers. See
 `doc/DEPLOYMENT.md` for operation details.
+
+## Production integration ownership
+
+Existing observability facade and analytics/logger interfaces remain authoritative. Explicit browser opt-in selects same-origin network providers; defaults stay local. Metric validation/transport and server-only Neon persistence belong to module/observability; API routes adapt transport. Structured hosting logs remain active. `/api/log` keeps technical diagnostics separate from durable `/api/metric` measurements. Early instrumentation selects providers before tool effects. An isolated Web Vitals client uses the Next hook. Public advertising configuration belongs to module/ad; one reusable slot and one Next Script compose through AppShell. No analytics vendor SDK, identity or image-processing changes. The independent dashboard and SQL maintenance boundaries are defined at the start of this document.

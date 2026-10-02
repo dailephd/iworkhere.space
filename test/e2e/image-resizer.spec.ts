@@ -49,7 +49,7 @@ test("resizer route, image category and discovery use existing routing", async (
     await page.getByRole("link", { name: "Image Resizer", exact: false }).click();
     await expect(page).toHaveURL(/\/tool\/image-resizer$/);
     await page.goto("/discover");
-    await page.getByRole("main").getByRole("button", { name: /Image Resizer/ }).click();
+    await page.getByRole("main").getByRole("link", { name: /Image Resizer/ }).click();
     await expect(page).toHaveURL(/\/tool\/image-resizer$/);
 });
 
@@ -66,9 +66,30 @@ for (const [extension, mime] of [["jpg", "image/jpeg"], ["png", "image/png"], ["
         });
         await page.goto("/tool/image-resizer");
         await selectSource(page, extension);
+        const previewStage = page.getByRole("region", { name: "Image preview and result" });
+        await expect(previewStage.getByRole("img", { name: "Selected source image preview" })).toBeVisible();
+        const workspace = await page.evaluate(() => {
+            const stage = document.querySelector('[aria-label="Image preview and result"]')!.getBoundingClientRect();
+            const source = document.querySelector('[aria-labelledby="resizer-source-title"]')!.getBoundingClientRect();
+            return { width: innerWidth, stageWidth: stage.width, sourceWidth: source.width, horizontalOverflow: document.documentElement.scrollWidth > innerWidth };
+        });
+        expect(workspace.horizontalOverflow).toBe(false);
+        if (workspace.width >= 1024) {
+            expect(workspace.sourceWidth).toBeGreaterThanOrEqual(280);
+            expect(workspace.sourceWidth).toBeLessThanOrEqual(340);
+            expect(workspace.stageWidth).toBeGreaterThan(workspace.sourceWidth);
+        } else {
+            const order = await page.evaluate(() => {
+                const top = (selector: string) => document.querySelector(selector)!.getBoundingClientRect().top;
+                return [top('[aria-labelledby="resizer-source-title"]'), top('[aria-label="Image preview and result"]'), top('[aria-labelledby="resizer-dimension-title"]')];
+            });
+            expect(order[0]).toBeLessThan(order[1]);
+            expect(order[1]).toBeLessThan(order[2]);
+        }
         await page.getByLabel("Width", { exact: true }).fill("40");
         await expect(page.getByLabel("Height", { exact: true })).toHaveValue("30");
         await resizeTo(page);
+        await expect(previewStage.getByRole("img", { name: "Resized image preview" })).toBeVisible();
         const result = await inspectResult(page);
         expect(result).toMatchObject({ width: 40, height: 30, decodedWidth: 40, decodedHeight: 30, mime });
         expect(result.bytes).toBeGreaterThan(0);
@@ -174,12 +195,13 @@ test("source and result URLs are revoked on replacement, Reset and unmount", asy
     expect((await urls()).revoked.slice().sort()).toEqual((await urls()).created.slice(0, 2).sort());
     await resizeTo(page); await inspectResult(page);
     await page.getByRole("button", { name: "Reset", exact: true }).click();
+    await expect(page.getByRole("region", { name: "Image preview and result" }).getByRole("img")).toHaveCount(0);
     expect((await urls()).revoked.slice().sort()).toEqual((await urls()).created.slice().sort());
     await expect(page.getByLabel("Choose image")).toHaveValue("");
     await expect(page.getByLabel("Width", { exact: true })).toHaveValue("");
     await expect(page.getByLabel("Preserve aspect ratio")).toBeChecked();
     await selectSource(page, "png"); await resizeTo(page); await inspectResult(page);
-    await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Discover Browse all tool", exact: true }).click();
+    await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
     await expect.poll(async () => (await urls()).revoked.length).toBe(6);
     const log = await urls(); expect(log.revoked.slice().sort()).toEqual(log.created.slice().sort());

@@ -229,9 +229,10 @@ Image fixtures follow [the provenance convention](../test/fixtures/images/README
 No internet image downloads occur during tests. File lifecycle requirements are
 specified in [ImageFileProcessing](modules/ImageFileProcessing.md).
 
-Current final validation: 31 discovered Vitest files / 423 tests and 170 E2E
-cases (85 desktop / 85 mobile), retaining all inherited 396 unit and 146 browser
-tests. Exact RUN_ID evidence is in the Batch 6 final report.
+Historical batch counts belong in their run reports rather than this durable
+testing contract. Every Vitest, Playwright, container, database, and dashboard
+run must record its own unique `RUN_ID` and report path; the current candidate's
+exact counts are recorded in the documentation-reconciliation audit report.
 
 Image-family specs own real outputs, MIME/dimensions, downloads, alpha/background
 semantics, lifecycle, privacy and responsive containment. heic-converter.spec.ts
@@ -265,7 +266,7 @@ E2E tests verify what users actually experience in a browser.
 
 - Mobile viewport (390×844): nav, header, content slot, and footer are present
   and structurally correct with no overflow.
-- Desktop viewport (1280×720): vertical nav, banner slots, and content area are
+- Desktop viewport (1280×720): top navigation and content area are
   present and visible.
 - Ad banner slots render at the correct breakpoints.
 
@@ -311,7 +312,7 @@ E2E tests must verify layout at two viewports:
 | Viewport | Dimensions | What to Check |
 |----------|-----------|---------------|
 | Mobile | 390×844 | Header and responsive navigation usable, content visible, footer reachable, no horizontal overflow |
-| Desktop | 1280×720 | Vertical nav visible, banner slots present, content area renders correctly |
+| Desktop | 1280×720 | Top navigation visible, ads absent by default, content area renders correctly |
 
 Use structural assertions, not pixel-perfect comparisons:
 
@@ -401,3 +402,50 @@ If a test fails, the architecture contract was violated.
 
 Fix the violation.
 Testing is structural enforcement, not checkbox coverage.
+
+## Production integrations
+
+### Persistent observability and independent dashboard
+
+Root unit tests retain `/api/log` compatibility and verify backward-compatible
+metric variants, bounded client errors, free-form field rejection, query/hash
+rejection before persistence, coarse viewport boundaries, dual-sink deduplication,
+real ToolErrorBoundary behavior, safe SQL projection, missing configuration,
+same-origin browser checks, safe database failures, and cron authorization.
+The Neon network boundary alone is mocked in unit tests; actual rollup,
+idempotence, late-day recomputation and retention run against disposable SQL.
+
+`npm run test:observability-db` owns one uniquely named Postgres 17 container,
+applies schema twice with container psql, verifies counts/continuous percentiles,
+reruns, recent recomputation, unrolled-old retention/rolled-old deletion,
+current-day exclusion, historical aggregate preservation, all actual dashboard
+query plans and read-only grants. It cleans up only its own container in finally.
+No locally installed psql or Neon secret is required. Reports are unique under
+`test-report/observability-db-<RUN_ID>/`, including postgres.log and summary.json.
+
+Dashboard validation is independent: `npm --prefix dashboard ci` then
+`npm --prefix dashboard run verify`. Typecheck/lint/Vitest/build require no
+production database. Tests cover all ranges, source choice, UTC binning, exact
+view-model totals, disjoint daily/current-day sources, empty states, honest
+percentile labels, query privacy, read-only requests, failure configuration,
+client dependency boundaries, no auth dependencies and crawler protection.
+Reports live at `dashboard/test-report/<RUN_ID>/` and are uploaded by its workflow.
+
+`npm --prefix dashboard run test:visual` serves the production DashboardView
+with an isolated deterministic query-repository fixture, never a production
+adapter switch. It captures 24h/90d/1y/All time desktop, mobile and system-dark
+PNG evidence in a unique dashboard/test-report directory. Inspect the captures
+after running; this does not establish production traffic or performance.
+
+Normal public E2E/container runs explicitly keep both browser telemetry and
+server persistence disabled. No automated app test writes production Neon.
+Migration missing-configuration behavior may be tested locally; successful SQL
+application is proved in disposable Postgres, not by provisioning external Neon.
+Migration tests also verify one-transaction statement execution and suppression
+of both URL-constructor and SQL/connection diagnostics. Actual CLI probes with
+missing configuration and a synthetic invalid URL exit 1 without printing the
+configured value. Dashboard runtime smoke verifies real HTTP 500/no metrics and
+crawler headers without a database; ISO text projection prevents driver Date
+objects from reaching display components.
+
+Default builds and E2E/container tests keep both public enable flags false/absent. Enabled AdSense contracts use stubs; never click ads or rely on live Google responses. The shared browser fixture aborts and fails on any Google advertising request. Disabled integration tests check meta, exact ads.txt, absent units/script/fake footer and no metric/log transport. Unit tests cover typed metrics, 8 KiB limits, safe log projection, query/hash removal, File/Blob/input exclusions, fail-silent providers, Web Vitals callback, early errors/navigation, identity omission and ad init dedup/failure. Container smoke explicitly disables flags and verifies ads.txt plus health before the full suite. Every run writes a unique report. Current default shell has no ad tracks; enabled right rail is 176px at xl.

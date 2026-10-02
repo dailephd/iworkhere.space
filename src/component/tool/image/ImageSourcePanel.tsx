@@ -17,14 +17,15 @@ export interface ImageSourcePanelProp {
     onChange: ChangeEventHandler<HTMLInputElement>;
     selecting: boolean;
     source: ImageSourcePresentation | null;
+    showPreview?: boolean;
 }
 
-export function ImageSourcePanel({ titleId, inputRef, onChange, selecting, source }: ImageSourcePanelProp) {
-    return <section className="min-w-0 space-y-4 rounded-xl border border-border bg-surface p-4" aria-labelledby={titleId}>
+export function ImageSourcePanel({ titleId, inputRef, onChange, selecting, source, showPreview = true }: ImageSourcePanelProp) {
+    return <section className="min-w-0 space-y-4 rounded-xl border border-card-border bg-card-bg p-4" aria-labelledby={titleId}>
         <h2 id={titleId} className="font-semibold">Source image</h2>
         <label className="block space-y-2"><span className="block font-medium">Choose image</span>
             <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={onChange}
-                className="w-full min-w-0 rounded-lg border border-border bg-surface-alt px-3 py-2 text-sm text-text file:mr-2 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-text" />
+                className="w-full min-w-0 rounded-lg border border-input-border bg-input-bg px-3 py-2 text-sm text-text file:mr-2 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-text" />
         </label>
         <p className="text-sm text-text-muted">JPEG, PNG or WebP. Up to 25 MiB and 30 megapixels.</p>
         {selecting && <p role="status">Reading image…</p>}
@@ -33,7 +34,7 @@ export function ImageSourcePanel({ titleId, inputRef, onChange, selecting, sourc
             <p className="text-sm">Source: {source.width} × {source.height} px · {source.formattedBytes} · {source.formatLabel}</p>
             {/* Native img consumes a local Blob URL without an optimization request. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={source.previewUrl} alt="Selected source image preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />
+            {showPreview && <img src={source.previewUrl} alt="Selected source image preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />}
         </>}
     </section>;
 }

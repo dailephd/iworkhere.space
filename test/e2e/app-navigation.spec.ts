@@ -6,11 +6,20 @@ test("home loads with one main landmark", async ({ page }) => {
     await expect(page.getByRole("main")).toHaveCount(1);
     await expect(page.getByRole("main")).toBeVisible();
     await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
+    await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
+    await expect(page.getByLabel("Search", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Image tools", exact: true })).toBeVisible();
+    const imageSection = page.getByRole("main").locator("section").filter({ has: page.getByRole("heading", { name: "Image tools", exact: true }) });
+    for (const slug of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) {
+        await expect(imageSection.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
+    }
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(10);
+    await expect(page.getByRole("main").getByRole("link", { name: /Image Resizer/ })).toHaveAttribute("href", "/tool/image-resizer");
 });
 
 test("discover exposes all ten registered tools and reachable routes", async ({ page }) => {
     expect((await page.goto("/discover"))?.status()).toBe(200);
-    const catalog = page.getByRole("main").locator("ul button");
+    const catalog = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(catalog).toHaveCount(10);
     const reached = new Set<string>();
     for (let index = 0; index < 10; index += 1) {
@@ -25,6 +34,16 @@ test("discover exposes all ten registered tools and reachable routes", async ({ 
         "/tool/calculator", "/tool/heic-converter", "/tool/html-text-extractor", "/tool/image-compressor", "/tool/image-converter", "/tool/image-resizer",
         "/tool/length-converter", "/tool/slugify", "/tool/time-arithmetic", "/tool/weight-converter",
     ]);
+});
+
+test("shared search filters registered tags and destinations remain links", async ({ page }) => {
+    await page.goto("/discover");
+    const search = page.getByLabel("Search", { exact: true });
+    await search.fill("heif");
+    const results = page.getByRole("main").locator('a[href^="/tool/"]');
+    await expect(results).toHaveCount(1);
+    await expect(results).toHaveAttribute("href", "/tool/heic-converter");
+    await expect(results).toHaveText(/HEIC → JPG \/ PNG Converter/);
 });
 
 test("text category preserves its two known text tools", async ({ page }) => {

@@ -3,9 +3,8 @@
 This document defines the canonical data contracts between modules in this
 platform.
 
-These are not database schemas.
-They are TypeScript-level interface contracts that govern how data flows between
-layers.
+These include TypeScript-level interface contracts and the dedicated observability
+database contract. SQL ownership lives in `database/observability/001-schema.sql`.
 
 No module may assume undocumented fields.
 No module may introduce undocumented fields without updating this document.
@@ -152,7 +151,7 @@ All storage keys used in the application are declared here.
 
 | Key | Value Type | Consumer | Description |
 |-----|-----------|----------|-------------|
-| `"theme"` | `ThemeId` (`"system" \| "light" \| "dark" \| "onedark" \| "vscode-modern" \| "dracula" \| "amethyst-haze" \| "mercury-fog"`) | `themeStorage.ts` (`src/module/theme/`) | User theme preference; see `doc/architecture.md` theme module section |
+| `"theme"` | `ThemeId` (`"system" \| "light" \| "dark" \| "onedark"`) | `themeStorage.ts` (`src/module/theme/`) | User theme preference; see `doc/architecture.md` theme module section |
 | `"recent-tool"` | `string[]` | `recentlyUsed` module (`src/module/tool/recentlyUsed.ts`) | Ordered list of tool slugs (max 10) |
 | `"analytic_event_count"` | `Record<string, number>` | analytics local provider (`src/module/analytics/provider.ts`) | Per-event occurrence count |
 
@@ -181,6 +180,39 @@ New storage keys must be added to this table before use.
 
 ## 6. API Route Response Schemas
 
+### Production telemetry (explicit opt-in)
+
+`POST /api/metric` accepts an exact discriminated JSON object, at most 8 KiB:
+
+- Common: `type`, ISO `timestamp`, safe `pathname` (no query/hash), optional `deviceClass` (mobile/tablet/desktop/unknown).
+- `analytic-event`: canonical `event`, `prop: {toolId, slug}`. Mode values are omitted from transport.
+- `web-vital`: `name` (LCP/INP/CLS/FCP/TTFB/FID), finite nonnegative `value`, finite `delta`, bounded `id`, optional `rating` and `navigationType` enums.
+- `navigation`: `navigationType` (initial/push/replace/traverse), optional `referrerHostname` only.
+- `client-error`: required `failureCategory` (window-error/unhandled-rejection/tool-render-error/unknown), optional bounded `toolId`. No message, stack, error object or metadata.
+
+Unknown fields, arbitrary metadata, malformed numbers, invalid routes and oversized bodies return 400. Accepted requests write structured runtime logs. Persistence disabled or successful insert returns 204; explicit enabled persistence with configuration/database failure returns empty 503. Production persistence additionally checks available same-origin browser headers (403 on mismatch). There is no identity/session field. Existing accepted variants remain backward compatible without deviceClass.
+
+DeviceClass means CSS viewport width only: <768 mobile, 768–1023 tablet,
+>=1024 desktop, missing/invalid unknown. The server normalizes omitted values to
+unknown. No physical-device/OS detection occurs.
+
+The durable event table has id, occurred_at, received_at, kind, pathname, tool_id,
+event_name, metric_name, metric_value, metric_rating, failure_category,
+device_class, referrer_host and navigation_type. Both timestamps are server
+database now(), never client timestamps. All columns are explicit; no generic
+JSON exists. Vital id/delta and diagnostic stacks/messages remain outside storage.
+Daily count dimensions normalize optional values to empty strings and include
+safe referrer_host for long-range breakdowns. Daily_vital stores sample_count and
+Postgres continuous p50/p75/p95 per day/path/metric/viewport group. Rollup_day
+records day and successful completion timestamp. See the database README for
+constraints, indexes, transaction ownership and 90-day raw/indefinite daily retention.
+
+`GET /api/observability/maintenance` takes Authorization: Bearer CRON_SECRET,
+returns 401 for missing/invalid authorization, 204 after atomic daily rollup and
+safe retention, and empty 503 for persistence/configuration/database failure.
+
+Network logs replace `url` with `pathname`, allow only bounded semantic metadata and application asset stack locations, and replace arbitrary messages with fixed failure/event categories. File/Blob, filenames, input/output, dimensions, full URLs, query/hash, storage, cookies and identity are excluded at the transport boundary. Default telemetry remains local unless `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true`.
+
 **Source:** `src/app/api/`
 
 ### POST /api/log
@@ -190,10 +222,10 @@ Request shape:
 ```typescript
 {
   level: "debug" | "info" | "warn" | "error";
-  message: string;
+  message: "Application event" | "Client failure";
   timestamp: string; // ISO 8601
-  meta?: Record<string, unknown>;
-  url?: string;
+  pathname: string; // no query/hash
+  meta: { toolId?: string; boundary?: string; failureCategory?: string; placement?: string; stack?: string }; // bounded allowlist
 }
 ```
 
@@ -208,7 +240,7 @@ Response:
 
 - `200 OK` — service is reachable
 
-No response body required.
+Response body: `{ "status": "ok" }`.
 
 ---
 
