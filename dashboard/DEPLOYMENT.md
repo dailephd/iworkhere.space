@@ -70,6 +70,9 @@ OBSERVABILITY_DASHBOARD_DATABASE_URL=<read-only Secret>
 Use its independent package-lock. The root application never builds/serves this
 app, and the public Docker image does not include it. No production database
 configuration is needed at build time; it is required when pages are requested.
+The dashboard can be installed and built from its root without the repository
+root `node_modules`. It uses plain CSS and its own local PostCSS boundary; it
+does not inherit the public application's Tailwind tooling.
 
 Before treating the dashboard as private, configure exactly:
 

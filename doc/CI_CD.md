@@ -34,7 +34,9 @@ The standalone dashboard has an additional independent
 `.github/workflows/dashboard.yaml` workflow on Node 24. It runs
 `npm --prefix dashboard ci` and `npm --prefix dashboard run verify` without
 database secrets, uploads its full unique dashboard/test-report hierarchy and
-does not deploy. Root jobs do not compile the dashboard application.
+does not deploy. The dashboard owns a local PostCSS boundary for its plain CSS
+and installs/builds without root `node_modules` or the root Tailwind plugin.
+Root jobs do not compile the dashboard application.
 `.github/workflows/observability-db.yaml` independently runs the isolated
 Postgres 17 schema/rollup/query/role smoke and uploads each complete run directory.
 Together these are two additional workflows beyond the six public-app gates
@@ -50,7 +52,7 @@ Six jobs run on every push and pull request:
 | `test` | `npm run test` | Unit, contract, and integration tests |
 | `build` | `npm run build` | Next.js production build, RSC correctness |
 | `e2e` | `npm run test:e2e` after build | Production desktop/mobile Chromium behavior and diagnostics |
-| `container` | `npm run test:container` | Built Docker runtime, health, image hygiene, and the same browser suite against the container |
+| `container` | `npm run test:container` | Built Docker runtime, health, image hygiene, and the same browser suite against the container without host `.next` dependencies |
 
 All six public-app jobs plus the dashboard and database jobs must pass.
 If any job fails, merge is blocked.

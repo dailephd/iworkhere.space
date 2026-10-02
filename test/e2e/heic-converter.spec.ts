@@ -1,14 +1,11 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
 
 const fixture = path.resolve("test/fixtures/images/heic-source.heic");
-const chunkRoot = path.resolve(".next/static/chunks");
-const decoderAssets = readdirSync(chunkRoot, { recursive: true }).filter((name): name is string =>
-    typeof name === "string" && name.endsWith(".js") && readFileSync(path.join(chunkRoot, name)).includes("HeifDecoder"));
 
-interface WorkerRecord { terminated: boolean; operation?: string }
+interface WorkerRecord { terminated: boolean; operation?: string; url: string }
 interface Control {
     workers: WorkerRecord[];
     urls: { url: string; type: string; bytes: number }[];
@@ -31,7 +28,7 @@ async function instrument(page: Page) {
             private listener: ((this: Worker, event: MessageEvent) => unknown) | null = null;
             constructor(url: string | URL, options?: WorkerOptions) {
                 super(url, options);
-                this.record = { terminated: false };
+                this.record = { terminated: false, url: new URL(url.toString(), window.location.href).href };
                 control.workers.push(this.record);
             }
             set onmessage(listener: ((this: Worker, event: MessageEvent) => unknown) | null) {
@@ -87,19 +84,23 @@ async function decoded(page: Page, alt: string) {
     }, url);
 }
 
+function expectApplicationWorkerUrls(page: Page, workers: WorkerRecord[]) {
+    const applicationOrigin = new URL(page.url()).origin;
+    expect(workers.map(worker => new URL(worker.url).origin)).toEqual(workers.map(() => applicationOrigin));
+}
+
 test.describe("HEIC converter", () => {
     test.setTimeout(90_000);
     for (const target of ["jpeg", "png"] as const) {
         test(`real ${target} inspection, conversion, download and containment`, async ({ page }, testInfo) => {
             await instrument(page);
-            const requests: string[] = [];
-            page.on("request", request => requests.push(request.url()));
             await page.goto("/tool/heic-converter");
             expect((await snapshot(page)).workers).toHaveLength(0);
-            expect(requests.some(url => decoderAssets.some(asset => url.endsWith(asset)))).toBe(false);
             await select(page);
             expect(await decoded(page, "Selected HEIC source preview")).toMatchObject({ type: "image/png", width: 480, height: 320 });
-            expect((await snapshot(page)).workers).toEqual([{ operation: "inspect", terminated: true }]);
+            const inspected = (await snapshot(page)).workers;
+            expect(inspected).toMatchObject([{ operation: "inspect", terminated: true }]);
+            expectApplicationWorkerUrls(page, inspected);
             await page.getByLabel("Output format").selectOption(target);
             if (target === "jpeg") await page.getByLabel("Quality", { exact: true }).fill("60");
             else await expect(page.getByLabel("Quality", { exact: true })).toHaveCount(0);
@@ -114,10 +115,11 @@ test.describe("HEIC converter", () => {
             expect(download.suggestedFilename()).toBe(`heic-source-converted.${target === "jpeg" ? "jpg" : "png"}`);
             await download.saveAs(testInfo.outputPath(download.suggestedFilename()));
             expect(await download.failure()).toBeNull();
-            expect((await snapshot(page)).workers).toEqual([
+            const workers = (await snapshot(page)).workers;
+            expect(workers).toMatchObject([
                 { operation: "inspect", terminated: true }, { operation: "convert", terminated: true },
             ]);
-            expect(requests.some(url => decoderAssets.some(asset => url.endsWith(asset)))).toBe(true);
+            expectApplicationWorkerUrls(page, workers);
             expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
             const layout = await page.evaluate(() => {
                 const workspace = document.querySelector("main section:has(>h1)")!;
@@ -137,15 +139,12 @@ test.describe("HEIC converter", () => {
         });
     }
 
-    test("size precheck prevents workers and decoder requests", async ({ page }) => {
+    test("size precheck prevents worker creation", async ({ page }) => {
         await instrument(page);
-        const requests: string[] = [];
-        page.on("request", request => requests.push(request.url()));
         await page.goto("/tool/heic-converter");
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: "oversize.heic", mimeType: "image/heic", buffer: Buffer.alloc(26_214_401) });
         await expect(page.getByRole("main").getByRole("alert")).toBeVisible();
         expect((await snapshot(page)).workers).toHaveLength(0);
-        expect(requests.some(url => decoderAssets.some(asset => url.endsWith(asset)))).toBe(false);
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: "empty.heic", mimeType: "image/heic", buffer: Buffer.alloc(0) });
         await expect(page.getByRole("main").getByRole("alert")).toBeVisible();
         expect((await snapshot(page)).workers).toHaveLength(0);

@@ -56,7 +56,9 @@ container smoke gate exercises a read-only root filesystem, a temporary `/tmp`,
 and the existing desktop/mobile Playwright suite against the running container.
 Set `E2E_BASE_URL` only when intentionally running that same suite against an
 already-running external runtime; otherwise Playwright owns its normal local
-production server.
+production server. External-runtime mode does not require a host `.next` build;
+the browser suite validates the selected runtime. Container smoke builds the app
+inside Docker and runs that same suite against the live container.
 
 ## Browser runtime assets
 

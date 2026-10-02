@@ -5,12 +5,16 @@
 Reconciled 2026-10-02. Repository: branch `feature/v0.2.0-image-utility-foundation`;
 target release v0.2.0; root package version 0.1.0; dashboard package version
 0.1.0. The v0.2 implementation candidate was frozen and audited at
-`53a22cb4d677ba4cb3f47fe4cd7eb7d7d9355d3f`. Its first exact-SHA readiness run
+`53a22cb4d677ba4cb3f47fe4cd7eb7d7d9355d3f`. The first exact-SHA readiness run
 was BLOCKED by runtime dependency advisories, missing hosted exact-SHA CI
-evidence, and unresolved HEIC production-license approval. Functional, browser,
-container, and database acceptance passed. This bounded correction updates the
-approved Next.js dependency contract and validation-branch triggers; a new
-candidate SHA is required before readiness is rerun.
+evidence, and unresolved HEIC production-license approval. The bounded security
+and validation-trigger correction produced candidate
+`168741086c7990d28e766ac5ee3f5bcc257deb5b`. Its second exact-SHA readiness run
+was BLOCKED after all local functional/security gates passed: the hosted
+Dashboard build inherited the root PostCSS config, and hosted Container E2E
+assumed host `.next` artifacts. This bounded correction gives the dashboard a
+local plain-CSS PostCSS boundary and makes HEIC E2E rely on browser-runtime
+Worker evidence. A new candidate SHA must undergo full readiness again.
 
 The registry contains **10 tools / 4 image tools**. The theme registry contains
 **4 themes**: System, Light, Dark and One Dark. The v0.2 implementation includes
@@ -29,11 +33,11 @@ and migration, dashboard read-only credential, Vercel dashboard project and
 All Deployments protection, dashboard domain/DNS, production variables, live
 telemetry and ads serving are external and unverified.
 
-This correction changes the candidate tree, so the first candidate SHA is
-superseded by the commit containing this correction. The standardized exact-SHA
-readiness workflow must run against that corrected candidate. HEIC
-production-license approval remains unresolved, and production / deployment
-gates remain external. This is not release or deployment authorization.
+The hosted CI isolation correction changes the candidate tree. Its committed
+candidate must go through the standardized exact-SHA readiness workflow from the
+beginning. HEIC production-license approval remains unresolved, and production /
+deployment gates remain external. This is not release or deployment
+authorization.
 
 ### Prior validation evidence (historical snapshots)
 
@@ -60,7 +64,10 @@ Build, E2E and Container. Separate dashboard and observability-database workflow
 also exist. Root `npm run verify` runs typecheck, lint, test and build;
 `npm run test:e2e`, optional Docker `npm run test:container`, dashboard verify,
 and the database smoke are separate. Current commands and artifact ownership
-are in TESTING.md and CI_CD.md.
+are in TESTING.md and CI_CD.md. The dashboard owns its plain-CSS PostCSS
+configuration and builds without root `node_modules`. External-runtime E2E uses
+`E2E_BASE_URL`, runs the same full browser suite, and has no host `.next`
+prerequisite; Container builds the production runtime inside Docker.
 
 Batch 7 container runtime hardening: PASS. Next standalone output, a
 digest-pinned Node 24 Docker image, optional Compose preview, Windows Docker

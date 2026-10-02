@@ -205,7 +205,10 @@ retained only on failure; videos are disabled. CI always uploads the E2E hierarc
 The Playwright config accepts `E2E_BASE_URL` for an already-running production
 runtime. When set, it uses that base URL and does not launch `webServer`; when
 unset, the existing `http://127.0.0.1:3100` server ownership and suite behavior
-remain in effect.
+remain in effect. External-runtime mode tests browser behavior directly and
+does not require a host `.next` build. HEIC lazy loading is verified by
+instrumenting Worker construction, operation, application-owned URL and
+termination in the browser; it does not inspect host build chunks.
 
 `npm run test:container` builds and starts a local Docker image, checks runtime
 health, HTTP routes, image contents, and clean shutdown, then runs this same
@@ -213,8 +216,10 @@ desktop/mobile browser suite against the container. It records a unique
 `test-report/container/<CONTAINER_RUN_ID>/` summary and logs; the associated
 browser report remains under `test-report/e2e/<E2E_RUN_ID>/`. This gate includes
 container-specific PWA/service-worker delivery and HEIC lazy Worker/decoder
-route and conversion checks through the inherited browser coverage. It also
-records the container's normal stop result and OOM state. Container testing is
+route and conversion checks through the same canonical browser coverage. The
+container builds the production app internally; nested E2E has no host `.next`
+prerequisite. The report also records the container's normal stop result and
+OOM state. Container testing is
 separate from both `npm run verify` and ordinary `npm run test:e2e`.
 
 Specs in `test/e2e/` use a shared fixture that attaches listeners before navigation.

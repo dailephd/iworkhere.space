@@ -1,6 +1,21 @@
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { HEIC_DEFAULT_OUTPUT, HEIC_DEFAULT_QUALITY, HEIC_OUTPUT, heicFilename, heicPreviewDimension, heicQuality, heicRequiresWhite } from "./heicConverter";
 import { heicErrorResponse, readHeicResponse, requireHeicBlob, type HeicWorkerRequest } from "./heicConverter.workerType";
+
+describe("HEIC decoder import boundary", () => {
+    it("keeps heic-to/next inside the dedicated worker", () => {
+        const imageSourceDirectory = path.dirname(fileURLToPath(import.meta.url));
+        const importers = readdirSync(imageSourceDirectory, { withFileTypes: true })
+            .filter(entry => entry.isFile() && /\.[cm]?[jt]sx?$/.test(entry.name) && !/\.test\.[cm]?[jt]sx?$/.test(entry.name))
+            .filter(entry => /from\s+["']heic-to\/next["']/.test(readFileSync(path.join(imageSourceDirectory, entry.name), "utf8")))
+            .map(entry => entry.name);
+
+        expect(importers).toEqual(["heicConverter.worker.ts"]);
+    });
+});
 
 describe("HEIC output contract", () => {
     it("offers only JPEG/PNG and defaults to JPEG at quality 90", () => {

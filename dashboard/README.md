@@ -1,6 +1,6 @@
 # iworkhere.space operational dashboard
 
-An independent Next.js 16.1.0 / React 19.2.3 app on Node 24.x. Production reads
+An independent Next.js 16.3.8 / React 19.2.3 app on Node 24.x. Production reads
 the public application's ONE Neon observability database using a SELECT-only
 role. No application authentication, account model, login page or sessions exist.
 Vercel Authentication with All Deployments must protect this separate project.
@@ -9,8 +9,14 @@ See [deployment setup](DEPLOYMENT.md) before exposing it.
 ```powershell
 cd dashboard
 npm ci
+npm run build
 npm run dev
 ```
+
+`dashboard/` is independently installable and buildable without the repository
+root `node_modules`. It owns a local empty PostCSS configuration because its
+styles are plain CSS and it does not use Tailwind; the root application's
+Tailwind/PostCSS configuration does not apply here.
 
 Local port is 3001. Configure server-only
 `OBSERVABILITY_DASHBOARD_DATABASE_URL` using a dedicated development/read-only
