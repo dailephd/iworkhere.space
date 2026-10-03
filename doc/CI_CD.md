@@ -155,8 +155,10 @@ container reports are uploaded with distinct run/attempt artifact names and
 30-day retention. Local aggregate verification
 remains the original four steps; E2E and Container are separate.
 
-E2E_CI_EXECUTION = PENDING_FINAL_VERSION_PR. Intermediate v0.2 feature-branch
-local validation does not establish a successful hosted workflow execution.
+Exact-SHA hosted validation passed at `339091c5aaf4ad31be656756a7f4e4c121cc37de`
+on `validation/v0.2.0-heic-license-339091c5`: Typecheck 37092677963, Lint
+37092677935, Test 37092678056, Build 37092677967, E2E 37092678000, Container
+37092677960, Dashboard 37092678008, and Observability database 37092678028.
 
 **Build-time** (enforced by `npm run build` and type checking):
 

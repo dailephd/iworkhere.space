@@ -3,9 +3,10 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The repository implements the v0.2.0 candidate scope. Root and independent
-dashboard package metadata remain `0.1.0` until release preparation. The root
-registry contains 10 tools, including four local image utilities.
+The repository implements the v0.2.0 scope. Release preparation has bumped the
+root package metadata to `0.2.0`; the independently deployed dashboard remains
+at `0.1.0`. The root registry contains 10 tools, including four local image
+utilities.
 
 ## Getting Started
 

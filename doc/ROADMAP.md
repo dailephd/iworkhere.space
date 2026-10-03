@@ -4,7 +4,8 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The current repository package version is `0.1.0`.
+The root application package version is `0.2.0`; the independent dashboard
+retains its own package version.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -89,7 +90,8 @@ Future versions must preserve the following established principles:
 
 ## Current baseline — v0.1.0
 
-Status: Original product foundation; current package metadata remains 0.1.0
+Status: Original product foundation; the v0.1.0 baseline remains documented
+here while current root package metadata advances independently.
 
 Version 0.1.0 establishes the original product and architecture.
 
@@ -143,7 +145,9 @@ v0.1.1 implementation is accepted when:
 - the integration commit is on `master` and all four required CI jobs pass on
   that exact commit.
 
-Publication/release status is separate. The repository package remains `0.1.0` until the normal release/integration workflow establishes a new released version.
+At v0.1.1 acceptance, publication/release status was separate and root package
+metadata remained `0.1.0`. The v0.2.0 release-preparation update is recorded
+under Version 0.2.0 below.
 
 ### Exclusions
 
@@ -161,7 +165,9 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 ## Version 0.2.0 — Image Utility Foundation
 
-Status: Implementation complete; release preparation has not run. HEIC production-license approval remains a mandatory external release gate.
+Status: Implementation and exact-SHA readiness are complete. The owner approved
+the HEIC production-license gate; release preparation has bumped root package
+metadata to 0.2.0. Publication and deployment have not occurred.
 
 ### Goal
 
@@ -521,7 +527,7 @@ Status: Planned; visual approval and implementation remain pending.
 
 Goal: make the existing tools more useful and visually distinct before expanding the amount of redesign work. Start with the homepage and Image Resizer, proposing compact top navigation and a settings-plus-preview workspace rather than repeating the existing permanent-sidebar composition. Preserve the registry, routes, themes, local-processing/privacy contracts, and existing banner decisions unless explicitly revised.
 
-After visual approval, roll the accepted pattern across the other three image tools and add the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The HEIC production-license gate remains unresolved.
+After visual approval, roll the accepted pattern across the other three image tools and add the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The owner approved the HEIC production-license gate for v0.2.0.
 
 The [detailed plan](plans/ui-discovery-growth-plan.md) owns this enhancement's delivery boundaries. It is not a retroactive v0.2 implementation plan or a new numbered catalog version. No new utility, bulk processing, target-size compression, generic file framework, large content program, or AI-specific integration is added to the first delivery.
 
@@ -728,11 +734,12 @@ Obtain that approval before extending the presentation pattern to the other
 image tools. Basic discovery improvements accompany the accepted rollout; no
 new catalog version or site-wide rewrite is authorized by this planning update.
 
-The v0.2 implementation is technically complete. The package remains `0.1.0`;
-no release PR, publication or deployment is authorized. This documentation
-reconciliation must pass before the working tree is frozen to an exact candidate
-SHA. The separate standardized pre-release readiness workflow then evaluates
-that SHA. HEIC production-license approval remains required before publication.
+The v0.2 implementation and exact-SHA readiness are complete. The eight hosted
+workflows passed at `339091c5aaf4ad31be656756a7f4e4c121cc37de` on the immutable
+`validation/v0.2.0-heic-license-339091c5` ref. The owner approved the HEIC
+production-license gate. Release preparation has bumped root package metadata to
+`0.2.0`; publication and deployment remain separate actions and have not
+occurred.
 
 Historical process debt: the referenced
 `doc/plans/v0.2.0-implementation-plan.md` is absent from the repository and its

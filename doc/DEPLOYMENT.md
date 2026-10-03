@@ -72,9 +72,11 @@ service. The runtime retains
 For internet-facing hosting, run the application behind the platform ingress,
 load balancer, or a separately managed reverse proxy. TLS termination and
 deployment are outside this application image. No Docker registry publication
-or automated deployment is configured. HEIC production-license approval is
-still required; `HEIC_RELEASE_READY=NO` and `V0_2_RELEASE_READY=NO` remain in
-force.
+or automated deployment is configured. The owner approved the HEIC
+production-license gate after reviewing the evidence bundle. Exact-SHA hosted
+readiness passed for the frozen implementation candidate; release preparation
+sets `HEIC_RELEASE_READY=YES` and `V0_2_RELEASE_READY=YES`. No publication or
+deployment has occurred.
 
 ## Opt-in production integrations
 

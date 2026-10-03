@@ -2,19 +2,12 @@
 
 ## Current implementation state
 
-Reconciled 2026-10-02. Repository: branch `feature/v0.2.0-image-utility-foundation`;
-target release v0.2.0; root package version 0.1.0; dashboard package version
-0.1.0. The v0.2 implementation candidate was frozen and audited at
-`53a22cb4d677ba4cb3f47fe4cd7eb7d7d9355d3f`. The first exact-SHA readiness run
-was BLOCKED by runtime dependency advisories, missing hosted exact-SHA CI
-evidence, and unresolved HEIC production-license approval. The bounded security
-and validation-trigger correction produced candidate
-`168741086c7990d28e766ac5ee3f5bcc257deb5b`. Its second exact-SHA readiness run
-was BLOCKED after all local functional/security gates passed: the hosted
-Dashboard build inherited the root PostCSS config, and hosted Container E2E
-assumed host `.next` artifacts. This bounded correction gives the dashboard a
-local plain-CSS PostCSS boundary and makes HEIC E2E rely on browser-runtime
-Worker evidence. A new candidate SHA must undergo full readiness again.
+Reconciled 2026-10-02. Target release v0.2.0; root package version 0.2.0;
+independent dashboard package version 0.1.0. The frozen implementation SHA
+`339091c5aaf4ad31be656756a7f4e4c121cc37de` passed all eight hosted workflows on
+the immutable ref `validation/v0.2.0-heic-license-339091c5`. The owner approved
+the HEIC production-license gate. Release preparation bumped root package and
+lockfile metadata; release publication and deployment have not occurred.
 
 The registry contains **10 tools / 4 image tools**. The theme registry contains
 **4 themes**: System, Light, Dark and One Dark. The v0.2 implementation includes
@@ -24,20 +17,19 @@ production observability with optional Neon persistence/maintenance, and the
 separate observability dashboard. See ROADMAP.md for accepted extensions and
 DESIGN.md for the still-pending human visual review boundary.
 
-**Implementation status:** complete subject to this documentation
-reconciliation. **Deployment status:** no production resources or settings have
-been provisioned by this repository work. **Release status:** not released;
-package version has not been bumped. The mandatory HEIC production-license
-approval remains unresolved. AdSense readiness, production Neon provisioning
-and migration, dashboard read-only credential, Vercel dashboard project and
-All Deployments protection, dashboard domain/DNS, production variables, live
-telemetry and ads serving are external and unverified.
+**Implementation status:** complete. **Exact-SHA readiness:** all eight hosted
+workflows passed on the frozen implementation SHA. **Deployment status:** no
+production resources or settings have been provisioned by this repository
+work. **Release status:** package metadata is prepared for v0.2.0; no release
+publication or deployment occurred. AdSense readiness, production Neon
+provisioning and migration, dashboard read-only credential, Vercel dashboard
+project and All Deployments protection, dashboard domain/DNS, production
+variables, live telemetry and ads serving remain external and unverified.
 
-The hosted CI isolation correction changes the candidate tree. Its committed
-candidate must go through the standardized exact-SHA readiness workflow from the
-beginning. HEIC production-license approval remains unresolved, and production /
-deployment gates remain external. This is not release or deployment
-authorization.
+Historical candidate notes below record prior correction cycles. The current
+frozen implementation passed exact-SHA readiness and received the owner's HEIC
+gate approval. Production and deployment gates remain external; this status
+does not record a publication or deployment.
 
 ### Prior validation evidence (historical snapshots)
 
@@ -128,7 +120,8 @@ runtime validation does not resolve the separate HEIC license or release gate.
 - Image fixture provenance convention and `modules/ImageFileProcessing.md`
 - Production `heic-to@1.5.2` worker-only HEIC decoding, real JPEG/PNG
   conversion, lifecycle/privacy and final application decoder isolation PASS;
-  production license approval remains required.
+  the owner approved the production-license gate and all eight hosted
+  exact-SHA workflows passed.
 - Project documentation updated (architecture, canonical design, code generation
   guidelines)
 
@@ -155,7 +148,7 @@ runtime validation does not resolve the separate HEIC license or release gate.
 
 Batch 5 adds HEIC to JPG / PNG Converter, bringing the registry to **10 tools / 4 image tools**, with exact heic-to 1.5.2 isolated inside a lazily created short-lived worker. The synthetic MIT 3,554-byte positive fixture decodes to 480 x 320 and converts to JPEG/PNG at exact dimensions. Source limits remain 25 MiB / 30 MP.
 
-Two planner fixture-selection specification gaps are DEGRADED / WORKED_AROUND: ambiguous image redistribution permission in the first fixture, then a redistributable replacement that exceeded the 30 MP contract. EXTRA_PROMPT_REQUIRED=YES. The previous 45 MP rejection remains actual limit evidence in the ignored corrected Batch 5 report. Feature acceptance is technical; HEIC_RELEASE_LICENSE_APPROVAL=REQUIRED and HEIC_RELEASE_READY=NO. Technical feature result PASS; ecosystem result DEGRADED. Final validation: 396 Vitest tests in 30 files and 146 E2E cases (73 desktop / 73 mobile), including all inherited tests; Typecheck, Lint, Build, protected Observer acceptance and impact/isolation review PASS. Complete evidence is in `.my-dev-kit-context/reports/batch-5-final/final-report.md`.
+Two planner fixture-selection specification gaps are DEGRADED / WORKED_AROUND: ambiguous image redistribution permission in the first fixture, then a redistributable replacement that exceeded the 30 MP contract. EXTRA_PROMPT_REQUIRED=YES. The previous 45 MP rejection remains actual limit evidence in the ignored corrected Batch 5 report. Technical feature result PASS; ecosystem result DEGRADED. Historical local validation: 396 Vitest tests in 30 files and 146 E2E cases (73 desktop / 73 mobile). Current release gate approval and hosted readiness are recorded above. Complete historical evidence is in `.my-dev-kit-context/reports/batch-5-final/final-report.md`.
 
 
 ## Historical process debt

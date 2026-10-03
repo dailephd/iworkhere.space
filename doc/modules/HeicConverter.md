@@ -2,7 +2,7 @@
 
 Batch 5 uses a verified synthetic MIT positive fixture within the frozen limits. Technical acceptance covers real worker inspection and JPEG/PNG conversion; release approval remains a separate human/legal gate.
 
-For target release v0.2.0, the registry exposes `/tool/heic-converter` as a client-only, offline, local single-image HEIC/HEIF utility. The root package metadata remains 0.1.0 until release preparation. No server processing, persistence, shareable query, metadata migration, sequence extraction, resize, or HEIC output is supported.
+For target release v0.2.0, the registry exposes `/tool/heic-converter` as a client-only, offline, local single-image HEIC/HEIF utility. Release preparation sets root package metadata to 0.2.0. No server processing, persistence, shareable query, metadata migration, sequence extraction, resize, or HEIC output is supported.
 
 ## Runtime boundary
 
@@ -45,4 +45,4 @@ Pure/unit contracts complement real browser inspection, JPEG/PNG conversion, dow
 
 ## Production dependency license gate
 
-The decoder bundles libheif 1.22.2; heic-to package metadata is LGPL-3.0. THIRD_PARTY_NOTICES and exact public license copies are engineering artifacts, separate from fixture MIT licensing. Implementation is allowed; human/legal release approval remains required. `HEIC_RELEASE_LICENSE_APPROVAL = REQUIRED`; `HEIC_RELEASE_READY = NO`. No legal-compliance conclusion is made. npm audit does not independently establish embedded native/libheif security.
+The decoder bundles libheif 1.22.2 and libde265 1.0.16; heic-to package metadata is LGPL-3.0, and the bundled libraries' upstream license files identify LGPLv3. The owner reviewed the evidence and approved the production-license gate for v0.2.0. `HEIC_RELEASE_LICENSE_APPROVAL = APPROVED_BY_OWNER`; `HEIC_RELEASE_READY = YES`. Approval records the human release decision; it does not state a general legal conclusion. npm audit does not independently establish embedded native/libheif security.

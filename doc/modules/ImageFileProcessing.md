@@ -86,6 +86,9 @@ dedicated worker. Workers are lazy after the source-size check, short-lived per
 inspection/conversion, and terminated on stale work, replacement, Reset and
 unmount. The main app receives bounded messages and browser-compatible Blobs.
 
-`heic-to@1.5.2` and bundled libheif 1.22.2 have preserved third-party license
-artifacts. HEIC_RELEASE_LICENSE_APPROVAL=REQUIRED and HEIC_RELEASE_READY=NO;
-technical evidence does not supply legal approval.
+`heic-to@1.5.2`, bundled libheif 1.22.2 and libde265 1.0.16 were reviewed for
+the v0.2 production distribution. The owner approved the HEIC production-license
+gate: `HEIC_RELEASE_LICENSE_APPROVAL=APPROVED_BY_OWNER` and
+`HEIC_RELEASE_READY=YES`. See the evidence review under
+`test-report/v0.2-heic-license-review/` for artifact, license, and notice-route
+findings.
