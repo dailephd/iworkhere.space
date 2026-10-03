@@ -37,6 +37,6 @@ Manual review and updates are encouraged to add implementation details.
 The active pilot renders `VerticalNav` as compact, wrapping links in the upper application header; it no longer occupies a permanent 176px desktop rail. Items come from the existing `NavItem` owner and use normal destinations with current-path active state. Mobile keeps the same links and wraps them without a drawer or modal. See `docs/DESIGN.md`.
 
 
-### Component-color correction (pending visual approval)
+### Component-color correction (Delivery 1 visually approved 2026-10-03)
 
 Navigation uses header-muted normal text, nav-hover-bg, nav-active-bg/text. The active page also retains aria-current; color does not own state.

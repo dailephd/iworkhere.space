@@ -1,5 +1,8 @@
 import HomeClient from "./HomeClient"
 import StatusPanel from "@/component/common/StatusPanel"
+import { buildPageMetadata } from "@/lib/seo"
+
+export const metadata = buildPageMetadata({ title: "Practical browser tools", description: "Resize, compress and convert images, transform text, calculate and work with time using browser-based tools.", canonicalPath: "/" })
 
 import { getAllTool, getAvailableCategory } from "@/module/tool/metadata"
 

@@ -394,3 +394,8 @@ version plan remains historical process debt; no retrospective plan was authored
 
 - [OBSERVABILITY](OBSERVABILITY.md): safe telemetry, explicit activation, provider boundaries, Web Vitals, client error/navigation instrumentation and structured runtime logs.
 - [ADVERTISING](ADVERTISING.md): frozen AdSense identities, conditional responsive slots, verification, CLS reservation, default network-safe tests and external CMP/readiness gate.
+
+## Delivery 2 guide and crawl evidence
+
+- [Guide contract](modules/Guide.md): server-consumed image operation content and related-ID ownership.
+- [Delivery 2 implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md): bounded image rollout, crawl foundation, validation and limitations (created by this delivery).

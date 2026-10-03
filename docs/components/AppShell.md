@@ -34,9 +34,9 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current layout and scroll contract
 
-`AppShell` is the sole owner of the page `main` landmark (`id="main-content"`) and skip-link target. It owns natural document flow: the browser document scrolls, with no fixed viewport shell or nested `.MainScroll`. Navigation is composed in the upper application header and consumes no body grid column. Optional advertising regions render only when supplied. Root supplies real top/right ads only under explicit production opt-in, without a fake footer banner. Right uses a stable 176px xl track, hidden below 1280px; optional left capability remains. The main workspace receives the released width and remains capped near 1280px. Mobile collapses to one column. This pilot is pending visual approval. See `docs/DESIGN.md`.
+`AppShell` is the sole owner of the page `main` landmark (`id="main-content"`) and skip-link target. It owns natural document flow: the browser document scrolls, with no fixed viewport shell or nested `.MainScroll`. Navigation is composed in the upper application header and consumes no body grid column. Optional advertising regions render only when supplied. Root supplies real top/right ads only under explicit production opt-in, without a fake footer banner. Right uses a stable 176px xl track, hidden below 1280px; optional left capability remains. The main workspace receives the released width and remains capped near 1280px. Mobile collapses to one column. This Delivery 1 pilot is visually approved by the user on 2026-10-03. See `docs/DESIGN.md`.
 
 
-### Component-color correction (pending visual approval)
+### Component-color correction (Delivery 1 visually approved 2026-10-03)
 
 Shell header uses header-bg; protected advertising surfaces stay quiet surface-alt; footer uses footer-bg. No grid, spacing or scrolling changes.

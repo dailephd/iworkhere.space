@@ -54,3 +54,7 @@ retains quality, savings and filename rules, and imageCompressor.client.ts
 retains the operation-specific same-size encoder. Lifecycle, operation controls
 and result UI remain in ImageCompressorTool.tsx. Only identical source
 presentation delegates to the presentation-only ImageSourcePanel.
+
+## Delivery 2 presentation contract
+
+Reuse the approved Resizer grammar: 280–320px source/settings track beside a flexible preview/result stage at desktop; mobile source, preview, settings, and result actions stack logically. Local source/result previews preserve actual aspect ratio. Existing semantic palette/material classes provide all four themes; no new shared processing/state owner. Errors, limits, quality/transparency behavior, downloads, cancellation and URL/worker lifecycle remain unchanged. HEIC source composition remains local.

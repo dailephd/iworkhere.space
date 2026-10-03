@@ -1,5 +1,11 @@
 # PROJECT STATUS
 
+## Delivery 2 implementation — 2026-10-03
+
+Delivery 2 is implemented and validated on its dedicated feature branch. The earlier `BLOCKED_OBSERVER_ACCEPTANCE_CONFIG` was a configuration gap, resolved through planner-authorized semantic relationship contracts and supplementary scroll lanes without production corrections. Focused tests, 264 production E2E tests, corrected Observer lanes, final impact review, aggregate verification and container validation passed. See [the implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md) for preserved blocked history and final evidence. No merge or Delivery 2 deployment occurred.
+
+Delivery 1 visual pilot is APPROVED_BY_USER: homepage, compact navigation, Image Resizer workspace, and current four-theme/material behavior. Delivery 2 (image-family rollout and search foundation) is implemented and validated. This later decision supersedes the pending visual-review wording in historical candidate notes below. Root version remains 0.2.0; the v0.3–v0.6 sequence is unchanged.
+
 ## Current implementation state
 
 Reconciled 2026-10-02. Target release v0.2.0; root package version 0.2.0;
@@ -15,7 +21,7 @@ the local image utility family and worker-isolated HEIC conversion, accepted
 homepage/discovery and material pilot, production-gated AdSense, opt-in
 production observability with optional Neon persistence/maintenance, and the
 separate observability dashboard. See ROADMAP.md for accepted extensions and
-DESIGN.md for the still-pending human visual review boundary.
+DESIGN.md for the approved Delivery 1 precedent and bounded Delivery 2 rollout.
 
 **Implementation status:** complete. **Exact-SHA readiness:** all eight hosted
 workflows passed on the frozen implementation SHA. **Deployment status:** no

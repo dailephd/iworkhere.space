@@ -64,3 +64,7 @@ This logical unit was identified by the following merge signals:
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+## Delivery 2 derived-query contract
+
+`getToolByIdList(id: ToolId[])` resolves ordered canonical IDs, omits unknown IDs and duplicate IDs, and returns registry definitions. Guide prose is not imported here. `getToolBreadcrumb(tool)` derives Home → populated Category → current Tool display items from the registered tool. The registry remains the sole identity source.

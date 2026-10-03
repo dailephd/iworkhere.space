@@ -138,6 +138,11 @@ Tool components must be self-contained and must not depend on routing.
 - Never duplicate tool data outside the registry
 - New metadata queries go in metadata.ts
 
+Image guide prose belongs in the typed server-consumed `src/module/tool/guide.ts`
+companion keyed by existing ToolId. It is not another identity registry and must
+not enter client catalog payloads. Related IDs resolve through metadata.ts;
+generic lib/seo never imports guide data.
+
 ### Layout composition
 
 AppShell provides the responsive grid layout with slots for navigation, header and footer banners, and side panels. Navigation items are defined in src/app/navData.ts. The root layout.tsx wraps all pages in AppShell.

@@ -187,7 +187,7 @@ implementation extensions: the compact discovery/homepage layout and One Dark
 material pilot; production-gated AdSense placement; opt-in production
 observability; Neon persistence and daily maintenance; and the separate private
 observability dashboard. These extend the original image-utility plan without
-changing the future catalog sequence. Design visual approval remains pending
+changing the future catalog sequence. Delivery 1 design visual approval is recorded; Delivery 2 is implemented
 where specified in `DESIGN.md`; external deployment and account setup remain
 unperformed.
 
@@ -523,11 +523,11 @@ This changes the priority of a bounded discovery subset, not the catalog version
 
 ### Near-term UI and discovery pilot
 
-Status: Planned; visual approval and implementation remain pending.
+Status: Delivery 1 is implemented and visually approved by the user. Delivery 2 is implemented and validated on its dedicated feature branch; public launch remains separately authorized.
 
 Goal: make the existing tools more useful and visually distinct before expanding the amount of redesign work. Start with the homepage and Image Resizer, proposing compact top navigation and a settings-plus-preview workspace rather than repeating the existing permanent-sidebar composition. Preserve the registry, routes, themes, local-processing/privacy contracts, and existing banner decisions unless explicitly revised.
 
-After visual approval, roll the accepted pattern across the other three image tools and add the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The owner approved the HEIC production-license gate for v0.2.0.
+With Delivery 1 visual approval recorded, Delivery 2 extends the accepted pattern across the other three image tools and adds the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The owner approved the HEIC production-license gate for v0.2.0.
 
 The [detailed plan](plans/ui-discovery-growth-plan.md) owns this enhancement's delivery boundaries. It is not a retroactive v0.2 implementation plan or a new numbered catalog version. No new utility, bulk processing, target-size compression, generic file framework, large content program, or AI-specific integration is added to the first delivery.
 
@@ -728,10 +728,7 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-Complete the human visual review of the implemented homepage/navigation and
-Image Resizer pilot from [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md).
-Obtain that approval before extending the presentation pattern to the other
-image tools. Basic discovery improvements accompany the accepted rollout; no
+The user approved the implemented Delivery 1 homepage/navigation and Image Resizer pilot from [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). Delivery 2 implements the accepted image-family presentation and bounded discovery foundation; planner review of its implementation report is the next action. Basic discovery improvements accompany the accepted rollout; no
 new catalog version or site-wide rewrite is authorized by this planning update.
 
 The v0.2 implementation and exact-SHA readiness are complete. The eight hosted

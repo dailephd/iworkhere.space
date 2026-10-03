@@ -46,3 +46,7 @@ Pure/unit contracts complement real browser inspection, JPEG/PNG conversion, dow
 ## Production dependency license gate
 
 The decoder bundles libheif 1.22.2 and libde265 1.0.16; heic-to package metadata is LGPL-3.0, and the bundled libraries' upstream license files identify LGPLv3. The owner reviewed the evidence and approved the production-license gate for v0.2.0. `HEIC_RELEASE_LICENSE_APPROVAL = APPROVED_BY_OWNER`; `HEIC_RELEASE_READY = YES`. Approval records the human release decision; it does not state a general legal conclusion. npm audit does not independently establish embedded native/libheif security.
+
+## Delivery 2 presentation contract
+
+Reuse the approved Resizer grammar: 280–320px source/settings track beside a flexible preview/result stage at desktop; mobile source, preview, settings, and result actions stack logically. Local source/result previews preserve actual aspect ratio. Existing semantic palette/material classes provide all four themes; no new shared processing/state owner. Errors, limits, quality/transparency behavior, downloads, cancellation and URL/worker lifecycle remain unchanged. HEIC source composition remains local.

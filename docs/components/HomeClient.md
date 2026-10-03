@@ -38,10 +38,10 @@ from populated metadata, all four registered image tools under “Image tools”
 and a linked compact list of the remaining tools. Tool identity and descriptions
 come from the registry through the server page. Search filtering remains in the
 shared `ToolSearch` owner. Every category and tool destination is a normal link.
-The launcher is compact and pending visual approval, not a marketing landing page.
+The approved Delivery 1 launcher is compact, not a marketing landing page.
 
 
-### Component-color correction (pending visual approval)
+### Component-color correction (Delivery 1 visually approved 2026-10-03)
 
 Category links consume category hue/soft roles. Tool cards consume card roles with a thin category edge and category hover tint. Image group uses image-soft. Existing metadata owns category identity; no duplicate catalog or palette.
 

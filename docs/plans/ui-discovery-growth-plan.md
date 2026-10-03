@@ -2,7 +2,7 @@
 
 Research date: 2026-10-01.
 
-Status: Planner-authored plan; not implemented. The first delivery is a small visual pilot, not a site-wide rebuild. Visual approval is still required before rollout.
+Status: Delivery 1 is implemented and visually approved by the user on 2026-10-03. Delivery 2 is implemented and validated on its dedicated feature branch: image-family rollout and search foundation; Delivery 3 remains separately authorized operational work.
 
 ## Purpose and scope
 
@@ -167,4 +167,4 @@ All pages below were consulted on 2026-10-01. Traffic figures refer to August 20
 
 ## Next action
 
-Prepare the homepage and Image Resizer visual pilot with the explicit protected behavior above. Obtain visual approval before rolling the pattern across the image family. This document is the plan; it is not evidence that the pilot, search changes, public launch, or traffic gains have occurred.
+The planner must review the completed Delivery 2 implementation report against the canonical roadmap before authorizing any next delivery. Delivery 1 approval is inherited; Delivery 2 functional, browser, corrected Observer, impact, aggregate and container gates passed. No public-launch or traffic result is implied.

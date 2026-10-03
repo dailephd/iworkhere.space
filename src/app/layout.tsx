@@ -11,10 +11,11 @@ import { ADSENSE_CLIENT, adsenseEnabled } from "@/module/ad/config";
 import { AdSenseSlot } from "@/component/common/AdSenseSlot";
 import { AdSenseScript } from "@/component/common/AdSenseScript";
 import { WebVitals } from "@/component/common/WebVitals";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "iworkhere.space — Utility Tool Platform",
-  description: "Simple, fast utility tool for text, document, math, and everyday task.",
+  ...buildPageMetadata({ title: "Utility Tool Platform", description: "Browser tools for images, text, math, time and everyday tasks.", canonicalPath: "/" }),
+  metadataBase: new URL(SITE_URL),
   other: { "google-adsense-account": ADSENSE_CLIENT },
 };
 

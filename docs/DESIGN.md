@@ -2,7 +2,7 @@
 
 This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `docs/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
 
-The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The first homepage/navigation/Resizer pilot is implemented for visual review; it remains pending human approval and must not be rolled out to other tools yet.
+The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The user approved Delivery 1 (homepage, compact navigation, Image Resizer, and current theme/material behavior) on 2026-10-03. Delivery 2 image-family rollout and search foundation is implemented and validated on the dedicated feature branch. This is not a public launch or deployment.
 
 ## Separate operational dashboard
 
@@ -30,7 +30,7 @@ Light uses a dark navy header, clean white category-marked cards, a cool search 
 
 Shared visual-role tokens are header-bg/text/muted; nav-hover-bg/active-bg/active-text; search-bg/border; card-bg/border/hover-bg; panel-bg/border; preview-bg/border; result-bg/border; secondary-action-bg/border; footer-bg. Inputs and danger-soft have shared role tokens. Category image/text/math/time/everyday/document colors and soft tints live in the canonical theme CSS, with no independent palette registry. Small category chips and card edges carry identity; broad saturated tiles are forbidden. Primary actions use accent/contrast, secondary actions use their own surface/border, and result/error states also retain headings, metrics and actionable messages.
 
-Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `global.css`. All text combinations target AA; focus retains its ring and contrast support. This component-color candidate remains pending human visual approval.
+Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `global.css`. All text combinations target AA; focus retains its ring and contrast support. This component-color candidate remains approved for Delivery 1 by the user on 2026-10-03.
 
 ## Typography, spacing, and shape
 
@@ -42,7 +42,7 @@ The shared conceptual color tokens are background, surface, surface-alt, border,
 
 ## Application layout and scrolling
 
-The active pilot changes navigation and Resizer allocation while preserving AppShell, the single main landmark, skip-link target and natural document flow. The implementation is pending visual approval.
+The active pilot changes navigation and Resizer allocation while preserving AppShell, the single main landmark, skip-link target and natural document flow. The Delivery 1 implementation is visually approved.
 
 `AppShell` owns the shared page layout. Compact `VerticalNav` links are in the upper application header and do not reserve a desktop side column. The optional right advertising rail is a stable 176px at xl (1280px), hidden narrower; active top/right slots exist only with the explicit production ad flag. Main content receives the available width through a flexible track and remains capped near 1280px. The Image Resizer pilot uses a 280–320px source/settings column beside a flexible preview/result stage when space permits.
 
@@ -79,17 +79,17 @@ All analytics go through the existing `track()` abstraction and declared event n
 
 ## Planned workspace-first pilot
 
-Status: implemented and pending visual approval. The planner-authored [UI/discovery plan](plans/ui-discovery-growth-plan.md) owns scope, research, rollout, and search requirements. This approval gate applies only to the homepage/navigation/Resizer pilot.
+Status: Delivery 1 implemented and visually approved; Delivery 2 authorized. The planner-authored [UI/discovery plan](plans/ui-discovery-growth-plan.md) owns scope, research, rollout, and search requirements. This approval gate applies only to the homepage/navigation/Resizer pilot.
 
 The candidate changes the working composition: compact top navigation in place of the permanent left navigation rail; a functional search entry point rather than the inactive header search field; and compact image settings beside a larger preview/result stage. Mobile uses a logical stacked workspace and compact wrapping navigation, not a new drawer or modal system. Existing route identities and AppShell ownership remain.
 
 The homepage becomes a compact launcher with one working search surface, populated categories, real linked tool cards, and a curated image-tool group. It must not become a full-screen promotional hero. Do not describe curated tools as popular without usage evidence.
 
-Pilot values are approximately 280–320px for the desktop settings column and 28–32px for tool titles, with a flexible preview stage, the existing near-1280px content maximum, and existing semantic tokens. These are review targets, not new global CSS requirements until the visual reference is accepted. Preserve all four themes, accessible focus, error quality, actual image aspect ratios, truthful result metrics, and natural document scrolling.
+Pilot values are approximately 280–320px for the desktop settings column and 28–32px for tool titles, with a flexible preview stage, the existing near-1280px content maximum, and existing semantic tokens. These are accepted local workspace targets, not new global CSS requirements. Preserve all four themes, accessible focus, error quality, actual image aspect ratios, truthful result metrics, and natural document scrolling.
 
 Production integration supersedes placeholder restrictions: root supplies real top/right AdSense slots only when explicitly enabled. No fake footer or right banner is visible; left remains absent.
 
-Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before rolling the pattern to the other image tools. Functional or Observer evidence is not a substitute for visual approval. The current-layout and affected component contracts describe the pilot implementation while keeping the visual direction pending approval.
+Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before rolling the pattern to the other image tools. Functional or Observer evidence is not a substitute for visual approval. The current-layout and affected component contracts describe the pilot implementation with the Delivery 1 visual direction approved.
 
 ## Change and documentation rules
 
@@ -105,7 +105,7 @@ Homepage Image tools and All other tools are peer SectionIsland regions: identic
 
 Light/Dark use opaque lightly tinted islands, solid child cards and restrained elevation, no glass blur or neomorphic shadow pair. One Dark uses purple/slate structural glass on islands, preview/result and theme popover, with 12px blur/120% saturation and high-opacity backgrounds. Cards, settings and secondary actions use restrained paired directional shadows; primary actions remain solid with visible hover/pressed treatment. Search stays solid and bordered. Header/footer/banner remain solid and quiet.
 
-Material tokens: island-bg/border/shadow, card-shadow/hover-shadow, raised-shadow, primary-shadow, pressed-shadow, glass-filter and glass-highlight. Canonical theme CSS defines values; shared material utilities consume them. Fallbacks are opaque without backdrop-filter; prefers-reduced-transparency and forced-colors disable glass/depth. Themes never change grid, dimensions, spacing, order, DOM or breakpoints. Verify actual alpha-composited text and control boundaries, not shadow contrast. This scoped permission supersedes the earlier global glass prohibition. Human visual approval is still pending.
+Material tokens: island-bg/border/shadow, card-shadow/hover-shadow, raised-shadow, primary-shadow, pressed-shadow, glass-filter and glass-highlight. Canonical theme CSS defines values; shared material utilities consume them. Fallbacks are opaque without backdrop-filter; prefers-reduced-transparency and forced-colors disable glass/depth. Themes never change grid, dimensions, spacing, order, DOM or breakpoints. Verify actual alpha-composited text and control boundaries, not shadow contrast. This scoped permission supersedes the earlier global glass prohibition. The user approved this Delivery 1 material direction on 2026-10-03.
 
 ## Production advertising placement
 

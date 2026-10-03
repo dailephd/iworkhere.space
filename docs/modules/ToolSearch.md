@@ -40,7 +40,7 @@ and `showTagFilters` control presentation only; they do not introduce another
 catalog or search owner.
 
 
-### Component-color correction (pending visual approval)
+### Component-color correction (Delivery 1 visually approved 2026-10-03)
 
 Search field uses search-bg/border, separate from numeric input roles. Result category chips use canonical category hue/soft tokens. Filtering behavior is unchanged.
 

@@ -1,5 +1,27 @@
 import { tool_definition_list } from "./registry"
-import type { ToolDefinition, ToolCategory, ToolSeo } from "./type"
+import type { ToolDefinition, ToolCategory, ToolSeo, ToolId } from "./type"
+
+export interface ToolBreadcrumb {
+    label: string
+    href?: string
+}
+
+export function getToolByIdList(id: ToolId[]): ToolDefinition[] {
+    const result: ToolDefinition[] = []
+    for (const one of new Set(id)) {
+        const tool = tool_definition_list.find(tool => tool.id === one)
+        if (tool) result.push(tool)
+    }
+    return result
+}
+
+export function getToolBreadcrumb(tool: ToolDefinition): ToolBreadcrumb[] {
+    return [
+        { label: "Home", href: "/" },
+        { label: tool.category[0].toUpperCase() + tool.category.slice(1), href: `/category/${tool.category}` },
+        { label: tool.name },
+    ]
+}
 
 export function getAllTool(): ToolDefinition[] {
     return tool_definition_list

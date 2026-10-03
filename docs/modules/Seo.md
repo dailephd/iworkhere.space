@@ -59,3 +59,7 @@ This logical unit was identified by the following merge signals:
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+## Delivery 2 crawl and metadata contract
+
+The existing SITE_URL is the single canonical origin and is exported for root metadata, sitemap and robots. Generic metadata helpers build apex HTTPS canonicals, Open Graph and Twitter summary fields without importing tool guide data. `isIndexable` is true for Vercel production, false for Vercel preview/development/unknown environments, and true for generic NODE_ENV=production without Vercel metadata. Root metadata applies the corresponding robots directive. Production robots permits ordinary public crawling and advertises the canonical sitemap; previews block crawling and advertise no sitemap. No GPTBot-specific training policy is added.

@@ -31,3 +31,7 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+## Delivery 2 server presentation contract
+
+The shared server template renders compact truthful breadcrumbs before the title and optional guide sections after the interactive workspace. Its route supplies display-ready breadcrumb items, guide data, and resolved related tool definitions. Ancestor links use canonical public paths. Guides render in initial HTML for four image tools only; other tools receive breadcrumbs without image prose. No structured-data family is introduced.

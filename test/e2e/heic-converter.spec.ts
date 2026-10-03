@@ -122,7 +122,7 @@ test.describe("HEIC converter", () => {
             expectApplicationWorkerUrls(page, workers);
             expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
             const layout = await page.evaluate(() => {
-                const workspace = document.querySelector("main section:has(>h1)")!;
+                const workspace = document.querySelector('[aria-label="Image preview and result"]')!;
                 const box = workspace.getBoundingClientRect();
                 const images = [...workspace.querySelectorAll("img")].map(image => image.getBoundingClientRect());
                 return {
