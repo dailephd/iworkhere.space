@@ -299,3 +299,8 @@ Breaking changes require:
 - Explicit communication in the PR description
 
 No silent interface changes.
+
+
+## Diagnostic hotfix
+
+POST /api/log accepts bounded redacted messages plus optional strict client ErrorDiagnostic. It returns empty 204 after structured logging and optional fail-safe diagnostic persistence; 400 for invalid/oversized body and 403 for inconsistent origin checks. Metrics ingestion stays separate. Next onRequestError invokes the same server sink without an HTTP diagnostic route.

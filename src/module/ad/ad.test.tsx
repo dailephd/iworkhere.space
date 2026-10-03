@@ -12,6 +12,16 @@ vi.mock("next/script", () => ({ default: (props: { id: string; src: string; cros
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.clearAllMocks(); });
 const enable = () => { vi.stubEnv("NODE_ENV", "production"); vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "true"); };
 describe("centralized AdSense", () => {
+    it("preserves script exceptions and excludes browser event payloads", () => {
+        enable();
+        const script = AdSenseScript();
+        const onError = script!.props.onError as (error: unknown) => void;
+        const error = new TypeError("Ad script initialization failed");
+        onError(error);
+        expect(captureError).toHaveBeenLastCalledWith(error, { boundary: "AdSenseScript", failureCategory: "ad-script" });
+        onError({ type: "error", target: { input: "private input" } });
+        expect(captureError).toHaveBeenLastCalledWith(expect.objectContaining({ message: "Ad script failed" }), { boundary: "AdSenseScript", failureCategory: "ad-script" });
+    });
     it("has exact public identities and ads.txt", () => {
         expect(ADSENSE_CLIENT).toBe("ca-pub-7976885058339852");
         expect(ADSENSE_SLOT).toEqual({ header: "4100977160", right: "2496999884" });
@@ -60,10 +70,11 @@ describe("centralized AdSense", () => {
     });
     it("failed initialization and logging cannot crash rendering", () => {
         enable();
-        vi.stubGlobal("window", { adsbygoogle: { push() { throw new Error("blocked"); } } });
+        const error = new TypeError("Ad queue initialization failed");
+        vi.stubGlobal("window", { adsbygoogle: { push() { throw error; } } });
         const element = { getAttribute: () => null, getBoundingClientRect: () => ({ width: 160 }) } as unknown as HTMLElement;
         expect(() => initializeAdSlot(element, "header")).not.toThrow();
-        expect(captureError).toHaveBeenCalledWith(expect.any(Error), { boundary: "AdSenseSlot", failureCategory: "ad-initialization", placement: "header" });
+        expect(captureError).toHaveBeenCalledWith(error, { boundary: "AdSenseSlot", failureCategory: "ad-initialization", placement: "header" });
         vi.mocked(captureError).mockImplementationOnce(() => { throw new Error("logger failed"); });
         expect(() => initializeAdSlot({ ...element }, "header")).not.toThrow();
     });

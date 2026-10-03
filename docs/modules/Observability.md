@@ -4,7 +4,7 @@
 
 ## Production integration
 
-The facade remains authoritative. `captureError` deduplicates the same object by identity before logging; raw local error metadata is filtered at the network provider boundary. New metric/log validators, transport, early client initialization and dedup helpers are co-owned here. No vendor SDK or parallel logging system exists. See [OBSERVABILITY](../OBSERVABILITY.md) for privacy, endpoints and activation.
+The facade remains authoritative. `captureError` deduplicates the same object by identity before logging; canonical Error serialization and explicit context projection occur before logging; arbitrary local metadata is excluded. New metric/log validators, transport, early client initialization and dedup helpers are co-owned here. No vendor SDK or parallel logging system exists. See [OBSERVABILITY](../OBSERVABILITY.md) for privacy, endpoints and activation.
 
 <!-- section-id: representative-file -->
 ## Representative File
@@ -31,8 +31,7 @@ function captureError(
 
 - `trackEvent` delegates to `track()` from `@/module/analytics`.
 - `logEvent` delegates to `log.info()` from `@/module/log/logger`.
-- `captureError` logs the first occurrence via `log.error(message, { ...meta, stack,
-  originalError })`, converting non-`Error` values with `String(error)`; it
+- `captureError` logs the first occurrence using canonical diagnostic serialization and explicit context projection; non-Error objects expose only type, never arbitrary contents. It
   additionally calls `track()` only when `trackAsEvent` is supplied.
 - Consumers: `ToolClientFrame` calls `logEvent`/`trackEvent` on tool
   open/execute and `captureError` on `setQuery` failures;
@@ -45,7 +44,7 @@ function captureError(
 - `metric.ts` / `transport.client.ts`: exact measurement validation and fail-silent transport; optional viewport class.
 - `errorMetric.client.ts` / `errorDedup.ts`: explicit safe reliability projection and independent per-sink identity deduplication.
 - `clientInstrumentation.ts`: global errors, rejections and navigation; diagnostic logging remains via the facade.
-- `persistence.server.ts`: server-only Neon measurement projection and maintenance delegation, used only by API transport adapters.
+- `persistence.server.ts`: server-only Neon measurement and diagnostic projection and maintenance delegation, used by API transport adapters and the server diagnostic sink.
 - SQL schema/transaction ownership: `database/observability/`; private read-only query/view ownership: independent `dashboard/`.
 
 `reportClientErrorMetric(error, {failureCategory, toolId?})` uses the error only
@@ -69,3 +68,8 @@ durable reliability records. Database and migration secrets stay server-side.
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+
+## Diagnostic hotfix
+
+diagnostic.ts owns canonical bounded Error/context contract and UUID/SHA-256 grouping; diagnosticText.ts owns reusable redaction; diagnostic.server.ts owns structured logging/deployment enrichment/fail-safe persistence. Existing persistence.server extends with diagnostic insertion/pruning, separate from eventRecord.

@@ -31,3 +31,8 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+
+## Diagnostic hotfix
+
+componentDidCatch supplies React componentStack, boundary, tool and tool-render-error category to canonical diagnostic capture. Independent metric projection and public fallback UI are unchanged.

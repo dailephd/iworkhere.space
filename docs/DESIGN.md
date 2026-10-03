@@ -4,6 +4,15 @@ This document is the canonical authority for product visual design, styling, int
 
 The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The user approved Delivery 1 (homepage, compact navigation, Image Resizer, and current theme/material behavior) on 2026-10-03. Delivery 2 image-family rollout and search foundation is implemented and validated on the dedicated feature branch. This is not a public launch or deployment.
 
+## Diagnostic details
+
+The operational dashboard retains its compact server-rendered style. Diagnostic
+messages wrap within the existing panel; native details/summary disclose stacks,
+causes and runtime context. Code regions have bounded height and internal
+scrolling. Diagnostic strings use normal React escaping, never HTML rendering.
+Geometry is unchanged across light/system/dark and at mobile widths. Legacy
+metric failures explicitly state that detailed diagnostics are unavailable.
+
 ## Separate operational dashboard
 
 The independent `dashboard/` app uses compact server-rendered cards, accessible

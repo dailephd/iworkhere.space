@@ -33,3 +33,8 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+
+## Diagnostic hotfix
+
+Console and Rust providers preserve redacted bounded messages; arbitrary metadata is projected. Rust warning/error transport includes canonical error fields and browser context. Capture no longer sends raw originalError/arbitrary application objects.

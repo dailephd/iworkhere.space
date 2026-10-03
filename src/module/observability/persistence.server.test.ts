@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { eventRecord, maintainObservability, persistMetric, reportPersistenceFailure, sameOriginMetricRequest } from "./persistence.server";
+import { eventRecord, maintainObservability, persistDiagnostic, persistMetric, reportPersistenceFailure, sameOriginMetricRequest } from "./persistence.server";
+import { createErrorDiagnostic, serializeDiagnosticError } from "./diagnostic";
 
 const { query, sql, neonMock } = vi.hoisted(() => {
     const query = vi.fn().mockResolvedValue([]);
@@ -38,6 +39,7 @@ describe("durable observability projection", () => {
         vi.stubEnv("OBSERVABILITY_PERSISTENCE_ENABLED", "true");
         await maintainObservability();
         expect(query).toHaveBeenCalledWith("SELECT rolled_day_count, deleted_event_count FROM observability.maintain()", []);
+        expect(query).toHaveBeenCalledWith("SELECT observability.prune_diagnostics()", []);
     });
     it("operational logs have a fixed safe shape", () => {
         const log = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -59,4 +61,15 @@ describe("durable observability projection", () => {
         vi.stubEnv("OBSERVABILITY_PERSISTENCE_ENABLED", "false");
         expect(sameOriginMetricRequest(new Request("https://example.com/api/metric", { headers: { origin: "https://other.invalid" } }))).toBe(true);
     });
+});
+it("persists complete diagnostics in the dedicated table without polluting metric projection", async () => {
+    const error = new Error("Resize worker initialization failed", { cause: new TypeError("worker cause") });
+    const d = await createErrorDiagnostic(serializeDiagnosticError(error), { pathname: "/tool/image-resizer", failureCategory: "tool-render-error", componentStack: "at ResizeTool" }, "client");
+    await persistDiagnostic(d);
+    const args = sql.mock.calls[0];
+    expect(args[0].join("")).toContain("INSERT INTO observability.error_diagnostic");
+    expect(args.slice(1)).toContain(error.message);
+    expect(args.slice(1)).toContain(error.stack);
+    expect(args.slice(1).join(" ")).toContain("worker cause");
+    expect(eventRecord({ ...base, type: "client-error", failureCategory: "unknown" })).not.toHaveProperty("message");
 });

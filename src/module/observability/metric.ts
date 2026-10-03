@@ -69,8 +69,8 @@ export function isMetricRequest(value: unknown): value is MetricRequest {
     }
     return false;
 }
-export async function readTelemetryBody(request: Request): Promise<unknown> {
-    if (!request.body || Number(request.headers.get("content-length")) > MAX_TELEMETRY_BYTES) throw new Error("Invalid telemetry size");
+export async function readTelemetryBody(request: Request, maximumBytes = MAX_TELEMETRY_BYTES): Promise<unknown> {
+    if (!request.body || Number(request.headers.get("content-length")) > maximumBytes) throw new Error("Invalid telemetry size");
     const reader = request.body.getReader();
     let text = "";
     let size = 0;
@@ -80,7 +80,7 @@ export async function readTelemetryBody(request: Request): Promise<unknown> {
             const chunk = await reader.read();
             if (chunk.done) break;
             size += chunk.value.byteLength;
-            if (size > MAX_TELEMETRY_BYTES) { await reader.cancel(); throw new Error("Invalid telemetry size"); }
+            if (size > maximumBytes) { await reader.cancel(); throw new Error("Invalid telemetry size"); }
             text += decoder.decode(chunk.value, { stream: true });
         }
         return JSON.parse(text + decoder.decode());

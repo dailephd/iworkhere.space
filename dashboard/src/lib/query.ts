@@ -8,6 +8,7 @@ export interface DashboardQuery {
     activity: Query;
     vital: Query;
     failure: Query;
+    diagnostic: Query;
     freshness: Query;
 }
 // These are explicit safe columns, shared by the two count sources only.
@@ -65,5 +66,15 @@ export function dashboardQuery(plan: RangePlan): DashboardQuery {
             (SELECT to_char(max(day), 'YYYY-MM-DD') FROM observability.rollup_day) AS last_rollup_day`,
         parameter: [],
     };
-    return { activity, vital, failure, freshness };
+    const diagnostic = {
+        text: `SELECT id::text, to_char(received_at AT TIME ZONE 'UTC', ${isoFormat}) AS received_at,
+            to_char(reported_at AT TIME ZONE 'UTC', ${isoFormat}) AS reported_at,
+            fingerprint, origin, severity, error_name, message, stack, cause, error_detail, component_stack,
+            pathname, tool_id, boundary, failure_category, client_context, server_context, deployment_context
+            FROM observability.error_diagnostic
+            WHERE received_at >= $1::timestamptz AND received_at < $2::timestamptz
+            ORDER BY received_at DESC, id DESC LIMIT 25`,
+        parameter: parameter.slice(0, 2),
+    };
+    return { activity, vital, failure, freshness, diagnostic };
 }

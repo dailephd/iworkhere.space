@@ -200,7 +200,7 @@ The durable event table has id, occurred_at, received_at, kind, pathname, tool_i
 event_name, metric_name, metric_value, metric_rating, failure_category,
 device_class, referrer_host and navigation_type. Both timestamps are server
 database now(), never client timestamps. All columns are explicit; no generic
-JSON exists. Vital id/delta and diagnostic stacks/messages remain outside storage.
+JSON exists in metric tables. Vital id/delta remain outside metric storage; separate error_diagnostic records store bounded redacted diagnostic text and structured context.
 Daily count dimensions normalize optional values to empty strings and include
 safe referrer_host for long-range breakdowns. Daily_vital stores sample_count and
 Postgres continuous p50/p75/p95 per day/path/metric/viewport group. Rollup_day
@@ -211,7 +211,7 @@ constraints, indexes, transaction ownership and 90-day raw/indefinite daily rete
 returns 401 for missing/invalid authorization, 204 after atomic daily rollup and
 safe retention, and empty 503 for persistence/configuration/database failure.
 
-Network logs replace `url` with `pathname`, allow only bounded semantic metadata and application asset stack locations, and replace arbitrary messages with fixed failure/event categories. File/Blob, filenames, input/output, dimensions, full URLs, query/hash, storage, cookies and identity are excluded at the transport boundary. Default telemetry remains local unless `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true`.
+Network logs preserve redacted bounded messages and useful Error fields/stacks; URLs omit query/hash. Explicit runtime context replaces arbitrary metadata. File/Blob, filenames, input/output, dimensions, full URLs, query/hash, storage, cookies and identity are excluded at the transport boundary. Default telemetry remains local unless `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true`.
 
 **Source:** `src/app/api/`
 
@@ -222,10 +222,11 @@ Request shape:
 ```typescript
 {
   level: "debug" | "info" | "warn" | "error";
-  message: "Application event" | "Client failure";
+  message: string; // redacted, at most 4096 UTF-8 bytes
   timestamp: string; // ISO 8601
   pathname: string; // no query/hash
-  meta: { toolId?: string; boundary?: string; failureCategory?: string; placement?: string; stack?: string }; // bounded allowlist
+  meta: { toolId?: string; boundary?: string; failureCategory?: string; placement?: string }; // semantic allowlist
+  diagnostic?: ErrorDiagnostic; // module/observability/diagnostic.ts strict client contract
 }
 ```
 
@@ -292,3 +293,8 @@ When a schema changes:
 - If the change is breaking, communicate explicitly in the PR description.
 
 Schema integrity is foundational to reliability.
+
+
+## Diagnostic hotfix
+
+ErrorDiagnostic: UUID id; ISO reporter timestamp; 64-hex SHA-256 fingerprint; client/server origin; warn/error severity; canonical DiagnosticError; explicit DiagnosticContext; server-added DeploymentContext. /api/log accepts client origin only, rejects additional fields and browser deployment claims, limits payload to 64 KiB. error_diagnostic contains received/reported times, searchable name/message/stack/cause/component/path/tool/boundary/category/fingerprint and bounded contexts. See additive 002 SQL and OBSERVABILITY.md.

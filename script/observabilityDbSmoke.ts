@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 interface SmokeQuery { text: string; parameter: string[] }
@@ -38,9 +38,32 @@ async function smoke(): Promise<void> {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         if (!ready) throw new Error("Disposable Postgres did not become ready.");
-        const schema = readFileSync(path.resolve("database/observability/001-schema.sql"), "utf8");
-        sql(schema);
-        sql(schema); // migration idempotence
+        const migrationDir = path.resolve("database/observability");
+        const migrations = readdirSync(migrationDir).filter(name => /^\d{3}-[a-z0-9-]+\.sql$/.test(name)).sort();
+        for (let pass = 0; pass < 2; pass++) for (const name of migrations) sql(readFileSync(path.join(migrationDir, name), "utf8"));
+        sql(`INSERT INTO observability.error_diagnostic
+            (id, received_at, origin, severity, error_name, message, stack, cause, error_detail, component_stack, pathname, tool_id, boundary, failure_category, fingerprint, client_context, deployment_context)
+            SELECT ('00000000-0000-4000-8000-00000000000' || ordinal)::uuid,
+                timestamptz '2026-10-03 00:00:00+00' - age * interval '1 day',
+                'client', 'error', 'TypeError', 'Resize worker initialization failed', 'TypeError: Resize worker initialization failed\n at resize (app.js:40:2)',
+                '{"name":"RangeError","message":"nested worker cause"}'::jsonb,
+                '{"name":"TypeError","message":"Resize worker initialization failed","errors":[{"name":"Error","message":"child failure"}]}'::jsonb,
+                'at ResizeTool', '/tool/image-resizer', 'image-resizer', 'ToolErrorBoundary', 'tool-render-error', repeat('a', 64),
+                '{"userAgent":"FixtureBrowser","online":false}'::jsonb, '{"commitSha":"fixture-commit","environment":"production"}'::jsonb
+            FROM (VALUES (1,29), (2,30), (3,31)) fixture(ordinal, age);
+            SELECT observability.prune_diagnostics(timestamptz '2026-10-03 00:00:00+00');`);
+        assertSql("(SELECT count(*) FROM observability.error_diagnostic) = 2", "diagnostic cutoff count wrong");
+        assertSql("EXISTS (SELECT 1 FROM observability.error_diagnostic WHERE id = '00000000-0000-4000-8000-000000000001')", "29-day diagnostic removed");
+        assertSql("EXISTS (SELECT 1 FROM observability.error_diagnostic WHERE id = '00000000-0000-4000-8000-000000000002')", "exact 30-day boundary removed");
+        assertSql("NOT EXISTS (SELECT 1 FROM observability.error_diagnostic WHERE id = '00000000-0000-4000-8000-000000000003')", "31-day diagnostic retained");
+        assertSql("(SELECT bool_and(message = 'Resize worker initialization failed' AND stack LIKE '%app.js:40:2%' AND cause->>'message' = 'nested worker cause' AND error_detail->'errors'->0->>'message' = 'child failure') FROM observability.error_diagnostic)", "diagnostic fields lost");
+        assertSql("(SELECT count(*) FROM pg_indexes WHERE schemaname = 'observability' AND tablename = 'error_diagnostic') = 5", "diagnostic indexes missing");
+        sql(`SELECT observability.prune_diagnostics(timestamptz '2026-10-03 00:00:00+00');
+            DO $$ BEGIN
+                BEGIN INSERT INTO observability.error_diagnostic (id, origin, severity, error_name, message, error_detail, pathname, failure_category, fingerprint)
+                    VALUES ('00000000-0000-4000-8000-000000000004', 'client', 'error', 'Error', repeat('x',4097), '{}', '/', 'unknown', repeat('a',64));
+                    RAISE EXCEPTION 'oversized diagnostic accepted'; EXCEPTION WHEN check_violation THEN NULL; END;
+            END $$;`);
         sql(`INSERT INTO observability.event (occurred_at, received_at, kind, pathname, navigation_type)
             SELECT t, t, 'navigation', '/', 'initial' FROM (SELECT (now() AT TIME ZONE 'UTC')::date::timestamp AT TIME ZONE 'UTC' - interval '1 day' AS t) s;
             INSERT INTO observability.event (occurred_at, received_at, kind, pathname, tool_id, event_name)
@@ -93,6 +116,13 @@ async function smoke(): Promise<void> {
         assertSql("has_table_privilege('observability_dashboard', 'observability.event', 'SELECT') AND NOT has_table_privilege('observability_dashboard', 'observability.event', 'INSERT,UPDATE,DELETE')", "dashboard table permissions wrong");
         assertSql("has_database_privilege('observability_dashboard', 'postgres', 'CONNECT') AND NOT has_database_privilege('observability_dashboard', 'postgres', 'CREATE,TEMPORARY')", "dashboard database permissions wrong");
         assertSql("NOT has_function_privilege('observability_dashboard', 'observability.maintain()', 'EXECUTE')", "dashboard can maintain");
+        assertSql("has_table_privilege('observability_dashboard', 'observability.error_diagnostic', 'SELECT') AND NOT has_table_privilege('observability_dashboard', 'observability.error_diagnostic', 'INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER')", "dashboard diagnostic grants wrong");
+        assertSql("NOT has_function_privilege('observability_dashboard', 'observability.prune_diagnostics(timestamptz)', 'EXECUTE')", "dashboard can prune diagnostics");
+        sql(`SET ROLE observability_dashboard; SELECT id, message, stack, cause FROM observability.error_diagnostic;
+            DO $$ BEGIN
+                BEGIN UPDATE observability.error_diagnostic SET message = 'unauthorized write'; RAISE EXCEPTION 'dashboard write succeeded'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+                BEGIN DELETE FROM observability.error_diagnostic; RAISE EXCEPTION 'dashboard delete succeeded'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+            END $$; RESET ROLE;`);
         sql("SET ROLE observability_dashboard; SELECT count(*) FROM observability.daily_event; RESET ROLE;");
         // An injected SQL failure must roll back day replacement, completion
         // tracking AND pruning; no old event can disappear on a partial run.

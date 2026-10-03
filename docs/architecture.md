@@ -1,12 +1,31 @@
 # ARCHITECTURE
 
+## Diagnostic hotfix architecture
+
+Diagnostics preserve bounded redacted Error fields, causes, aggregate children,
+React component stacks and explicit runtime context. The observability module
+owns the shared serializer/redactor and server diagnostic sink. Browser logs
+enter through `/api/log`; Next server failures enter through `onRequestError`.
+Both emit structured severity logs independently of optional Neon persistence
+in `observability.error_diagnostic`. Deployment context is appended server-side.
+Metrics remain separate in the existing event and daily aggregate tables.
+Detailed diagnostics expire after 30 days; metric retention remains unchanged.
+The private dashboard reads latest-25 diagnostics using its SELECT-only role.
+No arbitrary metadata, request headers/bodies, environment dumps or user input
+are captured. Additive migrations run explicitly before deployment.
+
+Both Next configurations explicitly bound Turbopack to their own project
+directory. This prevents a nested dashboard build from discovering public
+instrumentation through an inferred parent lockfile root. Public standalone
+file tracing uses the same isolated project root, including contained worktrees.
+
 ## Persistent observability and separate dashboard
 
 The public application remains public at the repository root. Its existing
 observability facade/providers own browser telemetry. `/api/log` remains the
 sanitized technical diagnostic path; `/api/metric` alone persists allowlisted
 measurement events, including explicit `client-error` metrics, into Neon Postgres.
-No diagnostic message, stack, arbitrary metadata or client timestamp is stored.
+Metric tables store no diagnostic text or client timestamps. Dedicated error_diagnostic records preserve bounded redacted diagnostic text and reporter timestamps.
 Server receipt time defines UTC aggregation and retention boundaries.
 
 `database/observability` owns the dedicated SQL schema and transactional daily

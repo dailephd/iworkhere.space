@@ -458,3 +458,7 @@ Default builds and E2E/container tests keep both public enable flags false/absen
 ## UI/discovery Delivery 2 acceptance
 
 Focused tests verify registry-derived sitemap membership, environment robots/noindex boundary, apex-stable canonical/social metadata, server guide content and canonical related IDs. Production E2E extends current image flows and checks breadcrumbs, initial HTML, metadata, Light/Dark responsive workspace allocation, downloads/reset/focus, and protected routes. Observer geometry uses the approved Resizer precedent at 1440×900 and 390×844 through semantic containment/allocation/order contracts. Child targets precede containers for the current directional fit API; intentional guide/document-height changes are not protected absolute Y coordinates. Frozen supplementary scroll lanes establish document scrolling and viewport reachability; its current capture API cannot apply selected-file/theme state, so Playwright owns those runtime states. Generated evidence remains under test-report/ or ignored project workflow roots.
+
+## Diagnostic hotfix
+
+Diagnostic validation includes serializer/redactor/API/client/server tests, additive migration order, actual PostgreSQL insertion/30-day pruning/read-role rejection/all range query plans, independent dashboard verify/runtime/visual, root verify, public E2E and container. Existing unique report directories apply. Production smoke uses exactly one operator-controlled diagnostic and checks matching UUID/message/stack/deployment in logs, Neon and protected dashboard.
