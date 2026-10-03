@@ -112,3 +112,8 @@ must not share a writable dashboard credential.
 facilities by helper scripts. `NEXT_TELEMETRY_DISABLED` is set internally by
 validation helpers. `VERIFY_TEST_VALUE` is isolated to the verify-script test
 fixture. They are not deployment variables and must not contain credentials.
+
+
+## Exact-SHA diagnostic hotfix deployment
+
+For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. Delivery 2 remains undeployed.
