@@ -16,7 +16,8 @@ The original v0.1.0 product baseline provides six registered utilities:
 - Weight Converter
 - Time Arithmetic
 
-The implemented, unreleased v0.2 image family brings the current feature-branch catalog to ten tools. Package version and release status remain separate from implemented scope.
+The v0.2 image family brings the catalog to ten tools. Package version and
+implementation scope are tracked separately.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -146,8 +147,7 @@ v0.1.1 implementation is accepted when:
   that exact commit.
 
 At v0.1.1 acceptance, publication/release status was separate and root package
-metadata remained `0.1.0`. The v0.2.0 release-preparation update is recorded
-under Version 0.2.0 below.
+metadata remained `0.1.0`.
 
 ### Exclusions
 
@@ -166,8 +166,8 @@ Priority C and heavier processing utilities are intentionally outside this concr
 ## Version 0.2.0 — Image Utility Foundation
 
 Status: Implementation and exact-SHA readiness are complete. The owner approved
-the HEIC production-license gate; release preparation has bumped root package
-metadata to 0.2.0. Publication and deployment have not occurred.
+the HEIC production-license gate. Root package metadata is 0.2.0; the independent
+dashboard remains 0.1.0. Production integrations are tracked separately.
 
 ### Goal
 
@@ -737,9 +737,8 @@ new catalog version or site-wide rewrite is authorized by this planning update.
 The v0.2 implementation and exact-SHA readiness are complete. The eight hosted
 workflows passed at `339091c5aaf4ad31be656756a7f4e4c121cc37de` on the immutable
 `validation/v0.2.0-heic-license-339091c5` ref. The owner approved the HEIC
-production-license gate. Release preparation has bumped root package metadata to
-`0.2.0`; publication and deployment remain separate actions and have not
-occurred.
+production-license gate. Root package metadata is `0.2.0`; dashboard package
+metadata remains independently versioned at `0.1.0`.
 
 Historical process debt: the referenced
 `doc/plans/v0.2.0-implementation-plan.md` is absent from the repository and its

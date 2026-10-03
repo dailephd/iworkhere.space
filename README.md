@@ -3,10 +3,9 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The repository implements the v0.2.0 scope. Release preparation has bumped the
-root package metadata to `0.2.0`; the independently deployed dashboard remains
-at `0.1.0`. The root registry contains 10 tools, including four local image
-utilities.
+The repository implements the v0.2.0 scope. The root package version is `0.2.0`;
+the independently deployed dashboard remains at `0.1.0`. The root registry
+contains 10 tools, including four local image utilities.
 
 ## Getting Started
 
@@ -51,8 +50,7 @@ and [exact later deployment setup](dashboard/DEPLOYMENT.md). Run
 `npm run observability:migrate` only with an explicitly configured development
 or operator database; migrations never run on startup. Local SQL validation is
 `npm run test:observability-db` with disposable Docker Postgres 17. Dashboard
-CI/verify is independent and requires no production secret. No resources have
-been provisioned or deployed by this review candidate.
+CI/verify is independent and requires no production secret. Production services and deployment settings are configured separately; see [deployment documentation](doc/DEPLOYMENT.md) for their requirements.
 
 GitHub Actions keeps six validation jobs independent:
 
@@ -74,8 +72,8 @@ pre-release checks; see [CI/CD](doc/CI_CD.md).
 
 `npm run verify` runs typecheck, lint, test and build; E2E remains separate.
 `npm run test:container` reuses the browser suite against a built Docker image.
-Neither E2E nor Container is part of `npm run verify`. Hosted final-version PR
-gates remain pending because no release PR exists.
+Neither E2E nor Container is part of `npm run verify`. Readiness passed at the
+implementation SHA recorded in [CI/CD](doc/CI_CD.md).
 
 All eight workflow jobs must pass for a pull request. The local aggregate
 command does not replace them.

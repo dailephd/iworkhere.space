@@ -6,8 +6,8 @@ Reconciled 2026-10-02. Target release v0.2.0; root package version 0.2.0;
 independent dashboard package version 0.1.0. The frozen implementation SHA
 `339091c5aaf4ad31be656756a7f4e4c121cc37de` passed all eight hosted workflows on
 the immutable ref `validation/v0.2.0-heic-license-339091c5`. The owner approved
-the HEIC production-license gate. Release preparation bumped root package and
-lockfile metadata; release publication and deployment have not occurred.
+the HEIC production-license gate. Release documentation is finalized for
+v0.2.0; production deployment integrations are tracked separately.
 
 The registry contains **10 tools / 4 image tools**. The theme registry contains
 **4 themes**: System, Light, Dark and One Dark. The v0.2 implementation includes
@@ -20,16 +20,15 @@ DESIGN.md for the still-pending human visual review boundary.
 **Implementation status:** complete. **Exact-SHA readiness:** all eight hosted
 workflows passed on the frozen implementation SHA. **Deployment status:** no
 production resources or settings have been provisioned by this repository
-work. **Release status:** package metadata is prepared for v0.2.0; no release
-publication or deployment occurred. AdSense readiness, production Neon
+work. **Release status:** v0.2.0 release state is finalized. Production deployment
+state is tracked separately below. AdSense readiness, production Neon
 provisioning and migration, dashboard read-only credential, Vercel dashboard
 project and All Deployments protection, dashboard domain/DNS, production
 variables, live telemetry and ads serving remain external and unverified.
 
-Historical candidate notes below record prior correction cycles. The current
-frozen implementation passed exact-SHA readiness and received the owner's HEIC
-gate approval. Production and deployment gates remain external; this status
-does not record a publication or deployment.
+Historical candidate notes below record prior correction cycles. The frozen
+implementation passed exact-SHA readiness and received the owner's HEIC gate
+approval. Production integration items remain external configuration tasks.
 
 ### Prior validation evidence (historical snapshots)
 
@@ -193,12 +192,12 @@ implemented in the working tree and is `PILOT_IMPLEMENTED_PENDING_VISUAL_APPROVA
 Its visual artifacts and final technical validation remain part of the review
 package. No broader image-tool rollout or release status change is implied.
 
-## Remaining decisions
+## External production integration status
 
 - Visual approval of the homepage/Image Resizer pilot before image-family rollout.
 - Any removal of the currently retained right/footer banners requires explicit approval.
-- HEIC production-license approval before release.
-- Final-version PR hosted gates after explicit release-preparation authorization.
+- HEIC production-license approval: approved by the owner.
+- Release PR and main-branch hosted checks are tracked in publication evidence.
 - First-party traffic, indexing, and performance baselines after authorized public availability.
 - Later-version/Version-TBD scope remains in ROADMAP.md: authentication, payments,
   analytics/ad providers, server storage, recently-used integration, broader metadata
@@ -207,14 +206,8 @@ package. No broader image-tool rollout or release status change is implied.
 
 ## Next action
 
-Review the four-theme homepage and Image Resizer candidate from
-[the UI/discovery plan](plans/ui-discovery-growth-plan.md), then obtain human visual
-approval before extending the pattern to the other image tools. Do not start a
-site-wide restyle, new catalog version, or separate AI-optimization project.
-
-Do not create a release PR, merge, bump the version, publish or deploy from this
-planning task. The normal pre-release audit and release-preparation workflow
-remain separate and still require the explicit HEIC release-license decision.
+Track external production integration setup and verify each configured service
+against [deployment documentation](DEPLOYMENT.md).
 
 ## Theme refresh pilot
 
