@@ -46,6 +46,9 @@ svg text { fill: var(--text-muted); font: 12px system-ui, sans-serif; }
 .legend-execution { color: var(--success); }
 details { margin-top: 14px; }
 summary { cursor: pointer; color: var(--accent); }
+.diagnostic-failure { min-width: 0; border-top: 1px solid var(--border); padding: 16px 0; }
+.diagnostic-message, .diagnostic-failure code { overflow-wrap: anywhere; }
+.diagnostic-code { max-height: 320px; max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: 12px; background: var(--background); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; }
 dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 dt { color: var(--text-muted); }
 dd { margin: 4px 0; overflow-wrap: anywhere; }

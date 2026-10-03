@@ -454,3 +454,8 @@ crawler headers without a database; ISO text projection prevents driver Date
 objects from reaching display components.
 
 Default builds and E2E/container tests keep both public enable flags false/absent. Enabled AdSense contracts use stubs; never click ads or rely on live Google responses. The shared browser fixture aborts and fails on any Google advertising request. Disabled integration tests check meta, exact ads.txt, absent units/script/fake footer and no metric/log transport. Unit tests cover typed metrics, 8 KiB limits, safe log projection, query/hash removal, File/Blob/input exclusions, fail-silent providers, Web Vitals callback, early errors/navigation, identity omission and ad init dedup/failure. Container smoke explicitly disables flags and verifies ads.txt plus health before the full suite. Every run writes a unique report. Current default shell has no ad tracks; enabled right rail is 176px at xl.
+
+
+## Diagnostic hotfix
+
+Diagnostic validation includes serializer/redactor/API/client/server tests, additive migration order, actual PostgreSQL insertion/30-day pruning/read-role rejection/all range query plans, independent dashboard verify/runtime/visual, root verify, public E2E and container. Existing unique report directories apply. Production smoke uses exactly one operator-controlled diagnostic and checks matching UUID/message/stack/deployment in logs, Neon and protected dashboard.

@@ -113,3 +113,8 @@ Official operator references: [Neon serverless driver](https://neon.com/docs/ser
 [Vercel Deployment Protection](https://vercel.com/docs/deployment-protection),
 [Vercel Authentication](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/vercel-authentication),
 [Vercel Cron security and timing](https://vercel.com/docs/cron-jobs/manage-cron-jobs).
+
+
+## Diagnostic hotfix
+
+Diagnostic rollout order: validate locally; commit/push isolated hotfix; apply additive 002 to existing Neon; reapply/verify read-only grants; deploy protected dashboard; deploy public hotfix; send exactly one synthetic diagnostic through /api/log; verify same UUID in runtime log/Neon/protected dashboard. Never deploy Delivery 2. dashboard.iworkhere.space remains intended custom domain; pending DNS can be recorded separately while protected generated URL proves diagnostics.

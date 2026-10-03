@@ -14,10 +14,32 @@ export interface ActivityRow {
 export interface VitalRow { metric_name: string; sample_count: string | number; value: number | string }
 export interface FailureRow { occurred_at: string; pathname: string; tool_id: string | null; failure_category: string; device_class: string }
 export interface FreshnessRow { last_raw_received: string | null; last_rollup_day: string | null }
+export interface DiagnosticRow {
+    id: string;
+    received_at: string;
+    reported_at: string | null;
+    fingerprint: string;
+    origin: string;
+    severity: string;
+    error_name: string;
+    message: string;
+    stack: string | null;
+    cause: unknown;
+    error_detail: unknown;
+    component_stack: string | null;
+    pathname: string;
+    tool_id: string | null;
+    boundary: string | null;
+    failure_category: string;
+    client_context: unknown;
+    server_context: unknown;
+    deployment_context: unknown;
+}
 export interface DashboardData {
     activity: ActivityRow[];
     vital: VitalRow[];
     failure: FailureRow[];
+    diagnostic: DiagnosticRow[];
     freshness: FreshnessRow;
 }
 export interface CountItem { name: string; count: number }
@@ -42,6 +64,7 @@ export interface DashboardModel {
     series: SeriesPoint[];
     performance: PerformanceItem[];
     failure: FailureRow[];
+    diagnostic: DiagnosticRow[];
     freshness: FreshnessRow;
 }
 function count(value: string | number): number {
@@ -104,11 +127,11 @@ export function dashboardModel(data: DashboardData, plan: RangePlan): DashboardM
         return { name, sampleCount, value, label };
     });
     return {
-        empty: data.activity.length === 0 && data.vital.length === 0,
+        empty: data.activity.length === 0 && data.vital.length === 0 && data.diagnostic.length === 0,
         navigation, opens, executions, copied, errors, failureCount: errors,
         tool: Array.from(tool.values()).sort((a, b) => (b.opens + b.executions + b.errors) - (a.opens + a.executions + a.errors) || a.name.localeCompare(b.name)).slice(0, 10),
         failureCategory: ranked(failureCategory), failingRoute: ranked(failingRoute), failingTool: ranked(failingTool), route: ranked(route), referrer: ranked(referrer), device: ranked(device),
         series: Array.from(series.values()).sort((a, b) => a.bin.localeCompare(b.bin)),
-        performance, failure: data.failure, freshness: data.freshness,
+        performance, failure: data.failure, diagnostic: data.diagnostic, freshness: data.freshness,
     };
 }

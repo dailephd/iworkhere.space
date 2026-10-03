@@ -9,7 +9,7 @@ export function initializeAdSlot(element: HTMLElement, placement: AdPlacement): 
         if (initialized.has(element) || element.getAttribute("data-adsbygoogle-status") || element.getBoundingClientRect().width === 0) return;
         initialized.add(element);
         (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {
-        try { captureError(new Error("Ad initialization failed"), { boundary: "AdSenseSlot", failureCategory: "ad-initialization", placement }); } catch { /* Ads cannot break rendering. */ }
+    } catch (error) {
+        try { captureError(error, { boundary: "AdSenseSlot", failureCategory: "ad-initialization", placement }); } catch { /* Ads cannot break rendering. */ }
     }
 }

@@ -4,6 +4,15 @@ This document is the canonical authority for product visual design, styling, int
 
 The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The first homepage/navigation/Resizer pilot is implemented for visual review; it remains pending human approval and must not be rolled out to other tools yet.
 
+## Diagnostic details
+
+The operational dashboard retains its compact server-rendered style. Diagnostic
+messages wrap within the existing panel; native details/summary disclose stacks,
+causes and runtime context. Code regions have bounded height and internal
+scrolling. Diagnostic strings use normal React escaping, never HTML rendering.
+Geometry is unchanged across light/system/dark and at mobile widths. Legacy
+metric failures explicitly state that detailed diagnostics are unavailable.
+
 ## Separate operational dashboard
 
 The independent `dashboard/` app uses compact server-rendered cards, accessible

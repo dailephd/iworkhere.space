@@ -49,11 +49,12 @@ describe("production providers", () => {
         expect(() => provider.track("tool_opened", { toolId: "x", slug: "x" })).not.toThrow();
         await Promise.resolve();
     });
-    it("network logger strips full URL and sensitive metadata/message", () => {
-        new RustLogProvider().log("error", "secret.png failed", { toolId: "image-resizer", filename: "secret.png", originalError: new Error("private"), input: "private" });
+    it("network logger preserves developer message and excludes payload metadata", async () => {
+        new RustLogProvider().log("error", "Resize worker initialization failed", { toolId: "image-resizer", filename: "private-file.png", originalError: new Error("private"), input: "private" });
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
         const body = JSON.parse(fetchMock.mock.calls[0][1].body);
-        expect(body).toMatchObject({ pathname: "/tool/image-resizer", message: "Client failure", meta: { toolId: "image-resizer" } });
-        expect(JSON.stringify(body)).not.toMatch(/secret|private|href|url/);
+        expect(body).toMatchObject({ pathname: "/tool/image-resizer", message: "Resize worker initialization failed", meta: { toolId: "image-resizer" }, diagnostic: { error: { message: "Resize worker initialization failed" } } });
+        expect(JSON.stringify(body)).not.toMatch(/secret|private|href/);
     });
     it("beacon sends validated vitals with fetch fallback", () => {
         const metric = { name: "CLS", value: 0.1, delta: 0.1, id: "v5-123", entries: [], rating: "good", navigationType: "navigate" } as Parameters<typeof reportWebVital>[0];
@@ -77,7 +78,7 @@ describe("production providers", () => {
         expect(bodies[1].referrerHostname).toBe("referrer.example");
         expect(JSON.stringify(bodies)).not.toMatch(/private|secret/);
     });
-    it("initializes early listeners and does not duplicate the same captured Error", () => {
+    it("initializes early listeners and does not duplicate the same captured Error", async () => {
         initializeClientInstrumentation();
         expect(window.addEventListener).toHaveBeenCalledWith("error", expect.any(Function));
         expect(window.addEventListener).toHaveBeenCalledWith("unhandledrejection", expect.any(Function));
@@ -87,12 +88,38 @@ describe("production providers", () => {
         reportClientErrorMetric(error, { failureCategory: "tool-render-error", toolId: "image-resizer" });
         reportClientError(error, "window-error");
         reportClientError(error, "unhandled-rejection");
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
         expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(fetchMock.mock.calls.filter(call => call[0] === "/api/log")).toHaveLength(1);
         const metric = fetchMock.mock.calls.filter(call => call[0] === "/api/metric");
         expect(metric).toHaveLength(1);
         expect(JSON.parse(metric[0][1].body)).toMatchObject({ type: "client-error", failureCategory: "tool-render-error", toolId: "image-resizer", deviceClass: "unknown" });
         expect(metric[0][1].body).not.toMatch(/private|stack|message|meta/);
+    });
+    it("captures real window/rejection reasons and bounded browser context", async () => {
+        vi.stubGlobal("navigator", { userAgent: "FixtureBrowser", onLine: false });
+        Object.assign(window, { innerWidth: 390, innerHeight: 844, devicePixelRatio: 2 });
+        Object.assign(document, { visibilityState: "hidden" });
+        initializeClientInstrumentation();
+        fetchMock.mockClear();
+        const listener = vi.mocked(window.addEventListener).mock.calls;
+        const errorListener = listener.find(call => call[0] === "error")![1];
+        const rejectionListener = listener.find(call => call[0] === "unhandledrejection")![1];
+        if (typeof errorListener !== "function" || typeof rejectionListener !== "function") throw new Error("Instrumentation must register callable listeners");
+        errorListener(Object.assign(new Event("error"), { error: new TypeError("window worker failure"), message: "ignored" }));
+        rejectionListener(Object.assign(new Event("unhandledrejection"), { reason: "safe rejection failure" }));
+        await vi.waitFor(() => expect(fetchMock.mock.calls.filter(call => call[0] === "/api/log")).toHaveLength(2));
+        const bodies = fetchMock.mock.calls.filter(call => call[0] === "/api/log").map(call => JSON.parse(call[1].body));
+        expect(bodies[0].diagnostic).toMatchObject({ error: { name: "TypeError", message: "window worker failure" }, context: { pathname: "/tool/image-resizer", failureCategory: "window-error", deviceClass: "mobile", userAgent: "FixtureBrowser", viewportWidth: 390, viewportHeight: 844, devicePixelRatio: 2, online: false, visibilityState: "hidden" } });
+        expect(bodies[1].diagnostic.error).toMatchObject({ name: "NonErrorRejection", message: "safe rejection failure", valueType: "string" });
+        expect(bodies[0].diagnostic.id).not.toBe(bodies[1].diagnostic.id);
+    });
+    it("keeps metrics independent when diagnostic fetch rejects", async () => {
+        setLogProvider(new RustLogProvider());
+        fetchMock.mockImplementation((url: string) => url === "/api/log" ? Promise.reject(new Error("network unavailable")) : Promise.resolve({}));
+        expect(() => reportClientError(new Error("worker unavailable"), "window-error")).not.toThrow();
+        await vi.waitFor(() => expect(fetchMock.mock.calls.filter(call => call[0] === "/api/log")).toHaveLength(1));
+        expect(fetchMock.mock.calls.filter(call => call[0] === "/api/metric")).toHaveLength(1);
     });
     it("global errors/rejections cannot throw even when providers throw", () => {
         setLogProvider({ log() { throw new Error("transport failed"); } });
