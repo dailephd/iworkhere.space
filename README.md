@@ -50,7 +50,7 @@ and [exact later deployment setup](dashboard/DEPLOYMENT.md). Run
 `npm run observability:migrate` only with an explicitly configured development
 or operator database; migrations never run on startup. Local SQL validation is
 `npm run test:observability-db` with disposable Docker Postgres 17. Dashboard
-CI/verify is independent and requires no production secret. Production services and deployment settings are configured separately; see [deployment documentation](doc/DEPLOYMENT.md) for their requirements.
+CI/verify is independent and requires no production secret. Production services and deployment settings are configured separately; see [deployment documentation](docs/DEPLOYMENT.md) for their requirements.
 
 GitHub Actions keeps six validation jobs independent:
 
@@ -64,21 +64,21 @@ GitHub Actions keeps six validation jobs independent:
 Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the
 private dashboard and disposable PostgreSQL schema/maintenance path. The
 repository therefore has eight independent workflow jobs in total; see
-[CI/CD](doc/CI_CD.md) for artifact and trigger details.
+[CI/CD](docs/CI_CD.md) for artifact and trigger details.
 
 All eight workflows run on pull requests and pushes to `main`, `master`, and
 `validation/**`. The validation namespace is reserved for immutable exact-SHA
-pre-release checks; see [CI/CD](doc/CI_CD.md).
+pre-release checks; see [CI/CD](docs/CI_CD.md).
 
 `npm run verify` runs typecheck, lint, test and build; E2E remains separate.
 `npm run test:container` reuses the browser suite against a built Docker image.
 Neither E2E nor Container is part of `npm run verify`. Readiness passed at the
-implementation SHA recorded in [CI/CD](doc/CI_CD.md).
+implementation SHA recorded in [CI/CD](docs/CI_CD.md).
 
 All eight workflow jobs must pass for a pull request. The local aggregate
 command does not replace them.
 
-Docker is optional for local development. See [doc/DEPLOYMENT.md](doc/DEPLOYMENT.md)
+Docker is optional for local development. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 for the production-style preview, readiness helper, and container validation commands.
 
 ## Architecture
@@ -101,24 +101,24 @@ Each Vitest run writes JSON and JUnit output under a unique
 
 ## Documentation
 
-- `doc/ROADMAP.md` — canonical version-level goals, scope, dependencies,
+- `docs/ROADMAP.md` — canonical version-level goals, scope, dependencies,
   exclusions, acceptance, and deferred work
-- `doc/project-status.md` — actual current implementation and exact next action
-- `doc/doc_index.md` — documentation ownership and planning/implementation
+- `docs/project-status.md` — actual current implementation and exact next action
+- `docs/doc_index.md` — documentation ownership and planning/implementation
   reading paths
-- `doc/architecture.md` — architectural boundaries
-- `doc/CI_CD.md` — continuous-integration gates
-- `doc/TESTING.md` — testing strategy
-- `doc/DEPLOYMENT.md` — Vercel/runtime contracts and environment variable matrix
-- `doc/ADVERTISING.md` and `doc/OBSERVABILITY.md` — opt-in integrations and privacy
+- `docs/architecture.md` — architectural boundaries
+- `docs/CI_CD.md` — continuous-integration gates
+- `docs/TESTING.md` — testing strategy
+- `docs/DEPLOYMENT.md` — Vercel/runtime contracts and environment variable matrix
+- `docs/ADVERTISING.md` and `docs/OBSERVABILITY.md` — opt-in integrations and privacy
 - `dashboard/README.md` — independent dashboard application
 - `dashboard/DEPLOYMENT.md` — external dashboard protection/deployment steps
 
 When an implementation version begins, its concrete batch/validation plan is
-created under `doc/plans/vX.Y.Z-implementation-plan.md` after current
+created under `docs/plans/vX.Y.Z-implementation-plan.md` after current
 repository inspection and fresh my-dev-kit retrieval. The roadmap intentionally
 does not prewrite those batches.
 
 ## Production telemetry and advertising
 
-Both network integrations are disabled by default. See [observability](doc/OBSERVABILITY.md) and [advertising](doc/ADVERTISING.md) for explicit build-time flags, privacy contracts and activation gates. Verification meta and /ads.txt are available without enabling ads. Repository validation does not prove AdSense account readiness, CMP configuration, real serving or revenue.
+Both network integrations are disabled by default. See [observability](docs/OBSERVABILITY.md) and [advertising](docs/ADVERTISING.md) for explicit build-time flags, privacy contracts and activation gates. Verification meta and /ads.txt are available without enabling ads. Repository validation does not prove AdSense account readiness, CMP configuration, real serving or revenue.

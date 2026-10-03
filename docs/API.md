@@ -164,7 +164,7 @@ Rules:
 - Client Components must be SSR-safe: no browser API access in module scope or
   in the render path.
 
-For full layer responsibilities see `doc/architecture.md`.
+For full layer responsibilities see `docs/architecture.md`.
 
 ---
 
@@ -295,7 +295,7 @@ Breaking changes require:
 
 - Updating this document
 - Updating SCHEMA.md
-- Updating `doc/architecture.md` if layer boundaries are affected
+- Updating `docs/architecture.md` if layer boundaries are affected
 - Explicit communication in the PR description
 
 No silent interface changes.

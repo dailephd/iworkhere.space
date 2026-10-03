@@ -152,7 +152,7 @@ Two planner fixture-selection specification gaps are DEGRADED / WORKED_AROUND: a
 
 ## Historical process debt
 
-The roadmap-referenced `doc/plans/v0.2.0-implementation-plan.md` is absent
+The roadmap-referenced `docs/plans/v0.2.0-implementation-plan.md` is absent
 from the current tree and available Git history. V0_2_VERSION_PLAN_PRESENT=NO;
 RETROACTIVE_VERSION_PLAN_CREATED=NO. Historical Batch 3–5 reports and ecosystem
 learning remain snapshots; they are not current-state authorities or new Batch 6 gaps.

@@ -35,7 +35,7 @@ Production packaging follows `Next.js standalone server → Docker runtime →
 public/static assets → browser`. Containerization changes deployment packaging,
 not application domain architecture. The generated standalone server serves the
 same-origin Worker, decoder, service-worker, manifest, and license assets. See
-`doc/DEPLOYMENT.md` for the runtime guide.
+`docs/DEPLOYMENT.md` for the runtime guide.
 
 ## Core Goal
 
@@ -339,7 +339,7 @@ Server-side endpoint for client log events sent by `RustLogProvider`.
 
 The theme system is a multi-theme registry, not a binary light/dark switch.
 `ThemeId` (`themeRegistry.ts`) declares four selectable themes: `system`,
-`light`, `dark`, and `onedark`. `doc/DESIGN.md` is the canonical visual authority and documents all four
+`light`, `dark`, and `onedark`. `docs/DESIGN.md` is the canonical visual authority and documents all four
 canonical themes alongside the current theme registry and runtime ownership.
 
 ### Structure
@@ -515,7 +515,7 @@ The runtime uses the Next-generated standalone server and serves Worker,
 decoder, service-worker, manifest, and public license assets from the same
 application origin. Docker is an optional packaging/runtime layer; it does not
 move tool logic out of the existing application layers. See
-`doc/DEPLOYMENT.md` for operation details.
+`docs/DEPLOYMENT.md` for operation details.
 
 ## Production integration ownership
 

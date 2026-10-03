@@ -34,7 +34,7 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current layout contract
 
-The active pilot renders `VerticalNav` as compact, wrapping links in the upper application header; it no longer occupies a permanent 176px desktop rail. Items come from the existing `NavItem` owner and use normal destinations with current-path active state. Mobile keeps the same links and wraps them without a drawer or modal. See `doc/DESIGN.md`.
+The active pilot renders `VerticalNav` as compact, wrapping links in the upper application header; it no longer occupies a permanent 176px desktop rail. Items come from the existing `NavItem` owner and use normal destinations with current-path active state. Mobile keeps the same links and wraps them without a drawer or modal. See `docs/DESIGN.md`.
 
 
 ### Component-color correction (pending visual approval)

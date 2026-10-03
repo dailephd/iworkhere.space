@@ -9,11 +9,11 @@
 > `src-lib.md`, `src-module.md`). The generation pass classified
 > `component/common/{Button,Input,StatusPanel,ThemeProvider,ThemeToggle,
 > ToolSearch}.tsx` as a separate "shared-core" group rather than this
-> feature-area, so they are documented individually in `doc/modules/` instead
+> feature-area, so they are documented individually in `docs/modules/` instead
 > of here — no content is missing, it is grouped differently than the
 > `src/component` directory boundary. For authoritative layer responsibilities
-> see `doc/architecture.md`; for individual component specs see
-> `doc/components/` and `doc/modules/`.
+> see `docs/architecture.md`; for individual component specs see
+> `docs/components/` and `docs/modules/`.
 
 <!-- section-id: source-files -->
 ## Source Files

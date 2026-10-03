@@ -43,7 +43,7 @@ It does not own implementation batches, command transcripts, changed-file lists,
 
 At the start of each implementation version, after current repository inspection and fresh my-dev-kit retrieval, create a version-specific plan at:
 
-`doc/plans/vX.Y.Z-implementation-plan.md`
+`docs/plans/vX.Y.Z-implementation-plan.md`
 
 The version plan may freeze:
 
@@ -59,7 +59,7 @@ The version plan may freeze:
 
 A future version's batch plan must not be prewritten in this roadmap. Implementation reports describe what happened; they do not silently rewrite the roadmap or the frozen version plan.
 
-`doc/project-status.md` describes actual current implementation and validation state. Implementation and release evidence may update roadmap status, but must not erase unrelated future scope.
+`docs/project-status.md` describes actual current implementation and validation state. Implementation and release evidence may update roadmap status, but must not erase unrelated future scope.
 
 ## Product principles
 
@@ -741,6 +741,6 @@ production-license gate. Root package metadata is `0.2.0`; dashboard package
 metadata remains independently versioned at `0.1.0`.
 
 Historical process debt: the referenced
-`doc/plans/v0.2.0-implementation-plan.md` is absent from the repository and its
+`docs/plans/v0.2.0-implementation-plan.md` is absent from the repository and its
 available history. No retroactive version plan was created. Future versions
 should freeze their implementation plan before coding prompts are issued.

@@ -1,6 +1,6 @@
-﻿# Design system
+# Design system
 
-This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `doc/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
+This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `docs/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
 
 The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The first homepage/navigation/Resizer pilot is implemented for visual review; it remains pending human approval and must not be rolled out to other tools yet.
 
@@ -93,7 +93,7 @@ Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark,
 
 ## Change and documentation rules
 
-Before changing a design or styling contract, update this document and then apply the decision consistently through the current owners. Architecture changes are documented in `doc/architecture.md`; project state belongs in `doc/project-status.md`; new abstractions require updating agent guidance. Use fresh source retrieval before proposing cross-cutting changes, and update affected component/module specifications. See `doc/doc_index.md` for the documentation map.
+Before changing a design or styling contract, update this document and then apply the decision consistently through the current owners. Architecture changes are documented in `docs/architecture.md`; project state belongs in `docs/project-status.md`; new abstractions require updating agent guidance. Use fresh source retrieval before proposing cross-cutting changes, and update affected component/module specifications. See `docs/doc_index.md` for the documentation map.
 
 ## Component-color review contract
 

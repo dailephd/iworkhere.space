@@ -1,0 +1,199 @@
+SEO DISCOVERABILITY AUDIT — iworkhere.space
+Inspection date: 2026-10-03 (America/Chicago)
+Scope: repository and browserless HTTP inspection only; no production source, tests, existing docs, deployment, DNS, or Vercel configuration changed.
+Evidence labels: SRC=repository source; BUILD=local build; HTTP=production HTTP result; INFERENCE=reasoned interpretation; EXTERNAL=requires provider/webmaster evidence.
+
+1. VERDICT
+PASS — inspection/report completed. Strongest proven gaps: production `/robots.txt` and `/sitemap.xml` return 404; homepage and discover have no explicit canonical; tool/category routes are dynamically rendered on demand rather than statically enumerated; tool-specific explanatory content is sparse. Sampled pages themselves return 200 and expose server-rendered headings, metadata, UI text, and crawlable links. Repository/runtime evidence does not establish Google/Bing indexing or explain ranking outcomes.
+
+2. EXECUTIVE SUMMARY
+The site uses Next.js 16.3.8 App Router, React 19.2.3 and TypeScript, with Vercel evidence in project config and standalone Next output. Its registry contains 10 tools in five populated categories among six declared categories. Each tool has a dynamic `/tool/{slug}` route. `npm run build` succeeds; `/` and `/discover` are static, while tool/category patterns are dynamic request-rendered and have no `generateStaticParams`.
+
+Positive: all sampled production routes (home, discover, text category and requested representative tools) returned 200. Tool/category pages have unique server-rendered title, description, H1 and absolute apex canonical. Initial HTML has real internal hrefs; homepage and discover expose all 10 tool links. Tool UI and its visible labels are in initial HTML, though tool behavior is client interactive.
+
+Main gaps: no robots or sitemap endpoints; missing explicit canonical on `/` and `/discover`; generic/short metadata for some utilities; tool template only renders the tool name, short description and interactive component; no dedicated how-to/examples/FAQ/related tools; no structured data. Internal discoverability is comparatively strong because tools have a one-click homepage path.
+
+3. REPOSITORY IDENTITY
+REPOSITORY_PATH: C:\Users\daile\Projects\iworkhere.space
+CURRENT_BRANCH: master
+HEAD_SHA: 7584ba7a219176bdc8d817552dea42b9d5271094
+UPSTREAM: origin/master; origin URL https://github.com/dailephd/iworkhere.space.git
+GIT_STATUS start: clean (`git status --short --untracked-files=all` empty).
+PACKAGE_NAME: iworkhere.space; PACKAGE_VERSION: 0.2.0 (private).
+FRAMEWORK: Next.js 16.3.8, React/React DOM 19.2.3, TypeScript 5.x.
+DEPLOYMENT_TARGET: Vercel is indicated by `.vercel/`, `vercel.json`, deployment docs and production domain. `next.config.ts` sets `output: "standalone"`. `vercel.json` defines an observability cron only; it contains no SEO redirects/rewrites.
+Required preflight run: `git fetch origin --prune --tags`; branch/status/HEAD/remotes and last 10 commits. HEAD and working tree remained unchanged.
+
+4. APPLICATION ARCHITECTURE
+SRC: App Router routes live under `src/app`. `layout.tsx` defines shared metadata and wraps content in AppShell. Tool route obtains a registry record, returns `notFound()` for unknown slugs, uses `buildToolMetadata`, then composes ToolPageTemplate + ToolClientFrame. Category route uses a six-value allowlist and registry lookup. Home/discover are server pages supplying catalog data to client UI.
+BUILD: `npm run build` passed on Next 16.3.8/Turbopack. Route table: `/`, `/_not-found`, `/discover` static; `/category/[category]`, `/tool/[slug]` dynamic. API routes are dynamic. No `generateStaticParams`, export mode, robots/sitemap route or middleware was found. `next.config.ts` configures standalone output only.
+Vercel dashboard settings are not established from source.
+
+5. PUBLIC ROUTE INVENTORY
+`/`: `src/app/page.tsx`; static; implicit indexability; home/Header links; inherited layout metadata; copy from server page and HomeClient.
+`/discover`: `src/app/discover/page.tsx`; static; implicit indexability; Header links; page-owned metadata; registry list with client search/filter UI.
+`/category/[category]`: `src/app/category/[category]/page.tsx`; dynamic; six enum slugs accepted (invalid -> notFound); linked from home/global nav; page-owned metadata/content.
+`/tool/[slug]`: `src/app/tool/[slug]/page.tsx`; dynamic; registry slugs accepted (invalid -> notFound); linked from homepage/discover/category; registry metadata + shared SEO helper; ToolPageTemplate + tool UI own visible text.
+API routes `/api/health`, `/api/log`, `/api/metric`, `/api/observability/maintenance` are not intended landing pages. `/_not-found` is framework fallback. `src/app/favicon.ico` exists. There are no informational page routes. `/robots.txt` and `/sitemap.xml` have no source route/assets and live 404.
+
+6. TOOL CATALOG
+Authoritative owner: `src/module/tool/registry.ts` (`tool_definition_list`); type in `src/module/tool/type.ts`; catalog queries in `src/module/tool/metadata.ts`.
+TOTAL_REGISTERED_TOOLS: 10. TOTAL_PUBLIC_TOOLS: 10. TOTAL_INDEXABLE_TOOL_PAGES: 10 intended/default indexable; all are valid registry slugs, no noindex found; actual index inclusion unknown. TOTAL_CATEGORIES: 6 declared (`document`, `image`, `text`, `math`, `time`, `everyday`); 5 populated. A valid but empty document category route can render.
+All tools are dynamically route-enumerable from registry, not build-time statically enumerated. All appear as homepage and discover hrefs; each appears in its category. There is no sitemap or related-tool configuration. The type has no keywords field (tags exist but are UI/catalog tags).
+
+Name | slug / route | category | registry description | SEO title | SEO description
+Slugify Text | slugify `/tool/slugify` | text | Convert text into URL-safe slugs. | Slugify Text | Free slug generator
+Calculator | calculator `/tool/calculator` | math | Evaluate simple math expressions. | Calculator | Free calculator for quick math.
+Length Converter | length-converter `/tool/length-converter` | everyday | Convert between common length units. | Length Converter | Free length unit converter
+HTML Text Extractor | html-text-extractor `/tool/html-text-extractor` | text | Extract visible text from HTML and preserve line breaks. | HTML Text Extractor | Free online tool to extract visible text from HTML with preserved line breaks.
+Weight Converter | weight-converter `/tool/weight-converter` | everyday | Convert between common weight units. | Weight Converter | Free weight unit converter
+Time Arithmetic | time-arithmetic `/tool/time-arithmetic` | time | Add and subtract time values in HH:MM format. | Time Arithmetic | Free online tool to add and subtract time values with carry and borrow normalization.
+Image Resizer | image-resizer `/tool/image-resizer` | image | Resize JPEG, PNG, and WebP images locally in your browser. | Image Resizer | Resize JPEG, PNG, and WebP images locally in your browser.
+Image Compressor | image-compressor `/tool/image-compressor` | image | Compress JPEG, PNG, and WebP images locally in your browser. | Image Compressor | Compress JPEG, PNG, and WebP images locally in your browser.
+JPG / PNG / WebP Converter | image-converter `/tool/image-converter` | image | Convert JPEG, PNG, and WebP images locally in your browser. | JPG / PNG / WebP Converter | Convert JPEG, PNG, and WebP images locally in your browser.
+HEIC → JPG / PNG Converter | heic-converter `/tool/heic-converter` | image | Convert HEIC and HEIF images to JPEG or PNG locally in your browser. | HEIC to JPG / PNG Converter | Convert HEIC and HEIF images to JPEG or PNG locally in your browser.
+Expected tools confirmed exactly: Slugify Text, HTML Text Extractor, Calculator, Length Converter, Weight Converter, Time Arithmetic. “Time calculator” intent currently corresponds to Time Arithmetic, not an additional tool.
+
+7. CRAWLABILITY
+SRC: Header/VerticalNav, HomeClient ToolGrid, ToolSearch results and category tool cards use next/link anchors. HTTP: homepage/discover have all 10 `/tool/...` hrefs and five populated category hrefs in initial HTML; category has member tool hrefs; tool page global shell includes category links. Every tool is reachable from homepage in one click; via category in two. ORPHAN_TOOL_PAGES=0. No JavaScript interaction is required to expose initial hrefs. Discover list displays by default; home includes all tools in separate grids. Filters/search are client state and no pagination found.
+Tool pages have no sibling/related links. Global category navigation is not an explicit breadcrumb. No robots/sitemap discovery signal exists, but links do expose the catalog.
+
+8. ROBOTS
+DOES_ROBOTS_EXIST: no route/static file. IMPLEMENTATION_OWNER, generation, rules and production content: none. Production `https://iworkhere.space/robots.txt` returned 404. Thus there are no user-agent, allow/disallow or sitemap declarations in the response. No source robots metadata is set and sampled pages emitted no robots meta. No repository rule blocks `/`, tools, categories, discover or assets. Missing robots is a discovery/configuration gap, not proof that crawling is blocked. No development/preview rule exists that could leak into production.
+
+9. SITEMAP
+No `src/app/sitemap.ts`, sitemap route handler or public sitemap asset. Live `/sitemap.xml` returned 404. URL count=0. Homepage, discover, categories, tools and information pages are absent. No registry automation, stale/duplicate URLs, preview URLs or trailing-slash behavior can be evaluated because there is no sitemap. New registry tools will not automatically enter one.
+
+10. CANONICAL DOMAIN AND URL GENERATION
+`src/lib/seo.ts`: SITE_NAME=`iworkhere.space`, SITE_URL=`https://iworkhere.space`. Tool canonical is SITE_URL + registry canonicalPath; category canonical is SITE_URL + `/category/${slug}`. Absolute HTTPS apex values, unique per registered tool. No `metadataBase`, environment-controlled origin, alternate URL helper, middleware, redirect config or hostname normalizer was found.
+IS_APEX_CANONICAL: yes where explicit (tool/category). IS_WWW_REFERENCED: no in source; external lookup failed to resolve `www.iworkhere.space`. ARE_VERCEL_HOSTS_REFERENCED: none in SEO source. CAN_PREVIEW_HOSTS_BECOME_CANONICAL: not through hardcoded helper; platform/runtime behavior unknown. ARE_CANONICAL_URLS_ABSOLUTE: yes when emitted. ARE_CANONICAL_URLS_UNIQUE_PER_TOOL: yes. DO_SITEMAP_AND_CANONICAL_URLS_AGREE: no sitemap exists. Homepage and discover lack explicit canonical and metadataBase.
+HTTP confirmed absolute apex canonical on sampled tool/category routes and none on home/discover. External www/Vercel routing requires independent verification; no DNS assumptions made. A Vercel-host request yielded an incompletely captured redirect response.
+
+11. PAGE METADATA
+Root `src/app/layout.tsx`: title `iworkhere.space — Utility Tool Platform`, generic description `Simple, fast utility tool for text, document, math, and everyday task.` No canonical, OpenGraph, Twitter or metadataBase. Includes AdSense account metadata (not search structured data). Framework favicon metadata exists from `src/app/favicon.ico`.
+Tools: registry-derived through route `generateMetadata` and shared `buildToolMetadata`; each creates unique title `${seo.title} — iworkhere.space`, description, canonical and OpenGraph title/description/url/siteName/type. No Twitter metadata. No accidental title/canonical reuse found. `ToolSeo` supports only title, description and canonicalPath. Some descriptions are very short/generic (“Free slug generator”, “Free length unit converter”, “Free calculator for quick math.”). No keywords field.
+Categories: category-specific title/description, canonical and OpenGraph via shared helper. Discover has its own unique generic title/description but no canonical/OG. Samples contained no robots meta or Twitter cards. Title fields can express intent-specific titles today; richer page content has no model.
+
+12. TOOL-PAGE CONTENT ARCHITECTURE
+Owner: `src/component/tool/ToolPageTemplate.tsx` renders `<h1>{tool.name}</h1>`, `<p>{tool.description}</p>` and tool UI. Registry stores descriptions/SEO snippets; tool control UI is in individual client tool components. For every page: VISIBLE_TEXT_OWNER is template + registry + owning tool component; SERVER_RENDERED_TEXT yes; CLIENT_ONLY_TEXT applies chiefly to state/interaction and post-input results. Search-relevant control labels and initial UI are visible in SSR HTML.
+Per tool: Slugify Text, HTML Text Extractor, Calculator, Length Converter, Weight Converter, Time Arithmetic, Image Resizer, Image Compressor, image converter and HEIC converter each have unique H1 and short registry intro. UI labels/controls add some task-specific text. None has a common dedicated how-to, worked examples, FAQ, related tools or explicit category breadcrumb. Converter controls show unit/format choices; Time Arithmetic description notes HH:MM and carry/borrow; some image descriptions say local browser processing. There is no common privacy content model. Reference/formula content is not a shared page capability.
+No page is entirely textless without hydration. If JS fails, initial server HTML still exposes title, description, H1, links and visible labels, while interactive operation fails. Current SEO type cannot cleanly store multiple explanatory sections; such content requires a bounded data/template extension, not existing fields.
+
+13. HEADING SEMANTICS
+Homepage: 1 H1 (“Practical tools for everyday work”); category heading H2; tool cards H3. Discover: 1 H1 (“Discover Tool”); tool names in result list are styled divs, not headings. Category: 1 H1 and tool names H2. Tool: 1 H1 in shared template; tool-specific panels sometimes use H2. Sampled HTML H1 counts=1; no duplicate/missing H1 risk observed. Global main landmark exists.
+
+14. STRUCTURED DATA
+No JSON-LD, `application/ld+json`, schema.org, BreadcrumbList, WebSite, WebApplication, SoftwareApplication, FAQPage, Organization, Person or ItemList found in source or sample HTML. No owner/routes/schema/fields/URL source/validity risks because none exists. Useful opportunity only if selected structured information matches visible page content; absence itself is not an indexing defect.
+
+15. INTERNAL LINK ARCHITECTURE
+Home -> category/tools: yes. Discover -> tools: yes. Category -> member tools: yes. Tool -> category: global category navigation yes, but no explicit body breadcrumb. Tool -> related tools: absent. Header links home/discover; Footer has copyright only. Shortest home-to-tool depth=1, max=1. ORPHAN_TOOL_PAGES=0; TOOLS_NOT_LINKED_FROM_DISCOVER=0; TOOLS_NOT_LINKED_FROM_CATEGORY=0 for their own category; TOOLS_WITHOUT_RELATED_LINKS=10. Relation strategy is absent, not manual/category/registry-derived.
+
+16. CATEGORY AND DISCOVER ARCHITECTURE
+Discover: standalone static catalog with unique generic title/description/H1, one-line intro, 10 result cards, actual crawlable links and client-side search/tag filters. No canonical/structured data/pagination. Category pages: unique category title/description/H1, one-line general intro and registry-driven linked tools; explicit canonical and OG, no schema. Five populated categories are useful browse surfaces but intros are generic. `document` category is valid and empty. No pagination/filtering.
+
+17. RENDERED HTML FINDINGS
+Production HTTP sampled 2026-10-03 with browserless PowerShell Invoke-WebRequest:
+`/` 200; title/description and H1; no canonical/robots/OG/Twitter; 10 tool + 5 category hrefs.
+`/tool/slugify` 200; title “Slugify Text — iworkhere.space”; description “Free slug generator”; canonical `https://iworkhere.space/tool/slugify`; H1 and UI text; no robots/schema.
+`/tool/length-converter`, `/tool/calculator`, `/tool/time-arithmetic` 200 with unique title, description, canonical, H1 and SSR UI.
+`/tool/html-text-extractor`, `/tool/weight-converter` 200.
+`/discover` 200; unique discover title/description/H1; no canonical; all result links in initial HTML.
+`/category/text` 200; title “Text & Code Tool — iworkhere.space”; description “Format, transform, and analyze text and code.”; apex canonical, H1 and member links.
+`/robots.txt`, `/sitemap.xml` 404.
+Sampled pages did not redirect. These are date-specific observations, not proof of historical availability or crawler access. Build succeeded and source intent matches tool/category canonical output.
+
+18. JAVASCRIPT/HYDRATION DEPENDENCE
+Tool route/H1/description and initial client component markup are SSR. HomeClient/DiscoverClient are client modules but initial HTML contains anchors and card text. JS failure would disable tool actions and interactive filters, but not erase initial title/intro/links/UI labels. No sampled page depends entirely on hydration for search-relevant text.
+
+19. DUPLICATE/THIN CONTENT RISKS
+UNIQUE_CONTENT_STRENGTH: low to moderate; names/descriptions/UI differ, but no substantial explanatory prose. TEMPLATE_DUPLICATION_RISK: medium/high due common minimal skeleton and compact registry strings. THIN_CONTENT_RISK: medium/high for query intent, notably slug and unit conversion descriptions. SEARCH_INTENT_DIFFERENTIATION: titles/H1s are unique, but synonyms, supported units/formats/use cases are sparse. These are content architecture assessments, not claims of a penalty.
+Families: text utilities share minimal structure; length/weight converters expose controls but little reference/examples; calculator/time have distinct interactions but little usage guidance; image tools mention format/local operation more often but share minimal template.
+
+20. SEO SCALABILITY OF TOOL REGISTRY
+1. Unique route for new tool: yes through dynamic registry lookup.
+2. Central tool metadata: yes.
+3. Registry sitemap: no sitemap exists.
+4. Registry categories: yes, available categories derive from registry.
+5. Related links: no.
+6. Separate SEO prose without implementation blobs: no present model; only title/description/canonicalPath.
+7. Consistent structured data: no generator.
+8. Specialized intent content: title/description can vary; rich sections cannot.
+9. Central crawl/index rules: partial; no robots/indexability policy, canonicals centralized only for tools/categories.
+10. Hundreds of tools without duplicating route logic: route/metadata machinery scales, but content authoring, sitemap and page differentiation do not yet.
+11. Implementation/metadata/explanatory content/category separation: implementation and compact metadata are separate; explanatory content owner is missing; category queries exist.
+12. Rich content needs restructuring: bounded extension of typed content/page template likely; full tool execution redesign unsupported.
+ASSESSMENT: SUITABLE_WITH_BOUNDED_CHANGES. Registry, shared server routes and SEO helper are sound foundations; add missing discovery/canonical/content owners.
+
+21. FINDINGS TABLE
+ID | SEVERITY | CATEGORY | FINDING | EVIDENCE | OWNER | IMPACT | RECOMMENDED_DIRECTION
+SEO-001 | HIGH | SITEMAP | Sitemap absent; live /sitemap.xml 404 | no route/asset; HTTP | app routing | no declared URL inventory | registry-derived sitemap
+SEO-002 | HIGH | ROBOTS | robots absent; live /robots.txt 404 | no route/asset; HTTP | app routing | no explicit crawl policy/sitemap declaration | explicit production robots policy
+SEO-003 | MEDIUM | CANONICALIZATION | Root/discover lack canonical; no metadataBase | layout/discover; live HTML | route metadata | incomplete canonical contract | add central base + route canonicals
+SEO-004 | MEDIUM | RENDERING | Tool/category routes dynamically rendered; no static params | build route table | route modules | no build-time page enumeration | evaluate static params/prerender
+SEO-005 | MEDIUM | CONTENT | Tool pages have only H1/short intro plus interactive UI | ToolPageTemplate, ToolSeo | template/content model | limited search-intent context | typed server-rendered explanatory content
+SEO-006 | MEDIUM | METADATA | Several descriptions generic/short | registry + live HTML | tool registry | weak intent distinction | accurate unique titles/descriptions
+SEO-007 | LOW | INTERNAL_LINKING | No related tools or explicit tool breadcrumb | registry/template/live HTML | registry/template | limited contextual sibling links | curated/derived related links
+SEO-008 | LOW | STRUCTURED_DATA | No JSON-LD/schema | focused source search + HTML | shared SEO/page owners | no structured context; not a crawl blocker | consider accurate applicable types
+SEO-009 | LOW | CATEGORY_ARCHITECTURE | Generic landing intros and empty document category | category source/registry | category route | uneven landing value | refine populated categories and empty route policy
+SEO-010 | INFORMATIONAL | TOOL_REGISTRY | Central registry supports 10 unique dynamic tool pages | registry/routes | registry | scalable foundation | retain as source of route/meta data
+SEO-011 | INFORMATIONAL | INTERNAL_LINKING | Every current tool linked from homepage/discover/category | source + initial live hrefs | browse surfaces | one-click discoverability | preserve crawlable hrefs
+SEO-012 | INFORMATIONAL | RENDERING | Sample initial HTML contains descriptive text/links/UI | live pages | routes/components | basic crawl content does not require hydration | keep descriptions server rendered
+
+22. PROVEN REPOSITORY FINDINGS
+Registry has 10 tools and six category enum values (five populated). Tool/category routes use shared metadata helper; ToolSeo fields are title/description/canonicalPath only. Template emits tool name H1, description and UI. No sitemap/robots/JSON-LD/generateStaticParams/middleware found. Root/discover lack canonical. Internal links use next/link and are visible in SSR. Build succeeds: root/discover static, tool/category dynamic.
+
+23. PLAUSIBLE CONTRIBUTING FACTORS
+Not proven ranking causes: absent sitemap/robots endpoints remove standard discovery/configuration signals; sparse intent-specific copy and generic descriptions may make utility purpose less explicit; dynamic on-demand pages are less explicitly enumerable than build-generated pages; root/discover canonical signals are incomplete; related/contextual links and category prose are limited. Search visibility may also be affected by external crawl history, domain signals, competition, demand, or canonical/index decisions. No penalty/action is claimed.
+
+24. EXTERNAL VERIFICATION REQUIRED
+Unknown from repository: Google/Bing indexed URL set; Search Console coverage/impressions/average positions; manual indexing requests; Google-selected canonical; historic crawling; provider errors. Obtain Search Console URL Inspection/Page Indexing for root/discover/all tools, sitemap processing and Performance query/page reports; equivalent Bing Webmaster evidence. Verify Vercel Domains/redirect settings and DNS; www lookup failed in this run and Vercel-host redirect chain was not conclusively captured. Repeat apex/www/Vercel redirect checks from reliable DNS/network vantage. Live sample responses do not prove prior crawler access.
+
+25. RECOMMENDED IMPLEMENTATION ORDER
+P0 — discovery/indexability blockers
+- PROBLEM: missing sitemap and robots. EVIDENCE: SEO-001/002 live 404. LIKELY_OWNER: App Router. CHANGE SURFACE: sitemap/robots route modules and tests. WHY: expose intended URL inventory and explicit crawl policy. DEPENDENCIES: decide if empty document category is indexable. VALIDATION: production output, count, uniqueness, apex URLs and robots content.
+- PROBLEM: external crawl policy unverified. EVIDENCE: source has no robots rules; sample pages lack noindex. OWNER: platform/Search Console. CHANGE: external review. WHY: source cannot prove crawler access. DEPENDENCIES: account access. VALIDATION: live robots/headers and URL inspection.
+P1 — canonical technical SEO foundation
+- PROBLEM: root/discover canonicals absent. EVIDENCE: SEO-003. OWNER: layout/page/shared SEO helper. CHANGE: canonical base and explicit route canonical. WHY: consistent apex canonical contract. DEPENDENCIES: external domain verification. VALIDATION: page-family HTML and sitemap agreement; www/apex redirects.
+- PROBLEM: dynamic enumeration. EVIDENCE: SEO-004. OWNER: route modules. CHANGE: decide static params/prerender for registry entries/categories. WHY: deterministic enumerable landing pages. DEPENDENCIES: evaluate registry import/build behavior. VALIDATION: route table, production response for valid/invalid slugs.
+P2 — tool-page SEO/content architecture
+- PROBLEM: limited page-specific explanatory sections. EVIDENCE: SEO-005/006. OWNER: ToolDefinition/content model + ToolPageTemplate. CHANGE: typed content and server-rendered how-to/examples/uses/FAQ/privacy where true. WHY: clarify utility intent beyond controls. DEPENDENCIES: verified tool-specific facts and layer boundaries. VALIDATION: unique useful text and no boilerplate duplication.
+- PROBLEM: generic title/descriptions. EVIDENCE: registry/live HTML. OWNER: registry SEO content. CHANGE: accurately expand titles/descriptions. WHY: describe supported intent/scope. DEPENDENCIES: content review. VALIDATION: uniqueness and rendered metadata audit.
+P3 — internal linking/category architecture
+- PROBLEM: no related links or explicit category context; thin categories. EVIDENCE: SEO-007/009. OWNER: registry/category queries and page components. CHANGE: curated/derived relationships and contextual category links/copy. WHY: hierarchy and sibling discovery. DEPENDENCIES: choose relationship rule and empty category policy. VALIDATION: href traversal, depth, orphan count.
+P4 — structured data and enhancements
+- PROBLEM: none exists. EVIDENCE: SEO-008. OWNER: shared page/SEO layer. CHANGE: consider only schema matching visible content. WHY: useful structured context, not a blocker. DEPENDENCIES: finalized content/URL owners. VALIDATION: parse/validate JSON-LD and parity with visible content.
+P5 — external webmaster/search-console work
+- PROBLEM: determine actual indexing/visibility state. EVIDENCE: inaccessible to repository. OWNER: site owner/Search Console/Bing/Vercel. CHANGE: inspect consoles/domain config. WHY: distinguish technical code from history/canonical selection/search demand. DEPENDENCIES: verified ownership. VALIDATION: URL inspection, processed sitemap, coverage/performance, redirects.
+
+26. MY-DEV-KIT RETRIEVAL EVIDENCE
+Resolved published `@dailephd/my-dev-kit@1.12.5` (`npm view` reported 1.12.5; CLI bin my-dev-kit). Existing `.my-dev-kit` manifest dated 2026-09-21 and was not current; preserved it and indexed fresh to ignored project-local `.my-dev-kit-workflow/index-current`. Index date 2026-10-03; source root src; syntax analyzer complete: 129 files, 367 symbols, 1,057 graph edges; frontend reachability reported 9 route facts.
+Focused search queries: `generateMetadata sitemap robots SITE_URL tool_definition_list ToolPage`; `category discover HomeClient navigation related tools href`; client/tool template terms. Followed with lookup of exact tool route node and bounded source windows/exact symbols for SEO helper, registry, route pages, layout, home/discover, template, ToolSearch, nav/Header/Footer/AppShell/type. No broad source dump. `.my-dev-kit-workflow` and HTTP captures are ignored by existing `.gitignore`; existing `.my-dev-kit` left unchanged.
+
+27. FILES INSPECTED
+Preflight/config: `package.json`, focused `package-lock.json`, `next.config.ts`, `vercel.json`, focused `.gitignore`.
+Routing/SEO: `src/app/page.tsx`, `layout.tsx`, `discover/page.tsx`, `discover/DiscoverClient.tsx`, `category/[category]/page.tsx`, `tool/[slug]/page.tsx`, `src/lib/seo.ts`.
+Catalog/content/linking: `src/module/tool/registry.ts`, `type.ts`, `metadata.ts` (ownership/search), `src/app/HomeClient.tsx`, `src/component/tool/ToolPageTemplate.tsx`, `src/component/common/ToolSearch.tsx`, `src/app/navData.ts`, `src/component/layout/Header.tsx`, `Footer.tsx`, `AppShell.tsx`.
+Also scoped `src/app` file inventory and focused source searches for robots/sitemap/schema/canonical/headings/links. HTTP responses captured to ignored `.my-dev-kit-workflow/http-*.json`.
+
+28. FULL-FILE READ FALLBACKS
+None. No whole source/test fallback was required. Small files were retrieved using bounded my-dev-kit source windows; registry was split into ranges. Package metadata and rendered HTML were read as permitted.
+
+29. COMMANDS RUN
+Git preflight and final: `git fetch origin --prune --tags`; `git branch --show-current`; `git status --short --untracked-files=all`; `git rev-parse HEAD`; `git remote -v`; `git log --oneline --decorate -10`.
+Package/index: npm view for current kit version/bin/readme; `npx --yes @dailephd/my-dev-kit@1.12.5 index --root . --src src --out .my-dev-kit-workflow/index-current --json`; focused kit search/lookup/source.
+Discovery: scoped `rg --files` and focused `rg -n` for SEO, routing, links, headings and schema.
+Build: `npm run build` passed; only ignored `.next` output refreshed.
+HTTP: PowerShell Invoke-WebRequest to apex root, robots, sitemap, slugify, length converter, calculator, time arithmetic, discover, category/text, HTML extractor and weight converter; attempted www and Vercel host. No GUI/browser used.
+Final: `git rev-parse HEAD`; `git status --short --untracked-files=all`.
+
+30. LIMITATIONS
+Snapshot is 2026-10-03; production may change. Live tests cover selected pages, while registry/source establish other entries and links. No search-engine index state, performance, historical access or provider actions are observable here. www DNS failed; Vercel redirect chain incomplete. Build may refresh ignored `.next`; tracked production files stayed untouched. No tests run: inspection only; no tests changed. Ranking depends on factors beyond this report.
+
+31. EXACT NEXT ACTION
+Return this report to ChatGPT so the planner can design the bounded SEO/indexability implementation.
+
+REPOSITORY STATE AT COMPLETION
+Starting HEAD: 7584ba7a219176bdc8d817552dea42b9d5271094
+Ending HEAD:   7584ba7a219176bdc8d817552dea42b9d5271094
+Tracked production source/tests/docs/config changed: NO
+Only intentionally created nonignored file: this report. Project-local `.my-dev-kit-workflow` state is ignored by existing rules.

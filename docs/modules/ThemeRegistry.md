@@ -29,7 +29,7 @@ function isThemeId(x: unknown): x is ThemeId
   (id/label/optional description); `listThemes()` is the only accessor.
 - `isThemeId()` is a runtime type guard used by `themeStorage.loadTheme()` to
   validate values read back from `storage` before trusting them as `ThemeId`.
-- `doc/DESIGN.md` records all four canonical themes and shared cross-theme
+- `docs/DESIGN.md` records all four canonical themes and shared cross-theme
   visual rules; token values remain implementation-owned in `src/style/theme.css`.
 
 <!-- section-id: member-files -->

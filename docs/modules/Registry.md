@@ -25,7 +25,7 @@ function getToolBySlug(slug: string): ToolDefinition | undefined
 function getToolByCategory(category: string): ToolDefinition[]
 ```
 
-- `ToolDefinition` fields (see `doc/SCHEMA.md` §2 for the corrected table):
+- `ToolDefinition` fields (see `docs/SCHEMA.md` §2 for the corrected table):
   `id`, `slug`, `name`, `description`, `category`, `seo`, `capability`
   (singular), optional `tag`, optional `popularity`, optional `statePolicy`,
   `Component` (capital `C`).
@@ -34,7 +34,7 @@ function getToolByCategory(category: string): ToolDefinition[]
 - `getToolByCategory`/`getToolBySlug` are used directly by route handlers
   (`app/tool/[slug]/page.tsx`, `app/category/[category]/page.tsx`); broader
   queries (tags, popularity, SEO listing) go through `metadata.ts`
-  (`doc/modules/Metadata.md`), which wraps this module and must not duplicate
+  (`docs/modules/Metadata.md`), which wraps this module and must not duplicate
   its data.
 
 <!-- section-id: member-files -->

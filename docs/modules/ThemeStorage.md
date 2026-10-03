@@ -17,7 +17,7 @@ function storeTheme(themeId: ThemeId): void
 function loadTheme(): ThemeId | null
 ```
 
-- Persists the chosen `ThemeId` (see `doc/modules/ThemeRegistry.md`) under the
+- Persists the chosen `ThemeId` (see `docs/modules/ThemeRegistry.md`) under the
   `storage` key `"theme"` via `storeTheme`.
 - `loadTheme()` reads the raw stored value and validates it with
   `isThemeId()` from `themeRegistry.ts`; removes invalid values (including retired IDs) and returns `null` if unset or invalid

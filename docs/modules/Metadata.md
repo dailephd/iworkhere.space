@@ -31,7 +31,7 @@ function getToolByPopularity(): ToolDefinition[]
 - Does not duplicate registry data — every function reads
   `tool_definition_list` from `registry.ts` at call time.
 - `getToolBySlug`/`getToolByCategory` are **not** exported here; they remain
-  `registry.ts`-level exports (a prior version of `doc/API.md` incorrectly
+  `registry.ts`-level exports (a prior version of `docs/API.md` incorrectly
   listed them under this module — corrected in this pass).
 - New cross-cutting query functions belong here, not in `registry.ts`.
 

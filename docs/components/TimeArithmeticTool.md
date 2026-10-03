@@ -44,14 +44,14 @@ selector, and a result panel.
   whenever a new non-empty result is produced (deduplicated against the
   previous tracked result via `useRef`), both via
   `@/module/observability` — consistent with the observability contract in
-  `doc/API.md` §7.
+  `docs/API.md` §7.
 - Does not call `logEvent` directly (unlike `ToolClientFrame`, which already
   logs tool-open/execute at the frame level).
 
 ## Contract notes
 
 - Errors are surfaced as inline field-level text, not thrown — matches
-  `doc/TESTING.md` "no silent fallback" principle for validation but does not
+  `docs/TESTING.md` "no silent fallback" principle for validation but does not
   throw, since this is UI-facing input validation rather than a module
   boundary contract violation.
 - Slug (`"time-arithmetic"`) is hardcoded in two `trackEvent` call sites

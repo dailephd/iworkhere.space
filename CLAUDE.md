@@ -214,7 +214,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 - Theme switch changes color only
 - Subtle shadow only
 - No surprise animations
-- Update `doc/DESIGN.md` before design or styling system changes
+- Update `docs/DESIGN.md` before design or styling system changes
 
 ## Testing Discipline (Mandatory)
 
@@ -275,10 +275,10 @@ Agents must assume CI will enforce all four.
 
 ## Documentation Discipline
 
-- Architecture changes require updating doc/architecture.md first
-- Style changes require updating doc/DESIGN.md first
+- Architecture changes require updating docs/architecture.md first
+- Style changes require updating docs/DESIGN.md first
 - New abstractions require updating this file
-- Project status tracked in doc/project-status.md
+- Project status tracked in docs/project-status.md
 - Do not skip documentation when adding new tools
 
 
@@ -301,4 +301,4 @@ externally by Vercel Authentication → All Deployments. Keep the public project
 public and all public automated validation persistence-disabled. Run isolated
 test:observability-db and dashboard verify for their respective changes.
 
-See doc/OBSERVABILITY.md and doc/ADVERTISING.md. Existing facade/providers own telemetry; explicit public enable flags default off. No user/file/input/output/full URL/query/hash/identity telemetry. Central module/ad configuration supplies top/right conditional slots through AppShell, no fake footer/right banner. Live ad activation requires production and external AdSense/CMP readiness. Automated tests never request/click live ads; runtime/API/public asset changes require the container gate.
+See docs/OBSERVABILITY.md and docs/ADVERTISING.md. Existing facade/providers own telemetry; explicit public enable flags default off. No user/file/input/output/full URL/query/hash/identity telemetry. Central module/ad configuration supplies top/right conditional slots through AppShell, no fake footer/right banner. Live ad activation requires production and external AdSense/CMP readiness. Automated tests never request/click live ads; runtime/API/public asset changes require the container gate.

@@ -1,8 +1,8 @@
-# doc/doc_index.md
+# docs/doc_index.md
 
 # Documentation Index
 
-### doc/modules/HeicConverter.md
+### docs/modules/HeicConverter.md
 
 **Summary:** Batch 5 HEIC/HEIF worker-only decoding, bounded inspection,
 JPEG/PNG composition, lifecycle, privacy, synthetic MIT fixture identity and separate
@@ -61,7 +61,7 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it.
 
-### doc/plans/vX.Y.Z-implementation-plan.md
+### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
 version starts and after current repository inspection and fresh my-dev-kit
 retrieval. A version plan may define implementation architecture decisions,
@@ -262,13 +262,13 @@ and `TESTING.md`.
    state.
 3. Refresh repository evidence with my-dev-kit.
 4. Resolve the version's open planning decisions.
-5. Create and freeze `doc/plans/vX.Y.Z-implementation-plan.md`.
+5. Create and freeze `docs/plans/vX.Y.Z-implementation-plan.md`.
 
 ### For implementing a planned version
 1. Read `ROADMAP.md` and the current version implementation plan.
 2. `SCHEMA.md` - Check whether shared data contracts are affected.
 3. `API.md` - Identify stable interfaces and extension points.
-4. Read affected `doc/components/*.md` and `doc/modules/*.md` contracts.
+4. Read affected `docs/components/*.md` and `docs/modules/*.md` contracts.
 5. `DESIGN.md` - Review UI rules when
    applicable.
 6. `TESTING.md` - Apply the required test layers and validation evidence.
@@ -285,11 +285,11 @@ and `TESTING.md`.
 
 ---
 
-## 8. Component & Module Specification Layer (doc/components/, doc/modules/)
+## 8. Component & Module Specification Layer (docs/components/, docs/modules/)
 
 **Summary:** A separate implementation/design-contract layer, one file per
-component (`doc/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
-2026-08-07 = 19) or module/logical-unit (`doc/modules/*.md`, 27 files). Each
+component (`docs/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
+2026-08-07 = 19) or module/logical-unit (`docs/modules/*.md`, 27 files). Each
 file identifies representative/member source files and (where reconciled)
 a real contract: exported functions, storage keys, dependencies, and known
 implementation/documentation gaps.
@@ -313,8 +313,8 @@ to the files judged most architecturally load-bearing: `Registry.md`,
 `Metadata.md`, `Storage.md`, `RecentlyUsed.md`, `Observability.md`, `Seo.md`,
 `ThemeRegistry.md`, `ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
 `TimeArithmeticTool.md` (previously undocumented despite being a registered
-tool). The remaining ~36 files (all `doc/components/*.md` except
-`TimeArithmeticTool.md`, and `doc/modules/{Analytics,Button,ExtractHtmlText,
+tool). The remaining ~36 files (all `docs/components/*.md` except
+`TimeArithmeticTool.md`, and `docs/modules/{Analytics,Button,ExtractHtmlText,
 Input,Layout,NavData,Page,Provider,Route,RustLogProvider,StatusPanel,
 ThemeProvider,ThemeToggle,ToolSearch,Type,Types,Util,Logger}.md`) remain thin
 generation stubs. This is recorded as an open documentation gap, not silently
@@ -322,7 +322,7 @@ fixed — see the Architecture Assimilation Report handoff for the full list.
 
 ---
 
-## 9. Layer Inventories (doc/features/)
+## 9. Layer Inventories (docs/features/)
 
 **Summary:** Four files (`src-app.md`, `src-component.md`, `src-lib.md`,
 `src-module.md`) that are raw, auto-generated per-`src/`-subdirectory file
@@ -346,8 +346,8 @@ rather than directory structure.
 ### EXISTING_PROJECT_INVENTORY_REPORT.md
 **Summary:** Machine-generated inventory (Milestone 1 v1, generated
 2026-04-01) of every source file, its inferred unit/role, and merged logical
-units. This is the report that originally proposed the `doc/components/`,
-`doc/modules/`, and `doc/features/` doc targets listed above.
+units. This is the report that originally proposed the `docs/components/`,
+`docs/modules/`, and `docs/features/` doc targets listed above.
 **When to read:** To understand how the component/module doc set was derived,
 or to see the classifier's raw file-role output.
 **Relations:** Upstream of every file in section 8 and section 9.
@@ -378,8 +378,8 @@ version plan remains historical process debt; no retrospective plan was authored
   `CI_CD.md` focuses on the pipeline mechanics while `TESTING.md` focuses on
   test content.
 - **Completeness:** Architecture, design, testing, and operations are well
-  covered at the system level. The per-unit `doc/components/` and
-  `doc/modules/` layer is largely unreconciled generation stubs (see section
+  covered at the system level. The per-unit `docs/components/` and
+  `docs/modules/` layer is largely unreconciled generation stubs (see section
   8) — a known, tracked gap rather than a completeness claim.
 - **Naming:** Consistent use of singular naming is enforced in
   `code-generation-guidelines.md` and visible in the file structure.

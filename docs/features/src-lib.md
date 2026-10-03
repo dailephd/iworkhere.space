@@ -6,9 +6,9 @@
 > title ("Utility: seo") was a generation artifact, not a description of its
 > content. This document is a raw per-layer file listing for `src/lib` (one
 > of four: `src-app.md`, `src-component.md`, `src-lib.md`, `src-module.md`).
-> For authoritative layer responsibilities see `doc/architecture.md`; for
-> individual module specs see `doc/modules/Seo.md`, `doc/modules/Storage.md`,
-> `doc/modules/Util.md`.
+> For authoritative layer responsibilities see `docs/architecture.md`; for
+> individual module specs see `docs/modules/Seo.md`, `docs/modules/Storage.md`,
+> `docs/modules/Util.md`.
 
 <!-- section-id: source-files -->
 ## Source Files

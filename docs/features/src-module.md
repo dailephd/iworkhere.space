@@ -9,7 +9,7 @@
 > `src-lib.md`, `src-module.md`). Note the listing below predates the
 > `time-arithmetic` tool (`src/module/tool/time/`) and is missing that
 > directory. For authoritative subsystem responsibilities see
-> `doc/architecture.md`; for individual module specs see `doc/modules/`.
+> `docs/architecture.md`; for individual module specs see `docs/modules/`.
 
 <!-- section-id: source-files -->
 ## Source Files

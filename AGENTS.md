@@ -220,7 +220,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 - Theme switch changes color only
 - Subtle shadow only
 - No surprise animations
-- Update `doc/DESIGN.md` before design or styling system changes
+- Update `docs/DESIGN.md` before design or styling system changes
 
 ## Testing Discipline (Mandatory)
 
@@ -294,12 +294,12 @@ do not introduce a global error framework.
 
 The image family shares only source-file primitives through
 `src/module/tool/image/imageFile.ts` and `imageFile.client.ts`, specified in
-`doc/modules/ImageFile.md`: encoding metadata, signatures, source limits,
+`docs/modules/ImageFile.md`: encoding metadata, signatures, source limits,
 byte/basename formatting, signature reading, decode and inspection. Operation
 encoders, state, object URLs, async generations and telemetry stay local.
 Only identical source presentation is shared through the presentation-only
 `src/component/tool/image/ImageSourcePanel.tsx`, specified in
-`doc/modules/ImageSourcePanel.md`. It receives display-ready props, imports no
+`docs/modules/ImageSourcePanel.md`. It receives display-ready props, imports no
 module-domain behavior and owns no state, File APIs, validation, URLs, Reset,
 result or operation controls. All other React UI stays local.
 Do not expand these owners into a generic processor or shared React framework.
@@ -310,13 +310,13 @@ Do not import heic-to root/CSP entries on the main thread. Construct one
 short-lived worker per operation only after non-empty/25 MiB source prechecks;
 terminate on terminal response, stale generation, replacement, Reset and
 unmount. Keep HEIC composition and source UI local; do not broaden the shared
-image owners. See `doc/modules/HeicConverter.md`. Decoder release approval
+image owners. See `docs/modules/HeicConverter.md`. Decoder release approval
 remains a separate explicit human/legal gate.
 
-- Architecture changes require updating doc/architecture.md first
-- Style changes require updating doc/DESIGN.md first
+- Architecture changes require updating docs/architecture.md first
+- Style changes require updating docs/DESIGN.md first
 - New abstractions require updating this file
-- Project status tracked in doc/project-status.md
+- Project status tracked in docs/project-status.md
 - Do not skip documentation when adding new tools
 
 
@@ -340,4 +340,4 @@ Do not import dashboard into public app source. Public automated tests disable
 persistence and never use real Neon. Run test:observability-db for real SQL
 changes and independent dashboard verify for dashboard changes. See their READMEs.
 
-See doc/OBSERVABILITY.md and doc/ADVERTISING.md. Existing observability facade/providers own telemetry; production transport uses explicit NEXT_PUBLIC_OBSERVABILITY_ENABLED=true and same-origin validated endpoints. Do not send user/file/input/output/full URL/query/hash/identity data. Public ad configuration belongs to module/ad; slots compose through AppShell. NEXT_PUBLIC_ADSENSE_ENABLED=true additionally requires production and external AdSense/CMP readiness. Defaults and automated/container validation never load live ads; never click ads. Root has no fake footer/right banner. Runtime/API/public asset changes require the container gate. No new vendor SDK is authorized.
+See docs/OBSERVABILITY.md and docs/ADVERTISING.md. Existing observability facade/providers own telemetry; production transport uses explicit NEXT_PUBLIC_OBSERVABILITY_ENABLED=true and same-origin validated endpoints. Do not send user/file/input/output/full URL/query/hash/identity data. Public ad configuration belongs to module/ad; slots compose through AppShell. NEXT_PUBLIC_ADSENSE_ENABLED=true additionally requires production and external AdSense/CMP readiness. Defaults and automated/container validation never load live ads; never click ads. Root has no fake footer/right banner. Runtime/API/public asset changes require the container gate. No new vendor SDK is authorized.

@@ -217,7 +217,7 @@ If CI fails:
 2. Read the failing step output.
 3. Reproduce locally:
    `npm run typecheck && npm run lint && npm run test && npm run build`.
-4. Identify the root cause (see `doc/debugging.md`).
+4. Identify the root cause (see `docs/debugging.md`).
 5. Apply the smallest fix.
 6. Re-run the full suite before pushing.
 

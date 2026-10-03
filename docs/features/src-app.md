@@ -8,8 +8,8 @@
 > This document is a raw per-layer file listing for `src/app`, one of four
 > (`src-app.md`, `src-component.md`, `src-lib.md`, `src-module.md`). For
 > authoritative layer responsibilities and route documentation, see
-> `doc/architecture.md`. For individual component/module specs, see
-> `doc/components/` and `doc/modules/`. This file is preserved as a
+> `docs/architecture.md`. For individual component/module specs, see
+> `docs/components/` and `docs/modules/`. This file is preserved as a
 > machine-generated cross-check of file membership per layer, not hand-authored
 > documentation.
 

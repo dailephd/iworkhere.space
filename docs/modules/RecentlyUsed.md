@@ -16,7 +16,7 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 
 Tracks which tool slugs the user opened most recently, backed by `storage`
 under the key `"recent-tool"` (not `"recently-used"` — a prior mismatch
-between this key and `doc/SCHEMA.md` has been corrected in this pass).
+between this key and `docs/SCHEMA.md` has been corrected in this pass).
 
 ```typescript
 function getRecentTool(): string[]
@@ -33,7 +33,7 @@ function clearRecentTool(): void
 - **Not currently wired up**: no caller in the codebase invokes
   `recordRecentTool` — `ToolClientFrame` (`src/component/tool/ToolClientFrame.tsx`)
   fires `trackEvent`/`logEvent` on tool open/execute but does not call this
-  module. This matches `doc/project-status.md` "Next Steps" item 3 ("Wire
+  module. This matches `docs/project-status.md` "Next Steps" item 3 ("Wire
   recently used tool tracking into ToolClientFrame"), which remains open.
 
 <!-- section-id: member-files -->

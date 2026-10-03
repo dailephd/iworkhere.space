@@ -151,7 +151,7 @@ All storage keys used in the application are declared here.
 
 | Key | Value Type | Consumer | Description |
 |-----|-----------|----------|-------------|
-| `"theme"` | `ThemeId` (`"system" \| "light" \| "dark" \| "onedark"`) | `themeStorage.ts` (`src/module/theme/`) | User theme preference; see `doc/architecture.md` theme module section |
+| `"theme"` | `ThemeId` (`"system" \| "light" \| "dark" \| "onedark"`) | `themeStorage.ts` (`src/module/theme/`) | User theme preference; see `docs/architecture.md` theme module section |
 | `"recent-tool"` | `string[]` | `recentlyUsed` module (`src/module/tool/recentlyUsed.ts`) | Ordered list of tool slugs (max 10) |
 | `"analytic_event_count"` | `Record<string, number>` | analytics local provider (`src/module/analytics/provider.ts`) | Per-event occurrence count |
 
