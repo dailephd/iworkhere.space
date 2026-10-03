@@ -1,4 +1,4 @@
-import type { ThemeId } from "./themeRegistry";
+import { isThemeId, type ThemeId } from "./themeRegistry";
 
 /**
  * Sets the active theme by writing (or removing) the data-theme attribute
@@ -25,12 +25,7 @@ export function setTheme(themeId: ThemeId): void {
  */
 export function getThemeFromDom(): ThemeId {
     const value = document.documentElement.getAttribute("data-theme");
-    if (value === "light") return "light";
-    if (value === "dark") return "dark";
-    if (value === "onedark") return "onedark";
-    if (value === "vscode-modern") return "vscode-modern";
-    if (value === "dracula") return "dracula";
-    if (value === "amethyst-haze") return "amethyst-haze";
-    if (value === "mercury-fog") return "mercury-fog";
+    if (isThemeId(value) && value !== "system") return value;
+    document.documentElement.removeAttribute("data-theme");
     return "system";
 }

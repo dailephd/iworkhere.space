@@ -1,9 +1,64 @@
 # ARCHITECTURE
 
+## Persistent observability and separate dashboard
+
+The public application remains public at the repository root. Its existing
+observability facade/providers own browser telemetry. `/api/log` remains the
+sanitized technical diagnostic path; `/api/metric` alone persists allowlisted
+measurement events, including explicit `client-error` metrics, into Neon Postgres.
+No diagnostic message, stack, arbitrary metadata or client timestamp is stored.
+Server receipt time defines UTC aggregation and retention boundaries.
+
+`database/observability` owns the dedicated SQL schema and transactional daily
+maintenance. Raw events retain 90 days, with deletion permitted only for a
+successfully rolled-up UTC day. Daily event/vital history retains indefinitely.
+The operational maintenance route uses CRON_SECRET, not application users or
+sessions. Daily cron belongs to the public Vercel project.
+
+`dashboard/` is an independently installable Next.js application deployed as a
+second Vercel project. It reads the same database with a SELECT-only production
+role. All SQL stays server-side; no dashboard code enters public navigation,
+registry, sitemap, service worker or public build. Vercel Authentication with
+All Deployments protects only the dashboard project; there is no app auth.
+
+The metric contract adds optional coarse viewport class (width only) and an
+explicit error category/tool ID projection. Metric error identity deduplication
+is independent of diagnostic-log identity deduplication, preserving both sinks.
+See `OBSERVABILITY.md` and `../dashboard/DEPLOYMENT.md`.
+
 This document defines the architectural boundaries of the project.
 Any generated code MUST follow this structure.
 
+## Deployment Runtime Boundary
+
+Production packaging follows `Next.js standalone server → Docker runtime →
+public/static assets → browser`. Containerization changes deployment packaging,
+not application domain architecture. The generated standalone server serves the
+same-origin Worker, decoder, service-worker, manifest, and license assets. See
+`doc/DEPLOYMENT.md` for the runtime guide.
+
 ## Core Goal
+
+Image Resizer, Image Compressor and Image Converter share narrow source-file rules and browser
+inspection in `module/tool/image/imageFile.ts` and `imageFile.client.ts` (see
+`modules/ImageFile.md`). Their identical source presentation is owned by the
+presentation-only `component/tool/image/ImageSourcePanel.tsx`, which receives
+display-ready props and imports no module-domain behavior (see
+`modules/ImageSourcePanel.md`). All keep operation encoders, React state,
+controls/results, object URL ownership and execution telemetry local.
+This adds no route, server or generic
+processing framework owner.
+
+HEIC Converter introduces a dedicated image worker boundary (see
+`modules/HeicConverter.md`). Only `heicConverter.worker.ts` imports
+`heic-to/next` from pinned `heic-to@1.5.2`. The wrapper creates a worker lazily
+after a selected file passes non-empty/25 MiB prechecks; the decoder is not
+part of normal route execution or initial HEIC rendering. Each inspect or
+convert operation owns a short-lived worker, terminated on terminal response,
+cancellation, replacement, Reset or unmount. Main-thread UI receives only
+bounded inspection/result messages and Blobs. HEIC source UI remains local;
+the existing shared image owners are not expanded. Production release is
+subject to explicit human/legal decoder-license approval.
 
 Build a scalable, full-stack utility platform using Next.js App Router,
 with strict separation between:
@@ -99,7 +154,9 @@ graph TD
 - `/tool/[slug]` — Individual tool page (`tool/[slug]/page.tsx`)
 - `/category/[category]` — Category listing page (`category/[category]/page.tsx`)
 - `/api/health` — Health check endpoint (`api/health/route.ts`)
-- `/api/log` — Client log ingestion endpoint (`api/log/route.ts`)
+- `/api/log` — Sanitized technical diagnostics (`api/log/route.ts`)
+- `/api/metric` — Bounded measurement ingestion (`api/metric/route.ts`)
+- `/api/observability/maintenance` — Cron-protected rollup/retention (`api/observability/maintenance/route.ts`)
 
 **Supporting files:**
 - `navData.ts` — Navigation item definitions
@@ -123,7 +180,7 @@ graph TD
 **Subgroups:**
 - `common/` — Generic reusable components (Button, Input, StatusPanel,
   ToolSearch, ThemeToggle)
-- `layout/` — App shell, header, footer, navigation, ad banner placeholders,
+- `layout/` — App shell, header, footer, navigation and optional ad slots,
   layout types, ServiceWorkerRegister
 - `tool/` — Tool-specific presentation components (ToolPageTemplate,
   ToolClientFrame, ToolSection, ToolErrorBoundary)
@@ -270,7 +327,7 @@ Combined facade unifying analytics and logging.
 Server-side endpoint for client log events sent by `RustLogProvider`.
 
 ### Behavior
-- Accepts POST with JSON body: `{ level, message, timestamp, meta?, url? }`
+- Accepts bounded POST JSON: `{ level, message, timestamp, meta, pathname }`, with fixed message categories and allowlisted metadata; rejects arbitrary fields and full URLs.
 - Validates body shape and log level (`debug`, `info`, `warn`, `error`)
 - Writes to server `console.log` as a safe sink
 - Returns 204 on success, 400 on invalid input
@@ -281,9 +338,8 @@ Server-side endpoint for client log events sent by `RustLogProvider`.
 ## Theme module (`src/module/theme/`)
 
 The theme system is a multi-theme registry, not a binary light/dark switch.
-`ThemeId` (`themeRegistry.ts`) declares eight selectable themes: `system`,
-`light`, `dark`, `onedark`, `vscode-modern`, `dracula`, `amethyst-haze`, and
-`mercury-fog`. `doc/DESIGN.md` is the canonical visual authority and documents all eight
+`ThemeId` (`themeRegistry.ts`) declares four selectable themes: `system`,
+`light`, `dark`, and `onedark`. `doc/DESIGN.md` is the canonical visual authority and documents all four
 canonical themes alongside the current theme registry and runtime ownership.
 
 ### Structure
@@ -391,7 +447,7 @@ Dynamic metadata generation from tool definitions.
 
 ### Framework
 - Vitest with Node environment
-- Tests follow `*.test.ts` convention alongside source files
+- Tests follow `*.test.ts` and `*.test.tsx` conventions alongside source files
 
 ### Unique test report
 - Every test run generates a unique report directory under
@@ -409,9 +465,29 @@ Dynamic metadata generation from tool definitions.
   directory
 - Contains no governance context, prompt, or coding-agent invocation
 
+### Browser validation foundation
+- Playwright is a separate production-browser validation subsystem in
+  `playwright.config.ts` and `test/e2e/`; it is not part of `script/verify.ts`.
+- `npm run build` precedes `npm run test:e2e`. Playwright owns a fresh production
+  server at `http://127.0.0.1:3100` and never reuses an existing server.
+- Desktop and mobile Chromium contexts protect existing routes, shell,
+  document scrolling, theme persistence, diagnostics and service worker.
+- Unique browser evidence belongs in `test-report/e2e/<RUN_ID>/`.
+- Current image-family contracts are specified in
+  [ImageFileProcessing](modules/ImageFileProcessing.md). ImageFile shares only
+  source primitives; ImageSourcePanel shares presentation. Encoding, state,
+  generation tokens, results and URL lifecycles remain operation-local.
+- Real HEIC JPEG/PNG conversion and fresh-context application isolation are
+  validated against the registered production tool. Only the dedicated worker
+  imports `heic-to/next`; no decoder loads before size-checked file interaction
+  or on unrelated routes. Workers terminate per operation and on invalidation.
+- Expected image errors stay local and actionable; unexpected React rendering
+  errors remain ToolErrorBoundary-owned. License approval remains a release gate.
+
 ### CI pipeline
-Four separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,
-`test.yaml`, `build.yaml`. All must pass.
+Five separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,
+`test.yaml`, `build.yaml`, `e2e.yaml`. All must pass when exercised. E2E workflow
+execution for the intermediate v0.2 branch is pending the final version PR.
 
 ---
 
@@ -426,3 +502,21 @@ Four separate GitHub Actions workflows: `typecheck.yaml`, `lint.yaml`,
 - lib/ importing from module/
 
 If unsure, STOP and ask for clarification.
+# Deployment runtime boundary
+
+Production packaging adds this deployment path without changing application
+domain architecture:
+
+```text
+Next.js standalone server → Docker runtime → public/static assets → browser
+```
+
+The runtime uses the Next-generated standalone server and serves Worker,
+decoder, service-worker, manifest, and public license assets from the same
+application origin. Docker is an optional packaging/runtime layer; it does not
+move tool logic out of the existing application layers. See
+`doc/DEPLOYMENT.md` for operation details.
+
+## Production integration ownership
+
+Existing observability facade and analytics/logger interfaces remain authoritative. Explicit browser opt-in selects same-origin network providers; defaults stay local. Metric validation/transport and server-only Neon persistence belong to module/observability; API routes adapt transport. Structured hosting logs remain active. `/api/log` keeps technical diagnostics separate from durable `/api/metric` measurements. Early instrumentation selects providers before tool effects. An isolated Web Vitals client uses the Next hook. Public advertising configuration belongs to module/ad; one reusable slot and one Next Script compose through AppShell. No analytics vendor SDK, identity or image-processing changes. The independent dashboard and SQL maintenance boundaries are defined at the start of this document.

@@ -1,12 +1,4 @@
-export type ThemeId =
-    | "system"
-    | "light"
-    | "dark"
-    | "onedark"
-    | "vscode-modern"
-    | "dracula"
-    | "amethyst-haze"
-    | "mercury-fog";
+export type ThemeId = "system" | "light" | "dark" | "onedark";
 
 interface ThemeEntry {
     id: ThemeId;
@@ -15,14 +7,10 @@ interface ThemeEntry {
 }
 
 const theme_definition_list: ThemeEntry[] = [
-    { id: "system", label: "System", description: "Follow system preference" },
-    { id: "light", label: "Light" },
-    { id: "dark", label: "Dark" },
-    { id: "onedark", label: "One Dark" },
-    { id: "vscode-modern", label: "VS Code Modern" },
-    { id: "dracula", label: "Dracula" },
-    { id: "amethyst-haze", label: "Amethyst Haze" },
-    { id: "mercury-fog", label: "Mercury Fog" },
+    { id: "system", label: "System", description: "Follow light or dark system preference" },
+    { id: "light", label: "Light", description: "Clean colorful light" },
+    { id: "dark", label: "Dark", description: "Restrained slate dark" },
+    { id: "onedark", label: "One Dark", description: "Purple developer dark" },
 ];
 
 export function listThemes(): ThemeEntry[] {
@@ -30,5 +18,5 @@ export function listThemes(): ThemeEntry[] {
 }
 
 export function isThemeId(x: unknown): x is ThemeId {
-    return theme_definition_list.some((t) => t.id === x);
+    return theme_definition_list.some((theme) => theme.id === x);
 }

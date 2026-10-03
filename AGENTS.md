@@ -10,8 +10,17 @@ npm run lint         # ESLint
 npm run typecheck    # TypeScript type checking (tsc --noEmit)
 npm run test         # Unit tests (vitest run)
 npm run verify       # Aggregate local validation with shared reports
+npm run test:container # Optional Docker production-runtime gate
 
-CI runs: typecheck, lint, test, build (all must pass). Separate GitHub Actions workflow per step.
+CI runs six independent gates: typecheck, lint, test, build, E2E, and Container.
+`npm run verify` runs the first four; `npm run test:e2e` and `npm run test:container`
+are separate. Docker is optional for normal development. Active CI uses Node 24;
+production Docker packaging uses Next standalone output. Do not bypass the
+container gate for deployment-runtime changes. Normal development uses
+`npm run dev`; Docker preview is opt-in through `npm run dev:docker`.
+All eight GitHub Actions workflows trigger on `pull_request` and pushes to
+`main`, `master`, and `validation/**`. The validation namespace is for immutable
+exact-SHA pre-release checks.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 
@@ -145,7 +154,7 @@ ToolClientFrame in src/component/tool/ToolClientFrame.tsx syncs tool state with 
 
 ### Theming
 
-Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, onedark, vscode-modern, dracula, amethyst-haze, and mercury-fog; theme selection changes color tokens without changing layout.
+Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, and onedark; theme selection changes color tokens without changing layout.
 
 ## Analytics and Observability Policy
 
@@ -207,7 +216,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 
 - Use Tailwind classes for styling
 - Use only existing CSS variable tokens
-- Violet for primary emphasis; cyan for focus and information; no third decorative accent
+- Themes define palette; components consume semantic visual roles; category colors provide catalog identity
 - Theme switch changes color only
 - Subtle shadow only
 - No surprise animations
@@ -267,13 +276,68 @@ CI enforces:
 - Lint
 - Test
 - Build
+- E2E (separate from `npm run verify`)
 
 Agents must assume CI will enforce all four.
 
+## Image error feedback
+
+Recoverable failures stay inside the owning tool with role="alert". Identify the
+known processing stage, relevant local size/dimensions/output format, and a
+realistic next action. Do not invent corruption, expose raw diagnostics, or
+send file details to observability, URL state, storage or network requests.
+Cancellation/stale work is not an error. Keep shared source feedback in ImageFile,
+operation feedback local, and bounded HEIC error categories at the worker boundary;
+do not introduce a global error framework.
+
 ## Documentation Discipline
+
+The image family shares only source-file primitives through
+`src/module/tool/image/imageFile.ts` and `imageFile.client.ts`, specified in
+`doc/modules/ImageFile.md`: encoding metadata, signatures, source limits,
+byte/basename formatting, signature reading, decode and inspection. Operation
+encoders, state, object URLs, async generations and telemetry stay local.
+Only identical source presentation is shared through the presentation-only
+`src/component/tool/image/ImageSourcePanel.tsx`, specified in
+`doc/modules/ImageSourcePanel.md`. It receives display-ready props, imports no
+module-domain behavior and owns no state, File APIs, validation, URLs, Reset,
+result or operation controls. All other React UI stays local.
+Do not expand these owners into a generic processor or shared React framework.
+
+HEIC decoding is an explicit worker-only exception: only
+`src/module/tool/image/heicConverter.worker.ts` may import `heic-to/next`.
+Do not import heic-to root/CSP entries on the main thread. Construct one
+short-lived worker per operation only after non-empty/25 MiB source prechecks;
+terminate on terminal response, stale generation, replacement, Reset and
+unmount. Keep HEIC composition and source UI local; do not broaden the shared
+image owners. See `doc/modules/HeicConverter.md`. Decoder release approval
+remains a separate explicit human/legal gate.
 
 - Architecture changes require updating doc/architecture.md first
 - Style changes require updating doc/DESIGN.md first
 - New abstractions require updating this file
 - Project status tracked in doc/project-status.md
 - Do not skip documentation when adding new tools
+
+
+### Island/material pilot
+
+SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry stays theme-independent. See DESIGN.md for fallbacks and contrast.
+
+## Production integration policy
+
+Persistent measurements extend module/observability through the server-only
+Neon driver pinned to @neondatabase/serverless@1.1.0. `/api/metric` is the only
+durable ingestion owner; `/api/log` and RustLogProvider retain diagnostic logging.
+Client-error measurements take explicitly typed safe fields, never diagnostic
+metadata. Optional deviceClass is CSS viewport width only. Database schema,
+transactional rollup and 90-day raw retention live in database/observability;
+never prune unrolled days. Daily history retains indefinitely. Cron stays in
+the public project and requires CRON_SECRET. `dashboard/` is a separate deployable,
+with independent install/build/CI, server-only read-only production credentials,
+no app auth and mandatory external Vercel Authentication on All Deployments.
+Do not import dashboard into public app source. Public automated tests disable
+persistence and never use real Neon. Run test:observability-db for real SQL
+changes and independent dashboard verify for dashboard changes. See their READMEs.
+
+See doc/OBSERVABILITY.md and doc/ADVERTISING.md. Existing observability facade/providers own telemetry; production transport uses explicit NEXT_PUBLIC_OBSERVABILITY_ENABLED=true and same-origin validated endpoints. Do not send user/file/input/output/full URL/query/hash/identity data. Public ad configuration belongs to module/ad; slots compose through AppShell. NEXT_PUBLIC_ADSENSE_ENABLED=true additionally requires production and external AdSense/CMP readiness. Defaults and automated/container validation never load live ads; never click ads. Root has no fake footer/right banner. Runtime/API/public asset changes require the container gate. No new vendor SDK is authorized.

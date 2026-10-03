@@ -4,9 +4,10 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The current repository package version is `0.1.0`.
+The root application package version is `0.2.0`; the independent dashboard
+retains its own package version.
 
-The existing product baseline provides six registered utilities:
+The original v0.1.0 product baseline provides six registered utilities:
 
 - Slugify Text
 - HTML Text Extractor
@@ -14,6 +15,9 @@ The existing product baseline provides six registered utilities:
 - Length Converter
 - Weight Converter
 - Time Arithmetic
+
+The v0.2 image family brings the catalog to ten tools. Package version and
+implementation scope are tracked separately.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -87,11 +91,12 @@ Future versions must preserve the following established principles:
 
 ## Current baseline — v0.1.0
 
-Status: Current package/source baseline
+Status: Original product foundation; the v0.1.0 baseline remains documented
+here while current root package metadata advances independently.
 
-Version 0.1.0 establishes the current product and architecture.
+Version 0.1.0 establishes the original product and architecture.
 
-Current capabilities include:
+Baseline capabilities include:
 
 - six working utility tools;
 - registry-based tool definition and discovery;
@@ -141,7 +146,8 @@ v0.1.1 implementation is accepted when:
 - the integration commit is on `master` and all four required CI jobs pass on
   that exact commit.
 
-Publication/release status is separate. The repository package remains `0.1.0` until the normal release/integration workflow establishes a new released version.
+At v0.1.1 acceptance, publication/release status was separate and root package
+metadata remained `0.1.0`.
 
 ### Exclusions
 
@@ -159,7 +165,9 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 ## Version 0.2.0 — Image Utility Foundation
 
-Status: Planned
+Status: Implementation and exact-SHA readiness are complete. The owner approved
+the HEIC production-license gate. Root package metadata is 0.2.0; the independent
+dashboard remains 0.1.0. Production integrations are tracked separately.
 
 ### Goal
 
@@ -173,6 +181,15 @@ Priority A utilities:
 - Image Compressor
 - JPG / PNG / WebP Converter
 - HEIC → JPG / PNG Converter
+
+The accepted v0.2.0 repository scope also includes explicitly authorized
+implementation extensions: the compact discovery/homepage layout and One Dark
+material pilot; production-gated AdSense placement; opt-in production
+observability; Neon persistence and daily maintenance; and the separate private
+observability dashboard. These extend the original image-utility plan without
+changing the future catalog sequence. Design visual approval remains pending
+where specified in `DESIGN.md`; external deployment and account setup remain
+unperformed.
 
 ### Dependencies
 
@@ -216,11 +233,15 @@ v0.2.0 is complete when:
 
 ### Unresolved planning decisions
 
-Resolve during v0.2.0 implementation-plan preparation:
+Browser E2E implementation, shared ImageFile source primitives, presentation-only
+ImageSourcePanel, real HEIC conversion, dedicated worker architecture and
+application-level decoder isolation are resolved and validated. The exact
+production decoder is `heic-to@1.5.2`.
 
-- exact browser E2E tooling and command/CI ownership;
-- HEIC decoding approach and acceptable dependency/runtime cost;
-- shared file-input/result primitives justified by the selected implementations.
+Remaining release decision: HEIC production-license approval. AdSense readiness,
+database provisioning, dashboard protection/domain setup and production
+environment configuration also remain external deployment work. Technical
+completeness does not authorize release.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
@@ -478,7 +499,7 @@ The following capabilities support product versions and should be implemented wh
 
 ### Browser end-to-end validation
 
-Browser-level validation is planned testing infrastructure. Establish the minimum required browser test capability during v0.2.0 and extend it proportionately for later browser-visible releases.
+Browser-level validation is implemented in v0.2.0 with separate production desktop/mobile Chromium and CI gates. Extend it proportionately for later browser-visible releases.
 
 Static/unit checks must not be presented as browser proof when the acceptance requirement is browser-visible behavior.
 
@@ -494,7 +515,21 @@ Measure production bundle/dependency impact when image/PDF/developer tools intro
 
 ### SEO/catalog growth support
 
-Current per-tool/category metadata remains adequate for the A+B sequence. Sitemap, structured data, internal-linking, and richer catalog discovery work may be introduced when catalog size or crawl evidence justifies them.
+Existing per-tool/category metadata is a foundation, not evidence that discovery is complete. The 2026-10-01 repository review identified script-button catalog navigation, an inactive header search field, minimal tool-page presentation, and no sitemap/robots implementation in the inspected app/public listings.
+
+Basic crawlable links, useful image-tool landing-page text, metadata consistency, and sitemap/crawler policy are now planned alongside the near-term visual pilot. They must not wait solely for the catalog to reach thirty tools. See [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md) for the source evidence, research, bounded delivery sequence, and measurement limits.
+
+This changes the priority of a bounded discovery subset, not the catalog version sequence. Broader ranking/recommendation systems, new analytics vendors, and server-backed search remain deferred. Neither search eligibility nor modern styling guarantees rankings, traffic, or LLM citations.
+
+### Near-term UI and discovery pilot
+
+Status: Planned; visual approval and implementation remain pending.
+
+Goal: make the existing tools more useful and visually distinct before expanding the amount of redesign work. Start with the homepage and Image Resizer, proposing compact top navigation and a settings-plus-preview workspace rather than repeating the existing permanent-sidebar composition. Preserve the registry, routes, themes, local-processing/privacy contracts, and existing banner decisions unless explicitly revised.
+
+After visual approval, roll the accepted pattern across the other three image tools and add the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The owner approved the HEIC production-license gate for v0.2.0.
+
+The [detailed plan](plans/ui-discovery-growth-plan.md) owns this enhancement's delivery boundaries. It is not a retroactive v0.2 implementation plan or a new numbered catalog version. No new utility, bulk processing, target-size compression, generic file framework, large content program, or AI-specific integration is added to the first delivery.
 
 ## Documentation and specification debt policy
 
@@ -516,16 +551,12 @@ Therefore:
 
 ## Theme specification debt
 
-The application currently supports eight theme selections:
+The application currently supports four theme selections:
 
 - system
 - light
 - dark
 - onedark
-- vscode-modern
-- dracula
-- amethyst-haze
-- mercury-fog
 
 Theme implementation is functional. Theme/design documentation must remain current before future visual-system behavior changes.
 
@@ -554,6 +585,8 @@ Do not add a recently-used UI surface without an explicit product decision.
 Tags/popularity support exists in the current architecture, but consumer/ranking/featured semantics remain unresolved.
 
 Do not introduce recommendation/ranking behavior until the consumer surface and semantics are explicitly defined.
+
+The near-term UI/discovery plan defines only functional search entry, real destination links, populated-category discovery, a curated image-tool group without popularity claims, related image-tool links, and basic SEO. It does not authorize personalized ranking, a new recommendation engine, or the full deferred enrichment workstream.
 
 ### RustLogProvider startup activation
 
@@ -695,17 +728,19 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-The integrated v0.1.1 validation hardening is the accepted development baseline.
-The package version remains `0.1.0`; this integration is not an npm publication
-or external product release.
+Complete the human visual review of the implemented homepage/navigation and
+Image Resizer pilot from [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md).
+Obtain that approval before extending the presentation pattern to the other
+image tools. Basic discovery improvements accompany the accepted rollout; no
+new catalog version or site-wide rewrite is authorized by this planning update.
 
-The next project action is to create a fresh design-reconciliation branch from
-the updated `master`, preserve only the intended design changes from PR #1,
-validate that branch, and integrate it. Do not merge PR #1 as-is. Only after
-that design reconciliation should v0.2.0 planning begin:
+The v0.2 implementation and exact-SHA readiness are complete. The eight hosted
+workflows passed at `339091c5aaf4ad31be656756a7f4e4c121cc37de` on the immutable
+`validation/v0.2.0-heic-license-339091c5` ref. The owner approved the HEIC
+production-license gate. Root package metadata is `0.2.0`; dashboard package
+metadata remains independently versioned at `0.1.0`.
 
-1. inspect the exact accepted repository state;
-2. refresh my-dev-kit evidence;
-3. resolve the v0.2.0 open planning decisions;
-4. create and freeze `doc/plans/v0.2.0-implementation-plan.md`;
-5. only then issue bounded coding-agent implementation prompts.
+Historical process debt: the referenced
+`doc/plans/v0.2.0-implementation-plan.md` is absent from the repository and its
+available history. No retroactive version plan was created. Future versions
+should freeze their implementation plan before coding prompts are issued.

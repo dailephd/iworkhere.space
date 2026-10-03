@@ -11,6 +11,18 @@ vi.mock("next/link", () => ({
 import CategoryPage from "./page";
 
 describe("category route", () => {
+    it("renders Image Resizer through the existing image category", async () => {
+        const content = await CategoryPage({ params: Promise.resolve({ category: "image" }) });
+        const html = renderToStaticMarkup(content);
+        expect(html).toContain("Image &amp; Media Tool");
+        expect(html).toContain('href="/tool/image-resizer"');
+        expect(html).toContain("Image Resizer");
+        expect(html).toContain('href="/tool/image-compressor"');
+        expect(html).toContain("Image Compressor");
+        expect(html).toContain('href="/tool/image-converter"');
+        expect(html).toContain("JPG / PNG / WebP Converter");
+        expect(html).not.toContain("No tool available");
+    });
     it("renders existing category tools inside the shell's single main landmark", async () => {
         const categoryContent = await CategoryPage({
             params: Promise.resolve({ category: "text" }),

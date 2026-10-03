@@ -19,14 +19,14 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
 
     return (
         <nav aria-label={ariaLabel} className="w-full">
-            <ul className="flex flex-row flex-wrap gap-2 lg:flex-col lg:gap-1">
+            <ul className="flex flex-row flex-wrap items-center gap-1.5">
                 {item.map((navItem) => {
                     const active = navItem.href
                         ? isActive(navItem.href, pathname)
                         : false;
 
                     const className = `
-                        flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition-colors
+                        inline-flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors
                         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]
                         ${
                             active
@@ -58,7 +58,7 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
 
                     if (navItem.href && !navItem.disabled) {
                         return (
-                            <li key={navItem.id} className="flex-1 lg:flex-none">
+                            <li key={navItem.id}>
                                 <Link
                                     href={navItem.href}
                                     aria-current={active ? "page" : undefined}
@@ -71,7 +71,7 @@ export function VerticalNav({ item, ariaLabel }: VerticalNavProp) {
                     }
 
                     return (
-                        <li key={navItem.id} className="flex-1 lg:flex-none">
+                        <li key={navItem.id}>
                             <span
                                 aria-disabled={navItem.disabled}
                                 className={className}

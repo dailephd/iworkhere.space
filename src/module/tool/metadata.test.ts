@@ -12,6 +12,14 @@ import {
 import { tool_definition_list } from "./registry"
 
 describe("tool metadata index", () => {
+    it("derives Image Resizer SEO and the populated image category from the registry", () => {
+        expect(getToolSeoBySlug("image-resizer")).toEqual({
+            title: "Image Resizer",
+            description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-resizer",
+        })
+        expect(getAvailableCategory()).toContain("image")
+    })
     describe("getAllTool", () => {
         it("returns all tools from registry", () => {
             const result = getAllTool()
@@ -21,6 +29,20 @@ describe("tool metadata index", () => {
 
         it("returns an array", () => {
             expect(Array.isArray(getAllTool())).toBe(true)
+        })
+    })
+
+    it("derives Image Compressor SEO from the registry", () => {
+        expect(getToolSeoBySlug("image-compressor")).toEqual({
+            title: "Image Compressor",
+            description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-compressor",
+        })
+    })
+
+    it("derives Converter SEO from the registry", () => {
+        expect(getToolSeoBySlug("image-converter")).toEqual({
+            title: "JPG / PNG / WebP Converter", description: "Convert JPEG, PNG, and WebP images locally in your browser.", canonicalPath: "/tool/image-converter",
         })
     })
 

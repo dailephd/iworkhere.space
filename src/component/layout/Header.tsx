@@ -1,22 +1,24 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/component/common/ThemeToggle";
+import { VerticalNav } from "./VerticalNav";
+import type { NavItem } from "./type";
 
-export function Header() {
+export function Header({ navItem }: { navItem: NavItem[] }) {
     return (
-        <div className="flex h-16 items-center justify-between gap-4 px-5 sm:px-6 lg:px-8">
-            <Link href="/" className="shrink-0 text-base font-semibold tracking-tight text-[var(--text)] hover:text-[var(--accent)]">
+        <div className="mx-auto flex min-h-16 max-w-[1440px] flex-wrap items-center gap-x-6 gap-y-2 px-5 py-3 sm:px-6 lg:flex-nowrap lg:px-8">
+            <Link href="/" className="shrink-0 text-base font-semibold tracking-tight text-header-text hover:text-header-muted">
                 iworkhere.space
             </Link>
-            <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
-                <div className="relative hidden w-full max-w-sm sm:block">
-                    <input
-                        type="search"
-                        aria-label="Search tools"
-                        placeholder="Search tools..."
-                        className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-alt)] px-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
-                    />
+            <div className="order-3 w-full lg:order-2 lg:min-w-0 lg:flex-1">
+                <VerticalNav item={navItem} ariaLabel="Primary navigation" />
+            </div>
+            <div className="ml-auto flex shrink-0 items-center gap-4 lg:order-3">
+                <Link href="/discover" className="rounded-md px-2 py-2 text-sm font-medium text-header-muted hover:bg-nav-hover-bg hover:text-header-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]">
+                    Search tools
+                </Link>
+                <div className="flex items-center gap-2">
+                    <ThemeToggle />
                 </div>
-                <ThemeToggle />
             </div>
         </div>
     );

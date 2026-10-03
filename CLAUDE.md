@@ -11,7 +11,10 @@ npm run typecheck    # TypeScript type checking (tsc --noEmit)
 npm run test         # Unit tests (vitest run)
 npm run verify       # Aggregate local validation with shared reports
 
-CI runs: typecheck, lint, test, build (all must pass). Separate GitHub Actions workflow per step.
+CI runs six public-app gates (typecheck, lint, test, build, E2E, Container) plus
+dashboard and observability-database workflows. All eight trigger on
+`pull_request` and pushes to `main`, `master`, and `validation/**`; validation
+branches support immutable exact-SHA pre-release checks.
 
 ## Mandatory Repository Retrieval Rule (No Guessing)
 
@@ -145,7 +148,7 @@ ToolClientFrame in src/component/tool/ToolClientFrame.tsx syncs tool state with 
 
 ### Theming
 
-Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, onedark, vscode-modern, dracula, amethyst-haze, and mercury-fog; theme selection changes color tokens without changing layout.
+Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, and onedark; theme selection changes color tokens without changing layout.
 
 ## Analytics and Observability Policy
 
@@ -207,7 +210,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 
 - Use Tailwind classes for styling
 - Use only existing CSS variable tokens
-- Violet for primary emphasis; cyan for focus and information; no third decorative accent
+- Themes define palette; components consume semantic visual roles; category colors provide catalog identity
 - Theme switch changes color only
 - Subtle shadow only
 - No surprise animations
@@ -277,3 +280,25 @@ Agents must assume CI will enforce all four.
 - New abstractions require updating this file
 - Project status tracked in doc/project-status.md
 - Do not skip documentation when adding new tools
+
+
+### Island/material pilot
+
+SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry stays theme-independent. See DESIGN.md for fallbacks and contrast.
+
+## Production integration policy
+
+Persistent measurements extend module/observability through the server-only
+Neon driver pinned to @neondatabase/serverless@1.1.0. `/api/metric` alone writes
+the durable metrics database; `/api/log`, RustLogProvider and captureError keep
+technical diagnostics. Client-error metrics receive only explicit typed safe
+fields. deviceClass means coarse CSS viewport width only. Schema/rollup/retention
+belong to database/observability, with raw retained 90 days and no deletion of
+unrolled days; daily history is indefinite. Public-project maintenance requires
+CRON_SECRET. `dashboard/` installs/builds/tests independently, has server-only
+read-only production database credentials, no app auth, and must be protected
+externally by Vercel Authentication → All Deployments. Keep the public project
+public and all public automated validation persistence-disabled. Run isolated
+test:observability-db and dashboard verify for their respective changes.
+
+See doc/OBSERVABILITY.md and doc/ADVERTISING.md. Existing facade/providers own telemetry; explicit public enable flags default off. No user/file/input/output/full URL/query/hash/identity telemetry. Central module/ad configuration supplies top/right conditional slots through AppShell, no fake footer/right banner. Live ad activation requires production and external AdSense/CMP readiness. Automated tests never request/click live ads; runtime/API/public asset changes require the container gate.

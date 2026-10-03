@@ -1,0 +1,49 @@
+name: Container
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - "validation/**"
+
+jobs:
+  container:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx --no-install playwright install --with-deps chromium
+
+      - name: Docker availability
+        run: docker version && docker compose version
+
+      - name: Container validation
+        run: npm run test:container
+
+      - name: Upload container report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-report/container/
+          retention-days: 30
+
+      - name: Upload container E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-e2e-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-report/e2e/
+          retention-days: 30

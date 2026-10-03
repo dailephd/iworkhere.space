@@ -23,11 +23,11 @@ function getThemeFromDom(): ThemeId
   `document.documentElement`, or removing the attribute entirely for
   `"system"` (so the CSS `prefers-color-scheme` rule takes over).
 - `getThemeFromDom` reads the current `data-theme` attribute back and
-  round-trips it through an explicit value check against all eight `ThemeId`
-  values, defaulting to `"system"` for anything else.
+  round-trips it through an explicit value check against all four `ThemeId`
+  values, removing invalid attributes and defaulting to `"system"` for anything else.
 - Browser-context only (`document` access) — must only be called from Client
   Components, effects, or event handlers, never at module scope or during
-  server rendering. Depends on `themeRegistry.ts` for the `ThemeId` type only
+  server rendering. Depends on `themeRegistry.ts` for the `ThemeId` type and canonical guard
   (no import of `storage`).
 
 <!-- section-id: member-files -->
@@ -59,3 +59,8 @@ This logical unit was identified by the following merge signals:
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+
+### Four-theme migration contract
+
+Valid IDs are system/light/dark/onedark. Retired vscode-modern, dracula, amethyst-haze, mercury-fog, civic-light and spectrum resolve to System: invalid persisted values are removed, and stale DOM attributes are cleared. Root pre-paint initialization accepts only light/dark/onedark. System is absence of data-theme and CSS Light/Dark preference.

@@ -2,6 +2,7 @@
 
 import React, { Component, type ReactNode } from "react";
 import { captureError } from "@/module/observability";
+import { reportClientErrorMetric } from "@/module/observability/errorMetric.client";
 
 interface Props {
     children: ReactNode;
@@ -23,6 +24,7 @@ export class ToolErrorBoundary extends Component<Props, State> {
     }
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+        reportClientErrorMetric(error, { failureCategory: "tool-render-error", toolId: this.props.toolId });
         captureError(error, {
             toolId: this.props.toolId,
             componentStack: errorInfo.componentStack,

@@ -5,6 +5,10 @@ import { CalculatorTool } from "@/module/tool/math/CalculatorTool";
 import { LengthConverterTool } from "./everyday/LengthConverterTool";
 import { WeightConverterTool } from "./everyday/WeightConverterTool";
 import { TimeArithmeticTool } from "./time/TimeArithmeticTool";
+import { ImageResizerTool } from "./image/ImageResizerTool";
+import { ImageCompressorTool } from "./image/ImageCompressorTool";
+import { ImageConverterTool } from "./image/ImageConverterTool";
+import { HeicConverterTool } from "./image/HeicConverterTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -118,6 +122,70 @@ export const tool_definition_list: ToolDefinition[] = [
             shareableQuery: false,
         },
         Component: TimeArithmeticTool,
+    },
+    {
+        id: "image-resizer",
+        slug: "image-resizer",
+        name: "Image Resizer",
+        description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+        category: "image",
+        seo: {
+            title: "Image Resizer",
+            description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-resizer",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "resize", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImageResizerTool,
+    },
+    {
+        id: "image-compressor",
+        slug: "image-compressor",
+        name: "Image Compressor",
+        description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+        category: "image",
+        seo: {
+            title: "Image Compressor",
+            description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-compressor",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "compress", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImageCompressorTool,
+    },
+    {
+        id: "image-converter",
+        slug: "image-converter",
+        name: "JPG / PNG / WebP Converter",
+        description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+        category: "image",
+        seo: {
+            title: "JPG / PNG / WebP Converter",
+            description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+            canonicalPath: "/tool/image-converter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "converter", "jpg", "png", "webp"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImageConverterTool,
+    },
+    {
+        id: "heic-converter",
+        slug: "heic-converter",
+        name: "HEIC → JPG / PNG Converter",
+        description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+        category: "image",
+        seo: {
+            title: "HEIC to JPG / PNG Converter",
+            description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+            canonicalPath: "/tool/heic-converter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["image", "converter", "heic", "heif", "jpg", "png"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: HeicConverterTool,
     },
 ];
 

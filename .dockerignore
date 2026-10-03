@@ -1,0 +1,17 @@
+node_modules
+dashboard
+.next
+.git
+.vercel
+coverage
+test-report
+playwright-report
+test-results
+.my-dev-kit-context
+.my-dev-kit-workflow
+.my-dev-kit-orchestrator
+.frontend-observer
+.env
+.env.*
+*.log
+npm-debug.log*

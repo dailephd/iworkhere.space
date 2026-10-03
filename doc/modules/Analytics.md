@@ -1,6 +1,10 @@
 # Module: Analytics
 
 **Kind:** Module
+
+## Production provider
+
+`networkProvider.ts` implements the existing AnalyticProvider interface with fail-silent, same-origin validated metrics. Early explicit opt-in selects it; default local counters remain unchanged. Identify is a no-op, and transport projects only typed event/tool ID/slug, omitting mode/user content. See [OBSERVABILITY](../OBSERVABILITY.md).
 **Scope:** Multi-file logical unit (3 source files)
 **Group:** src/module
 

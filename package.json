@@ -1,28 +1,43 @@
 {
   "name": "iworkhere.space",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run dev:check && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-Dev.ps1",
+    "dev:web": "next dev",
+    "dev:check": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Check-DevEnv.ps1",
+    "docker:ready": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-DockerDesktop.ps1",
+    "dev:docker": "npm run docker:ready && docker compose up --build -d",
+    "dev:docker:down": "npm run docker:ready && docker compose down --remove-orphans",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "verify": "tsx script/verify.ts"
+    "test:e2e": "playwright test",
+    "test:container": "tsx script/containerSmoke.ts",
+    "verify": "tsx script/verify.ts",
+    "observability:migrate": "tsx script/observabilityMigrate.ts",
+    "test:observability-db": "tsx script/observabilityDbSmoke.ts"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
-    "next": "16.1.0",
+    "@neondatabase/serverless": "1.1.0",
+    "heic-to": "1.5.2",
+    "next": "16.3.8",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.0",
+    "eslint-config-next": "16.3.8",
     "jsdom": "^28.1.0",
     "tailwindcss": "^4",
     "tsx": "^4",

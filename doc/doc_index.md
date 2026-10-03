@@ -2,7 +2,40 @@
 
 # Documentation Index
 
+### doc/modules/HeicConverter.md
+
+**Summary:** Batch 5 HEIC/HEIF worker-only decoding, bounded inspection,
+JPEG/PNG composition, lifecycle, privacy, synthetic MIT fixture identity and separate
+production-license release gate. The generated positive fixture is within the frozen decoded-area limit.
+
 ## 1. Overview
+
+Current persistent-observability references:
+
+- `OBSERVABILITY.md`: diagnostic/measurement split, bounded error metrics,
+  viewport classification, Neon configuration, daily maintenance and privacy.
+- `../database/observability/README.md` / `001-schema.sql`: dedicated schema,
+  90-day raw retention, indefinite aggregates, transactional SQL and read-only role.
+- `../dashboard/README.md`: independent app, seven ranges, sources, UTC bins,
+  honest percentile semantics, empty/failure states and isolated visual smoke.
+- `../dashboard/DEPLOYMENT.md`: two Vercel projects, one Neon database, exact
+  external authentication/secret/domain setup while the public site stays public.
+- `TESTING.md` / `CI_CD.md`: root/database/dashboard validation and unique artifacts.
+
+Current integration and deployment authority:
+
+- `ROADMAP.md` owns v0.2.0 scope, including explicitly authorized repository
+  extensions. `project-status.md` owns current implementation/deployment/release
+  state and the next workflow.
+- `DESIGN.md` is the canonical visual authority, including the current
+  workspace-first layout, four supported themes and scoped material pilot.
+- `DEPLOYMENT.md` owns root runtime, safe environment templates and the variable
+  matrix. `ADVERTISING.md` owns AdSense code/configuration and external activation
+  gates. `OBSERVABILITY.md` owns telemetry/privacy/persistence contracts.
+- `API.md` and `SCHEMA.md` describe public route/schema contracts;
+  `database/observability/README.md` owns SQL/migration/role details.
+- `dashboard/README.md` and `dashboard/DEPLOYMENT.md` own the isolated app and
+  its separate Vercel deployment/protection steps.
 
 This documentation system defines the architecture, development standards, and
 operational procedures for the Modular Utility Platform. Documentation is
@@ -40,6 +73,18 @@ yet, do not invent batches from the roadmap; prepare the plan first.
 **Relations:** Subordinate to the roadmap's version-level scope. It is planning
 authority, not evidence that a batch or version was implemented.
 
+### plans/ui-discovery-growth-plan.md
+**Summary:** Planner-authored, research-backed 2026-10-01 plan for a small
+homepage/Image Resizer visual pilot, approved-pattern image-family rollout,
+basic crawlability and useful tool-page content, followed by authorized launch
+measurement. Records current source findings, current public research,
+explicitly proposed visual changes, exclusions, and unresolved evidence.
+**When to read:** Before preparing the next UI/discovery implementation prompt.
+**Relations:** [Detailed plan](plans/ui-discovery-growth-plan.md), DESIGN.md,
+ROADMAP.md and project-status.md. It is not the missing historical v0.2 version
+plan, does not reorder the A+B catalog, and does not authorize release or claim
+traffic gains. Visual approval precedes broad rollout.
+
 ### project-status.md
 **Summary:** Tracks actual current implementation, validation state, open
 decisions, and exact next action. It does not own future version scope.
@@ -60,7 +105,8 @@ new modules or changing layer boundaries.
 ### DESIGN.md
 **Summary:** The canonical product design and styling contract, including
 visual identity, themes, layout, scrolling, accessibility, performance, and
-current implementation boundaries.
+current implementation boundaries. Separates the current implemented shell
+from the proposed workspace-first pilot awaiting visual approval.
 **When to read:** Before changing product visual design, styling, interaction
 presentation, responsive behavior, or visual accessibility rules.
 **Relations:** Works with `architecture.md`, agent guidance, and
@@ -81,6 +127,49 @@ implementation detail.
 **When to read:** When building a new feature that needs to interact with core
 platform services like the registry, observability, or storage.
 **Relations:** Implements the contracts defined in `SCHEMA.md`.
+
+### modules/ImageConverter.md
+**Summary:** Local JPEG/PNG/WebP conversion in all six distinct directions,
+quality for JPEG/WebP, alpha preservation, white JPEG compositing, exact MIME
+verification, lifecycle/privacy and real completed-state scrolling acceptance.
+**When to read:** Implementing or validating Image Converter.
+**Relations:** Reuses ImageFile.md and ImageSourcePanel.md; registry and E2E owners.
+
+### modules/ImageSourcePanel.md
+**Summary:** Presentation-only common source panel proven across independently
+passing Resizer, Compressor and Converter. No domain imports or lifecycle ownership.
+**When to read:** Editing image source presentation.
+**Relations:** All three image tool UIs pass display-ready data and keep lifecycle local.
+
+### modules/ImageCompressor.md
+**Summary:** Local JPEG/PNG/WebP compression with actual byte comparison,
+JPEG/WebP quality controls, native PNG re-encoding, truthful no-reduction outcomes,
+safe telemetry and resource cleanup.
+**When to read:** Implementing or validating Image Compressor.
+**Relations:** Uses ImageFile.md and the existing registry/browser validation owners.
+
+### modules/ImageFile.md
+**Summary:** Narrow source-file primitives proven equivalent by independent
+Resizer/Compressor implementations: signatures, metadata, limits, formatting,
+basename, native decode and inspection. No shared React framework or encoder.
+**When to read:** Changing common source validation or decoding.
+**Relations:** Shared by ImageResizer.md, ImageCompressor.md and ImageConverter.md.
+
+### modules/ImageResizer.md
+**Summary:** Browser-native JPEG/PNG/WebP resizing, authoritative signatures,
+25 MiB and 30 MP limits, original aspect ratio, local state, fixed encoding,
+preview/download ownership, privacy and validation evidence.
+**When to read:** Before changing or testing Image Resizer.
+**Relations:** Implements ImageFileProcessing.md through the existing registry.
+
+### modules/ImageFileProcessing.md
+**Summary:** Frozen browser image-file validation, privacy, state, resource-limit,
+Blob/download and object-URL lifecycle contracts. No shared production engine is
+authorized. Includes production HEIC worker isolation, local actionable errors and separate
+production-license release boundaries.
+**When to read:** Before implementing or testing any v0.2 image tool.
+**Relations:** Uses TESTING.md and the deterministic image-fixture convention;
+preserves registry, storage and observability contracts in architecture.md.
 
 ### project-tree.txt
 **Summary:** A text representation of the file structure.
@@ -109,10 +198,11 @@ repository files that are already available to the coding environment.
 architecture, roadmap, and version plan.
 
 ### CI_CD.md
-**Summary:** Defines the mandatory CI checks (typecheck, lint, test, build) that
-run independently on every PR. It also documents `npm run verify` as the
-aggregate local validation command, test report discipline, and the prohibition
-on suppressing errors.
+**Summary:** Defines six public-application CI gates (typecheck, lint, test,
+build, E2E and Container) plus independent dashboard and observability-database
+workflows. It documents `npm run verify` as the first four local checks, with
+separate browser/container commands, report discipline, and the prohibition on
+suppressing errors.
 **When to read:** When setting up a PR or debugging a CI failure.
 **Relations:** Enforces the standards defined in `TESTING.md`.
 
@@ -122,7 +212,7 @@ on suppressing errors.
 
 ### TESTING.md
 **Summary:** The comprehensive testing strategy. It defines the current Vitest
-unit/contract/integration disciplines plus the planned Playwright E2E browser
+unit/contract/integration disciplines and implemented Playwright E2E browser
 discipline, the requirement for unique test reports, and the rules for SSR
 safety and hydration mismatch detection.
 **When to read:** Before writing any code. Every new feature must have
@@ -132,6 +222,11 @@ accompanying tests as defined here.
 ---
 
 ## 5. Operational / Debugging Documents
+
+### DEPLOYMENT.md
+
+Authoritative Docker and self-hosted runtime guide: standalone image, optional
+local preview, runtime requirements, browser assets, and release boundaries.
 
 ### debugging.md
 **Summary:** A systematic protocol for isolating root causes. It mandates
@@ -151,6 +246,14 @@ and `TESTING.md`.
 3. `project-status.md` - See what is actually built now.
 4. `ROADMAP.md` - Understand the approved product/version direction.
 5. `TESTING.md` - Learn how to verify your work.
+
+### For UI and discovery planning
+1. `project-status.md` - Establish actual implementation and release state.
+2. `plans/ui-discovery-growth-plan.md` - Review source evidence, proposed pilot,
+   research, delivery boundaries and measurement limits.
+3. `DESIGN.md` - Separate current layout from the pilot requiring approval.
+4. Refresh affected source/contracts through my-dev-kit before implementation;
+   approve the visual reference before rollout.
 
 ### For planning a version
 1. `ROADMAP.md` - Preserve the approved version goal, scope, dependencies,
@@ -205,10 +308,10 @@ only generation metadata (representative file, member files, inferred role,
 merge signals) with **no real contract content** — every unreconciled file
 ends with "Manual review and updates are encouraged to add implementation
 details." This reconciliation pass added a `## Contract` section with real
-exported signatures, storage keys, and dependencies to the files judged most
-architecturally load-bearing: `Registry.md`, `Metadata.md`, `Storage.md`,
-`RecentlyUsed.md`, `Observability.md`, `Seo.md`, `ThemeRegistry.md`,
-`ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
+exported signatures, storage keys, dependencies, and known implementation gaps
+to the files judged most architecturally load-bearing: `Registry.md`,
+`Metadata.md`, `Storage.md`, `RecentlyUsed.md`, `Observability.md`, `Seo.md`,
+`ThemeRegistry.md`, `ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
 `TimeArithmeticTool.md` (previously undocumented despite being a registered
 tool). The remaining ~36 files (all `doc/components/*.md` except
 `TimeArithmeticTool.md`, and `doc/modules/{Analytics,Button,ExtractHtmlText,
@@ -253,6 +356,19 @@ hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
 
 ---
 
+### THIRD_PARTY_NOTICES.md and license copies
+
+**Authority:** Factual third-party dependency notices, not legal release approval.
+Production license copies are under public/licenses; the synthetic MIT fixture
+license and provenance are under test/fixtures/images.
+
+### Historical reports and inventories
+
+EXISTING_PROJECT_INVENTORY_REPORT.md and ignored batch/validation reports are
+historical snapshots. Their old counts do not override project-status.md,
+TESTING.md, current module contracts or final Batch 6 evidence. The absent v0.2
+version plan remains historical process debt; no retrospective plan was authored.
+
 ## 11. Gaps & Observations
 
 - **Overlap:** `API.md` and `SCHEMA.md` both define contracts, but `SCHEMA.md`
@@ -267,10 +383,14 @@ hand; treat as a point-in-time snapshot (2026-04-01), not a live index.
   8) — a known, tracked gap rather than a completeness claim.
 - **Naming:** Consistent use of singular naming is enforced in
   `code-generation-guidelines.md` and visible in the file structure.
-- **Aspirational content:** `TESTING.md` §2.4 (Playwright E2E) describes a
-  planned test category with no current implementation (no `@playwright/test`
-  dependency or spec files exist). Marked explicitly in that document as of
-  2026-08-07; do not treat it as evidence E2E coverage exists today.
+- **Browser validation:** `TESTING.md` documents the implemented production
+  desktop/mobile Chromium gate and current image-tool browser proofs. Hosted
+  E2E execution remains pending the final version PR.
 - **Theme token detail remains implementation-owned:** `DESIGN.md` records the
   cross-theme contract; exact per-theme token values remain defined in
   `src/style/theme.css`.
+
+## Production integration contracts
+
+- [OBSERVABILITY](OBSERVABILITY.md): safe telemetry, explicit activation, provider boundaries, Web Vitals, client error/navigation instrumentation and structured runtime logs.
+- [ADVERTISING](ADVERTISING.md): frozen AdSense identities, conditional responsive slots, verification, CLS reservation, default network-safe tests and external CMP/readiness gate.

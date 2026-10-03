@@ -22,8 +22,9 @@ The following are stable interfaces:
 - **Metadata query API** — functions exported from `src/module/tool/metadata.ts`
 - **SEO builder API** — `buildToolMetadata`, `buildCategoryMetadata` from
   `src/lib/seo.ts`
-- **API route response contracts** — shape of `/api/log` and `/api/health`
-  responses
+- **API route response contracts** — `/api/health`, `/api/log`, `/api/metric`,
+  and `/api/observability/maintenance`; telemetry and persistence details are
+  owned by `SCHEMA.md` and `OBSERVABILITY.md`
 
 The following are internal and must not be imported across layers:
 
@@ -238,25 +239,23 @@ Declared storage keys and their value types are documented in SCHEMA.md.
 
 ### POST /api/log
 
-Accepts client log events sent by `RustLogProvider`.
+Accepts only the safe diagnostic projection sent by `RustLogProvider`. Its
+sanitized logging allowlist and exact accepted response behavior are documented
+in [Observability](OBSERVABILITY.md). This endpoint is diagnostic-only; it does
+not write durable measurements.
 
-Request body:
+### POST /api/metric
 
-```typescript
-{
-  level: "debug" | "info" | "warn" | "error";
-  message: string;
-  timestamp: string; // ISO 8601
-  meta?: Record<string, unknown>;
-  url?: string;
-}
-```
+Accepts the bounded, exact discriminated measurement payload documented in
+[SCHEMA.md](SCHEMA.md). It is the only durable metrics ingestion route. With
+persistence disabled, it records the safe operational event and returns without
+connecting to Neon.
 
-Response:
-- `204 No Content` — valid request accepted
-- `400 Bad Request` — invalid body shape or unknown level
+### GET /api/observability/maintenance
 
-This endpoint is a safe sink. It never exposes secrets or blocks the caller.
+Vercel Cron maintenance route. It requires `Authorization: Bearer CRON_SECRET`
+and performs the schema-owned daily rollup and safe retention operation. See
+[Observability](OBSERVABILITY.md) and [database ownership](../database/observability/README.md).
 
 ### GET /api/health
 

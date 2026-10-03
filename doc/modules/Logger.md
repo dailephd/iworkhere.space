@@ -2,6 +2,10 @@
 
 **Kind:** Module
 
+## Production selection
+
+The existing logger remains the provider/level owner. Early explicitly enabled instrumentation selects the sanitized RustLogProvider; the default ConsoleProvider remains local. No SDK or duplicate logging subsystem is introduced. See [OBSERVABILITY](../OBSERVABILITY.md).
+
 <!-- section-id: representative-file -->
 ## Representative File
 

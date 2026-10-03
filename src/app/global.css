@@ -17,6 +17,11 @@
 
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-warm: var(--accent-warm);
+  --color-accent-cool: var(--accent-cool);
+  --color-accent-soft: var(--accent-soft);
+
 
   --color-danger: var(--danger);
   --color-success: var(--success);
@@ -31,6 +36,41 @@
   --color-nav-item-muted-text: var(--nav-item-muted-text);
   --color-nav-item-active-text: var(--nav-item-active-text);
 
+  --color-header-bg: var(--header-bg);
+  --color-header-text: var(--header-text);
+  --color-header-muted: var(--header-muted);
+  --color-nav-hover-bg: var(--nav-hover-bg);
+  --color-search-bg: var(--search-bg);
+  --color-search-border: var(--search-border);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-card-hover-bg: var(--card-hover-bg);
+  --color-panel-bg: var(--panel-bg);
+  --color-panel-border: var(--panel-border);
+  --color-preview-bg: var(--preview-bg);
+  --color-preview-border: var(--preview-border);
+  --color-result-bg: var(--result-bg);
+  --color-result-border: var(--result-border);
+  --color-secondary-action-bg: var(--secondary-action-bg);
+  --color-secondary-action-border: var(--secondary-action-border);
+  --color-footer-bg: var(--footer-bg);
+  --color-input-bg: var(--input-bg);
+  --color-input-border: var(--input-border);
+  --color-danger-soft: var(--danger-soft);
+  --color-category-image: var(--category-image);
+  --color-category-text: var(--category-text);
+  --color-category-math: var(--category-math);
+  --color-category-time: var(--category-time);
+  --color-category-everyday: var(--category-everyday);
+  --color-category-document: var(--category-document);
+  --color-category-image-soft: var(--category-image-soft);
+  --color-category-text-soft: var(--category-text-soft);
+  --color-category-math-soft: var(--category-math-soft);
+  --color-category-time-soft: var(--category-time-soft);
+  --color-category-everyday-soft: var(--category-everyday-soft);
+  --color-category-document-soft: var(--category-document-soft);
+  --color-nav-active-bg: var(--nav-active-bg);
+  --color-nav-active-text: var(--nav-active-text);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
@@ -53,4 +93,36 @@ body {
 :focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 6px var(--text);
 }
+
+/* Shared material roles; all dimensions remain in the common component markup. */
+.section-island {
+  background-color: var(--island-bg);
+  border-color: var(--island-border);
+  box-shadow: var(--island-shadow), var(--glass-highlight);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+}
+.catalog-card { box-shadow: inset 3px 0 0 var(--category-color), var(--card-shadow); }
+.catalog-card:hover { box-shadow: inset 3px 0 0 var(--category-color), var(--card-hover-shadow); }
+.material-raised, .material-secondary { box-shadow: var(--raised-shadow); }
+.material-secondary:hover { background-color: var(--surface-alt); }
+.material-primary { box-shadow: var(--primary-shadow); }
+.material-primary:hover:not(:disabled) { background-color: var(--accent-hover); }
+.material-primary:active:not(:disabled), .material-secondary:active { box-shadow: var(--pressed-shadow); }
+.material-glass {
+  box-shadow: var(--island-shadow), var(--glass-highlight);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+}
+[data-surface="preview-stage"] { --material-base: var(--preview-bg); }
+[data-surface="result-stage"] { --material-base: var(--result-bg); }
+[data-surface="theme-popover"] { --material-base: var(--surface); }
+/* Depth must never mask the existing keyboard-focus support ring. */
+.section-island :focus-visible, .material-primary:focus-visible, .material-secondary:focus-visible {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 6px var(--text);
+}
+
+.material-primary:active:not(:disabled) { background-color: var(--accent); }
+.material-secondary:active { background-color: var(--input-bg); }
