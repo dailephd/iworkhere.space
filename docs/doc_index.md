@@ -73,6 +73,15 @@ yet, do not invent batches from the roadmap; prepare the plan first.
 **Relations:** Subordinate to the roadmap's version-level scope. It is planning
 authority, not evidence that a batch or version was implemented.
 
+### plans/v0.3.0-implementation-plan.md
+
+**Summary:** Frozen PDF & Document Essentials scope, browser-local architecture,
+pinned PDF.js/pdf-lib/project-owned QPDF runtimes, supply-chain and fidelity
+contracts, public limits, six ordered batches and separate release gates.
+**When to read:** Before preparing or executing any v0.3 implementation batch.
+**Relations:** [Implementation plan](plans/v0.3.0-implementation-plan.md),
+ROADMAP.md and project-status.md. Planning is frozen; implementation is not started.
+
 ### plans/ui-discovery-growth-plan.md
 **Summary:** Planner-authored, research-backed 2026-10-01 plan for a small
 homepage/Image Resizer visual pilot, approved-pattern image-family rollout,

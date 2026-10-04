@@ -1,5 +1,25 @@
 # PROJECT STATUS
 
+## v0.3.0 planning freeze — 2026-10-04
+
+NEXT_NUMBERED_VERSION: 0.3.0
+
+V0_3_PLANNING: FROZEN
+
+V0_3_IMPLEMENTATION: NOT_STARTED
+
+PACKAGE_VERSION: 0.2.0
+
+Delivery 2 documentation commit `d28bb7b8ca8f6aad1e319fdb106138f7978bbb8a`
+was integrated through PR #7 after all eight required CI workflows passed.
+Post-documentation master: `16c4e225c4a0afc4c877348741d9839e01407f06`.
+The [frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
+defines five browser-local document tools, pinned PDF.js/pdf-lib/project-owned
+QPDF runtimes, product policies, resource limits and six ordered batches.
+No implementation, dependency installation, version bump or deployment is
+performed by this planning task. Next action: planner review and preparation
+of the bounded Batch 1 prompt. Do not begin Batch 1 from this status record.
+
 ## Delivery 2 public launch — 2026-10-04
 
 DELIVERY_2: PUBLICLY_DEPLOYED
@@ -237,8 +257,10 @@ package. No broader image-tool rollout or release status change is implied.
 
 ## Next action
 
-Track external production integration setup and verify each configured service
-against [deployment documentation](DEPLOYMENT.md).
+Review the [frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
+and prepare the bounded Batch 1 prompt. v0.3 implementation is not started.
+External launch follow-up remains separately tracked in the Delivery 2 launch
+record and [deployment documentation](DEPLOYMENT.md).
 
 ## Theme refresh pilot
 

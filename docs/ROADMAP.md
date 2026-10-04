@@ -249,7 +249,9 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
-Status: Planned
+Status: PLANNING FROZEN — IMPLEMENTATION NOT STARTED
+
+Frozen implementation contract: [v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md).
 
 ### Goal
 
@@ -304,11 +306,10 @@ v0.3.0 is complete when:
 
 ### Unresolved planning decisions
 
-Resolve during v0.3.0 implementation-plan preparation:
-
-- PDF library/processing strategy;
-- supported file/page/size limits;
-- whether any specific PDF capability requires a server boundary.
+NONE THAT BLOCK IMPLEMENTATION. The frozen plan resolves dependency/runtime
+selection, resource limits and browser-local processing for all five operations;
+SERVER_BOUNDARY: NOT_REQUIRED. Ordinary batch-local engineering details remain
+constrained by the [implementation plan](plans/v0.3.0-implementation-plan.md).
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
@@ -739,6 +740,10 @@ This roadmap does not authorize a coding agent to:
 Where a version has unresolved planning decisions, resolve them before its implementation plan is frozen.
 
 ## Next planning action
+
+v0.3.0 planning is frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md).
+The planner should review it and prepare the bounded Batch 1 prompt;
+implementation remains not started. Operational launch follow-up below is separate.
 
 Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. No new catalog version has been created; v0.3.0 remains the next numbered version and is not started.
 
