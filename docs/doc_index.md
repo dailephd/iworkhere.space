@@ -399,3 +399,4 @@ version plan remains historical process debt; no retrospective plan was authored
 
 - [Guide contract](modules/Guide.md): server-consumed image operation content and related-ID ownership.
 - [Delivery 2 implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md): bounded image rollout, crawl foundation, validation and limitations (created by this delivery).
+- [Delivery 2 launch report](reports/UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md): merge, exact-SHA CI, production technical checks, webmaster action status, and measurement follow-up.

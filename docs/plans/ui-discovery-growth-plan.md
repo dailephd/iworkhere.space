@@ -2,7 +2,11 @@
 
 Research date: 2026-10-01.
 
-Status: Delivery 1 is implemented and visually approved by the user on 2026-10-03. Delivery 2 is implemented and validated on its dedicated feature branch: image-family rollout and search foundation; Delivery 3 remains separately authorized operational work.
+Status (reconciled 2026-10-04): Delivery 1 is implemented and user-approved.
+Delivery 2 image-family rollout and discovery foundation is implemented,
+validated, merged, and publicly deployed. Delivery 3 technical launch is
+complete; owner-authenticated Google Search Console and Bing Webmaster actions
+remain pending. Measurement is future evidence collection.
 
 ## Purpose and scope
 
@@ -114,20 +118,38 @@ Acceptance: all four workflows and inherited tests pass; page content and destin
 
 ### Delivery 3 — Authorized launch, measurement, and distribution
 
-This is an operational follow-on, not another required UI implementation batch. It cannot bypass the unresolved HEIC release-license gate or the existing release process.
+**Status: Technical launch complete (2026-10-04).** The public production
+deployment is live at https://iworkhere.space. The public origin, robots policy,
+17-URL sitemap, canonicals, server-rendered image guides, representative image
+workflows, observability persistence, and protected dashboard were verified.
+The HEIC production-license gate was approved before launch. No new numbered
+version was created.
 
-After release authorization, verify the public origin, HTTP/indexing directives, sitemap, representative URLs, mobile usability, and runtime asset paths. Set up or use verified Search Console and Bing Webmaster Tools properties. Begin with their reports and a small manual review record; a new analytics SDK, dashboard, or consent system is not a prerequisite.
+**Remaining operational follow-up:** once authenticated, submit or confirm the production sitemap in Google Search Console and Bing Webmaster Tools. Inspect the seven priority URLs and request indexing at most once where appropriate:
 
-Submit the sitemap and request indexing for the small set of important changed pages. Publish one useful demonstration/write-up and a truthful link from an already-public owned website where appropriate. Seek relevant editorial/community feedback rather than mass directory submissions, paid link schemes, fabricated reviews, or self-authored "best tools" claims presented as independent recommendations.
+- https://iworkhere.space/
+- https://iworkhere.space/discover
+- https://iworkhere.space/category/image
+- https://iworkhere.space/tool/image-resizer
+- https://iworkhere.space/tool/image-compressor
+- https://iworkhere.space/tool/image-converter
+- https://iworkhere.space/tool/heic-converter
 
-Review after enough public data is available: indexed pages, non-branded queries, organic clicks, qualified referrals, errors, and whether users can complete the intended task. A 28-day comparison is a review window, not a promise of ranking movement. Low traffic means insufficient evidence, not proof that the design succeeded or failed. Do not run A/B tests without enough traffic to interpret them.
+No console submission or URL request has been made; no request guarantees index inclusion or ranking. The suggested owned-site write-up/link remains optional separate distribution work and was not performed in this launch.
+
+Review after enough public data is available. REVIEW WINDOW: 28 days after
+public launch (2026-10-04; earliest review 2026-11-01). This window does not
+guarantee enough traffic for a conclusion. Low traffic means insufficient
+evidence, not proof that the design succeeded or failed. Do not run A/B tests
+without enough traffic to interpret them.
 
 ## Measurement and traffic decisions
 
 Use separate measures for discovery, usefulness, and AI visibility:
 
 - Discovery: eligible/indexed pages, impressions, clicks, query intent, and landing page. Do not use average position alone as success.
-- Usefulness: verified task completion and failure paths; aggregate completion metrics only after an approved privacy-safe collection design. Existing event calls do not by themselves establish a deployed analytics pipeline. No user images, filenames, input text, dimensions, or raw queries enter measurement.
+- Usefulness: verified task completion and failure paths; aggregate completion metrics only after an approved privacy-safe collection design. Production observability and persistence are deployed and smoke-verified; the
+launch smoke is not a representative task-completion or traffic baseline. No user images, filenames, input text, dimensions, or raw queries enter measurement.
 - Performance: aim for good Core Web Vitals, including LCP around 2.5 seconds or better, INP around 200ms or better, and CLS around 0.1 or better. Distinguish reproducible lab checks from field measurements; do not report field PASS without field data. [11]
 - AI visibility: track actual referral visits separately from citations. OpenAI documents ChatGPT referral tagging; Bing's AI Performance reports citations on supported Microsoft/partner surfaces, not all LLMs or guaranteed rankings. Use whichever official Google AI reporting is available to the verified property, and record that reporting surface rather than assuming a particular rollout. [8][12]
 
@@ -143,7 +165,9 @@ Basic crawlability is not deferred until the catalog reaches thirty tools. Conve
 
 ## Preservation and verification
 
-The existing registry, routes, ToolClientFrame, error boundary, storage/observability abstractions, theme IDs/key, file limits, HEIC dependency/version/lifecycle, Docker setup, and public/private boundaries remain intact. No package bump, PR, merge, release, deployment, or external account mutation is authorized by this document update.
+The existing registry, routes, ToolClientFrame, error boundary, storage/observability abstractions, theme IDs/key, file limits, HEIC dependency/version/lifecycle, Docker setup, and public/private boundaries remain intact. This plan update does not itself authorize a package bump, merge, deployment, or
+external account mutation. Delivery 2 was separately authorized and launched;
+Search Console and Bing actions still await owner authentication.
 
 For future implementation, retain functional regressions and add semantic navigation, rendered-content, responsive geometry, and relevant metadata tests. Update affected component/module contracts before changing their behavior. Use one normal verify run and the applicable production E2E evidence against final source; do not duplicate heavy validation merely because multiple sections mention it. Re-run container validation when deployment/runtime assets or their delivery contract change.
 
@@ -165,6 +189,12 @@ All pages below were consulted on 2026-10-01. Traffic figures refer to August 20
 12. [Bing: AI Performance](https://www.bing.com/webmasters/help/ai-performance-9f8e7d6c) — supported citation reporting and limitations.
 13. [Google: Crawlable links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable) — destination anchors with href, not script-only navigation.
 
-## Next action
+## Current execution state and next action
 
-The planner must review the completed Delivery 2 implementation report against the canonical roadmap before authorizing any next delivery. Delivery 1 approval is inherited; Delivery 2 functional, browser, corrected Observer, impact, aggregate and container gates passed. No public-launch or traffic result is implied.
+Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
+validated, merged, and publicly deployed. Delivery 3 technical launch is
+complete. The next operational action is owner-authenticated Google Search
+Console and Bing Webmaster sitemap/priority-URL follow-up; then collect the
+planned 28-day evidence window. This status does not claim ranking or traffic
+gains. v0.3.0 PDF & Document Essentials remains the next numbered catalog
+version, and this plan does not start that work.

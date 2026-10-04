@@ -61,8 +61,12 @@ server-only Neon read access. Production uses observability_dashboard credential
 with CONNECT, observability USAGE and table SELECT only. The public app remains
 public. Vercel Authentication → All Deployments must be enabled only on the
 second project `iworkhere-observability`; see its
-[deployment instructions](../dashboard/DEPLOYMENT.md). No external provisioning,
-secret setup, protection configuration, domain or deployment has been performed.
+[deployment instructions](../dashboard/DEPLOYMENT.md). Current production state (2026-10-04): the separate iworkhere-observability
+project is deployed at https://dashboard.iworkhere.space with Vercel
+Authentication enabled for All Deployments. Anonymous requests are redirected
+to Vercel SSO. The public production app and persistence remain enabled and
+were verified during the Delivery 2 launch. Credentials and secret values are
+not documented here.
 
 Ranges are exactly 24h/7d/30d/90d/180d/1y/All time, with canonical all and default
 24h. Recent ranges query raw events and true full-range p75. Long ranges combine
