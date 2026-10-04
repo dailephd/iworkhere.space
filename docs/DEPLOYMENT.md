@@ -116,4 +116,15 @@ fixture. They are not deployment variables and must not contain credentials.
 
 ## Exact-SHA diagnostic hotfix deployment
 
-For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. Delivery 2 remains undeployed.
+For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. The 2026-10-03 diagnostic hotfix report records the deployment state before Delivery 2 integration. Current public
+production state is recorded below.
+
+## Current public production state — 2026-10-04
+
+The public Vercel project is iworkhere-space, linked to this GitHub repository
+with automatic production deployment from master. Current production source is
+c8406412301ff382dcf4e10e00789e93caad6f39, deployment
+dpl_48kp2LTbcC3Htczho459KZw1UCCy, at https://iworkhere.space. Delivery 2
+technical launch checks passed. The observability dashboard remains a separate
+project with Vercel Authentication protection; never expose credentials or
+bypass values in deployment records.

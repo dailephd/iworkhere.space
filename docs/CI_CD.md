@@ -57,6 +57,15 @@ Six jobs run on every push and pull request:
 All six public-app jobs plus the dashboard and database jobs must pass.
 If any job fails, merge is blocked.
 
+The Delivery 2 production launch on master SHA
+c8406412301ff382dcf4e10e00789e93caad6f39 satisfied all eight required
+workflow responsibilities. The first Observability database run
+37198138568 failed with a PostgreSQL socket-not-ready startup error before
+any SQL assertion; its exact-SHA failed-job-only retry (attempt 2, job
+111431961045) passed. This is retained as a transient CI startup flake, not a
+schema/product failure. All eight workflows remain required; no retry policy
+was added.
+
 For local aggregate validation, run `npm run verify`. This command runs the
 same four checks sequentially with a shared `RUN_ID` and per-command logs; it
 does not include E2E or Container and does not replace the six public-app or two

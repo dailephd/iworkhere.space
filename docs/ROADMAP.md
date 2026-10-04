@@ -165,9 +165,12 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 ## Version 0.2.0 — Image Utility Foundation
 
-Status: Implementation and exact-SHA readiness are complete. The owner approved
-the HEIC production-license gate. Root package metadata is 0.2.0; the independent
-dashboard remains 0.1.0. Production integrations are tracked separately.
+Status: Implementation, exact-SHA readiness, integration, and production
+technical launch are complete. Delivery 2 was merged and deployed on 2026-10-04;
+root package metadata remains 0.2.0 and the independent dashboard remains 0.1.0.
+Manual Google Search Console and Bing Webmaster actions and the later 28-day
+measurement review remain operational follow-up. No ranking or traffic change
+is claimed.
 
 ### Goal
 
@@ -187,9 +190,10 @@ implementation extensions: the compact discovery/homepage layout and One Dark
 material pilot; production-gated AdSense placement; opt-in production
 observability; Neon persistence and daily maintenance; and the separate private
 observability dashboard. These extend the original image-utility plan without
-changing the future catalog sequence. Delivery 1 design visual approval is recorded; Delivery 2 is implemented
-where specified in `DESIGN.md`; external deployment and account setup remain
-unperformed.
+changing the future catalog sequence. Delivery 1 is implemented and user-approved. Delivery 2 is
+implemented, validated, merged, and publicly deployed as cross-version UI and
+discovery enabling work; its technical launch is complete. Manual Google Search
+Console and Bing Webmaster submissions remain pending owner account access.
 
 ### Dependencies
 
@@ -238,10 +242,10 @@ ImageSourcePanel, real HEIC conversion, dedicated worker architecture and
 application-level decoder isolation are resolved and validated. The exact
 production decoder is `heic-to@1.5.2`.
 
-Remaining release decision: HEIC production-license approval. AdSense readiness,
-database provisioning, dashboard protection/domain setup and production
-environment configuration also remain external deployment work. Technical
-completeness does not authorize release.
+The HEIC production-license gate is approved. Production observability,
+Neon persistence and maintenance, the protected dashboard, and the public
+Delivery 2 deployment are live. The Google and Bing webmaster-console actions
+remain pending owner access. No indexing, ranking, or traffic result is implied.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
@@ -523,11 +527,19 @@ This changes the priority of a bounded discovery subset, not the catalog version
 
 ### Near-term UI and discovery pilot
 
-Status: Delivery 1 is implemented and visually approved by the user. Delivery 2 is implemented and validated on its dedicated feature branch; public launch remains separately authorized.
+Status: Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
+validated, merged, and publicly deployed. Delivery 3 technical launch is
+complete; manual Google Search Console and Bing Webmaster submissions and a
+later measurement review remain operational follow-up.
 
 Goal: make the existing tools more useful and visually distinct before expanding the amount of redesign work. Start with the homepage and Image Resizer, proposing compact top navigation and a settings-plus-preview workspace rather than repeating the existing permanent-sidebar composition. Preserve the registry, routes, themes, local-processing/privacy contracts, and existing banner decisions unless explicitly revised.
 
-With Delivery 1 visual approval recorded, Delivery 2 extends the accepted pattern across the other three image tools and adds the bounded search foundation above. Public launch, first-party measurement, and authentic distribution follow only through the separate release authorization process. The owner approved the HEIC production-license gate for v0.2.0.
+Delivery 2 extends the accepted pattern across the other three image tools and
+adds the bounded search foundation above. Its public production technical
+launch completed on 2026-10-04. Webmaster-console submissions await owner
+account access; measurement is future evidence collection, and owned-site
+distribution remains a separate optional task. The owner approved the HEIC
+production-license gate for v0.2.0.
 
 The [detailed plan](plans/ui-discovery-growth-plan.md) owns this enhancement's delivery boundaries. It is not a retroactive v0.2 implementation plan or a new numbered catalog version. No new utility, bulk processing, target-size compression, generic file framework, large content program, or AI-specific integration is added to the first delivery.
 
@@ -728,14 +740,13 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-The user approved the implemented Delivery 1 homepage/navigation and Image Resizer pilot from [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). Delivery 2 implements the accepted image-family presentation and bounded discovery foundation; planner review of its implementation report is the next action. Basic discovery improvements accompany the accepted rollout; no
-new catalog version or site-wide rewrite is authorized by this planning update.
+Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. No new catalog version has been created; v0.3.0 remains the next numbered version and is not started.
 
-The v0.2 implementation and exact-SHA readiness are complete. The eight hosted
-workflows passed at `339091c5aaf4ad31be656756a7f4e4c121cc37de` on the immutable
-`validation/v0.2.0-heic-license-339091c5` ref. The owner approved the HEIC
-production-license gate. Root package metadata is `0.2.0`; dashboard package
-metadata remains independently versioned at `0.1.0`.
+Historical v0.2 implementation and exact-SHA readiness record: the eight hosted
+workflows passed at 339091c5aaf4ad31be656756a7f4e4c121cc37de on the immutable
+validation/v0.2.0-heic-license-339091c5 ref. The owner approved the HEIC
+production-license gate. Root package metadata remained 0.2.0; dashboard package
+metadata remained independently versioned at 0.1.0.
 
 Historical process debt: the referenced
 `docs/plans/v0.2.0-implementation-plan.md` is absent from the repository and its

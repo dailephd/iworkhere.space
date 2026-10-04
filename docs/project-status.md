@@ -1,14 +1,39 @@
 # PROJECT STATUS
 
+## Delivery 2 public launch — 2026-10-04
+
+DELIVERY_2: PUBLICLY_DEPLOYED
+
+CANDIDATE_SHA: c07111916554b387be9b3d415229230e5ee0fab8
+PR: #6 — UI discovery Delivery 2
+MASTER_SHA / PRODUCTION_SHA: c8406412301ff382dcf4e10e00789e93caad6f39
+PACKAGE_VERSION: 0.2.0 (cross-version UI/discovery enabling work; no new numbered version)
+PUBLIC_DOMAIN: https://iworkhere.space
+
+SITEMAP: LIVE — 17 URLs
+ROBOTS: LIVE
+PRODUCTION_BROWSER_SMOKE: PASS
+OBSERVABILITY: LIVE/PRESERVED
+DASHBOARD: LIVE AND PROTECTED
+GOOGLE_SEARCH_CONSOLE: MANUAL ACTION PENDING
+BING_WEBMASTER: MANUAL ACTION PENDING
+
+Production technical launch passed: public routes/assets, crawl policy, sitemap,
+canonicals, server-rendered guides, bounded desktop/mobile browser, representative
+image workflows, observability persistence, and anonymous dashboard protection
+were verified. No ranking or traffic improvement is claimed. See the durable
+[Delivery 2 launch report](reports/UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md) for
+merge/CI history, production evidence, and remaining webmaster actions.
+
 ## Delivery 2 implementation — 2026-10-03
 
-Delivery 2 is implemented and validated on its dedicated feature branch. The earlier `BLOCKED_OBSERVER_ACCEPTANCE_CONFIG` was a configuration gap, resolved through planner-authorized semantic relationship contracts and supplementary scroll lanes without production corrections. Focused tests, 264 production E2E tests, corrected Observer lanes, final impact review, aggregate verification and container validation passed. See [the implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md) for preserved blocked history and final evidence. No merge or Delivery 2 deployment occurred.
+Delivery 2 is implemented and validated on its dedicated feature branch. The earlier `BLOCKED_OBSERVER_ACCEPTANCE_CONFIG` was a configuration gap, resolved through planner-authorized semantic relationship contracts and supplementary scroll lanes without production corrections. Focused tests, 264 production E2E tests, corrected Observer lanes, final impact review, aggregate verification and container validation passed. See [the implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md) for preserved blocked history and final evidence. At this 2026-10-03 readiness-report timestamp, no merge or Delivery 2 deployment had yet occurred; PR #6 and the public launch followed on 2026-10-04.
 
 Delivery 1 visual pilot is APPROVED_BY_USER: homepage, compact navigation, Image Resizer workspace, and current four-theme/material behavior. Delivery 2 (image-family rollout and search foundation) is implemented and validated. This later decision supersedes the pending visual-review wording in historical candidate notes below. Root version remains 0.2.0; the v0.3–v0.6 sequence is unchanged.
 
-## Current implementation state
+## Implementation state snapshot — 2026-10-02
 
-Reconciled 2026-10-02. Target release v0.2.0; root package version 0.2.0;
+This dated snapshot is historical and is superseded for current production status by the 2026-10-04 public-launch record above. Reconciled 2026-10-02. Target release v0.2.0; root package version 0.2.0;
 independent dashboard package version 0.1.0. The frozen implementation SHA
 `339091c5aaf4ad31be656756a7f4e4c121cc37de` passed all eight hosted workflows on
 the immutable ref `validation/v0.2.0-heic-license-339091c5`. The owner approved
@@ -238,4 +263,4 @@ Integration validation: `READY_PRODUCTION_OBSERVABILITY_ADSENSE_FOR_REVIEW`. Typ
 
 ## Production diagnostic hotfix (cross-version infrastructure)
 
-Isolated baseline 11219ceaa930b4a96971e2bf32809da100e6cc22 is production-equivalent apart from documentation consolidation/container smoke doc-path update. Diagnostic hotfix code c700407c5a92061d9d5a03caf88bd1e32199e5cc is deployed after additive migration/grants and full local validation. Replacement smoke (explicitly authorized) proves actual error/stack/cause/component/runtime/deployment data in Vercel logs, Neon and the protected dashboard. dashboard.iworkhere.space is ACTIVE. Architecture forward-ported and pushed to Delivery 2 as 0d0839b2542e5afed26b07b6ab5aa64746ba1a50; root/DB/dashboard/browser validation passed. Delivery 2 remains undeployed; feature scope unchanged. See docs/reports/PRODUCTION_DIAGNOSTIC_OBSERVABILITY_HOTFIX.md.
+Isolated baseline 11219ceaa930b4a96971e2bf32809da100e6cc22 is production-equivalent apart from documentation consolidation/container smoke doc-path update. Diagnostic hotfix code c700407c5a92061d9d5a03caf88bd1e32199e5cc is deployed after additive migration/grants and full local validation. Replacement smoke (explicitly authorized) proves actual error/stack/cause/component/runtime/deployment data in Vercel logs, Neon and the protected dashboard. dashboard.iworkhere.space is ACTIVE. Architecture forward-ported and pushed to Delivery 2 as 0d0839b2542e5afed26b07b6ab5aa64746ba1a50; root/DB/dashboard/browser validation passed. At this 2026-10-03 hotfix-report snapshot, Delivery 2 was not yet deployed; feature scope was unchanged. The later public launch is recorded in [the Delivery 2 launch report](reports/UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md). See docs/reports/PRODUCTION_DIAGNOSTIC_OBSERVABILITY_HOTFIX.md.

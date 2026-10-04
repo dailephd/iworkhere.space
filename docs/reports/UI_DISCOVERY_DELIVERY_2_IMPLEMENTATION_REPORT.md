@@ -198,3 +198,8 @@ Normal verify PASS: run 2026-10-03T16-14-41-701Z-87782da5, typecheck/lint/576 te
 - Current documentation records Delivery 1 approval and Delivery 2 implementation accurately, without launch/indexing/traffic claims. Original sections 6/27/29/31/37/38 describe the earlier blocked attempt, not final acceptance.
 - Remaining notes: no route-bundle before/after byte baseline was captured; guide prose is absent from emitted client chunks. Observer does not apply interactive themes/files; existing real-browser tests cover all four themes and processing states. Validation temporarily uses canonical committed LF ads.txt, restoring original worktree bytes afterward.
 - Commit/push authorized after final diff review; no merge, Delivery 2 deployment, release, version bump or external search submission. EXACT NEXT ACTION: return the two independent recovery verdicts to ChatGPT; planner review governs any subsequent Delivery 3 authorization. Phase B is isolated existing-production observability recovery and must never deploy this branch.
+
+
+## Post-launch pointer — 2026-10-04
+
+This implementation report preserves the readiness-stage state and decisions recorded when it was written. Delivery 2 was later merged and publicly deployed; see the [Delivery 2 launch report](UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md) for the final launch and webmaster-action status.
