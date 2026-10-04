@@ -13,10 +13,12 @@ it("requires explicit configuration without connecting", async () => {
     await expect(migrateObservability()).rejects.toThrow("OBSERVABILITY_DATABASE_URL is required");
     expect(neonMock).not.toHaveBeenCalled();
 });
-it("applies all schema statements in one transaction without splitting function bodies", async () => {
+it("applies migrations in order, each transaction preserving function bodies", async () => {
     vi.stubEnv("OBSERVABILITY_DATABASE_URL", "postgresql://fixture:fixture@example.invalid/db");
     await migrateObservability();
-    expect(transaction).toHaveBeenCalledTimes(1);
+    expect(transaction).toHaveBeenCalledTimes(2);
+    expect(transaction.mock.calls[0][0][0].statement).toContain("CREATE SCHEMA");
+    expect(transaction.mock.calls[1][0][0].statement).toContain("CREATE TABLE IF NOT EXISTS observability.error_diagnostic");
     expect(query.mock.calls.length).toBeGreaterThan(10);
     expect(query.mock.calls.every(call => call[1].length === 0)).toBe(true);
     expect(query.mock.calls.some(call => call[0].includes("CREATE OR REPLACE FUNCTION observability.maintain()") && call[0].includes("RETURN NEXT;"))).toBe(true);

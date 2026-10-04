@@ -149,7 +149,7 @@ for (const context of contexts) {
             for (const pair of observations.focusContrast) expect(pair.ratio, `focus on ${pair.surface}`).toBeGreaterThanOrEqual(3);
             if (context.name === "system-light") expect(observations.background).toBe("#f5f7fb");
             if (context.name === "system-dark") expect(observations.background).toBe("#0b1020");
-            const headerBackground = await page.locator("header").evaluate(element => getComputedStyle(element).backgroundColor);
+            const headerBackground = await page.getByRole("banner").evaluate(element => getComputedStyle(element).backgroundColor);
             const bodyBackground = await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor);
             expect(headerBackground).not.toBe(bodyBackground);
             if (route !== "/") {

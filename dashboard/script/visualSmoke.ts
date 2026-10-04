@@ -32,11 +32,14 @@ async function smoke(): Promise<void> {
         for (const range of ["24h", "90d", "1y", "all"]) {
             await page.goto(`http://127.0.0.1:${address.port}/?range=${range}`);
             await page.getByRole("heading", { name: "Observability", exact: true }).waitFor();
+            for (const name of ["Stack", "Cause chain", "React component stack"]) await page.getByText(name, { exact: true }).click();
+            if (await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("Desktop diagnostic document overflow");
             if (await page.locator("nav a[aria-current]").getAttribute("href") !== `?range=${range}`) throw new Error("Active range mismatch");
             await page.screenshot({ path: path.join(report, `desktop-${range}.png`), fullPage: true });
         }
         await page.setViewportSize({ width: 390, height: 844 });
         await page.goto(`http://127.0.0.1:${address.port}/?range=24h`);
+        for (const name of ["Stack", "Cause chain", "React component stack"]) await page.getByText(name, { exact: true }).click();
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
         if (overflow) throw new Error("Mobile dashboard has horizontal page overflow");
         await page.screenshot({ path: path.join(report, "mobile-24h.png"), fullPage: true });

@@ -44,14 +44,15 @@ describe("telemetry privacy contract", () => {
         expect(isMetricRequest({ ...base, type: "navigation", navigationType: "initial", referrerHostname: "example.com" })).toBe(true);
         expect(isMetricRequest({ ...base, type: "navigation", navigationType: "initial", referrerHostname: "https://example.com/private?q=secret" })).toBe(false);
     });
-    it("drops File/Blob, filename, input, arbitrary objects and error message, retaining only application stack locations", () => {
+    it("keeps semantic log metadata separate from canonical error serialization", () => {
         const meta = safeLogMeta({ toolId: "image-resizer", filename: "secret.png", input: "secret", file: new File(["private"], "secret.png"), blob: new Blob(["private"]), query: { secret: true }, stack: "Error secret.png\n at user-input (https://example.com/_next/static/chunks/main.js:1:20)\n at blob:secret" });
-        expect(meta).toEqual({ toolId: "image-resizer", stack: "/_next/static/chunks/main.js:1:20" });
+        expect(meta).toEqual({ toolId: "image-resizer" });
     });
     it("rejects unsafe server logs", () => {
-        const log = { ...base, level: "error", message: "Client failure", meta: { boundary: "browser" } };
+        const log = { ...base, level: "error", message: "Resize worker initialization failed", meta: { boundary: "browser" } };
         expect(isSafeLogRequest(log)).toBe(true);
-        expect(isSafeLogRequest({ ...log, message: "secret.png failed" })).toBe(false);
+        expect(isSafeLogRequest({ ...log, message: "Developer-authored warning" })).toBe(true);
+        expect(isSafeLogRequest({ ...log, message: "x".repeat(4097) })).toBe(false);
         expect(isSafeLogRequest({ ...log, meta: { filename: "secret.png" } })).toBe(false);
         expect(isSafeLogRequest({ ...log, url: "https://example.com/?private" })).toBe(false);
     });

@@ -3,7 +3,7 @@ import { DashboardUnavailable, loadDashboard } from "./database.server";
 import { rangePlan } from "./range";
 
 const { transaction, query, neonMock } = vi.hoisted(() => {
-    const transaction = vi.fn().mockResolvedValue([[], [], [], [{ last_raw_received: null, last_rollup_day: null }]]);
+    const transaction = vi.fn().mockResolvedValue([[], [], [], [{ last_raw_received: null, last_rollup_day: null }], []]);
     const query = vi.fn(() => ({}));
     return { transaction, query, neonMock: vi.fn(() => ({ transaction, query })) };
 });
@@ -19,7 +19,7 @@ it("reads all aggregates in one read-only repeatable-read snapshot", async () =>
     vi.stubEnv("OBSERVABILITY_DASHBOARD_DATABASE_URL", "postgresql://fixture:fixture@example.invalid/db");
     expect(await loadDashboard(plan)).toMatchObject({ activity: [], vital: [], failure: [] });
     expect(transaction).toHaveBeenCalledWith(expect.any(Array), { readOnly: true, isolationLevel: "RepeatableRead" });
-    expect(query).toHaveBeenCalledTimes(4);
+    expect(query).toHaveBeenCalledTimes(5);
 });
 it("withholds raw database diagnostics and credentials on failure", async () => {
     vi.stubEnv("OBSERVABILITY_DASHBOARD_DATABASE_URL", "postgresql://private:password@example.invalid/db");

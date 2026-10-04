@@ -16,7 +16,7 @@ export async function loadDashboard(plan: RangePlan): Promise<DashboardData> {
     try {
         const sql = neon(url, { fetchOptions: { signal: AbortSignal.timeout(15_000) } });
         const query = dashboardQuery(plan);
-        const result = await sql.transaction([query.activity, query.vital, query.failure, query.freshness].map(q => sql.query(q.text, q.parameter)), {
+        const result = await sql.transaction([query.activity, query.vital, query.failure, query.freshness, query.diagnostic].map(q => sql.query(q.text, q.parameter)), {
             readOnly: true,
             isolationLevel: "RepeatableRead",
         });
@@ -25,6 +25,7 @@ export async function loadDashboard(plan: RangePlan): Promise<DashboardData> {
             vital: result[1] as DashboardData["vital"],
             failure: result[2] as DashboardData["failure"],
             freshness: result[3][0] as DashboardData["freshness"],
+            diagnostic: result[4] as DashboardData["diagnostic"],
         };
     } catch {
         throw new DashboardUnavailable("database");

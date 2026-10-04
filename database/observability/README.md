@@ -3,7 +3,7 @@
 One Neon Postgres database serves the public writer and independent read-only
 dashboard. Nothing in this directory provisions resources or embeds credentials.
 
-`001-schema.sql` is the idempotent migration. It creates only objects in the
+Numbered migrations apply in deterministic filename order, one transaction per file. Applied `001-schema.sql` remains unchanged; additive repeatable `002-diagnostic-error.sql` creates diagnostic storage and pruning. It creates only objects in the
 `observability` schema, revokes PUBLIC schema/table/sequence/function access,
 and never runs automatically at application startup. Run it explicitly:
 
@@ -12,7 +12,7 @@ and never runs automatically at application startup. Run it explicitly:
 npm run observability:migrate
 ```
 
-The runner uses Neon parameterized queries in one transaction. Statement-break
+The runner uses Neon parameterized queries in one transaction per numbered migration. Statement-break
 comments separate commands without splitting PL/pgSQL bodies. Missing
 configuration or connection/privilege failures exit nonzero with safe messages;
 the connection string and SQL diagnostics are never printed. Use a development
@@ -34,8 +34,7 @@ desktop/unknown. Metric names are LCP/INP/CLS/FCP/TTFB/FID. No hourly table exis
 
 Raw `occurred_at` and `received_at` both default to database `now()` on the server
 insertion, and must be equal. Client timestamps are validated but not stored.
-No message, stack, JSON metadata, identity, session, IP, file, image dimensions,
-user input, output, URL query/hash or raw referrer URL exists in the schema.
+Metric tables contain no diagnostic message/stack/JSON. Dedicated error_diagnostic stores bounded redacted exception fields and explicit runtime/deployment context. Identity, session, IP, files, entered input/output, URL query/hash and raw referrer remain excluded.
 
 The raw table has the primary-key index and five planned indexes: occurred_at;
 (kind, occurred_at); (tool_id, occurred_at); (pathname, occurred_at);
@@ -98,3 +97,8 @@ current-day exclusion, historical aggregate preservation, all seven actual
 dashboard query plans and read-only grants. It has no host port and uses no Neon
 secret. Hidden child processes are used. Cleanup removes only its own container
 in finally. Unique reports live at `test-report/observability-db-<RUN_ID>/`.
+
+
+## Diagnostic hotfix
+
+error_diagnostic is created only by additive 002. Received timestamp governs strict 30-day pruning; exact boundary remains. Its UUID/fingerprint/path/tool/time fields are indexed. Bounded JSONB is diagnostic-only. Migration runner discovers explicit three-digit numbered SQL filenames in order and uses one transaction per file; never at startup. Reapply dashboard-role.sql after migration: table SELECT only, no write/DDL/ownership/functions. Existing metric retention/rollups remain unchanged.

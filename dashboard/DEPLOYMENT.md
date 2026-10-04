@@ -113,3 +113,12 @@ Official operator references: [Neon serverless driver](https://neon.com/docs/ser
 [Vercel Deployment Protection](https://vercel.com/docs/deployment-protection),
 [Vercel Authentication](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/vercel-authentication),
 [Vercel Cron security and timing](https://vercel.com/docs/cron-jobs/manage-cron-jobs).
+
+
+## Diagnostic hotfix
+
+Diagnostic rollout order: validate locally; commit/push isolated hotfix; apply additive 002 to existing Neon; reapply/verify read-only grants; deploy protected dashboard; deploy public hotfix; send exactly one synthetic diagnostic through /api/log; verify same UUID in runtime log/Neon/protected dashboard. Never deploy Delivery 2. dashboard.iworkhere.space remains intended custom domain; pending DNS can be recorded separately while protected generated URL proves diagnostics.
+
+Git-integrated deployments supply Vercel Git system context. For an exact-SHA CLI upload, explicitly supply the non-secret candidate SHA with both `--env VERCEL_GIT_COMMIT_SHA=<tested-SHA>` and `--build-env VERCEL_GIT_COMMIT_SHA=<tested-SHA>`, plus source metadata. Metadata alone did not populate the runtime variable during this hotfix. Do not pin a stale commit at project scope. Verify the diagnostic's deployment.commitSha, not only the deployment API metadata. No server-only variable is exposed to browser code.
+
+The 2026-10-03 rollout is complete. `dashboard.iworkhere.space` resolves to Vercel's unchanged required CNAME and serves the protected dashboard; anonymous access redirects to authentication. An operator automation-bypass credential remains in Vercel's secret manager for verification, with All Deployments authentication intact. The initial smoke found missing runtime Git context; the owner explicitly authorized one replacement after correction. See the durable hotfix report for both IDs and evidence.

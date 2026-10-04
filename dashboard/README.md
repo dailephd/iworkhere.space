@@ -84,3 +84,8 @@ light/dark comes from media preference. No chart framework, UI framework,
 advertising, client-side Neon access or theme persistence is present. Robots
 metadata and X-Robots-Tag are noindex/nofollow/noarchive defense in depth; they
 are not access control.
+
+
+## Diagnostic hotfix
+
+Recent diagnostics show latest 25 retained client/server errors in the selected range (30-day detailed retention), actual name/message, UUID/fingerprint, route/tool/boundary/category, deployment and expandable stack/cause/component/runtime fields. Normal React escaping; bounded code regions; no client framework. Metric rows do not pretend legacy detail exists. SELECT-only snapshot now includes diagnostic query.

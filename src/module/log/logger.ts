@@ -1,5 +1,7 @@
 import type { LogLevel, LogMeta } from "./types";
 import type { LogProvider } from "./provider";
+import { diagnosticText } from "@/module/observability/diagnosticText";
+import { isDiagnosticError, safeLogMeta } from "@/module/observability/logSafety";
 
 class ConsoleProvider implements LogProvider {
     log(level: LogLevel, message: string, meta?: LogMeta): void {
@@ -7,9 +9,9 @@ class ConsoleProvider implements LogProvider {
             const timestamp = new Date().toISOString();
             const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
 
-            const args: unknown[] = [prefix, message];
+            const args: unknown[] = [prefix, diagnosticText(message, 4096)];
             if (meta) {
-                args.push(meta);
+                args.push({ ...safeLogMeta(meta), ...(isDiagnosticError(meta.diagnosticError) ? { diagnosticError: meta.diagnosticError } : {}) });
             }
 
             switch (level) {

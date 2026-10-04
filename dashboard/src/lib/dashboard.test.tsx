@@ -74,7 +74,7 @@ describe("aggregate view model", () => {
         expect(model.referrer).toEqual([{ name: "search.example", count: 58 }]);
     });
     it("supports empty database without invented measurements or chart points", () => {
-        const empty: DashboardData = { activity: [], vital: [], failure: [], freshness: { last_raw_received: null, last_rollup_day: null } };
+        const empty: DashboardData = { activity: [], vital: [], failure: [], diagnostic: [], freshness: { last_raw_received: null, last_rollup_day: null } };
         const plan = rangePlan("24h", now), model = dashboardModel(empty, plan);
         expect(model.empty).toBe(true);
         expect(model.series).toEqual([]);
@@ -105,8 +105,13 @@ describe("aggregate view model", () => {
 });
 describe("privacy and deployment boundaries", () => {
     it.each(RANGE)("selects only privacy-approved metrics for %s", range => {
-        for (const query of Object.values(dashboardQuery(rangePlan(range, now)))) {
-            expect(query.text).not.toMatch(/\b(filename|message|stack|metadata|email|cookie|ip_address|full_url|query_string|hash|user_id|session_id|image|blob|file)\b/i);
+        for (const [name, query] of Object.entries(dashboardQuery(rangePlan(range, now)))) {
+            if (name !== "diagnostic") expect(query.text).not.toMatch(/\b(filename|message|stack|metadata|email|cookie|ip_address|full_url|query_string|hash|user_id|session_id|image|blob|file)\b/i);
+            else {
+                expect(query.text).toContain("observability.error_diagnostic");
+                expect(query.text).toContain("LIMIT 25");
+                expect(query.text).not.toMatch(/\b(filename|input|output|email|cookie|ip_address|full_url|query_string|user_id|session_id)\b/i);
+            }
             expect(query.text).not.toMatch(/\b(INSERT|UPDATE|DELETE|ALTER|DROP|CREATE)\b/i);
             expect(query.text).not.toContain("SELECT *");
         }
@@ -141,5 +146,45 @@ describe("privacy and deployment boundaries", () => {
     it("has no application-auth dependencies", () => {
         const pkg = JSON.parse(readFileSync("package.json", "utf8"));
         expect(Object.keys(pkg.dependencies)).toEqual(["@neondatabase/serverless", "next", "react", "react-dom"]);
+    });
+});
+describe("diagnostic presentation", () => {
+    it("renders actual messages, identifiers, causes, origin and runtime safely", () => {
+        const plan = rangePlan("24h", now), data = fixtureRepository(plan);
+        data.diagnostic[0].message = '<script>alert("fixture")</script> Resize worker initialization failed';
+        data.diagnostic[0].stack = '<img src=x onerror=alert(1)>\n at resize (app.js:40:2)';
+        const html = renderToStaticMarkup(<DashboardView plan={plan} model={dashboardModel(data, plan)} />);
+        for (const value of ["Resize worker initialization failed", "00000000-0000-4000-8000-000000000001", "a".repeat(64), "client", "Worker could not start", "Nested fixture cause", "fixture-commit", "production", "FixtureBrowser", "React component stack", "app.js:40:2"]) expect(html).toContain(value);
+        expect(html).toContain("&lt;script&gt;");
+        expect(html).toContain("&lt;img");
+        expect(html).not.toContain('<script>alert');
+        expect(html).not.toContain('<img src=x');
+        expect(html).toContain('class="diagnostic-code"');
+    });
+    it("bounds dashboard Turbopack to its own package instead of public instrumentation", () => {
+        expect(config.turbopack?.root).toBe(path.resolve("."));
+    });
+    it("represents server errors, empty details and legacy metrics honestly", () => {
+        const plan = rangePlan("24h", now), data = fixtureRepository(plan);
+        Object.assign(data.diagnostic[0], { origin: "server", stack: null, cause: null, component_stack: null, deployment_context: {}, server_context: { method: "GET", routeType: "render" } });
+        const html = renderToStaticMarkup(<DashboardView plan={plan} model={dashboardModel(data, plan)} />);
+        expect(html).toContain("Server runtime context");
+        expect(html).toContain("Not supplied");
+        expect(html).toContain("legacy events have no diagnostic record");
+        expect(html).not.toContain("React component stack");
+    });
+    it("does not claim an empty diagnostic range has detailed failures", () => {
+        const plan = rangePlan("90d", now), data = fixtureRepository(plan);
+        data.diagnostic = [];
+        const html = renderToStaticMarkup(<DashboardView plan={plan} model={dashboardModel(data, plan)} />);
+        expect(html).toContain("No detailed diagnostics in this range.");
+        expect(html).not.toContain("Resize worker initialization failed");
+    });
+    it.each(RANGE)("bounds detailed diagnostic query to selected %s range independently of metric source", range => {
+        const plan = rangePlan(range, now), query = dashboardQuery(plan).diagnostic;
+        expect(query.parameter).toEqual([plan.start, plan.end]);
+        expect(query.text).toContain("received_at >= $1::timestamptz AND received_at < $2::timestamptz");
+        expect(query.text).toContain("ORDER BY received_at DESC, id DESC LIMIT 25");
+        expect(query.text).not.toContain("daily_event");
     });
 });

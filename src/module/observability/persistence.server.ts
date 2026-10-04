@@ -1,6 +1,7 @@
 import "server-only";
 import { neon } from "@neondatabase/serverless";
 import type { MetricRequest } from "./metric";
+import type { ErrorDiagnostic } from "./diagnostic";
 
 export interface EventRecord {
     kind: MetricRequest["type"];
@@ -54,6 +55,17 @@ export async function persistMetric(metric: MetricRequest): Promise<void> {
 export async function maintainObservability(): Promise<void> {
     if (!persistenceEnabled()) throw new Error("Observability persistence is disabled");
     await database().query("SELECT rolled_day_count, deleted_event_count FROM observability.maintain()", []);
+    await database().query("SELECT observability.prune_diagnostics()", []);
+}
+
+export async function persistDiagnostic(d: ErrorDiagnostic): Promise<void> {
+    const sql = database();
+    await sql`INSERT INTO observability.error_diagnostic
+        (id, reported_at, origin, severity, error_name, message, stack, cause, error_detail, component_stack, pathname, tool_id, boundary, failure_category, fingerprint, client_context, server_context, deployment_context)
+        VALUES (${d.id}, ${d.timestamp}, ${d.origin}, ${d.severity}, ${d.error.name}, ${d.error.message}, ${d.error.stack ?? null}, ${JSON.stringify(d.error.cause ?? null)}::jsonb,
+        ${JSON.stringify(d.error)}::jsonb, ${d.context.componentStack ?? null}, ${d.context.pathname}, ${d.context.toolId ?? null}, ${d.context.boundary ?? null}, ${d.context.failureCategory}, ${d.fingerprint},
+        ${JSON.stringify(d.origin === "client" ? d.context : {})}::jsonb, ${JSON.stringify(d.origin === "server" ? d.context : {})}::jsonb, ${JSON.stringify(d.deployment ?? {})}::jsonb)
+        ON CONFLICT (id) DO NOTHING`;
 }
 
 /** Header checks discourage cross-site browser traffic; they are not authentication. */

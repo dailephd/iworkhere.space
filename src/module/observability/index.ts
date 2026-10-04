@@ -1,6 +1,7 @@
 import { log } from "@/module/log/logger";
 import { track, type AnalyticEventName, type AnalyticEventProp } from "@/module/analytics";
 import { claimError } from "./errorDedup";
+import { diagnosticContext, serializeDiagnosticError } from "./diagnostic";
 
 /**
  * Tracks a product event (delegates to analytics).
@@ -21,14 +22,10 @@ export function logEvent(message: string, meta?: Record<string, unknown>): void 
  */
 export function captureError<E extends AnalyticEventName>(error: Error | unknown, meta?: Record<string, unknown>, trackAsEvent?: { name: E, prop: AnalyticEventProp[E] }): void {
     if (!claimError(error)) return;
-    const message = error instanceof Error ? error.message : String(error);
-    const stack = error instanceof Error ? error.stack : undefined;
-
-    log.error(message, {
-        ...meta,
-        stack,
-        originalError: error,
-    });
+    try {
+        const diagnosticError = serializeDiagnosticError(error);
+        log.error(diagnosticError.message, { ...diagnosticContext(meta), diagnosticError });
+    } catch { /* Error handling cannot throw through a failed provider. */ }
 
     if (trackAsEvent) {
         track(trackAsEvent.name, trackAsEvent.prop);

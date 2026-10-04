@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { buildToolMetadata, buildCategoryMetadata } from "./seo"
+import { buildToolMetadata, buildCategoryMetadata, buildPageMetadata, canonicalUrl, isIndexable } from "./seo"
 
 describe("buildToolMetadata", () => {
     const seo = {
@@ -47,6 +47,32 @@ describe("buildToolMetadata", () => {
         expect(result.alternates?.canonical).toBe(
             "https://iworkhere.space/tool/calculator",
         )
+    })
+})
+
+describe("indexability and public metadata", () => {
+    it.each([
+        [{ VERCEL_ENV: "production", NODE_ENV: "production" }, true],
+        [{ VERCEL_ENV: "preview", NODE_ENV: "production" }, false],
+        [{ VERCEL_ENV: "development", NODE_ENV: "production" }, false],
+        [{ VERCEL_ENV: "unknown", NODE_ENV: "production" }, false],
+        [{ NODE_ENV: "production" }, true],
+        [{ NODE_ENV: "development" }, false],
+        [{}, false],
+    ])("uses a conservative environment boundary for %j", (environment, expected) => {
+        expect(isIndexable(environment)).toBe(expected)
+    })
+
+    it.each(["/", "/discover", "/tool/image-resizer", "/tool/calculator", "/category/image"])("builds canonical and social fields for %s", canonicalPath => {
+        const result = buildPageMetadata({ title: "Page", description: "Visible purpose", canonicalPath })
+        const canonical = `https://iworkhere.space${canonicalPath}`
+        expect(result.alternates?.canonical).toBe(canonical)
+        expect(result.openGraph).toMatchObject({ title: "Page — iworkhere.space", description: "Visible purpose", url: canonical })
+        expect(result.twitter).toMatchObject({ card: "summary", title: "Page — iworkhere.space", description: "Visible purpose" })
+    })
+
+    it("removes shared query and hash state from canonical identity", () => {
+        expect(canonicalUrl("/tool/calculator?a=10&b=2#result")).toBe("https://iworkhere.space/tool/calculator")
     })
 })
 

@@ -11,7 +11,7 @@ import { HeicProcessingError } from "./heicConverter.workerType";
 type HeicConverterState = "idle" | "selected" | "processing" | "success" | "validation failure" | "processing failure";
 interface HeicSource { file: File; width: number; height: number; url: string }
 interface HeicOutcome { bytes: number; target: HeicConverterTarget; url: string; filename: string; width: number; height: number }
-const SURFACE_CLASS = "min-w-0 space-y-4 rounded-xl border border-border bg-surface p-4";
+const SURFACE_CLASS = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
 
 export function HeicConverterTool({ toolId }: ToolComponentProp) {
     const [state, setState] = useState<HeicConverterState>("idle");
@@ -132,27 +132,29 @@ export function HeicConverterTool({ toolId }: ToolComponentProp) {
 
     const busy = state === "processing";
     return <div className="min-w-0 space-y-4">
-        <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
-        <section className={SURFACE_CLASS} aria-labelledby="heic-source-title">
-            <h2 id="heic-source-title" className="font-semibold">Source HEIC image</h2>
+        <p className="text-sm text-accent-secondary">Processed locally in your browser. Your image is not uploaded.</p>
+        <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(280px,320px)_minmax(0,1fr)] lg:items-start">
+        <div className="contents order-1 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
+        <div className="order-1 min-w-0 lg:order-none">
+        <section className="min-w-0 space-y-4 rounded-xl border border-card-border bg-card-bg p-4" aria-labelledby="heic-source-title">
+            <h2 id="heic-source-title" className="font-semibold text-category-image">Source HEIC image</h2>
             <label className="block space-y-2"><span className="block font-medium">Choose HEIC image</span>
                 <input ref={fileInput} type="file" accept=".heic,.heif,image/heic,image/heif" onChange={selectFile}
-                    className="block w-full min-w-0 rounded-lg border border-border bg-surface-alt p-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-accent file:px-3 file:py-2 file:text-[var(--contrast)]" />
+                    className="block w-full min-w-0 rounded-lg border border-input-border bg-input-bg p-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-accent file:px-3 file:py-2 file:text-[var(--contrast)]" />
             </label>
             <p className="text-sm text-text-muted">Accepts supported HEIC and HEIF images. Maximum 25 MiB and 30 megapixels.</p>
             {reading && <p role="status" className="text-sm">Reading HEIC…</p>}
             {source && <div className="space-y-3">
                 <p className="break-all text-sm">{source.file.name}</p>
                 <p className="text-sm">Source: {source.width} × {source.height} px · {formatImageFileBytes(source.file.size)} ({source.file.size} bytes) · HEIC / HEIF</p>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={source.url} alt="Selected HEIC source preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />
             </div>}
         </section>
-        <form onSubmit={convert} className={SURFACE_CLASS} aria-labelledby="heic-controls-title" noValidate>
-            <h2 id="heic-controls-title" className="font-semibold">Conversion settings</h2>
+        </div>
+        <form onSubmit={convert} className={`order-3 ${SURFACE_CLASS} lg:order-none`} aria-labelledby="heic-controls-title" noValidate>
+            <h2 id="heic-controls-title" className="font-semibold text-category-image">Conversion settings</h2>
             <div className="space-y-2"><label htmlFor="heic-output-format" className="block font-medium">Output format</label>
                 <select id="heic-output-format" value={output} disabled={!source || busy} onChange={event => { clearConfiguredResult(); setOutput(event.target.value as HeicConverterTarget); }}
-                    className="w-full rounded-lg border border-border bg-surface-alt px-3 py-2 text-text">
+                    className="w-full rounded-lg border border-input-border bg-input-bg px-3 py-2 text-text">
                     {HEIC_OUTPUT.map(target => <option key={target} value={target}>{target === "jpeg" ? "JPEG" : "PNG"}</option>)}
                 </select>
             </div>
@@ -165,14 +167,26 @@ export function HeicConverterTool({ toolId }: ToolComponentProp) {
                 <p className="text-sm text-text-muted">Lower quality may reduce visual fidelity. Transparent pixels are placed on a white background for JPEG.</p>
             </>}
             <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={!source || busy} className="rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !reading ? "Converting…" : "Convert image"}</button>
-                <button type="button" onClick={reset} className="rounded-lg border border-border bg-surface-alt px-4 py-2">Reset</button>
+                <button type="submit" disabled={!source || busy} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !reading ? "Converting…" : "Convert image"}</button>
+                <button type="button" onClick={reset} className="material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-4 py-2">Reset</button>
             </div>
             <p className="text-sm text-text-muted">The output keeps the original dimensions. Metadata preservation is not guaranteed.</p>
         </form>
-        {error && <div role="alert" className="rounded-xl border border-danger bg-surface p-4 text-danger">{error}</div>}
-        {outcome && source && <section className={SURFACE_CLASS} aria-labelledby="heic-result-title" aria-live="polite">
-            <h2 id="heic-result-title" className="font-semibold">Converted image ready</h2>
+        </div>
+        <div className="contents order-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
+        <section aria-label="Image preview and result" data-surface={outcome?.url ? "result-stage" : "preview-stage"} className={`material-glass order-2 flex min-h-[300px] min-w-0 items-center justify-center overflow-hidden rounded-xl border ${outcome?.url ? "border-result-border bg-result-bg" : "border-preview-border bg-preview-bg"} p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6`}>
+            {outcome?.url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={outcome.url} alt="Converted image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
+            ) : source ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={source.url} alt="Selected HEIC source preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
+            ) : <p className="max-w-xs text-center text-sm text-text-muted">Choose an image to see its preview here. Your image stays in this browser.</p>}
+        </section>
+
+        {error && <div role="alert" className="order-5 rounded-xl border border-danger bg-danger-soft p-4 text-danger lg:order-none">{error}</div>}
+        {outcome && source && <section className="material-raised order-4 min-w-0 space-y-4 rounded-xl border border-result-border bg-result-bg p-4 lg:order-none" aria-labelledby="heic-result-title" aria-live="polite">
+            <h2 id="heic-result-title" className="font-semibold text-category-image">Converted image ready</h2>
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
                 <div><dt className="text-text-muted">Source format</dt><dd>HEIC / HEIF</dd></div>
                 <div><dt className="text-text-muted">Output format</dt><dd>{outcome.target === "jpeg" ? "JPEG" : "PNG"}</dd></div>
@@ -181,9 +195,9 @@ export function HeicConverterTool({ toolId }: ToolComponentProp) {
                 <div><dt className="text-text-muted">Source size</dt><dd>{formatImageFileBytes(source.file.size)} ({source.file.size} bytes)</dd></div>
                 <div><dt className="text-text-muted">Output size</dt><dd>{formatImageFileBytes(outcome.bytes)} ({outcome.bytes} bytes)</dd></div>
             </dl>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={outcome.url} alt="Converted image preview" className="block h-auto max-h-64 max-w-full rounded-lg object-contain" />
-            <a href={outcome.url} download={outcome.filename} className="inline-block rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download converted image</a>
+            <a href={outcome.url} download={outcome.filename} className="material-primary inline-block min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download converted image</a>
         </section>}
+        </div>
+        </div>
     </div>;
 }

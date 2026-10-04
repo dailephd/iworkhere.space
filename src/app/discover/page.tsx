@@ -1,12 +1,9 @@
-import type { Metadata } from "next"
+import { buildPageMetadata } from "@/lib/seo"
 import { getAllTool } from "@/module/tool/metadata"
 import DiscoverClient from "./DiscoverClient"
 import type { ToolSearchItem } from "@/component/common/ToolSearch"
 
-export const metadata: Metadata = {
-    title: "Discover Tool — iworkhere.space",
-    description: "Browse and search all available utility tool.",
-}
+export const metadata = buildPageMetadata({ title: "Discover Tool", description: "Browse and search image, text, math, time and everyday utility tools by name, category or tag.", canonicalPath: "/discover" })
 
 export default function DiscoverPage() {
     const allTool = getAllTool()

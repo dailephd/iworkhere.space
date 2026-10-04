@@ -1,7 +1,31 @@
-import type { CountItem, DashboardModel, SeriesPoint } from "../lib/model";
+import type { CountItem, DashboardModel, DiagnosticRow, SeriesPoint } from "../lib/model";
 import { RANGE, type RangePlan } from "../lib/range";
 
 export interface DashboardViewProp { model: DashboardModel; plan: RangePlan }
+function DiagnosticFailure({ diagnostic: d }: { diagnostic: DiagnosticRow }) {
+    return <article className="diagnostic-failure">
+        <h3>{d.error_name} · {d.origin} · {d.severity}</h3>
+        <p className="diagnostic-message">{d.message || "Empty error message"}</p>
+        <dl>
+            <div><dt>Received (UTC)</dt><dd>{d.received_at}</dd></div>
+            <div><dt>Reported (UTC)</dt><dd>{d.reported_at ?? "Not supplied"}</dd></div>
+            <div><dt>Diagnostic ID</dt><dd><code>{d.id}</code></dd></div>
+            <div><dt>Fingerprint</dt><dd><code>{d.fingerprint}</code></dd></div>
+            <div><dt>Path / tool</dt><dd>{d.pathname} · {d.tool_id ?? "Not supplied"}</dd></div>
+            <div><dt>Category / boundary</dt><dd>{d.failure_category} · {d.boundary ?? "Not supplied"}</dd></div>
+        </dl>
+        <DiagnosticDetail title="Deployment" value={d.deployment_context} />
+        <DiagnosticDetail title="Stack" value={d.stack} />
+        <DiagnosticDetail title="Cause chain" value={d.cause} />
+        <DiagnosticDetail title="Error fields / aggregate children" value={d.error_detail} />
+        {d.component_stack && <DiagnosticDetail title="React component stack" value={d.component_stack} />}
+        <DiagnosticDetail title={`${d.origin === "server" ? "Server" : "Client"} runtime context`} value={d.origin === "server" ? d.server_context : d.client_context} />
+    </article>;
+}
+function DiagnosticDetail({ title, value }: { title: string; value: unknown }) {
+    const content = typeof value === "string" ? value : value == null ? "" : JSON.stringify(value, null, 2);
+    return <details><summary>{title}</summary>{content && content !== "{}" ? <pre className="diagnostic-code"><code>{content}</code></pre> : <p className="muted">Not supplied</p>}</details>;
+}
 interface CountTableProp { title: string; item: CountItem[]; description?: string }
 function CountTable({ title, item, description }: CountTableProp) {
     return <section className="panel"><h2>{title}</h2>{description && <p className="muted">{description}</p>}
@@ -41,7 +65,8 @@ export function DashboardView({ model, plan }: DashboardViewProp) {
         <section className="panel"><h2>Tool usage</h2><p className="muted">Ranked by opens + executions + client errors. Mode changes are included in retained event counts.</p>{model.tool.length === 0 ? <p className="empty">No data yet</p> : <div className="table-scroll tool-table" role="region" aria-label="Tool usage table" tabIndex={0}><table><thead><tr><th scope="col">Tool</th><th scope="col">Opens</th><th scope="col">Executions</th><th scope="col">Errors</th></tr></thead><tbody>{model.tool.map(t => <tr key={t.name}><th scope="row">{t.name}</th><td>{t.opens}</td><td>{t.executions}</td><td>{t.errors}</td></tr>)}</tbody></table></div>}</section>
         <section aria-labelledby="reliability"><h2 id="reliability">Reliability</h2><div className="card-grid"><article className="panel stat"><h3>Client errors</h3><p>{model.empty ? "No data yet" : model.errors}</p></article><article className="panel stat"><h3>Failure count</h3><p>{model.empty ? "No data yet" : model.failureCount}</p><small>Each client-error is one failure; these two totals describe the same measurements.</small></article></div></section>
         <div className="breakdown-grid"><CountTable title="Top failure categories" item={model.failureCategory} /><CountTable title="Top failing routes" item={model.failingRoute} /><CountTable title="Top failing tools" item={model.failingTool} /><CountTable title="Routes" item={model.route} description="Top navigation paths; no landing-path or visitor inference." /><CountTable title="Referrers" item={model.referrer} description="Navigation hostnames only. No raw referrer URLs." /><CountTable title="Viewport class" item={model.device} description="Non-vital events: mobile <768px; tablet 768–1023px; desktop ≥1024px; missing/invalid width = unknown. Viewport width only." /></div>
-        <section className="panel"><h2>Recent failures</h2><p className="muted">Latest 25 client errors in retained raw data within the selected range. Raw history is limited to 90 days.</p>{model.failure.length === 0 ? <p className="empty">No data yet</p> : <div className="table-scroll failure-table" role="region" aria-label="Recent failures table" tabIndex={0}><table><thead><tr><th scope="col">Received (UTC)</th><th scope="col">Path</th><th scope="col">Tool</th><th scope="col">Category</th><th scope="col">Viewport</th></tr></thead><tbody>{model.failure.map((f, i) => <tr key={`${f.occurred_at}-${i}`}><td>{f.occurred_at}</td><th scope="row">{f.pathname}</th><td>{f.tool_id ?? "—"}</td><td>{f.failure_category}</td><td>{f.device_class}</td></tr>)}</tbody></table></div>}</section>
+        <section className="panel"><h2>Recent diagnostics</h2><p className="muted">Latest 25 client/server diagnostic failures in the selected range. Detailed retention: 30 days.</p>{model.diagnostic.length === 0 ? <p className="empty">No detailed diagnostics in this range.</p> : model.diagnostic.map(d => <DiagnosticFailure key={d.id} diagnostic={d} />)}</section>
+        <section className="panel"><h2>Recent failures</h2><p className="muted">Latest 25 client-error metric events in retained raw data within the selected range. Raw history is limited to 90 days. Detailed diagnostic unavailable for this metric event; legacy events have no diagnostic record.</p>{model.failure.length === 0 ? <p className="empty">No data yet</p> : <div className="table-scroll failure-table" role="region" aria-label="Recent failures table" tabIndex={0}><table><thead><tr><th scope="col">Received (UTC)</th><th scope="col">Path</th><th scope="col">Tool</th><th scope="col">Category</th><th scope="col">Viewport</th></tr></thead><tbody>{model.failure.map((f, i) => <tr key={`${f.occurred_at}-${i}`}><td>{f.occurred_at}</td><th scope="row">{f.pathname}</th><td>{f.tool_id ?? "—"}</td><td>{f.failure_category}</td><td>{f.device_class}</td></tr>)}</tbody></table></div>}</section>
         <section className="panel"><h2>Data freshness</h2><dl><div><dt>Last raw event received</dt><dd>{model.freshness.last_raw_received ?? "No data yet"}</dd></div><div><dt>Last completed rollup day</dt><dd>{model.freshness.last_rollup_day ?? "No data yet"}</dd></div></dl><p className="muted">No identity or session model is collected. AdSense and Search Console remain separate systems.</p></section>
     </main>;
 }

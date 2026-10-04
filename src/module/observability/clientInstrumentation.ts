@@ -25,7 +25,7 @@ export function initializeClientInstrumentation(): void {
         if (!observabilityEnabled()) return;
         setAnalyticProvider(createNetworkProvider());
         setLogProvider(new RustLogProvider());
-        window.addEventListener("error", event => reportClientError(event.error, "window-error"));
+        window.addEventListener("error", event => reportClientError(event.error ?? new Error(event.message), "window-error"));
         window.addEventListener("unhandledrejection", event => reportClientError(event.reason, "unhandled-rejection"));
         reportNavigation(window.location.pathname, "initial");
     } catch { /* Instrumentation cannot prevent application startup. */ }

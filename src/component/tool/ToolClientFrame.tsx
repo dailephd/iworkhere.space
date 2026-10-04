@@ -40,7 +40,7 @@ export function ToolClientFrame(prop: ToolClientFrameProp) {
 
     const setQuery = useCallback(
         (next: Record<string, string>) => {
-            logEvent("Tool execution start", { toolId, query: next });
+            logEvent("Tool execution start", { toolId });
             trackEvent("tool_executed", { toolId, slug: pathname.split("/").pop() || "" });
 
             try {

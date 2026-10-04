@@ -29,6 +29,7 @@ export class ToolErrorBoundary extends Component<Props, State> {
             toolId: this.props.toolId,
             componentStack: errorInfo.componentStack,
             boundary: "ToolErrorBoundary",
+            failureCategory: "tool-render-error",
         });
     }
 
