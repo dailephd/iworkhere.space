@@ -1,0 +1,21 @@
+{
+  "version": "12.4.2",
+  "asset": [
+    {
+      "path": "qpdf.js",
+      "bytes": 134128,
+      "sha256": "6e9ada6ad324547b01a4c69118b3cf797565439d77df2ed9e6fdfd656565f6d0",
+      "purpose": "Pinned QPDF structural processing runtime",
+      "upstream": "qpdf 12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/QPDF-LICENSE"
+    },
+    {
+      "path": "qpdf.wasm",
+      "bytes": 2718596,
+      "sha256": "38ca4cbe43a6767b43058399aef864574b1d5f6bce30b9d70a62037d3ce1c5c0",
+      "purpose": "Pinned QPDF structural processing runtime",
+      "upstream": "qpdf 12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/QPDF-LICENSE"
+    }
+  ]
+}

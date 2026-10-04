@@ -318,6 +318,15 @@ unmount. Keep HEIC composition and source UI local; do not broaden the shared
 image owners. See `docs/modules/HeicConverter.md`. Decoder release approval
 remains a separate explicit human/legal gate.
 
+Document/PDF source primitives, limits, selection and ordered-file transitions
+belong in `src/module/tool/document/`, specified by `PdfFile.md` and
+`PdfProcessing.md`. Keep PDF.js operation-time and same-origin; only the
+dedicated pdf-lib worker imports pdf-lib in production source. QPDF is a
+project-owned pinned WASM runtime with short-lived workers, manifests and
+retained notices. Normal builds consume artifacts; controlled rebuilds belong
+to `script/qpdf/`. Do not generalize image owners or introduce a universal PDF
+engine. Future tool UI, object URLs and generation state remain operation-local.
+
 - Architecture changes require updating docs/architecture.md first
 - Style changes require updating docs/DESIGN.md first
 - New abstractions require updating this file

@@ -2,6 +2,16 @@
 
 # Documentation Index
 
+### docs/modules/PdfFile.md
+
+**Summary:** Batch 1 document source validation, frozen limits, bounded PDF
+inspection/errors, page selection and pure ordered-file transitions.
+
+### docs/modules/PdfProcessing.md
+
+**Summary:** Batch 1 lazy PDF.js/native worker, short-lived pdf-lib/QPDF workers,
+pinned supply chain/assets/notices and independent browser/container acceptance.
+
 ### docs/modules/HeicConverter.md
 
 **Summary:** Batch 5 HEIC/HEIF worker-only decoding, bounded inspection,

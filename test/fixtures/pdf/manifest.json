@@ -1,0 +1,110 @@
+[
+  {
+    "name": "text-vector.pdf",
+    "bytes": 887,
+    "sha256": "6444fe96ae653150cc8dc76cb104616831ba75b98ad0737729b1e5ec73c69c23",
+    "purpose": "text"
+  },
+  {
+    "name": "jpeg-heavy.pdf",
+    "bytes": 2108,
+    "sha256": "60b98d8b0954f0f9403effa65c10620e85a26dad640b724960287a95e5fb61e2",
+    "purpose": "jpeg"
+  },
+  {
+    "name": "png-heavy.pdf",
+    "bytes": 1447,
+    "sha256": "0d647ffb35fc0246413b0bf69da1ed8b843fa283c96c565b7890ded5fab85908",
+    "purpose": "png"
+  },
+  {
+    "name": "mixed.pdf",
+    "bytes": 2975,
+    "sha256": "1cb7a211340723a19d779b56a6e45711b6f9361a9f352a0043c101270a4c0741",
+    "purpose": "mixed"
+  },
+  {
+    "name": "rotated.pdf",
+    "bytes": 894,
+    "sha256": "9eae5d8986f0597da8e9271af753975649884f81f0ac55225f36649ced987984",
+    "purpose": "rotated"
+  },
+  {
+    "name": "mixed-dimensions.pdf",
+    "bytes": 1139,
+    "sha256": "00574d4609b36ed7abceb7eb582b47f33a23627526f9f3e91ecff5c87171b7b1",
+    "purpose": "dimensions"
+  },
+  {
+    "name": "ordering.pdf",
+    "bytes": 1616,
+    "sha256": "5570827ffa44147cbcd56e4b24a59efafa95e6fe778ee0223746c538c6af03f1",
+    "purpose": "text"
+  },
+  {
+    "name": "multipage.pdf",
+    "bytes": 1373,
+    "sha256": "d117a81a7220cb3b5dcb7faae65afe82ccfe55980fd984809b194c4ab868d634",
+    "purpose": "text"
+  },
+  {
+    "name": "large-page-box.pdf",
+    "bytes": 887,
+    "sha256": "4a317a5e6daffc217d4ffcdc27bd90a5084b5d0cd98d557312079ea8baa713f9",
+    "purpose": "large"
+  },
+  {
+    "name": "standard-fonts.pdf",
+    "bytes": 1456,
+    "sha256": "b07ff176ba9822b7cf469a08a905c7b45750f9173c354e5f0d2b9630d2259c52",
+    "purpose": "fonts"
+  },
+  {
+    "name": "page-limit.pdf",
+    "bytes": 25354,
+    "sha256": "650e2ab04b0b690afbf3307c6c2c11f4e5a5f3f268ed79c8e8e7e44fa66ddf76",
+    "purpose": "text"
+  },
+  {
+    "name": "truncated.pdf",
+    "bytes": 70,
+    "sha256": "2faa5e5411d7139e6a21ae2966853894c1c6cc4e191b6ca2704fdbfeb1d0152a",
+    "purpose": "truncated real source"
+  },
+  {
+    "name": "invalid-body.pdf",
+    "bytes": 27,
+    "sha256": "6851ddc978101d75caf8489321e2898f7ee2870abb85517855e364f318c5fc25",
+    "purpose": "invalid body"
+  },
+  {
+    "name": "false-signature.pdf",
+    "bytes": 19,
+    "sha256": "fac73380e8752dda6e4a8feee3406aa5e5b6879acfc835e6ac07a5a44708ff71",
+    "purpose": "false header"
+  },
+  {
+    "name": "damaged-xref.pdf",
+    "bytes": 885,
+    "sha256": "966ab5a065c3314b2fdf64fd248f882c3f055c24bada0c1da311467a4b54719a",
+    "purpose": "recoverable damaged xref; no repair guarantee"
+  },
+  {
+    "name": "encrypted.pdf",
+    "bytes": 1385,
+    "sha256": "8e3594fac46fbd747f8b9d62a620d267ab066d16371cf09378edd3af69dc7c2f",
+    "purpose": "AES-128 test-only known reader/owner passwords; unsupported input"
+  },
+  {
+    "name": "empty-password-encrypted.pdf",
+    "bytes": 1385,
+    "sha256": "6f2cc23f140e21f86b08f5e27034ede6d545077a34b49a035d8de66f8f40c1cb",
+    "purpose": "encrypted with empty user password; still unsupported"
+  },
+  {
+    "name": "already-optimized.pdf",
+    "bytes": 978,
+    "sha256": "c9a299eeda166e45d296aa428af54926ead886580445376a5f3199a6bd097c5e",
+    "purpose": "structurally rewritten fixture"
+  }
+]

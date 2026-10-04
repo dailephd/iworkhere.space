@@ -1,0 +1,189 @@
+{
+  "version": "v0.3.0-batch1",
+  "asset": [
+    {
+      "path": "pdfjs-6.4.299/LICENSE",
+      "bytes": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdfjs-6.4.299",
+      "notice": "public/licenses/pdfjs-6.4.299/LICENSE"
+    },
+    {
+      "path": "pdfjs-6.4.299/LICENSE_FOXIT",
+      "bytes": 1553,
+      "sha256": "b578cdd2345840ada550bd12519533812320d5f1d21cf4c1c7e1b1b0a31c98b7",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdfjs-6.4.299",
+      "notice": "public/licenses/pdfjs-6.4.299/LICENSE_FOXIT"
+    },
+    {
+      "path": "pdfjs-6.4.299/LICENSE_LIBERATION",
+      "bytes": 22154,
+      "sha256": "d2c4d5b3e115a519cb58eb691aa64538397e2611f9ebe801392cf9667997e7dc",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdfjs-6.4.299",
+      "notice": "public/licenses/pdfjs-6.4.299/LICENSE_LIBERATION"
+    },
+    {
+      "path": "pdf-lib-1.17.1/pako-LICENSE",
+      "bytes": 1104,
+      "sha256": "a04665b3b2de56c66730c1f720f528175739e4104f79073614aa611da1e85539",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdf-lib-1.17.1",
+      "notice": "public/licenses/pdf-lib-1.17.1/pako-LICENSE"
+    },
+    {
+      "path": "pdf-lib-1.17.1/pako-ZLIB-SOURCE-NOTICES.txt",
+      "bytes": 3093,
+      "sha256": "962cdcaf16383f8c83d20cb2cb6e8d7e89ff05d0c4dd89a57dbe6cf33938850e",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdf-lib-1.17.1",
+      "notice": "public/licenses/pdf-lib-1.17.1/pako-ZLIB-SOURCE-NOTICES.txt"
+    },
+    {
+      "path": "pdf-lib-1.17.1/standard-fonts-LICENSE.md",
+      "bytes": 1070,
+      "sha256": "45cc2bb9957ed43f5c7f5eb1912f9f670730394d614079510477cae626194649",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdf-lib-1.17.1",
+      "notice": "public/licenses/pdf-lib-1.17.1/standard-fonts-LICENSE.md"
+    },
+    {
+      "path": "pdf-lib-1.17.1/tslib-LICENSE.txt",
+      "bytes": 655,
+      "sha256": "210b19e543130388c68654b7497e967119ce17145f66ab7d85688fbd70f08751",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdf-lib-1.17.1",
+      "notice": "public/licenses/pdf-lib-1.17.1/tslib-LICENSE.txt"
+    },
+    {
+      "path": "pdf-lib-1.17.1/upng-LICENSE",
+      "bytes": 1065,
+      "sha256": "c1fb8861eca211bf5aea574358aba7039396c0c1824c2a1477cc126d398efd89",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "pdf-lib-1.17.1",
+      "notice": "public/licenses/pdf-lib-1.17.1/upng-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/COMPILER-RT-LICENSE",
+      "bytes": 16708,
+      "sha256": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/COMPILER-RT-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/DLMALLOC-SOURCE-NOTICE",
+      "bytes": 2824,
+      "sha256": "b6a7b19d29efe612d890b7a7f159dda9ba0b85ed5992856afb193dfbd8a57ab2",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/DLMALLOC-SOURCE-NOTICE"
+    },
+    {
+      "path": "qpdf-12.4.2/EMSCRIPTEN-AUTHORS",
+      "bytes": 28933,
+      "sha256": "56f7df65203d4858dac19cafe3a84a8c49abaff56b67d32d2d463d5fef6e440b",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/EMSCRIPTEN-AUTHORS"
+    },
+    {
+      "path": "qpdf-12.4.2/EMSCRIPTEN-LICENSE",
+      "bytes": 5093,
+      "sha256": "620a78084fc7ca97c0b5dea9abf891f3ffcadfdbf305276f099c9c4e12fc1d86",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/EMSCRIPTEN-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/JPEG-README",
+      "bytes": 18719,
+      "sha256": "7c25493a9f64fed34d01445467341bda77bc1cdbeccbe33558659ef173fb9ff2",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/JPEG-README"
+    },
+    {
+      "path": "qpdf-12.4.2/LIBCXX-LICENSE",
+      "bytes": 16703,
+      "sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/LIBCXX-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/LIBCXXABI-LICENSE",
+      "bytes": 16706,
+      "sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/LIBCXXABI-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/LIBUNWIND-LICENSE",
+      "bytes": 16706,
+      "sha256": "b5efebcaca80879234098e52d1725e6d9eb8fb96a19fce625d39184b705f7b6d",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/LIBUNWIND-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/MUSL-COPYRIGHT",
+      "bytes": 6204,
+      "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/MUSL-COPYRIGHT"
+    },
+    {
+      "path": "qpdf-12.4.2/NOTICE.md",
+      "bytes": 1131,
+      "sha256": "de78847524cc75af733fd26ad84f6be29af4b451eb1f8f7147130b57d572b7a7",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/NOTICE.md"
+    },
+    {
+      "path": "qpdf-12.4.2/QPDF-LICENSE",
+      "bytes": 11560,
+      "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/QPDF-LICENSE"
+    },
+    {
+      "path": "qpdf-12.4.2/QPDF-MD5-SOURCE-NOTICE",
+      "bytes": 10572,
+      "sha256": "51667863fb3c0864a5e5d2080cb00cc178014424ab6ff7ad8878fb77eb5cb11e",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/QPDF-MD5-SOURCE-NOTICE"
+    },
+    {
+      "path": "qpdf-12.4.2/QPDF-NOTICE",
+      "bytes": 2771,
+      "sha256": "ce1c6342adcf83c561f42333087969476c42510018a88a3c90d60a698791a94c",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/QPDF-NOTICE"
+    },
+    {
+      "path": "qpdf-12.4.2/ZLIB-README",
+      "bytes": 5317,
+      "sha256": "d106dcdb2a0b3087cb3a2380b9f00a0bbadc7eb835cd80408f94a2d78d69727d",
+      "purpose": "Retained upstream runtime/component notice",
+      "upstream": "qpdf-12.4.2",
+      "notice": "public/licenses/qpdf-12.4.2/ZLIB-README"
+    },
+    {
+      "path": "pdf-lib-1.17.1-LICENSE.md",
+      "bytes": 1070,
+      "sha256": "f2c9fc00fdb66eb99ac156ba52d734af66d8d309f65753ae809ad34ee2883bcb",
+      "purpose": "pdf-lib upstream MIT license",
+      "upstream": "pdf-lib 1.17.1",
+      "notice": "public/licenses/pdf-lib-1.17.1-LICENSE.md"
+    }
+  ]
+}

@@ -410,6 +410,11 @@ Minimal offline caching for PWA support.
 - **Install**: Precaches `/` and `/discover`
 - **Navigation requests**: Network first, cache fallback (stale-while-offline)
 - **Static assets**: Cache first, network fallback
+- **Turbopack worker bootstrap**: Reconstruct cached responses without the
+  stored response URL. Different entries share its pathname and use fragment
+  parameters, which Cache API keys cannot distinguish. The worker retains its
+  constructor URL/fragment while the bootstrap remains available offline.
+  Runtime assets cache on demand; no PDF asset is precached.
 - **API routes**: Network only (no caching)
 - **Activation**: Cleans old caches, claims all clients
 
@@ -485,6 +490,9 @@ Dynamic metadata generation from tool definitions.
 - Contains no governance context, prompt, or coding-agent invocation
 
 ### Browser validation foundation
+- Document/PDF Batch 1 boundaries and the temporary test-only runtime harness
+  are specified in [PdfFile](modules/PdfFile.md) and
+  [PdfProcessing](modules/PdfProcessing.md). No public document tool is registered.
 - Playwright is a separate production-browser validation subsystem in
   `playwright.config.ts` and `test/e2e/`; it is not part of `script/verify.ts`.
 - `npm run build` precedes `npm run test:e2e`. Playwright owns a fresh production

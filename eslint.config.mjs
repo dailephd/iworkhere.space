@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     ".my-dev-kit-workflow/**",
     // Playwright HTML/trace reports contain generated third-party JavaScript.
     "test-report/e2e/**",
+    // Unmodified pinned upstream runtimes are verified by checksums, not linted.
+    "public/vendor/pdfjs/6.4.299/pdf.worker.mjs",
+    "public/vendor/qpdf/12.4.2/qpdf.js",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
