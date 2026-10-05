@@ -25,6 +25,15 @@ PDF.js independently parses and renders producer outputs. Damaged-xref parsing
 does not establish repair or output safety. No output fidelity claim is derived
 only from a producer parsing its own output.
 
+Compression fixtures are generated separately with
+`npx tsx script/pdfFixture.ts --compression-only`. `compression-text-vector.pdf`,
+`compression-mixed.pdf` and `compression-multipage.pdf` use deterministic pdf-lib
+static pages without object streams to exercise structural reduction. The last
+contains 100 pages. `compression-image-only.pdf` has no extractable text and
+exercises valid textless static content. Existing optimized/image-heavy fixtures
+remain unchanged and may honestly yield no reduction. Identities are recorded
+in `manifest.json`.
+
 Batch 4 adds `render-dpi-limit.pdf`: two labeled vector pages, 320×240 and
 1200×900 points. At 300 DPI the second exceeds the 4096-side limit; at 150 DPI
 both fit. This proves atomic preflight and lower-DPI recovery. Its producer,

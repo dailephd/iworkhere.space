@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { startPdfLibOperation } from "./pdfLib.client";
-import { startQpdfOperation } from "./qpdf.client";
+import { startQpdfOperation, startCompressPdfOperation } from "./qpdf.client";
 import { readPdfLibRequest, readPdfLibResponse } from "./pdfLib.workerType";
 import { readQpdfRequest, readQpdfResponse } from "./qpdf.workerType";
 vi.mock("./pdfRuntime.client", () => ({ openPdfDocument: () => ({ promise: Promise.resolve({ close: async () => {} }), cancel() {} }) }));
@@ -17,7 +17,7 @@ class InstrumentedWorker {
     postMessage(request: { id: number; bytes: Uint8Array }, transfer: Transferable[]) { this.request = request; this.transfer = transfer; }
 }
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); InstrumentedWorker.created = []; });
-describe.each([["pdf-lib", startPdfLibOperation], ["QPDF", startQpdfOperation]] as const)("%s lifecycle", (_, start) => {
+describe.each([["pdf-lib", startPdfLibOperation], ["QPDF", startQpdfOperation], ["QPDF compression", startCompressPdfOperation]] as const)("%s lifecycle", (_, start) => {
     async function begin(timeout = 30000) { vi.stubGlobal("Worker", InstrumentedWorker); const operation = start(bytes, timeout); await Promise.resolve(); await Promise.resolve(); return { operation, worker: InstrumentedWorker.created.at(-1)! }; }
     it("creates per operation, transfers an owned copy, ignores stale identities and terminates on success", async () => {
         for (let count = 0; count < 2; count++) {
@@ -54,6 +54,9 @@ describe.each([["pdf-lib", startPdfLibOperation], ["QPDF", startQpdfOperation]] 
     });
 });
 it("validates bounded typed worker messages", () => {
+    expect(readQpdfRequest({ id: 1, operation: "compress", bytes })).toEqual({ id: 1, operation: "compress", bytes });
+    expect(readQpdfRequest({ id: 1, operation: "lossy", bytes })).toBeNull();
+    expect(readQpdfRequest({ id: 1, operation: "compress", bytes: new TextEncoder().encode("false PDF") })).toBeNull();
     for (const read of [readPdfLibRequest, readQpdfRequest]) {
         expect(read({ id: 1, bytes })).toEqual({ id: 1, bytes });
         for (const value of [null, {}, { id: 0, bytes }, { id: 1, bytes: [] }, { id: 1, bytes: new Uint8Array() }]) expect(read(value)).toBeNull();

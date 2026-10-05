@@ -2,6 +2,12 @@
 
 # Documentation Index
 
+### docs/modules/CompressPdf.md
+
+**Summary:** Lossless structural QPDF compression, strict independent PDF.js
+verification, truthful byte comparison and local lifecycle/privacy.
+**When to read:** Changing Compress PDF.
+
 ### docs/modules/PdfToImage.md
 
 **Summary:** Selected-page PNG/JPEG export, DPI/quality, atomic viewport preflight,

@@ -23,7 +23,8 @@ describe("server guide and breadcrumb composition", () => {
                     expect(html).toContain("PNG alpha"); expect(related).toHaveLength(2);
                 } else {
                     expect(html).toContain("10 MiB"); expect(html).toContain("100 pages");
-                    expect(html).toContain("PDF processing happens locally"); expect(related).toHaveLength(tool.id === "pdf-to-image" ? 3 : 1);
+                    expect(html).toContain("PDF processing happens locally"); expect(related).toHaveLength(tool.id === "compress-pdf" ? 4 : tool.id === "pdf-to-image" ? 3 : 1);
+                    if (tool.id === "compress-pdf") for (const text of ["What this compression does", "No reduction is normal", "NO REDUCTION ACHIEVED", "Supported PDFs and limits", "Fidelity boundary", "Local processing", "short-lived browser worker"]) expect(html).toContain(text);
                     if (tool.id === "pdf-to-image") {
                         for (const text of ["Page selection", "PNG vs JPG", "4096-pixel", "16 MP", "lower DPI", "150 DPI", "0.85", "20 output images", "Convert pages"]) expect(html).toContain(text);
                     }

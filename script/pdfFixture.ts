@@ -14,29 +14,38 @@ async function main(): Promise<void> {
         await writeFile(path.join(root, name), bytes);
         identity.push({ name, bytes: bytes.length, sha256: createHash("sha256").update(bytes).digest("hex"), purpose });
     }
-    async function generate(name: string, count: number, kind: "text" | "jpeg" | "png" | "mixed" | "rotated" | "dimensions" | "large" | "fonts" | "render-limit") {
+    async function generate(name: string, count: number, kind: "text" | "jpeg" | "png" | "mixed" | "rotated" | "dimensions" | "large" | "fonts" | "render-limit" | "image-only", objectStreams = true) {
         const document = await PDFDocument.create();
         document.setCreationDate(new Date(0)); document.setModificationDate(new Date(0));
         document.setProducer("iworkhere.space deterministic fixture"); document.setCreator("iworkhere.space");
         const fonts = kind === "fonts" ? Object.values(StandardFonts) : [StandardFonts.Helvetica];
         const font = await Promise.all(fonts.map(value => document.embedFont(value)));
-        const jpeg = kind === "jpeg" || kind === "mixed" ? await document.embedJpg(await readFile("test/fixtures/images/resizer-source.jpg")) : null;
+        const jpeg = kind === "jpeg" || kind === "mixed" || kind === "image-only" ? await document.embedJpg(await readFile("test/fixtures/images/resizer-source.jpg")) : null;
         const png = kind === "png" || kind === "mixed" ? await document.embedPng(await readFile("test/fixtures/images/resizer-source.png")) : null;
         for (let index = 0; index < count; index++) {
             const size: [number, number] = kind === "large" ? [4097, 4097] : kind === "render-limit" && index === 1 ? [1200, 900] : kind === "dimensions" && index % 2 ? [240, 180] : [320, 240];
             const page = document.addPage(size);
             if (kind === "rotated") page.setRotation(degrees(90));
             page.drawRectangle({ x: 10, y: 10, width: 50, height: 30, color: rgb(0.2, 0.6, 0.8) });
-            for (let row = 0; row < font.length; row++) {
+            for (let row = 0; kind !== "image-only" && row < font.length; row++) {
                 const label = fonts[row] === StandardFonts.Symbol ? "α" : fonts[row] === StandardFonts.ZapfDingbats ? "✂" : `Page ${index + 1}`;
                 page.drawText(label, { x: 20, y: 210 - row * 13, size: 10, font: font[row] });
             }
             if (jpeg) page.drawImage(jpeg, { x: 90, y: 20, width: 160, height: 120 });
             if (png) page.drawImage(png, { x: 150, y: 90, width: 80, height: 60 });
         }
-        const bytes = await document.save({ useObjectStreams: true, addDefaultPage: false });
+        const bytes = await document.save({ useObjectStreams: objectStreams, addDefaultPage: false });
         await save(name, bytes, kind);
         return bytes;
+    }
+    if (process.argv.includes("--compression-only")) {
+        await generate("compression-text-vector.pdf", 1, "text", false);
+        await generate("compression-mixed.pdf", 2, "mixed", false);
+        await generate("compression-multipage.pdf", 100, "text", false);
+        await generate("compression-image-only.pdf", 1, "image-only", false);
+        const previous = JSON.parse(await readFile(path.join(root, "manifest.json"), "utf8")) as FixtureIdentity[];
+        await writeFile(path.join(root, "manifest.json"), `${JSON.stringify([...previous.filter(value => !identity.some(item => item.name === value.name)), ...identity], null, 2)}\n`);
+        return;
     }
     if (process.argv.includes("--render-limit-only")) {
         await generate("render-dpi-limit.pdf", 2, "render-limit");
@@ -71,6 +80,10 @@ async function main(): Promise<void> {
     await save("empty-password-encrypted.pdf", runtime.FS.readFile("/empty-password.pdf"), "encrypted with empty user password; still unsupported");
     if (runtime.callMain(["--deterministic-id", "/input.pdf", "/optimized.pdf"]) !== 0) throw new Error("Optimized fixture generation failed");
     await save("already-optimized.pdf", runtime.FS.readFile("/optimized.pdf"), "structurally rewritten fixture");
+    await generate("compression-text-vector.pdf", 1, "text", false);
+    await generate("compression-mixed.pdf", 2, "mixed", false);
+    await generate("compression-multipage.pdf", 100, "text", false);
+    await generate("compression-image-only.pdf", 1, "image-only", false);
     await writeFile(path.join(root, "manifest.json"), `${JSON.stringify(identity, null, 2)}\n`);
 }
 void main().catch(error => { process.stderr.write(`${error instanceof Error ? error.message : "Fixture generation failed"}\n`); process.exitCode = 1; });

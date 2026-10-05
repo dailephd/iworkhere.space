@@ -45,7 +45,7 @@ async function main(): Promise<void> {
             assert(Number.isSafeInteger(port) && port > 0); base = `http://127.0.0.1:${port}`;
             const uid = Number(await command("docker", ["exec", container, "node", "-p", "process.getuid()"], "container-uid.log")); assert(uid > 0); evidence.runtimeUid = uid;
         } else {
-            await command(process.execPath, ["node_modules/next/dist/bin/next", "build"], "harness-build.log");
+            if (!process.argv.includes("--existing-build")) await command(process.execPath, ["node_modules/next/dist/bin/next", "build"], "harness-build.log");
             server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", "127.0.0.1", "--port", "3192"], { windowsHide: true, stdio: "ignore", env: { ...process.env, OBSERVABILITY_PERSISTENCE_ENABLED: "false" } });
         }
         const deadline = Date.now() + 60000;
@@ -207,6 +207,25 @@ async function main(): Promise<void> {
             assert.equal((await pageCopy([name], "split", ["1"]))[0].category, name === "encrypted" ? "encrypted" : "malformed");
         }
         evidence.pageCopy = pageCopyEvidence; evidence.maximumSplitGroups = maximum.length;
+        const compression: Record<string, unknown> = {};
+        async function compress(name: string, cancel = false) {
+            const input = [...await readFile(`test/fixtures/pdf/${name}.pdf`)];
+            return page.evaluate(async ({ input, cancel }) => window.pdfCompression!(input, cancel), { input, cancel });
+        }
+        evidence.compression = compression;
+        for (const name of ["compression-text-vector", "compression-mixed", "compression-multipage", "compression-image-only", "text-vector", "mixed", "multipage", "already-optimized", "jpeg-heavy", "png-heavy", "rotated", "mixed-dimensions", "standard-fonts"]) {
+            const proof = await compress(name); compression[name] = proof;
+            assert(!proof.category, `${name}: ${proof.category}`); assert.equal(proof.QPDF_EXIT_STATUS, 0);
+            assert.equal(proof.PAGE_COUNT_BEFORE, proof.PAGE_COUNT_AFTER); assert.equal(proof.PAGE_GEOMETRY, "PASS"); assert.equal(proof.TEXT_COMPARISON, "PASS"); assert.equal(proof.RENDER_COMPARISON, "PASS_ALL_PAGES");
+            assert.equal(proof.outcome, proof.OUTPUT_BYTES! < proof.INPUT_BYTES ? "smaller" : "no-reduction");
+        }
+        assert.equal((compression["compression-text-vector"] as { outcome: string }).outcome, "smaller");
+        assert.equal((compression["already-optimized"] as { outcome: string }).outcome, "no-reduction");
+        for (const [name, category] of [["encrypted", "encrypted"], ["empty-password-encrypted", "encrypted"], ["truncated", "malformed"], ["false-signature", "signature"], ["damaged-xref", "malformed"]]) {
+            const proof = await compress(name); compression[name] = proof; assert.equal(proof.category, category, name); assert.equal(proof.OUTPUT_BYTES, undefined);
+        }
+        compression.cancel = await compress("text-vector", true); assert.equal((compression.cancel as { category: string }).category, "cancelled");
+        evidence.compression = compression;
         for (const kind of ["pdfLib", "qpdf"]) {
             for (const name of ["text-vector.pdf", "mixed.pdf", "rotated.pdf", "mixed-dimensions.pdf", "ordering.pdf"]) {
                 const output = await run(name, kind); assert(!output.category, `${kind} ${name}: ${output.category}`);

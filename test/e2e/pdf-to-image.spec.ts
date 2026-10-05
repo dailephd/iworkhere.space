@@ -89,6 +89,6 @@ test("PDF to image: initial SSR guide, metadata, registry discovery and sitemap"
     await page.goto("/"); await expect(page.getByRole("region", { name: "All other tools" }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(1);
     await expect(page.getByRole("region", { name: "Image tools", exact: true }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(0);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("pdf to"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
-    await page.goto("/category/document"); const links = page.getByRole("main").locator('a[href^="/tool/"]'); await expect(links).toHaveCount(4); await expect(links).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG"]);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(22); expect(xml.split("<loc>https://iworkhere.space/tool/pdf-to-image</loc>")).toHaveLength(2);
+    await page.goto("/category/document"); const links = page.getByRole("main").locator('a[href^="/tool/"]'); await expect(links).toHaveCount(5); await expect(links).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(23); expect(xml.split("<loc>https://iworkhere.space/tool/pdf-to-image</loc>")).toHaveLength(2);
 });

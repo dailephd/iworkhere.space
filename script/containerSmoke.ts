@@ -149,12 +149,13 @@ try {
   summary.runtimeUid = runtimeUid;
   if (!Number.isInteger(runtimeUid) || runtimeUid <= 0) throw new Error("Runtime process is root or its UID could not be proven.");
 
-  const routes = ["/", "/discover", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/tool/image-resizer", "/tool/image-compressor", "/tool/image-converter", "/tool/heic-converter", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
+  const routes = ["/", "/discover", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/tool/image-resizer", "/tool/image-compressor", "/tool/image-converter", "/tool/heic-converter", "/tool/compress-pdf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {
     const response = await fetch(`${baseUrl}${route}`);
     routeResults[route] = response.status;
     if (!response.ok) throw new Error(`HTTP smoke ${route} returned ${response.status}.`);
+    if (route.endsWith("qpdf.wasm") && !response.headers.get("content-type")?.includes("application/wasm")) throw new Error("QPDF WASM MIME mismatch.");
     if (route === "/ads.txt") {
       if (await response.text() !== "google.com, pub-7976885058339852, DIRECT, f08c47fec0942fa0\n" || !response.headers.get("content-type")?.includes("text/plain")) throw new Error("ads.txt body or content type mismatch.");
       summary.adsTxtResult = "PASS";

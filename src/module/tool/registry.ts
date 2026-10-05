@@ -13,6 +13,7 @@ import { MergePdfTool } from "./document/MergePdfTool";
 import { SplitPdfTool } from "./document/SplitPdfTool";
 import { ImagesToPdfTool } from "./document/ImagesToPdfTool";
 import { PdfToImageTool } from "./document/PdfToImageTool";
+import { CompressPdfTool } from "./document/CompressPdfTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -54,6 +55,16 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["pdf", "document", "image", "jpg", "jpeg", "png", "convert", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: PdfToImageTool,
+    },
+    {
+        id: "compress-pdf", slug: "compress-pdf", name: "Compress PDF",
+        description: "Compress PDF structure locally in your browser without rasterizing pages.",
+        category: "document",
+        seo: { title: "Compress PDF", description: "Compress PDF structure locally in your browser with lossless QPDF optimization.", canonicalPath: "/tool/compress-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "compress", "optimize", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: CompressPdfTool,
     },
     {
         id: "slugify",

@@ -118,5 +118,29 @@
     "bytes": 5439,
     "sha256": "0ba99cd788aea1fbceb710fc30ada2016adbf9d158a1d83457190fdc747b1d77",
     "purpose": "text"
+  },
+  {
+    "name": "compression-text-vector.pdf",
+    "bytes": 1176,
+    "sha256": "f9dc8fd8f1eac883527c2931276ecccd12de2ef04da6ec2d2fed155b648f6b72",
+    "purpose": "text"
+  },
+  {
+    "name": "compression-mixed.pdf",
+    "bytes": 3575,
+    "sha256": "a9348a6fb4d6bec08162f6dac55f51445794e9a48a03b390e723228a96ccc02f",
+    "purpose": "mixed"
+  },
+  {
+    "name": "compression-multipage.pdf",
+    "bytes": 46932,
+    "sha256": "07372c6ff9450df12dc83bfafc90500233dbc49adb774e0a7118eb5d02acc623",
+    "purpose": "text"
+  },
+  {
+    "name": "compression-image-only.pdf",
+    "bytes": 2328,
+    "sha256": "991432d85426a8530aac8f954fd61f65e7e5099fab0f594c57b713cc5f469598",
+    "purpose": "image-only"
   }
 ]

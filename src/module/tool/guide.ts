@@ -16,6 +16,17 @@ const documentPrivacy = "PDF processing happens locally in the browser; your PDF
 const documentFidelity = "The supported boundary is static pages: page order, dimensions, rotation, visible content and extractable text. Preservation of metadata, bookmarks, attachments, complex interactive forms, accessibility structure and digital signatures or their cryptographic validity is not guaranteed.";
 
 const guideById: Partial<Record<ToolId, ToolGuide>> = {
+    "compress-pdf": {
+        instruction: ["Choose one PDF.", "Select Compress PDF.", "Wait for local lossless structural optimization and independent verification.", "If the verified result is smaller, download it.", "If no smaller output is produced, keep the original."],
+        section: [
+            { heading: "What this compression does", text: "QPDF restructures and compresses PDF objects and streams. Pages are not rasterized. This mode is lossless with respect to the supported static-page semantics; image quality is not intentionally reduced. There is one mode: lossless structural compression." },
+            { heading: "No reduction is normal", text: "Already optimized PDFs may stay the same size or grow slightly. Download is offered only when independently verified output is actually smaller. NO REDUCTION ACHIEVED is an honest result: the generated replacement is discarded and the original remains the better byte-size choice for this method." },
+            { heading: "Supported PDFs and limits", text: "Choose one valid PDF no larger than 10 MiB and with at most 100 pages. Encrypted or password-protected PDFs are unsupported. Malformed PDFs cannot be safely processed; this tool does not offer repair." },
+            { heading: "Fidelity boundary", text: `${documentFidelity} Smaller results independently verify page geometry, rotation, extractable text and representative visible content before download. Arbitrary PDF extensions are outside this boundary.` },
+            { heading: "Local processing", text: `${documentPrivacy} QPDF WASM runs locally in a short-lived browser worker; document bytes are not uploaded for compression.` },
+        ],
+        relatedToolId: ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image"],
+    },
     "pdf-to-image": {
         instruction: ["Choose one PDF.", "Enter page numbers or ranges such as 1-3 or 3,1.", "Choose PNG or JPG.", "Choose 72, 150 or 300 DPI.", "Adjust quality when JPG is selected.", "Select Convert pages.", "Download each converted page individually after verification."],
         section: [

@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest"
 import { getToolByCategory, getToolBySlug, tool_definition_list } from "./registry"
 
 describe("registry invariants", () => {
-    it("registers exactly the four implemented public document tools", () => {
-        expect(getToolByCategory("document").map(tool => tool.id)).toEqual(["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image"])
-        for (const slug of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image"]) {
+    it("registers exactly the five implemented public document tools", () => {
+        expect(getToolByCategory("document").map(tool => tool.id)).toEqual(["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image", "compress-pdf"])
+        for (const slug of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image", "compress-pdf"]) {
             expect(getToolBySlug(slug)).toMatchObject({ id: slug, slug, category: "document", capability: ["client-only", "offline"], statePolicy: { persist: "none", shareableQuery: false }, seo: { canonicalPath: `/tool/${slug}` } })
         }
     })
@@ -100,7 +100,7 @@ describe("registry invariants", () => {
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
         expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter", "heic-converter"])
-        expect(tool_definition_list).toHaveLength(14)
+        expect(tool_definition_list).toHaveLength(15)
     })
 
     it("registers Converter with its exact offline contract", () => {

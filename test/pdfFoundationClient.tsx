@@ -2,7 +2,9 @@
 import { useEffect } from "react";
 import { openPdfDocument, renderPdfPage } from "../src/module/tool/document/pdfRuntime.client";
 import { startPdfLibOperation, startMergePdfOperation, startSplitPdfOperation } from "../src/module/tool/document/pdfLib.client";
-import { startQpdfOperation } from "../src/module/tool/document/qpdf.client";
+import { startQpdfOperation, startCompressPdfOperation } from "../src/module/tool/document/qpdf.client";
+import { compressPdf } from "../src/module/tool/document/compressPdf.client";
+import { verifyCompressedPdf } from "../src/module/tool/document/compressPdfVerification.client";
 import { classifyPdfFailure, type PdfInspection } from "../src/module/tool/document/pdfFile";
 import { parsePageSelection } from "../src/module/tool/document/pageSelection";
 import { verifyPdfLibOutput } from "../src/module/tool/document/pdfLibVerification.client";
@@ -11,13 +13,38 @@ import type { PdfToImageOption } from "../src/module/tool/document/pdfToImage";
 export interface PdfImageProof { category?: string; canvasCount: number; output: { pageNumber: number; mime: string; width: number; height: number; hash: string; referenceHash: string; maximumDifference: number; meanDifference: number }[] }
 export interface FoundationResult { category?: string; pageCount?: number; page?: { width: number; height: number; rotation: number }[]; raster?: string; text?: string[]; outputBytes?: number; nativeWidth?: number; nativeHeight?: number }
 export interface PageCopyResult extends FoundationResult { pageRaster?: string[]; signature?: string }
+export interface CompressionProof { category?: string; INPUT_BYTES: number; OUTPUT_BYTES?: number; REDUCTION_BYTES?: number; REDUCTION_PERCENT?: number; QPDF_EXIT_STATUS?: number; PAGE_COUNT_BEFORE?: number; PAGE_COUNT_AFTER?: number; PAGE_GEOMETRY?: string; ROTATION?: string; TEXT_COMPARISON?: string; RENDER_COMPARISON?: string; WARNINGS: string; DURATION: number; outcome?: string }
 declare global { interface Window {
     pdfFoundation?: (input: number[], kind: string) => Promise<FoundationResult>;
     pdfPageCopy?: (input: number[][], kind: "inspect" | "merge" | "split" | "cancelMerge" | "cancelSplit", expression?: string[]) => Promise<PageCopyResult[]>;
     pdfImageExport?: (input: number[], page: number[], option: PdfToImageOption, cancel?: boolean) => Promise<PdfImageProof>;
+    pdfCompression?: (input: number[], cancel?: boolean) => Promise<CompressionProof>;
 } }
 export default function PdfFoundationClient() {
     useEffect(() => {
+        window.pdfCompression = async (input, cancel) => {
+            const started = performance.now(), bytes = new Uint8Array(input);
+            const proof: CompressionProof = { INPUT_BYTES: bytes.length, WARNINGS: "NONE", DURATION: 0 };
+            try {
+                const operation = startCompressPdfOperation(bytes);
+                if (cancel) operation.cancel();
+                const candidate = await operation.promise;
+                proof.QPDF_EXIT_STATUS = 0; proof.OUTPUT_BYTES = candidate.length;
+                proof.REDUCTION_BYTES = bytes.length - candidate.length; proof.REDUCTION_PERCENT = proof.REDUCTION_BYTES / bytes.length * 100;
+                // Corpus acceptance verifies even discarded candidates, then deeply renders every page.
+                await verifyCompressedPdf(bytes, candidate, new AbortController().signal);
+                const source = await window.pdfPageCopy!([input], "inspect");
+                const output = await window.pdfPageCopy!([[...candidate]], "inspect");
+                proof.PAGE_COUNT_BEFORE = source[0].pageCount; proof.PAGE_COUNT_AFTER = output[0].pageCount;
+                proof.PAGE_GEOMETRY = JSON.stringify(source[0].page) === JSON.stringify(output[0].page) ? "PASS" : "FAIL";
+                proof.ROTATION = proof.PAGE_GEOMETRY;
+                proof.TEXT_COMPARISON = JSON.stringify(source[0].text) === JSON.stringify(output[0].text) ? "PASS" : "FAIL";
+                proof.RENDER_COMPARISON = JSON.stringify(source[0].pageRaster) === JSON.stringify(output[0].pageRaster) ? "PASS_ALL_PAGES" : "FAIL";
+                proof.outcome = (await compressPdf(bytes, new AbortController().signal)).status;
+            } catch (error) { proof.category = error instanceof DOMException && error.name === "AbortError" ? "cancelled" : error && typeof error === "object" && "category" in error ? String(error.category) : "verification"; }
+            proof.DURATION = performance.now() - started;
+            return proof;
+        };
         window.pdfImageExport = async (input, selection, option, cancel) => {
             const proof: PdfImageProof = { canvasCount: 0, output: [] };
             const nativeCreate = document.createElement.bind(document);
@@ -133,7 +160,7 @@ export default function PdfFoundationClient() {
                 } finally { await handle.close(); }
             } catch (error) { return { category: error instanceof DOMException && error.name === "AbortError" ? "cancelled" : error && typeof error === "object" && "category" in error ? String(error.category) : classifyPdfFailure(error) }; }
         };
-        return () => { delete window.pdfFoundation; delete window.pdfPageCopy; delete window.pdfImageExport; };
+        return () => { delete window.pdfFoundation; delete window.pdfPageCopy; delete window.pdfImageExport; delete window.pdfCompression; };
     }, []);
     return <p>PDF foundation test harness</p>;
 }

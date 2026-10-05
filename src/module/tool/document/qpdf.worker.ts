@@ -33,7 +33,8 @@ scope.onmessage = async event => {
         if (encryption === 0) { cleanup(); scope.postMessage({ id: request.id, status: "error", category: "encrypted" }); return; }
         if (encryption !== 2) throw new Error("QPDF input check failed");
         diagnostic = "";
-        if (run(["--deterministic-id", "/input.pdf", "/output.pdf"]) !== 0) throw new Error("QPDF operation failed");
+        const option = request.operation === "compress" ? ["--object-streams=generate", "--recompress-flate", "--compression-level=9"] : [];
+        if (run([...option, "--deterministic-id", "/input.pdf", "/output.pdf"]) !== 0) throw new Error("QPDF operation failed");
         const bytes = runtime.FS.readFile("/output.pdf").slice();
         cleanup();
         scope.postMessage({ id: request.id, status: "success", bytes }, [bytes.buffer]);
