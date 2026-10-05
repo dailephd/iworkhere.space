@@ -106,5 +106,17 @@
     "bytes": 978,
     "sha256": "c9a299eeda166e45d296aa428af54926ead886580445376a5f3199a6bd097c5e",
     "purpose": "structurally rewritten fixture"
+  },
+  {
+    "name": "render-dpi-limit.pdf",
+    "bytes": 1139,
+    "sha256": "8b481ec7d40af4d012e33049d0270e21e1e4de7d2b09e019160d58760b6ccccb",
+    "purpose": "render-limit"
+  },
+  {
+    "name": "page-export-limit.pdf",
+    "bytes": 5439,
+    "sha256": "0ba99cd788aea1fbceb710fc30ada2016adbf9d158a1d83457190fdc747b1d77",
+    "purpose": "text"
   }
 ]

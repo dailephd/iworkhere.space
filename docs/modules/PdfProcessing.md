@@ -3,7 +3,8 @@
 Batch 1 establishes three distinct browser runtime boundaries under
 `src/module/tool/document/`. Batch 2 registers Merge PDF and Split PDF with guides;
 Batch 3 adds Images to PDF using the same mutation worker and output verifier.
-there is no server processing endpoint.
+Batch 4 composes the accepted PDF.js runtime for sequential PNG/JPEG export.
+There is no server processing endpoint.
 
 `pdfRuntime.client.ts` lazily imports pdfjs-dist 6.4.299 at operation time,
 configures its version-matched same-origin native worker, owns loading-task
@@ -11,6 +12,9 @@ cleanup/cancellation and maps engine failures to PdfFile categories. It never
 loads scripting or executes PDF JavaScript, external actions, links or forms.
 Document data remains local. Page rendering is
 bounded before canvas allocation; native browser decoding verifies raster output.
+`measurePdfPage` provides no-canvas viewport preflight through that same owner.
+Rendering accepts an optional native background argument for explicit white JPEG
+composition; existing default rendering remains unchanged.
 Rendering accepts an AbortSignal, cancels the native RenderTask, removes its
 abort listener and preserves AbortError rather than reporting cancellation as
 a processing failure.

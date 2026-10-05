@@ -1,7 +1,7 @@
 import { afterEach, expect, it, vi } from "vitest";
 const engine = vi.hoisted(() => ({ GlobalWorkerOptions: { workerSrc: "" }, getDocument: vi.fn() }));
 vi.mock("pdfjs-dist", () => engine);
-import { openPdfDocument, renderPdfPage, type PdfDocumentHandle } from "./pdfRuntime.client";
+import { openPdfDocument, measurePdfPage, renderPdfPage, type PdfDocumentHandle } from "./pdfRuntime.client";
 import { MAX_SINGLE_PDF_BYTES, MAX_AGGREGATE_PDF_BYTES } from "./pdfFile";
 const bytes = new TextEncoder().encode("%PDF-1.7\n");
 it("allows bounded generated output without weakening source limits", async () => {
@@ -49,4 +49,23 @@ it("bounds page acquisition failures before rendering", async () => {
     const handle = { inspection: { pageCount: 1 }, document: { getPage: async () => { throw new Error("private parser diagnostic"); } } } as unknown as PdfDocumentHandle;
     await expect(renderPdfPage(handle, 1, {} as HTMLCanvasElement)).rejects.toMatchObject({ category: "runtime" });
     await expect(renderPdfPage(handle, 1, {} as HTMLCanvasElement)).rejects.not.toThrow("private parser diagnostic");
+});
+it.each([[4096, 3906, true], [4097, 1, false], [4000, 4000, true], [4000, 4001, false], [239.1, 179.1, true]])("preflights viewport %s x %s without allocating a canvas", async (width, height, valid) => {
+    const cleanup = vi.fn(), viewport = vi.fn(() => ({ width, height })), render = vi.fn();
+    const handle = { inspection: { pageCount: 1 }, document: { getPage: async () => ({ getViewport: viewport, render, cleanup }) } } as unknown as PdfDocumentHandle;
+    if (valid) await expect(measurePdfPage(handle, 1, 150 / 72)).resolves.toEqual({ width: Math.ceil(width), height: Math.ceil(height) });
+    else await expect(measurePdfPage(handle, 1)).rejects.toMatchObject({ category: "render-limit" });
+    expect(viewport).toHaveBeenCalledWith({ scale: valid ? 150 / 72 : 1 }); expect(render).not.toHaveBeenCalled(); expect(cleanup).toHaveBeenCalledOnce();
+});
+it("honors native rotated viewport, background options and pre-allocation rejection", async () => {
+    const viewport = vi.fn(({ scale }) => ({ width: 240 * scale, height: 320 * scale })), cleanup = vi.fn(), render = vi.fn((option: unknown) => {
+        expect(option).toHaveProperty("viewport");
+        return { promise: Promise.resolve(), cancel: vi.fn() };
+    });
+    const handle = { inspection: { pageCount: 1 }, document: { getPage: async () => ({ rotate: 90, getViewport: viewport, render, cleanup }) } } as unknown as PdfDocumentHandle;
+    const canvas = { width: 0, height: 0 } as HTMLCanvasElement;
+    await renderPdfPage(handle, 1, canvas, 150 / 72, undefined, "#ffffff");
+    expect(canvas).toMatchObject({ width: 501, height: 667 }); expect(render.mock.calls[0][0]).toMatchObject({ background: "#ffffff" });
+    await renderPdfPage(handle, 1, canvas); expect(render.mock.calls[1][0]).not.toHaveProperty("background");
+    canvas.width = 0; canvas.height = 0; await expect(renderPdfPage(handle, 1, canvas, 20)).rejects.toMatchObject({ category: "render-limit" }); expect(canvas.width).toBe(0);
 });

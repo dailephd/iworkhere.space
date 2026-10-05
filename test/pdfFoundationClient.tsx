@@ -6,14 +6,53 @@ import { startQpdfOperation } from "../src/module/tool/document/qpdf.client";
 import { classifyPdfFailure, type PdfInspection } from "../src/module/tool/document/pdfFile";
 import { parsePageSelection } from "../src/module/tool/document/pageSelection";
 import { verifyPdfLibOutput } from "../src/module/tool/document/pdfLibVerification.client";
+import { convertPdfToImages } from "../src/module/tool/document/pdfToImage.client";
+import type { PdfToImageOption } from "../src/module/tool/document/pdfToImage";
+export interface PdfImageProof { category?: string; canvasCount: number; output: { pageNumber: number; mime: string; width: number; height: number; hash: string; referenceHash: string; maximumDifference: number; meanDifference: number }[] }
 export interface FoundationResult { category?: string; pageCount?: number; page?: { width: number; height: number; rotation: number }[]; raster?: string; text?: string[]; outputBytes?: number; nativeWidth?: number; nativeHeight?: number }
 export interface PageCopyResult extends FoundationResult { pageRaster?: string[]; signature?: string }
 declare global { interface Window {
     pdfFoundation?: (input: number[], kind: string) => Promise<FoundationResult>;
     pdfPageCopy?: (input: number[][], kind: "inspect" | "merge" | "split" | "cancelMerge" | "cancelSplit", expression?: string[]) => Promise<PageCopyResult[]>;
+    pdfImageExport?: (input: number[], page: number[], option: PdfToImageOption, cancel?: boolean) => Promise<PdfImageProof>;
 } }
 export default function PdfFoundationClient() {
     useEffect(() => {
+        window.pdfImageExport = async (input, selection, option, cancel) => {
+            const proof: PdfImageProof = { canvasCount: 0, output: [] };
+            const nativeCreate = document.createElement.bind(document);
+            document.createElement = ((tag: string, options?: ElementCreationOptions) => {
+                if (tag === "canvas") proof.canvasCount++;
+                return nativeCreate(tag, options);
+            }) as typeof document.createElement;
+            try {
+                const controller = new AbortController();
+                const processing = convertPdfToImages(new Uint8Array(input), selection, option, controller.signal);
+                if (cancel) controller.abort();
+                const output = await processing;
+                document.createElement = nativeCreate;
+                const reference = await openPdfDocument(new Uint8Array(input)).promise;
+                const hash = async (data: Uint8ClampedArray) => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new Uint8Array(data)))).map(value => value.toString(16).padStart(2, "0")).join("");
+                try {
+                    for (const item of output) {
+                        const canvas = nativeCreate("canvas"), decoded = nativeCreate("canvas");
+                        const bitmap = await createImageBitmap(item.blob);
+                        try {
+                            await renderPdfPage(reference, item.pageNumber, canvas, option.dpi / 72, undefined, option.format === "jpeg" ? "#ffffff" : undefined);
+                            decoded.width = bitmap.width; decoded.height = bitmap.height;
+                            decoded.getContext("2d")!.drawImage(bitmap, 0, 0);
+                            const actual = decoded.getContext("2d")!.getImageData(0, 0, decoded.width, decoded.height).data;
+                            const expected = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
+                            let maximumDifference = 0, total = 0;
+                            for (let index = 0; index < actual.length; index++) { const difference = Math.abs(actual[index] - expected[index]); maximumDifference = Math.max(maximumDifference, difference); total += difference; }
+                            proof.output.push({ pageNumber: item.pageNumber, mime: item.blob.type, width: bitmap.width, height: bitmap.height, hash: await hash(actual), referenceHash: await hash(expected), maximumDifference, meanDifference: total / actual.length });
+                        } finally { bitmap.close(); canvas.width = 0; canvas.height = 0; decoded.width = 0; decoded.height = 0; }
+                    }
+                } finally { await reference.close(); }
+            } catch (error) { proof.category = error instanceof DOMException && error.name === "AbortError" ? "cancelled" : error && typeof error === "object" && "category" in error ? String(error.category) : classifyPdfFailure(error); }
+            finally { document.createElement = nativeCreate; }
+            return proof;
+        };
         window.pdfPageCopy = async (input, kind, expression = []) => {
             try {
                 const source: Uint8Array[] = input.map(value => new Uint8Array(value));
@@ -94,7 +133,7 @@ export default function PdfFoundationClient() {
                 } finally { await handle.close(); }
             } catch (error) { return { category: error instanceof DOMException && error.name === "AbortError" ? "cancelled" : error && typeof error === "object" && "category" in error ? String(error.category) : classifyPdfFailure(error) }; }
         };
-        return () => { delete window.pdfFoundation; delete window.pdfPageCopy; };
+        return () => { delete window.pdfFoundation; delete window.pdfPageCopy; delete window.pdfImageExport; };
     }, []);
     return <p>PDF foundation test harness</p>;
 }

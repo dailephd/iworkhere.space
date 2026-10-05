@@ -16,6 +16,17 @@ const documentPrivacy = "PDF processing happens locally in the browser; your PDF
 const documentFidelity = "The supported boundary is static pages: page order, dimensions, rotation, visible content and extractable text. Preservation of metadata, bookmarks, attachments, complex interactive forms, accessibility structure and digital signatures or their cryptographic validity is not guaranteed.";
 
 const guideById: Partial<Record<ToolId, ToolGuide>> = {
+    "pdf-to-image": {
+        instruction: ["Choose one PDF.", "Enter page numbers or ranges such as 1-3 or 3,1.", "Choose PNG or JPG.", "Choose 72, 150 or 300 DPI.", "Adjust quality when JPG is selected.", "Select Convert pages.", "Download each converted page individually after verification."],
+        section: [
+            { heading: "Page selection", text: "Use a single page (1), an ascending range (1-3), a comma list (1,3,5), or a combination (1-3,6,9-10). Requested sequence is preserved: 3,1 exports page 3 before page 1. Duplicate pages keep their first occurrence. Selection starts at page 1 and supports at most 20 output images. There is no ZIP or automatic download all." },
+            { heading: "PNG vs JPG", text: "PNG is the default and uses lossless browser encoding. JPG uses lossy encoding and may be smaller; quality ranges from 0.50 to 1.00, with a default of 0.85. JPG rendering uses an opaque white page background. PNG keeps the accepted PDF.js rendered page appearance without an additional JPG flattening step. WebP output is unsupported." },
+            { heading: "Resolution and limits", text: "Choose 72, 150 or 300 DPI; the default is 150 DPI. PDF page rotation is honored. Every selected page is checked before rendering: no output may exceed a 4096-pixel side or a 16 MP canvas. If a page is too large, select a lower DPI. Pages are rendered sequentially to bound memory use." },
+            { heading: "PDF source limits", text: "Choose a valid PDF no larger than 10 MiB and with at most 100 pages. Encrypted or password-protected PDFs are unsupported; malformed PDFs cannot be safely processed." },
+            { heading: "Local PDF and image processing", text: `${documentPrivacy} Generated page images remain local until you download them. Each image has an individual download link; no previews of all full-size outputs are retained.` },
+        ],
+        relatedToolId: ["merge-pdf", "split-pdf", "images-to-pdf"],
+    },
     "images-to-pdf": {
         instruction: ["Choose 1–20 JPEG/PNG images. You can add more images after the first selection.", "Arrange them with Move up and Move down.", "Select Create PDF.", "Download the resulting PDF after verification."],
         section: [

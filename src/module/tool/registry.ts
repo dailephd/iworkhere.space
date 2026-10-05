@@ -12,6 +12,7 @@ import { HeicConverterTool } from "./image/HeicConverterTool";
 import { MergePdfTool } from "./document/MergePdfTool";
 import { SplitPdfTool } from "./document/SplitPdfTool";
 import { ImagesToPdfTool } from "./document/ImagesToPdfTool";
+import { PdfToImageTool } from "./document/PdfToImageTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -43,6 +44,16 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["pdf", "document", "image", "jpg", "jpeg", "png", "convert", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: ImagesToPdfTool,
+    },
+    {
+        id: "pdf-to-image", slug: "pdf-to-image", name: "PDF to JPG / PNG",
+        description: "Convert selected PDF pages to JPG or PNG images locally in your browser.",
+        category: "document",
+        seo: { title: "PDF to JPG / PNG Converter", description: "Convert selected PDF pages to JPG or PNG images locally in your browser.", canonicalPath: "/tool/pdf-to-image" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "image", "jpg", "jpeg", "png", "convert", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: PdfToImageTool,
     },
     {
         id: "slugify",

@@ -13,16 +13,16 @@ test("home loads with one main landmark", async ({ page }) => {
     for (const slug of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) {
         await expect(imageSection.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     }
-    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(13);
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(14);
     await expect(page.getByRole("main").getByRole("link", { name: /Image Resizer/ })).toHaveAttribute("href", "/tool/image-resizer");
 });
 
-test("discover exposes all thirteen registered tools and reachable routes", async ({ page }) => {
+test("discover exposes all fourteen registered tools and reachable routes", async ({ page }) => {
     expect((await page.goto("/discover"))?.status()).toBe(200);
     const catalog = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(catalog).toHaveCount(13);
+    await expect(catalog).toHaveCount(14);
     const reached = new Set<string>();
-    for (let index = 0; index < 13; index += 1) {
+    for (let index = 0; index < 14; index += 1) {
         if (index > 0) await page.goto("/discover");
         await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
         await catalog.nth(index).click();
@@ -32,7 +32,7 @@ test("discover exposes all thirteen registered tools and reachable routes", asyn
     }
     expect([...reached].sort()).toEqual([
         "/tool/calculator", "/tool/heic-converter", "/tool/html-text-extractor", "/tool/image-compressor", "/tool/image-converter", "/tool/image-resizer",
-        "/tool/images-to-pdf", "/tool/length-converter", "/tool/merge-pdf", "/tool/slugify", "/tool/split-pdf", "/tool/time-arithmetic", "/tool/weight-converter",
+        "/tool/images-to-pdf", "/tool/length-converter", "/tool/merge-pdf", "/tool/pdf-to-image", "/tool/slugify", "/tool/split-pdf", "/tool/time-arithmetic", "/tool/weight-converter",
     ]);
 });
 

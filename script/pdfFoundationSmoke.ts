@@ -4,7 +4,8 @@ import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import assert from "node:assert/strict";
 import { chromium, type Browser } from "@playwright/test";
-import type { FoundationResult, PageCopyResult } from "../test/pdfFoundationClient";
+import type { FoundationResult, PageCopyResult, PdfImageProof } from "../test/pdfFoundationClient";
+import type { PdfToImageOption } from "../src/module/tool/document/pdfToImage";
 interface WorkerCount { started: number; active: number; terminated: number; url: string[] }
 interface FoundationWindow extends Window { foundationWorkers: WorkerCount }
 async function main(): Promise<void> {
@@ -14,6 +15,7 @@ async function main(): Promise<void> {
     const image = `iworkhere-space:${runId.toLowerCase()}`;
     const container = `iworkhere-${runId.toLowerCase()}`;
     const containerMode = process.argv.includes("--container");
+    const imageMode = process.argv.includes("--pdf-to-image");
     await mkdir(report, { recursive: true });
     const evidence: Record<string, unknown> = { runId, mode: containerMode ? "standalone-container" : "production-next", result: "PENDING" };
     process.stdout.write(`PDF_FOUNDATION_RUN_ID: ${runId}\nReport: ${report}\n`);
@@ -62,7 +64,7 @@ async function main(): Promise<void> {
             assert.equal(health, "healthy"); evidence.dockerHealth = health;
         }
         const assetResponse: Record<string, string> = {};
-        for (const root of ["pdfjs/6.4.299", "qpdf/12.4.2"]) {
+        for (const root of imageMode ? ["pdfjs/6.4.299"] : ["pdfjs/6.4.299", "qpdf/12.4.2"]) {
             const manifest = JSON.parse(await readFile(`public/vendor/${root}/manifest.json`, "utf8")) as { asset: { path: string }[] };
             for (const asset of manifest.asset) {
                 const url = `/vendor/${root}/${asset.path}`; const response = await fetch(base + url);
@@ -115,6 +117,47 @@ async function main(): Promise<void> {
         context.on("request", request => { assert.equal(new URL(request.url()).origin, base, "Unexpected remote request"); assert.equal(request.method(), "GET", "File bytes must not be uploaded"); requests.push({ path: new URL(request.url()).pathname, method: request.method(), type: request.resourceType() }); });
         await page.goto(`${base}/pdf-foundation-test`, { waitUntil: "networkidle" });
         await page.waitForFunction(() => !!window.pdfFoundation);
+        if (imageMode) {
+            const proof: Record<string, PdfImageProof> = {};
+            async function exportImage(name: string, selection = [1], option: PdfToImageOption = { format: "png", dpi: 72, quality: 0.85 }, cancel = false) {
+                const input = [...await readFile(`test/fixtures/pdf/${name}.pdf`)];
+                return page.evaluate(async ({ input, selection, option, cancel }) => window.pdfImageExport!(input, selection, option, cancel), { input, selection, option, cancel });
+            }
+            for (const name of ["text-vector", "jpeg-heavy", "png-heavy", "mixed", "rotated", "mixed-dimensions", "ordering", "multipage", "already-optimized", "standard-fonts"]) {
+                const value = await exportImage(name); proof[name] = value;
+                assert(!value.category, `${name}: ${value.category}`); assert.equal(value.output[0].hash, value.output[0].referenceHash);
+            }
+            proof.ordered = await exportImage("ordering", [3, 1], { format: "png", dpi: 150, quality: 0.85 });
+            assert.deepEqual(proof.ordered.output.map(value => value.pageNumber), [3, 1]);
+            assert.notEqual(proof.ordered.output[0].hash, proof.ordered.output[1].hash);
+            for (const output of proof.ordered.output) assert.equal(output.hash, output.referenceHash);
+            for (const dpi of [72, 150, 300] as const) {
+                const value = await exportImage("rotated", [1], { format: "png", dpi, quality: 0.85 }); proof[`rotation-${dpi}`] = value;
+                assert(!value.category); assert.equal(value.output[0].width, Math.ceil(240 * (dpi / 72))); assert.equal(value.output[0].height, Math.ceil(320 * (dpi / 72))); assert.equal(value.output[0].hash, value.output[0].referenceHash);
+            }
+            for (const quality of [0.5, 0.85, 1]) {
+                const value = await exportImage("jpeg-heavy", [1], { format: "jpeg", dpi: 72, quality }); proof[`jpeg-${quality}`] = value;
+                // Measured Chromium mean channel errors at 0.50/0.85/1.00 are 0.77/0.40/0.02.
+                const tolerance = quality === 0.5 ? 1 : quality === 0.85 ? 0.6 : 0.05;
+                assert(!value.category); assert.equal(value.output[0].mime, "image/jpeg"); assert(value.output[0].meanDifference < tolerance, "JPEG representative raster error exceeds measured lossy tolerance");
+            }
+            proof.limit = await exportImage("render-dpi-limit", [1, 2], { format: "png", dpi: 300, quality: 0.85 });
+            assert.equal(proof.limit.category, "render-limit"); assert.equal(proof.limit.canvasCount, 0); assert.equal(proof.limit.output.length, 0);
+            proof.lowerDpi = await exportImage("render-dpi-limit", [1, 2], { format: "png", dpi: 150, quality: 0.85 }); assert.equal(proof.lowerDpi.output.length, 2); assert(!proof.lowerDpi.category);
+            proof.maximum = await exportImage("page-limit", Array.from({ length: 20 }, (_, index) => index + 1)); assert.equal(proof.maximum.category, "page-limit");
+            proof.twenty = await exportImage("page-export-limit", Array.from({ length: 20 }, (_, index) => index + 1));
+            assert(!proof.twenty.category); assert.equal(proof.twenty.output.length, 20);
+            for (const output of proof.twenty.output) assert.equal(output.hash, output.referenceHash);
+            proof.twentyOne = await exportImage("ordering", Array.from({ length: 21 }, (_, index) => index + 1)); assert.equal(proof.twentyOne.category, "option");
+            for (const [name, category] of [["encrypted", "encrypted"], ["invalid-body", "malformed"]]) { proof[name] = await exportImage(name); assert.equal(proof[name].category, category); }
+            proof.cancel = await exportImage("ordering", [1], undefined, true); assert.equal(proof.cancel.category, "cancelled");
+            await page.waitForTimeout(100);
+            const workers = await page.evaluate(() => (window as unknown as FoundationWindow).foundationWorkers);
+            assert.equal(workers.active, 0); assert.equal(workers.started, workers.terminated); assert(workers.started > 20);
+            assert.deepEqual(problems, []); assert(requests.some(value => value.path.endsWith("pdf.worker.mjs"))); assert(!requests.some(value => /qpdf|pdfLib/.test(value.path)));
+            evidence.pdfToImage = proof; evidence.workers = workers; evidence.requests = requests; evidence.workerResponse = workerResponse; evidence.problems = problems; evidence.privacy = "GET_ONLY_SAME_ORIGIN"; evidence.result = "PASS";
+            await context.close(); return;
+        }
         async function run(name: string, kind: string): Promise<FoundationResult> {
             const input = [...await readFile(`test/fixtures/pdf/${name}`)];
             return await page.evaluate(async ({ input, kind }) => { if (!window.pdfFoundation) throw new Error("Harness unavailable"); return await window.pdfFoundation(input, kind); }, { input, kind });

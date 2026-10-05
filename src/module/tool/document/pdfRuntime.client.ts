@@ -58,7 +58,25 @@ export function openPdfDocument(bytes: Uint8Array, purpose: "source" | "generate
     } };
 }
 
-export async function renderPdfPage(handle: PdfDocumentHandle, pageNumber: number, canvas: HTMLCanvasElement, scale = 1, signal?: AbortSignal): Promise<void> {
+export interface PdfRenderDimension { width: number; height: number }
+export async function measurePdfPage(handle: PdfDocumentHandle, pageNumber: number, scale = 1, signal?: AbortSignal): Promise<PdfRenderDimension> {
+    signal?.throwIfAborted();
+    if (!Number.isSafeInteger(pageNumber) || pageNumber < 1 || pageNumber > handle.inspection.pageCount || !Number.isFinite(scale) || scale <= 0) throw new PdfFileError("render-limit");
+    let page: Awaited<ReturnType<PDFDocumentProxy["getPage"]>> | undefined;
+    try {
+        page = await handle.document.getPage(pageNumber);
+        signal?.throwIfAborted();
+        const viewport = page.getViewport({ scale });
+        const width = Math.ceil(viewport.width), height = Math.ceil(viewport.height);
+        if (validatePdfRender(width, height)) throw new PdfFileError("render-limit");
+        return { width, height };
+    } catch (error) {
+        if (signal?.aborted || (error instanceof DOMException && error.name === "AbortError")) throw new DOMException("Operation cancelled", "AbortError");
+        throw new PdfFileError(classifyPdfFailure(error));
+    } finally { page?.cleanup(); }
+}
+
+export async function renderPdfPage(handle: PdfDocumentHandle, pageNumber: number, canvas: HTMLCanvasElement, scale = 1, signal?: AbortSignal, background?: string): Promise<void> {
     signal?.throwIfAborted();
     if (!Number.isSafeInteger(pageNumber) || pageNumber < 1 || pageNumber > handle.inspection.pageCount || !Number.isFinite(scale) || scale <= 0) throw new PdfFileError("render-limit");
     let page: Awaited<ReturnType<PDFDocumentProxy["getPage"]>> | undefined;
@@ -69,7 +87,7 @@ export async function renderPdfPage(handle: PdfDocumentHandle, pageNumber: numbe
         const width = Math.ceil(viewport.width), height = Math.ceil(viewport.height);
         if (validatePdfRender(width, height)) throw new PdfFileError("render-limit");
         canvas.width = width; canvas.height = height;
-        const task = page.render({ canvas, viewport });
+        const task = page.render({ canvas, viewport, ...(background ? { background } : {}) });
         const cancel = () => task.cancel();
         signal?.addEventListener("abort", cancel, { once: true });
         try { await task.promise; }

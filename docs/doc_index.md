@@ -2,6 +2,12 @@
 
 # Documentation Index
 
+### docs/modules/PdfToImage.md
+
+**Summary:** Selected-page PNG/JPEG export, DPI/quality, atomic viewport preflight,
+native image verification and local cancellation/download ownership.
+**When to read:** Changing PDF to JPG / PNG.
+
 ### docs/modules/ImagesToPdf.md
 
 **Summary:** Atomic ordered JPEG/PNG selection, intrinsic page sizing, direct

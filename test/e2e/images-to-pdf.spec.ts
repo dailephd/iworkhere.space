@@ -71,11 +71,12 @@ test("Images to PDF: initial SEO/guide and automatic registry discovery", async 
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/images-to-pdf"'); expect(html).toContain('property="og:url" content="https://iworkhere.space/tool/images-to-pdf"');
     await page.goto("/"); await expect(page.getByRole("region", { name: "All other tools" }).locator('a[href="/tool/images-to-pdf"]')).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("images to pdf"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
-    await page.goto("/category/document"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toContainText(["Merge PDF", "Split PDF", "Images to PDF"]);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(21); expect(xml.split("<loc>https://iworkhere.space/tool/images-to-pdf</loc>")).toHaveLength(2);
+    await page.goto("/category/document"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG"]);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(22); expect(xml.split("<loc>https://iworkhere.space/tool/images-to-pdf</loc>")).toHaveLength(2);
 });
 test("Images to PDF: unsupported content rejects an entire batch locally", async ({ page }) => {
     await page.goto("/tool/images-to-pdf"); const input = page.getByLabel("Choose JPEG or PNG images", { exact: true }); await input.setInputFiles(fixture("resizer-source.jpg"));
+    await expect(page.getByRole("list", { name: "Image page order" }).getByRole("listitem")).toHaveCount(1);
     await input.setInputFiles([fixture("resizer-source.png"), fixture("resizer-source.webp")]);
     const alert = page.getByRole("main").getByRole("alert"); await expect(alert).toContainText("WebP"); await expect(alert).toBeFocused();
     await expect(page.getByRole("list", { name: "Image page order" }).getByRole("listitem")).toHaveCount(1);

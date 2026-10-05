@@ -24,3 +24,11 @@ are never used for production document processing. Encryption is unsupported.
 PDF.js independently parses and renders producer outputs. Damaged-xref parsing
 does not establish repair or output safety. No output fidelity claim is derived
 only from a producer parsing its own output.
+
+Batch 4 adds `render-dpi-limit.pdf`: two labeled vector pages, 320×240 and
+1200×900 points. At 300 DPI the second exceeds the 4096-side limit; at 150 DPI
+both fit. This proves atomic preflight and lower-DPI recovery. Its producer,
+fixed dates, content and checksum follow the existing fixture owner. Regenerate
+this fixture and `page-export-limit.pdf` (20 labeled pages proving the output
+boundary) with `node node_modules/tsx/dist/cli.mjs script/pdfFixture.ts
+--render-limit-only`; that focused mode does not initialize or invoke QPDF.
