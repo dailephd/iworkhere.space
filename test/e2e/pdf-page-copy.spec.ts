@@ -101,7 +101,7 @@ test("Split: multiple ordered groups, overlap, verified individual downloads and
     await info.attach("split-local-evidence", { body: JSON.stringify(log), contentType: "application/json" });
 });
 
-test("document registry discovery, search, initial SEO/guides and 20 canonical sitemap URLs", async ({ page, request }) => {
+test("document registry discovery, search, initial SEO/guides and 21 canonical sitemap URLs", async ({ page, request }) => {
     for (const [slug, name, related] of [["merge-pdf", "Merge PDF", "split-pdf"], ["split-pdf", "Split PDF", "merge-pdf"]]) {
         const html = await (await request.get(`/tool/${slug}`)).text();
         expect(html).toContain(`<h1`); expect(html).toContain(name); expect(html).toContain("How to use");
@@ -113,13 +113,13 @@ test("document registry discovery, search, initial SEO/guides and 20 canonical s
         await page.goto(`/tool/${slug}`); await expect(page.getByRole("heading", { level: 1, name, exact: true })).toBeVisible();
     }
     await page.goto("/category/document"); const category = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(category).toHaveCount(2); await expect(category).toContainText(["Merge PDF", "Split PDF"]);
+    await expect(category).toHaveCount(3); await expect(category).toContainText(["Merge PDF", "Split PDF", "Images to PDF"]);
     await page.goto("/");
     const other = page.getByRole("region", { name: "All other tools" });
     for (const slug of ["merge-pdf", "split-pdf"]) await expect(other.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("pdf");
-    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(2);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(20);
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(3);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(21);
     for (const route of ["/tool/merge-pdf", "/tool/split-pdf", "/category/document"]) expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);
 });

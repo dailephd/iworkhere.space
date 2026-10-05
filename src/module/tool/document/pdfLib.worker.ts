@@ -1,6 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import { readPdfLibRequest, type PdfLibResponse } from "./pdfLib.workerType";
 import { MAX_AGGREGATE_PAGES, validatePdfBytes, validatePdfPageCount } from "./pdfFile";
+import { validateImageFileDimension } from "../image/imageFile";
 const scope = self as unknown as { onmessage: ((event: MessageEvent) => void) | null; postMessage(response: PdfLibResponse, transfer?: Transferable[]): void };
 let used = false;
 async function load(bytes: Uint8Array): Promise<PDFDocument> {
@@ -22,6 +23,18 @@ scope.onmessage = async event => {
         return;
     }
     try {
+        if (request.operation === "images-to-pdf") {
+            const output = await PDFDocument.create();
+            for (const source of request.image) {
+                const image = source.format === "jpeg" ? await output.embedJpg(source.bytes) : await output.embedPng(source.bytes);
+                if (validateImageFileDimension(image) || image.width !== source.width || image.height !== source.height) throw new Error("Unsupported image dimensions");
+                const page = output.addPage([image.width, image.height]);
+                page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+            }
+            const bytes = await save(output);
+            scope.postMessage({ id: request.id, status: "success", bytes }, [bytes.buffer]);
+            return;
+        }
         if (request.operation === "merge") {
             const output = await PDFDocument.create();
             let pageCount = 0;

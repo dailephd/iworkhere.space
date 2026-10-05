@@ -57,7 +57,7 @@ describe.each(["merge", "split"] as const)("%s client lifecycle", kind => {
     it("copies/transfers UI bytes, accepts ordered output, repeats independently", async () => {
         for (let index = 0; index < 2; index++) {
             const operation = begin(), worker = WorkerProbe.current;
-            const input = worker.request.operation === "merge" ? worker.request.input : [worker.request.bytes];
+            const input = worker.request.operation === "merge" ? worker.request.input : worker.request.operation === "images-to-pdf" ? worker.request.image.map(value => value.bytes) : [worker.request.bytes];
             expect(input.every(value => value !== bytes)).toBe(true); expect(worker.transfer).toEqual(input.map(value => value.buffer));
             worker.onmessage?.({ data: { id: worker.request.id, status: "success", ...(kind === "merge" ? { bytes } : { output: [bytes, bytes] }) } } as MessageEvent);
             await expect(operation.promise).resolves.toEqual(kind === "merge" ? bytes : [bytes, bytes]);

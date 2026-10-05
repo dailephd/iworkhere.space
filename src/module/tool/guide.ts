@@ -16,6 +16,16 @@ const documentPrivacy = "PDF processing happens locally in the browser; your PDF
 const documentFidelity = "The supported boundary is static pages: page order, dimensions, rotation, visible content and extractable text. Preservation of metadata, bookmarks, attachments, complex interactive forms, accessibility structure and digital signatures or their cryptographic validity is not guaranteed.";
 
 const guideById: Partial<Record<ToolId, ToolGuide>> = {
+    "images-to-pdf": {
+        instruction: ["Choose 1–20 JPEG/PNG images. You can add more images after the first selection.", "Arrange them with Move up and Move down.", "Select Create PDF.", "Download the resulting PDF after verification."],
+        section: [
+            { heading: "One image per page", text: "Each image becomes one PDF page in the displayed order. Intrinsic image pixel width and height numerically become PDF points: a 1200 × 800 image creates a 1200 × 800 point page. Aspect ratio is preserved. There are no paper-size, margin, cropping or layout controls; DPI metadata does not change page size." },
+            { heading: "Supported images and limits", text: "JPEG and PNG only; WebP and HEIC are unsupported by this tool. Choose up to 20 images, at most 25 MiB together. Each non-empty image also obeys the 25 MiB source limit and 30 megapixels decoded-area limit. Encoded content and successful browser decoding are checked; a rejected selection batch leaves accepted images unchanged." },
+            { heading: "Transparency and output caveats", text: "PNG alpha is embedded without an intentional white flattening step. Viewer and page-background presentation may affect how transparency appears. This does not promise a portable transparent PDF page. Metadata preservation is not promised." },
+            { heading: "Local image and PDF processing", text: "Images are read locally and the PDF is created in the browser; source images are not uploaded for conversion. The site still loads ordinary application assets and may use separately enabled site observability. Keep the page open until processing and download finish." },
+        ],
+        relatedToolId: ["merge-pdf", "split-pdf"],
+    },
     "merge-pdf": {
         instruction: ["Choose 2–10 PDFs. You can add more PDFs after the first selection.", "Arrange the documents with Move up and Move down. Each document's pages keep their original order.", "Select Merge PDF.", "Review the verified page count and size, then download the merged file."],
         section: [

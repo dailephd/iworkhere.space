@@ -17,11 +17,16 @@ describe("server guide and breadcrumb composition", () => {
             if (tool.category === "document") {
                 expect(guide).toBeDefined();
                 expect(html).toContain("Related document tools");
-                expect(html).toContain("10 MiB"); expect(html).toContain("100 pages");
-                expect(html).toContain("PDF processing happens locally");
+                if (tool.id === "images-to-pdf") {
+                    expect(html).toContain("25 MiB"); expect(html).toContain("30 megapixels");
+                    expect(html).toContain("source images are not uploaded"); expect(html).toContain("PDF points");
+                    expect(html).toContain("PNG alpha"); expect(related).toHaveLength(2);
+                } else {
+                    expect(html).toContain("10 MiB"); expect(html).toContain("100 pages");
+                    expect(html).toContain("PDF processing happens locally"); expect(related).toHaveLength(1);
+                }
                 expect(html).toContain("ordinary application assets");
-                expect(related).toHaveLength(1);
-                expect(html).toContain(`href="${related[0].seo.canonicalPath}"`);
+                for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
                 expect(html).not.toContain("Related image tools");
                 return;
             }

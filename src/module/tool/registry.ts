@@ -11,6 +11,7 @@ import { ImageConverterTool } from "./image/ImageConverterTool";
 import { HeicConverterTool } from "./image/HeicConverterTool";
 import { MergePdfTool } from "./document/MergePdfTool";
 import { SplitPdfTool } from "./document/SplitPdfTool";
+import { ImagesToPdfTool } from "./document/ImagesToPdfTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -32,6 +33,16 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["pdf", "document", "split", "pages", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: SplitPdfTool,
+    },
+    {
+        id: "images-to-pdf", slug: "images-to-pdf", name: "Images to PDF",
+        description: "Combine JPEG and PNG images into one PDF locally in your browser.",
+        category: "document",
+        seo: { title: "Images to PDF", description: "Combine up to 20 JPEG and PNG images into one PDF locally in your browser.", canonicalPath: "/tool/images-to-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "image", "jpg", "jpeg", "png", "convert", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImagesToPdfTool,
     },
     {
         id: "slugify",

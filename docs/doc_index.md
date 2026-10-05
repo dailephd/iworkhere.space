@@ -2,6 +2,12 @@
 
 # Documentation Index
 
+### docs/modules/ImagesToPdf.md
+
+**Summary:** Atomic ordered JPEG/PNG selection, intrinsic page sizing, direct
+worker embedding, independent alpha/content verification and local lifecycle.
+**When to read:** Changing Images to PDF.
+
 ### docs/modules/MergePdf.md
 
 **Summary:** Atomic ordered PDF selection, existing worker merge operation,

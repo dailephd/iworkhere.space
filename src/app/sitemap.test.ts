@@ -5,9 +5,10 @@ import { getAllTool, getAvailableCategory } from "@/module/tool/metadata";
 describe("public sitemap", () => {
     it("enumerates the canonical registry and only populated categories once", () => {
         const urls = sitemap().map(entry => entry.url);
-        expect(getAllTool()).toHaveLength(12);
+        expect(getAllTool()).toHaveLength(13);
         expect(getAvailableCategory()).toHaveLength(6);
-        expect(urls).toHaveLength(20);
+        expect(urls).toHaveLength(21);
+        expect(urls).toHaveLength(2 + getAllTool().length + getAvailableCategory().length);
         expect(new Set(urls).size).toBe(urls.length);
         expect(urls).toContain("https://iworkhere.space/");
         expect(urls).toContain("https://iworkhere.space/discover");

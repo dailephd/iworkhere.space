@@ -102,7 +102,7 @@ Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark,
 
 ## Change and documentation rules
 
-Batch 2 document tools use existing solid raised panels and semantic source,
+Batch 2 and 3 document tools use existing solid raised panels and semantic source,
 input, action, result and error tokens. Ordered source controls and split groups
 wrap/stack naturally with min-width-zero children; no theme geometry changes,
 drag/drop, animation, new palette or shared UI framework. Result headings receive

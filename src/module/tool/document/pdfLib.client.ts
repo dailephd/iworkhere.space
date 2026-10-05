@@ -1,4 +1,5 @@
 import { validatePdfBytes, PdfFileError } from "./pdfFile";
+import type { ImagesToPdfSource } from "./imagesToPdf";
 import { readPdfLibRequest, readPdfLibResponse, type PdfLibFailure, type PdfLibRequest } from "./pdfLib.workerType";
 export interface PdfLibOperation { promise: Promise<Uint8Array>; cancel(): void }
 export interface PdfLibSplitOperation { promise: Promise<Uint8Array[]>; cancel(): void }
@@ -6,6 +7,10 @@ export class PdfLibProcessingError extends Error {
     constructor(public readonly category: PdfLibFailure) { super("PdfLib processing could not complete."); this.name = "PdfLibProcessingError"; }
 }
 let nextId = 0;
+export function startImagesToPdfOperation(image: readonly ImagesToPdfSource[], timeoutMs = 30_000): PdfLibOperation {
+    const operation = start({ id: ++nextId, operation: "images-to-pdf", image: image.map(value => ({ bytes: value.bytes, format: value.format, width: value.width, height: value.height })) }, timeoutMs);
+    return { promise: operation.promise.then(output => output[0]), cancel: operation.cancel };
+}
 export function startPdfLibOperation(bytes: Uint8Array, timeoutMs = 30_000): PdfLibOperation {
     const failure = validatePdfBytes(bytes);
     if (failure) throw new PdfFileError(failure);
@@ -54,7 +59,10 @@ function start(request: PdfLibRequest, timeoutMs: number): PdfLibSplitOperation 
         worker.onerror = event => { event.preventDefault(); fail("processing"); };
         worker.onmessageerror = () => fail("protocol");
         try {
-            if (request.operation === "merge") {
+            if (request.operation === "images-to-pdf") {
+                const image = request.image.map(value => ({ ...value, bytes: value.bytes.slice() }));
+                worker.postMessage({ ...request, image }, image.map(value => value.bytes.buffer));
+            } else if (request.operation === "merge") {
                 const input = request.input.map(bytes => bytes.slice());
                 worker.postMessage({ ...request, input }, input.map(bytes => bytes.buffer));
             } else {
