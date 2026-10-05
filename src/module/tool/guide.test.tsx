@@ -20,7 +20,8 @@ describe("server guide and breadcrumb composition", () => {
                 if (tool.id === "images-to-pdf") {
                     expect(html).toContain("25 MiB"); expect(html).toContain("30 megapixels");
                     expect(html).toContain("source images are not uploaded"); expect(html).toContain("PDF points");
-                    expect(html).toContain("PNG alpha"); expect(related).toHaveLength(2);
+                    expect(html).toContain("PNG alpha"); expect(related).toHaveLength(3);
+                    expect(html).toContain('href="/tool/pdf-to-image"');
                 } else {
                     expect(html).toContain("10 MiB"); expect(html).toContain("100 pages");
                     expect(html).toContain("PDF processing happens locally"); expect(related).toHaveLength(tool.id === "compress-pdf" ? 4 : tool.id === "pdf-to-image" ? 3 : 1);
@@ -55,5 +56,17 @@ describe("server guide and breadcrumb composition", () => {
         expect(getToolGuide("unknown")).toBeUndefined();
         expect(getToolGuide("toString")).toBeUndefined();
         expect(getToolByIdList(["unknown", "image-resizer", "image-resizer", "heic-converter"]).map(tool => tool.id)).toEqual(["image-resizer", "heic-converter"]);
+    });
+    it("keeps every document guide connected only to distinct registered siblings", () => {
+        const documents = getAllTool().filter(tool => tool.category === "document");
+        expect(documents).toHaveLength(5);
+        for (const tool of documents) {
+            const ids = getToolGuide(tool.id)!.relatedToolId;
+            expect(ids.length).toBeGreaterThan(0);
+            expect(new Set(ids).size).toBe(ids.length);
+            expect(ids).not.toContain(tool.id);
+            expect(getToolByIdList(ids).map(sibling => sibling.id)).toEqual(ids);
+            expect(getToolByIdList(ids).every(sibling => sibling.category === "document")).toBe(true);
+        }
     });
 });

@@ -84,7 +84,7 @@ export function PdfToImageTool({ toolId }: ToolComponentProp) {
             <p className="text-sm text-text-muted">One PDF, at most 10 MiB and 100 pages. Encrypted PDFs are unsupported.</p>
             {source && <p className="break-all">{source.file.name} · {source.inspection.pageCount} pages · {formatPdfBytes(source.file.size)}</p>}
         </section>
-        <form onSubmit={convert} className={PANEL} noValidate>
+        <form aria-label="Page image settings" onSubmit={convert} className={PANEL} noValidate>
             <h2 className="font-semibold text-category-document">Page image settings</h2>
             <label htmlFor="pdf-image-pages" className="block font-medium">Pages to convert</label>
             <input id="pdf-image-pages" value={expression} disabled={!source} onChange={event => changeExpression(event.target.value)} aria-invalid={!!source && !parsed.ok} aria-describedby="pdf-image-page-help" className={INPUT} />

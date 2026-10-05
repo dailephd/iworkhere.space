@@ -110,14 +110,14 @@ test("document registry discovery, search, initial SEO/guides and 23 canonical s
         expect(html).toContain(`rel="canonical" href="https://iworkhere.space/tool/${slug}"`);
         expect(html).toContain(`property="og:url" content="https://iworkhere.space/tool/${slug}"`);
         expect(html).toContain('aria-label="Breadcrumb"'); expect(html).toContain('href="/category/document"');
-        await page.goto(`/tool/${slug}`); await expect(page.getByRole("heading", { level: 1, name, exact: true })).toBeVisible();
+        await page.goto(`/tool/${slug}`, { waitUntil: "networkidle" }); await expect(page.getByRole("heading", { level: 1, name, exact: true })).toBeVisible();
     }
-    await page.goto("/category/document"); const category = page.getByRole("main").locator('a[href^="/tool/"]');
+    await page.goto("/category/document", { waitUntil: "networkidle" }); const category = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(category).toHaveCount(5); await expect(category).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "networkidle" });
     const other = page.getByRole("region", { name: "All other tools" });
     for (const slug of ["merge-pdf", "split-pdf"]) await expect(other.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
-    await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("pdf");
+    await page.goto("/discover", { waitUntil: "networkidle" }); await page.getByLabel("Search", { exact: true }).fill("pdf");
     await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(5);
     const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(23);
     for (const route of ["/tool/merge-pdf", "/tool/split-pdf", "/category/document"]) expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);

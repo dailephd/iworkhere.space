@@ -117,7 +117,7 @@ export function ImagesToPdfTool({ toolId }: ToolComponentProp) {
                 </div>
             </li>)}</ol>
         </section>
-        <form onSubmit={create} className={PANEL}>
+        <form aria-label="Create PDF actions" onSubmit={create} className={PANEL}>
             <div className="flex flex-wrap gap-3">
                 <button type="submit" disabled={item.length < 1 || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Create PDF</button>
                 <button type="button" className={SECONDARY} onClick={reset}>Reset</button>

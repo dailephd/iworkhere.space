@@ -118,7 +118,7 @@ export function MergePdfTool({ toolId }: ToolComponentProp) {
                 </div>
             </li>)}</ol>
         </section>
-        <form onSubmit={merge} className={PANEL}>
+        <form aria-label="Merge actions" onSubmit={merge} className={PANEL}>
             <div className="flex flex-wrap gap-3">
                 <button type="submit" disabled={item.length < 2 || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Merge PDF</button>
                 <button type="button" className={SECONDARY} onClick={reset}>Reset</button>

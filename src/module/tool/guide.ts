@@ -46,7 +46,7 @@ const guideById: Partial<Record<ToolId, ToolGuide>> = {
             { heading: "Transparency and output caveats", text: "PNG alpha is embedded without an intentional white flattening step. Viewer and page-background presentation may affect how transparency appears. This does not promise a portable transparent PDF page. Metadata preservation is not promised." },
             { heading: "Local image and PDF processing", text: "Images are read locally and the PDF is created in the browser; source images are not uploaded for conversion. The site still loads ordinary application assets and may use separately enabled site observability. Keep the page open until processing and download finish." },
         ],
-        relatedToolId: ["merge-pdf", "split-pdf"],
+        relatedToolId: ["merge-pdf", "split-pdf", "pdf-to-image"],
     },
     "merge-pdf": {
         instruction: ["Choose 2–10 PDFs. You can add more PDFs after the first selection.", "Arrange the documents with Move up and Move down. Each document's pages keep their original order.", "Select Merge PDF.", "Review the verified page count and size, then download the merged file."],

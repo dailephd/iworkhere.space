@@ -149,13 +149,18 @@ try {
   summary.runtimeUid = runtimeUid;
   if (!Number.isInteger(runtimeUid) || runtimeUid <= 0) throw new Error("Runtime process is root or its UID could not be proven.");
 
-  const routes = ["/", "/discover", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/tool/image-resizer", "/tool/image-compressor", "/tool/image-converter", "/tool/heic-converter", "/tool/compress-pdf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
+  const sitemap = await fetch(`${baseUrl}/sitemap.xml`);
+  if (!sitemap.ok) throw new Error("Container sitemap is unavailable.");
+  const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
+  if (publicRoutes.length !== 23 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
+  const routes = [...publicRoutes, "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {
     const response = await fetch(`${baseUrl}${route}`);
     routeResults[route] = response.status;
     if (!response.ok) throw new Error(`HTTP smoke ${route} returned ${response.status}.`);
     if (route.endsWith("qpdf.wasm") && !response.headers.get("content-type")?.includes("application/wasm")) throw new Error("QPDF WASM MIME mismatch.");
+    if (/\.(?:mjs|js)$/.test(route) && !response.headers.get("content-type")?.match(/(?:application|text)\/javascript/)) throw new Error("Worker/runtime JavaScript MIME mismatch.");
     if (route === "/ads.txt") {
       if (await response.text() !== "google.com, pub-7976885058339852, DIRECT, f08c47fec0942fa0\n" || !response.headers.get("content-type")?.includes("text/plain")) throw new Error("ads.txt body or content type mismatch.");
       summary.adsTxtResult = "PASS";

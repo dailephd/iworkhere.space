@@ -70,7 +70,7 @@ export function CompressPdfTool({ toolId }: ToolComponentProp) {
             <p className="text-sm text-text-muted">One PDF, at most 10 MiB and 100 pages. Encrypted PDFs are unsupported.</p>
             {source && <p className="break-all">{source.file.name} · {source.inspection.pageCount} pages · {formatPdfBytes(source.bytes.length)}</p>}
         </section>
-        <form onSubmit={compress} className={PANEL} noValidate>
+        <form aria-label="Compression actions" onSubmit={compress} className={PANEL} noValidate>
             <h2 className="font-semibold text-category-document">Lossless structural compression</h2>
             <p>Optimize PDF objects and streams without rasterizing pages or intentionally reducing image quality. Already optimized PDFs may not become smaller.</p>
             <div className="flex flex-wrap gap-3"><button type="submit" disabled={!source || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Compress PDF</button><button type="button" className={SECONDARY} onClick={reset}>Reset</button></div>

@@ -132,7 +132,7 @@ export function SplitPdfTool({ toolId }: ToolComponentProp) {
             <p className="text-sm text-text-muted">One PDF, at most 10 MiB and 100 pages. Encrypted PDFs are unsupported.</p>
             {source && <p className="break-all">{source.file.name} · {source.inspection.pageCount} pages · {formatPdfBytes(source.file.size)}</p>}
         </section>
-        <form onSubmit={split} className={PANEL} noValidate>
+        <form aria-label="Split output groups" onSubmit={split} className={PANEL} noValidate>
             <h2 className="font-semibold text-category-document">Output groups</h2>
             <p className="text-sm text-text-muted">Use pages such as 1-3 or 4,6. Requested order is kept; repeated pages within one group are included once. Groups may overlap.</p>
             {group.map((value, index) => <div key={value.id} className="min-w-0 space-y-2 rounded-lg border border-panel-border p-3">
