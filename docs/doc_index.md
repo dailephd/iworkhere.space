@@ -2,6 +2,18 @@
 
 # Documentation Index
 
+### docs/modules/MergePdf.md
+
+**Summary:** Atomic ordered PDF selection, existing worker merge operation,
+independent verification, local lifecycle/download/privacy and accessibility.
+**When to read:** Changing Merge PDF.
+
+### docs/modules/SplitPdf.md
+
+**Summary:** Explicit parsed output groups, existing worker split operation,
+ordered verification/downloads, local lifecycle/privacy and accessibility.
+**When to read:** Changing Split PDF.
+
 ### docs/modules/PdfFile.md
 
 **Summary:** Batch 1 document source validation, frozen limits, bounded PDF

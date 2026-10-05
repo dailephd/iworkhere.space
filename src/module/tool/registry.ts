@@ -9,8 +9,30 @@ import { ImageResizerTool } from "./image/ImageResizerTool";
 import { ImageCompressorTool } from "./image/ImageCompressorTool";
 import { ImageConverterTool } from "./image/ImageConverterTool";
 import { HeicConverterTool } from "./image/HeicConverterTool";
+import { MergePdfTool } from "./document/MergePdfTool";
+import { SplitPdfTool } from "./document/SplitPdfTool";
 
 export const tool_definition_list: ToolDefinition[] = [
+    {
+        id: "merge-pdf", slug: "merge-pdf", name: "Merge PDF",
+        description: "Merge multiple PDF files into one PDF locally in your browser.",
+        category: "document",
+        seo: { title: "Merge PDF Files", description: "Merge 2 to 10 PDF files into one PDF locally in your browser.", canonicalPath: "/tool/merge-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "merge", "combine", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: MergePdfTool,
+    },
+    {
+        id: "split-pdf", slug: "split-pdf", name: "Split PDF",
+        description: "Split selected pages from a PDF into separate PDF files locally in your browser.",
+        category: "document",
+        seo: { title: "Split PDF Pages", description: "Split a PDF into up to 20 page groups locally in your browser.", canonicalPath: "/tool/split-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "split", "pages", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: SplitPdfTool,
+    },
     {
         id: "slugify",
         slug: "slugify",

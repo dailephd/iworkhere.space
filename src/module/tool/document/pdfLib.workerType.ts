@@ -1,17 +1,41 @@
-import { MAX_AGGREGATE_PDF_BYTES, MAX_SINGLE_PDF_BYTES } from "./pdfFile";
+import { MAX_AGGREGATE_PDF_BYTES, MAX_INPUT_PDFS, MAX_PDF_PAGES, MAX_SINGLE_PDF_BYTES, MAX_SPLIT_OUTPUT_GROUPS } from "./pdfFile";
 export type PdfLibFailure = "initialization" | "processing" | "protocol" | "timeout" | "encrypted";
-export interface PdfLibRequest { id: number; bytes: Uint8Array }
+export interface PdfLibFoundationRequest { id: number; bytes: Uint8Array; operation?: "foundation" }
+export interface PdfLibMergeRequest { id: number; operation: "merge"; input: Uint8Array[] }
+/** Split indices are one-based, unique within each group, and retain requested order. */
+export interface PdfLibSplitRequest { id: number; operation: "split"; bytes: Uint8Array; group: number[][] }
+export type PdfLibRequest = PdfLibFoundationRequest | PdfLibMergeRequest | PdfLibSplitRequest;
 export interface PdfLibSuccess { id: number; status: "success"; bytes: Uint8Array }
+export interface PdfLibSplitSuccess { id: number; status: "success"; output: Uint8Array[] }
 export interface PdfLibError { id: number; status: "error"; category: PdfLibFailure }
-export type PdfLibResponse = PdfLibSuccess | PdfLibError;
-export function readPdfLibRequest(value: unknown): PdfLibRequest | null {
-    if (!value || typeof value !== "object" || !("id" in value) || !("bytes" in value)) return null;
-    if (typeof value.id !== "number" || !Number.isSafeInteger(value.id) || value.id < 1 || !(value.bytes instanceof Uint8Array) || value.bytes.length === 0 || value.bytes.length > MAX_SINGLE_PDF_BYTES) return null;
-    return { id: value.id, bytes: value.bytes };
+export type PdfLibResponse = PdfLibSuccess | PdfLibSplitSuccess | PdfLibError;
+function inputBytes(value: unknown): value is Uint8Array {
+    return value instanceof Uint8Array && value.length > 0 && value.length <= MAX_SINGLE_PDF_BYTES;
 }
-export function readPdfLibResponse(value: unknown, id: number): PdfLibResponse | null {
+export function readPdfLibRequest(value: unknown): PdfLibRequest | null {
+    if (!value || typeof value !== "object" || !("id" in value) || typeof value.id !== "number" || !Number.isSafeInteger(value.id) || value.id < 1) return null;
+    const operation = "operation" in value ? value.operation : "foundation";
+    if (operation === "merge") {
+        if (!("input" in value) || !Array.isArray(value.input) || value.input.length < 2 || value.input.length > MAX_INPUT_PDFS || !value.input.every(inputBytes)) return null;
+        if (value.input.reduce((sum, bytes) => sum + bytes.length, 0) > MAX_AGGREGATE_PDF_BYTES) return null;
+        return { id: value.id, operation, input: value.input };
+    }
+    if (!("bytes" in value) || !inputBytes(value.bytes)) return null;
+    if (operation === "foundation") return "operation" in value ? { id: value.id, operation, bytes: value.bytes } : { id: value.id, bytes: value.bytes };
+    if (operation !== "split" || !("group" in value) || !Array.isArray(value.group) || value.group.length === 0 || value.group.length > MAX_SPLIT_OUTPUT_GROUPS) return null;
+    for (const group of value.group) {
+        if (!Array.isArray(group) || group.length === 0 || group.length > MAX_PDF_PAGES || !group.every(page => Number.isSafeInteger(page) && page >= 1 && page <= MAX_PDF_PAGES) || new Set(group).size !== group.length) return null;
+    }
+    return { id: value.id, operation, bytes: value.bytes, group: value.group };
+}
+export function readPdfLibResponse(value: unknown, id: number, operation: "foundation" | "merge" | "split" = "foundation", groupCount = 0): PdfLibResponse | null {
     if (!value || typeof value !== "object" || !("id" in value) || value.id !== id || !("status" in value)) return null;
-    if (value.status === "success" && "bytes" in value && value.bytes instanceof Uint8Array && value.bytes.length > 0 && value.bytes.length <= MAX_AGGREGATE_PDF_BYTES) return { id, status: "success", bytes: value.bytes };
     if (value.status === "error" && "category" in value && ["initialization", "processing", "protocol", "timeout", "encrypted"].includes(String(value.category))) return { id, status: "error", category: value.category as PdfLibFailure };
-    return null;
+    if (value.status !== "success") return null;
+    const outputBytes = (bytes: unknown): bytes is Uint8Array => bytes instanceof Uint8Array && bytes.length > 0 && bytes.length <= MAX_AGGREGATE_PDF_BYTES;
+    if (operation === "split") {
+        if (!("output" in value) || !Array.isArray(value.output) || value.output.length !== groupCount || groupCount < 1 || groupCount > MAX_SPLIT_OUTPUT_GROUPS || !value.output.every(outputBytes)) return null;
+        return { id, status: "success", output: value.output };
+    }
+    return "bytes" in value && outputBytes(value.bytes) ? { id, status: "success", bytes: value.bytes } : null;
 }

@@ -1,6 +1,6 @@
 # PdfFile
 
-Batch 1 foundation; no public document tool is registered.
+Batch 1 foundation, reused by the Batch 2 public Merge PDF and Split PDF tools.
 
 `src/module/tool/document/pdfFile.ts` owns explicit frozen PDF/document limits,
 bounded header/source validation, page-count and geometry validation, safe

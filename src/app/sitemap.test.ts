@@ -5,14 +5,15 @@ import { getAllTool, getAvailableCategory } from "@/module/tool/metadata";
 describe("public sitemap", () => {
     it("enumerates the canonical registry and only populated categories once", () => {
         const urls = sitemap().map(entry => entry.url);
-        expect(getAllTool()).toHaveLength(10);
-        expect(urls).toHaveLength(17);
+        expect(getAllTool()).toHaveLength(12);
+        expect(getAvailableCategory()).toHaveLength(6);
+        expect(urls).toHaveLength(20);
         expect(new Set(urls).size).toBe(urls.length);
         expect(urls).toContain("https://iworkhere.space/");
         expect(urls).toContain("https://iworkhere.space/discover");
         for (const tool of getAllTool()) expect(urls).toContain(`https://iworkhere.space${tool.seo.canonicalPath}`);
         for (const category of getAvailableCategory()) expect(urls).toContain(`https://iworkhere.space/category/${category}`);
-        expect(urls).not.toContain("https://iworkhere.space/category/document");
+        expect(urls).toContain("https://iworkhere.space/category/document");
         for (const url of urls) {
             expect(url).toMatch(/^https:\/\/iworkhere\.space\//);
             expect(url).not.toMatch(/api\/|\?|#|localhost|vercel\.app|dashboard|_not-found/);

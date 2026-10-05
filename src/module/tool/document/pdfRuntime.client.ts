@@ -1,5 +1,5 @@
 import type { PDFDocumentProxy } from "pdfjs-dist";
-import { PdfFileError, classifyPdfFailure, validatePdfBytes, validatePdfGeometry, validatePdfPageCount, validatePdfRender, type PdfInspection } from "./pdfFile";
+import { MAX_AGGREGATE_PDF_BYTES, hasPdfHeader, PdfFileError, classifyPdfFailure, validatePdfBytes, validatePdfGeometry, validatePdfPageCount, validatePdfRender, type PdfInspection } from "./pdfFile";
 
 export const PDFJS_ASSET_ROOT = "/vendor/pdfjs/6.4.299/";
 export interface PdfDocumentOperation { promise: Promise<PdfDocumentHandle>; cancel(): void }
@@ -12,8 +12,9 @@ async function acquireEngine() {
     return pdfjs;
 }
 
-export function openPdfDocument(bytes: Uint8Array): PdfDocumentOperation {
-    const failure = validatePdfBytes(bytes);
+export function openPdfDocument(bytes: Uint8Array, purpose: "source" | "generated-output" = "source"): PdfDocumentOperation {
+    const failure = purpose === "source" ? validatePdfBytes(bytes) :
+        bytes.length === 0 || bytes.length > MAX_AGGREGATE_PDF_BYTES || !hasPdfHeader(bytes) ? "malformed" : null;
     if (failure) throw new PdfFileError(failure);
     let cancelled = false;
     let task: ReturnType<typeof import("pdfjs-dist")["getDocument"]> | undefined;

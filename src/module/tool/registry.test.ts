@@ -2,6 +2,12 @@ import { describe, expect, it } from "vitest"
 import { getToolByCategory, getToolBySlug, tool_definition_list } from "./registry"
 
 describe("registry invariants", () => {
+    it("registers exactly Merge PDF and Split PDF as the public document category", () => {
+        expect(getToolByCategory("document").map(tool => tool.id)).toEqual(["merge-pdf", "split-pdf"])
+        for (const slug of ["merge-pdf", "split-pdf"]) {
+            expect(getToolBySlug(slug)).toMatchObject({ id: slug, slug, category: "document", capability: ["client-only", "offline"], statePolicy: { persist: "none", shareableQuery: false }, seo: { canonicalPath: `/tool/${slug}` } })
+        }
+    })
     it("registers the local-only Image Resizer and resolves its image category", () => {
         const tool = getToolBySlug("image-resizer")
         expect(tool).toMatchObject({
@@ -94,7 +100,7 @@ describe("registry invariants", () => {
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
         expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter", "heic-converter"])
-        expect(tool_definition_list).toHaveLength(10)
+        expect(tool_definition_list).toHaveLength(12)
     })
 
     it("registers Converter with its exact offline contract", () => {

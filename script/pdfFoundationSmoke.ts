@@ -4,7 +4,7 @@ import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import assert from "node:assert/strict";
 import { chromium, type Browser } from "@playwright/test";
-import type { FoundationResult } from "../test/pdfFoundationClient";
+import type { FoundationResult, PageCopyResult } from "../test/pdfFoundationClient";
 interface WorkerCount { started: number; active: number; terminated: number; url: string[] }
 interface FoundationWindow extends Window { foundationWorkers: WorkerCount }
 async function main(): Promise<void> {
@@ -126,6 +126,44 @@ async function main(): Promise<void> {
         }
         for (const [name, category] of [["encrypted.pdf", "encrypted"], ["empty-password-encrypted.pdf", "encrypted"], ["truncated.pdf", "malformed"], ["invalid-body.pdf", "malformed"], ["false-signature.pdf", "signature"], ["page-limit.pdf", "page-limit"], ["large-page-box.pdf", "render-limit"]]) assert.equal((await run(name, "inspect")).category, category, name);
         evidence.damagedXref = await run("damaged-xref.pdf", "inspect");
+        async function pageCopy(name: string[], kind: "inspect" | "merge" | "split" | "cancelMerge" | "cancelSplit", expression: string[] = []): Promise<PageCopyResult[]> {
+            const input = await Promise.all(name.map(async name => [...await readFile(`test/fixtures/pdf/${name}.pdf`)]));
+            return page.evaluate(async ({ input, kind, expression }) => {
+                if (!window.pdfPageCopy) throw new Error("Page-copy harness unavailable");
+                return window.pdfPageCopy(input, kind, expression);
+            }, { input, kind, expression });
+        }
+        const pageCopyEvidence: Record<string, PageCopyResult[]> = {};
+        const sourceName = ["ordering", "mixed-dimensions", "rotated"];
+        const source = await pageCopy(sourceName, "inspect");
+        for (const count of [2, 3, 2]) {
+            const merged = await pageCopy(sourceName.slice(0, count), "merge");
+            assert.equal(merged.length, 1); assert.equal(merged[0].signature, "%PDF-");
+            assert.deepEqual(merged[0].page, source.slice(0, count).flatMap(value => value.page ?? []));
+            assert.deepEqual(merged[0].text, source.slice(0, count).flatMap(value => value.text ?? []));
+            assert.deepEqual(merged[0].pageRaster, source.slice(0, count).flatMap(value => value.pageRaster ?? []));
+            pageCopyEvidence[`merge-${count}`] = merged;
+        }
+        for (const name of sourceName) {
+            const inspected = (await pageCopy([name], "inspect"))[0];
+            const expression = inspected.pageCount! >= 3 ? ["1-2", "3,1,3", "1"] : inspected.pageCount! >= 2 ? ["1-2", "2,1,2", "1"] : ["1", "1"];
+            const selected = inspected.pageCount! >= 3 ? [[1, 2], [3, 1], [1]] : inspected.pageCount! >= 2 ? [[1, 2], [2, 1], [1]] : [[1], [1]];
+            const split = await pageCopy([name], "split", expression);
+            assert.equal(split.length, selected.length);
+            for (let index = 0; index < split.length; index++) {
+                assert.equal(split[index].signature, "%PDF-");
+                for (const key of ["page", "text", "pageRaster"] as const) assert.deepEqual(split[index][key], selected[index].map(page => inspected[key]![page - 1]));
+            }
+            pageCopyEvidence[`split-${name}`] = split;
+        }
+        const maximum = await pageCopy(["ordering"], "split", Array(20).fill("1"));
+        assert.equal(maximum.length, 20); assert(maximum.every(value => value.pageCount === 1 && value.signature === "%PDF-"));
+        for (const kind of ["cancelMerge", "cancelSplit"] as const) assert.equal((await pageCopy(["ordering", "rotated"], kind, ["1"]))[0].category, "cancelled");
+        for (const name of ["encrypted", "invalid-body"]) {
+            assert.equal((await pageCopy([name, "ordering"], "merge"))[0].category, name === "encrypted" ? "encrypted" : "malformed");
+            assert.equal((await pageCopy([name], "split", ["1"]))[0].category, name === "encrypted" ? "encrypted" : "malformed");
+        }
+        evidence.pageCopy = pageCopyEvidence; evidence.maximumSplitGroups = maximum.length;
         for (const kind of ["pdfLib", "qpdf"]) {
             for (const name of ["text-vector.pdf", "mixed.pdf", "rotated.pdf", "mixed-dimensions.pdf", "ordering.pdf"]) {
                 const output = await run(name, kind); assert(!output.category, `${kind} ${name}: ${output.category}`);

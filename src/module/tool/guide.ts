@@ -12,8 +12,30 @@ export interface ToolGuide {
 }
 
 const privacy = "Image processing happens locally in this browser; your image is not uploaded for processing. The site still loads ordinary application assets and may use separately enabled site observability. Keep the page open until processing and download finish.";
+const documentPrivacy = "PDF processing happens locally in the browser; your PDF is not uploaded for processing. The site still loads ordinary application assets and may use separately enabled site observability. Keep the page open until processing and download finish.";
+const documentFidelity = "The supported boundary is static pages: page order, dimensions, rotation, visible content and extractable text. Preservation of metadata, bookmarks, attachments, complex interactive forms, accessibility structure and digital signatures or their cryptographic validity is not guaranteed.";
 
 const guideById: Partial<Record<ToolId, ToolGuide>> = {
+    "merge-pdf": {
+        instruction: ["Choose 2–10 PDFs. You can add more PDFs after the first selection.", "Arrange the documents with Move up and Move down. Each document's pages keep their original order.", "Select Merge PDF.", "Review the verified page count and size, then download the merged file."],
+        section: [
+            { heading: "Document and page order", text: "Documents are joined in the displayed order, with all pages from the first PDF followed by all pages from the next PDF. Selecting the same local file twice intentionally includes it twice. This tool does not compress the documents." },
+            { heading: "PDF limits and unsupported sources", text: "Choose 2–10 PDFs, each no larger than 10 MiB. Together they must be at most 25 MiB and 100 pages. A rejected selection batch leaves your accepted list unchanged. Encrypted or password-protected PDFs are unsupported; malformed PDFs cannot be safely processed." },
+            { heading: "Static-page fidelity", text: documentFidelity },
+            { heading: "Local PDF processing", text: documentPrivacy },
+        ],
+        relatedToolId: ["split-pdf"],
+    },
+    "split-pdf": {
+        instruction: ["Choose one PDF.", "Define page groups such as 1-3 or 4,6.", "Add or remove output groups as needed.", "Select Split PDF.", "Download the generated PDFs individually after verification."],
+        section: [
+            { heading: "Page groups and syntax", text: "Use a single page (1), an ascending range (1-3), a comma list (1,3,5), or a combination (1-3,6,9-10). Requested sequence is kept, so 3,1 puts page 3 before page 1. Within one group the first occurrence of a page is retained; separate groups may overlap. Up to 20 output groups are supported." },
+            { heading: "PDF limits and individual downloads", text: "The source must be no larger than 10 MiB and have at most 100 pages. Encrypted or password-protected PDFs are unsupported; malformed PDFs cannot be safely processed. Each group produces a separate PDF in group order. There is no ZIP output or automatic bulk download." },
+            { heading: "Static-page fidelity", text: documentFidelity },
+            { heading: "Local PDF processing", text: documentPrivacy },
+        ],
+        relatedToolId: ["merge-pdf"],
+    },
     "image-resizer": {
         instruction: ["Choose a JPEG, PNG or WebP image.", "Enter the desired width or height. Keep Preserve aspect ratio selected to avoid stretching.", "Select Resize image, review the dimensions, then download the result."],
         section: [

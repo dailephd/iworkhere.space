@@ -2,7 +2,14 @@ import { afterEach, expect, it, vi } from "vitest";
 const engine = vi.hoisted(() => ({ GlobalWorkerOptions: { workerSrc: "" }, getDocument: vi.fn() }));
 vi.mock("pdfjs-dist", () => engine);
 import { openPdfDocument, renderPdfPage, type PdfDocumentHandle } from "./pdfRuntime.client";
+import { MAX_SINGLE_PDF_BYTES, MAX_AGGREGATE_PDF_BYTES } from "./pdfFile";
 const bytes = new TextEncoder().encode("%PDF-1.7\n");
+it("allows bounded generated output without weakening source limits", async () => {
+    const output = new Uint8Array(MAX_SINGLE_PDF_BYTES + 1); output.set(bytes);
+    expect(() => openPdfDocument(output)).toThrow();
+    task(); const handle = await openPdfDocument(output, "generated-output").promise; await handle.close();
+    expect(() => openPdfDocument(new Uint8Array(MAX_AGGREGATE_PDF_BYTES + 1), "generated-output")).toThrow();
+});
 function task(option: { permissions?: Set<number>; count?: number; width?: number; failure?: string } = {}) {
     const cleanup = vi.fn();
     const document = { numPages: option.count ?? 1, getPermissions: async () => option.permissions ?? null,

@@ -14,6 +14,17 @@ describe("server guide and breadcrumb composition", () => {
             expect(html).toContain('href="/"');
             expect(html).toContain(`href="/category/${tool.category}"`);
             expect(html).toContain('aria-current="page"');
+            if (tool.category === "document") {
+                expect(guide).toBeDefined();
+                expect(html).toContain("Related document tools");
+                expect(html).toContain("10 MiB"); expect(html).toContain("100 pages");
+                expect(html).toContain("PDF processing happens locally");
+                expect(html).toContain("ordinary application assets");
+                expect(related).toHaveLength(1);
+                expect(html).toContain(`href="${related[0].seo.canonicalPath}"`);
+                expect(html).not.toContain("Related image tools");
+                return;
+            }
             if (tool.category !== "image") {
                 expect(guide).toBeUndefined();
                 expect(html).not.toContain("Supported images and limits");
@@ -21,6 +32,8 @@ describe("server guide and breadcrumb composition", () => {
                 return;
             }
             expect(guide).toBeDefined();
+            expect(html).toContain("Related image tools");
+            expect(html).not.toContain("Related document tools");
             expect(Object.keys(guide!).sort()).toEqual(["instruction", "relatedToolId", "section"]);
             expect(html).toContain("25 MiB");
             expect(html).toContain("30 megapixels");

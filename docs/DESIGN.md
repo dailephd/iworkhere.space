@@ -102,6 +102,12 @@ Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark,
 
 ## Change and documentation rules
 
+Batch 2 document tools use existing solid raised panels and semantic source,
+input, action, result and error tokens. Ordered source controls and split groups
+wrap/stack naturally with min-width-zero children; no theme geometry changes,
+drag/drop, animation, new palette or shared UI framework. Result headings receive
+programmatic focus, errors remain local alerts, and downloads are explicit links.
+
 Before changing a design or styling contract, update this document and then apply the decision consistently through the current owners. Architecture changes are documented in `docs/architecture.md`; project state belongs in `docs/project-status.md`; new abstractions require updating agent guidance. Use fresh source retrieval before proposing cross-cutting changes, and update affected component/module specifications. See `docs/doc_index.md` for the documentation map.
 
 ## Component-color review contract

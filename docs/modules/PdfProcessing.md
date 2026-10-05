@@ -1,7 +1,8 @@
 # PdfProcessing
 
 Batch 1 establishes three distinct browser runtime boundaries under
-`src/module/tool/document/`, without a tool, registry entry, guide or endpoint.
+`src/module/tool/document/`. Batch 2 registers Merge PDF and Split PDF with guides;
+there is no server processing endpoint.
 
 `pdfRuntime.client.ts` lazily imports pdfjs-dist 6.4.299 at operation time,
 configures its version-matched same-origin native worker, owns loading-task
@@ -16,9 +17,15 @@ Runtime assets and their SHA-256 manifest live under `public/vendor/pdfjs/6.4.29
 The shipped subset is selected against the accepted fixtures; CMaps, standard
 fonts and image WASM are evaluated explicitly, and scripting/QuickJS is excluded.
 
-`pdfLib.workerType.ts`, `pdfLib.client.ts` and `pdfLib.worker.ts` own only a
-short-lived pdf-lib 1.17.1 mutation worker and internal load/save smoke. Only
-the worker imports pdf-lib in production source. There are no product operations.
+`pdfLib.workerType.ts`, `pdfLib.client.ts` and `pdfLib.worker.ts` own the
+short-lived pdf-lib 1.17.1 mutation worker, internal load/save smoke and Batch 2
+merge/split page-copy operations. Only the worker imports pdf-lib in production
+source. MergePdf.md and SplitPdf.md define product contracts. Generated-output
+PDF.js inspection accepts the bounded 25 MiB worker output without changing the
+10 MiB source-input limit.
+`pdfLibVerification.client.ts` is the narrow independent page-copy verification
+helper for these two operations: count, geometry and rotation with cancellable
+PDF.js handles. It owns no UI, URLs, worker pool or producing parser.
 
 `qpdf.workerType.ts`, `qpdf.client.ts` and `qpdf.worker.ts` own a distinct
 short-lived project-owned QPDF worker. Its internal structural rewrite stages
