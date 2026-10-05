@@ -1,6 +1,8 @@
 # PdfFile
 
 Batch 1 foundation, reused by the Batch 2 public Merge PDF and Split PDF tools.
+The completed family also uses these limits/primitives for Images to PDF,
+PDF to JPG / PNG and Compress PDF according to their operation contracts.
 
 `src/module/tool/document/pdfFile.ts` owns explicit frozen PDF/document limits,
 bounded header/source validation, page-count and geometry validation, safe
@@ -36,7 +38,7 @@ Duplicate IDs and invalid moves do not mutate state; no UI, storage or routing.
 
 No file bytes, names, sizes, geometry, document text or error diagnostics enter
 telemetry, storage, URL state or network requests. Source/result object URLs and
-generation state remain future operation owners' responsibility.
+generation state remain the current operation owners' responsibility.
 
 Adjacent Vitest tests cover all pure contracts and lifecycle instrumentation.
 `test/fixtures/pdf/README.md` owns deterministic corpus provenance. Real parser,

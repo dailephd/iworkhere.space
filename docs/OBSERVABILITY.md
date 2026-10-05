@@ -8,6 +8,14 @@ Both same-origin endpoints continue writing a structured server log per accepted
 
 ## Privacy contract
 
+The document family emits only safe tool identity after verified success.
+PDF/image bytes, filenames, MIME, byte sizes/savings, page counts or geometry,
+page ranges, output settings, extracted text, document metadata and result URLs
+remain local and never enter telemetry, URL state, storage or upload payloads.
+Compress PDF's NO REDUCTION ACHIEVED outcome emits no success measurement.
+Local processing does not imply zero network traffic: ordinary application/
+runtime assets and explicitly enabled safe site observability remain possible.
+
 Allowed metric transport fields: ISO timestamp, pathname only, canonical event/tool ID/slug, Web Vital name/value/delta/id/rating/navigation type, initial referrer hostname, and optional bounded deviceClass. Diagnostic logs independently preserve redacted Error fields, useful stacks/causes/children and explicit runtime/component context. The `client-error` measurement variant permits only pathname, timestamp, failureCategory (window-error/unhandled-rejection/tool-render-error/unknown), optional toolId and deviceClass. No free-form diagnostic payload enters that variant. Transport projects explicit fields, validates them again, and server validators reject extra fields. Metric requests are limited to 8 KiB; diagnostic log requests permit 64 KiB, including chunked bodies. Fetch uses keepalive, omitted credentials and no referrer. Endpoint request headers are not logged or stored; server onRequestError permits only bounded safe x-vercel-id correlation.
 
 Forbidden: File/Blob contents, filenames, image dimensions/data, entered text, calculator expressions, HTML input, generated output, full URL/query/hash, storage/cookies/authentication, application-collected IP address, raw referrer, object URLs and user-data stack metadata. The logger preserves ordinary developer-authored messages and structured Error fields after diagnostic-text redaction. Useful stacks, nested causes and AggregateError children survive within bounds. Context is projected explicitly; arbitrary metadata and application objects are excluded. The console provider also redacts messages and excludes unapproved metadata. Neither endpoint logs request headers, cookies or IP addresses. Hosting access logs are a separate operator concern.

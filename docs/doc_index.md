@@ -120,7 +120,17 @@ pinned PDF.js/pdf-lib/project-owned QPDF runtimes, supply-chain and fidelity
 contracts, public limits, six ordered batches and separate release gates.
 **When to read:** Before preparing or executing any v0.3 implementation batch.
 **Relations:** [Implementation plan](plans/v0.3.0-implementation-plan.md),
-ROADMAP.md and project-status.md. Planning is frozen; implementation is not started.
+ROADMAP.md and project-status.md. Planning is frozen and all six batches are
+implemented; readiness and release preparation remain separate, not run stages.
+
+### reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md
+
+**Summary:** Complete five-tool v0.3 implementation, exact implementation SHA,
+six-batch evidence, runtime ownership, final limits, canonical QPDF identities
+and inherited final validation. This is implementation evidence, not a release
+report or hosted readiness claim.
+**When to read:** Auditing v0.3 completeness or preparing its separate readiness
+workflow after documentation reconciliation.
 
 ### plans/ui-discovery-growth-plan.md
 **Summary:** Planner-authored, research-backed 2026-10-01 plan for a small

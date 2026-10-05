@@ -55,6 +55,16 @@ Clarity over cleverness. Code should look like it was written by a careful senio
 
 ## Architecture
 
+Document/PDF source primitives, limits, page selection and ordered-file
+transitions belong in `src/module/tool/document/`, specified by PdfFile.md
+and PdfProcessing.md. PDF.js is operation-time and same-origin; only the
+dedicated pdf-lib worker imports pdf-lib in production source. Project-owned
+pinned QPDF WASM uses short-lived workers, manifests and retained notices.
+Normal builds consume committed assets; controlled rebuilds belong to
+`script/qpdf/`. Each of the five document tools owns its UI, result URLs,
+generations, cancellation and identity-only telemetry locally. Do not broaden
+image owners or introduce a universal PDF engine.
+
 Next.js 16 App Router with React 19, TypeScript 5, Tailwind CSS v4.
 
 The app is a collection of client-side utility tools organized as a PWA with offline support.

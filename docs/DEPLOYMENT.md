@@ -62,6 +62,16 @@ inside Docker and runs that same suite against the live container.
 
 ## Browser runtime assets
 
+The unreleased v0.3 feature branch additionally serves same-origin
+`/vendor/pdfjs/6.4.299/` (native worker and standard fonts) and
+`/vendor/qpdf/12.4.2/` (pinned JS/WASM), with manifests and retained licenses.
+pdf-lib 1.17.1 runs only in its bundled dedicated mutation worker. Engines
+activate at operation time; normal builds consume committed artifacts rather
+than compiling QPDF. User PDF/image processing remains browser-local, with no
+conversion endpoint. PDF assets cache on demand and are not shell precache.
+Batch 6 validated these candidate assets in the non-root standalone container;
+that evidence does not deploy v0.3 or describe current live production assets.
+
 The service worker and manifest are served from the application origin. The
 HEIC decoder remains lazy: its Worker and decoder assets load from local
 application assets after a HEIC source is selected, with no external conversion
@@ -74,9 +84,11 @@ load balancer, or a separately managed reverse proxy. TLS termination and
 deployment are outside this application image. No Docker registry publication
 or automated deployment is configured. The owner approved the HEIC
 production-license gate after reviewing the evidence bundle. Exact-SHA hosted
-readiness passed for the frozen implementation candidate; release preparation
-sets `HEIC_RELEASE_READY=YES` and `V0_2_RELEASE_READY=YES`. No publication or
-deployment has occurred.
+readiness passed for the frozen v0.2 implementation candidate; its release
+preparation sets `HEIC_RELEASE_READY=YES` and `V0_2_RELEASE_READY=YES`.
+The earlier pre-deployment state is historical; Delivery 2 production launch
+is recorded below. v0.3 remains unreleased and undeployed, with readiness and
+release preparation not run and package version still 0.2.0.
 
 ## Opt-in production integrations
 

@@ -58,6 +58,33 @@ same-origin Worker, decoder, service-worker, manifest, and license assets. See
 
 ## Core Goal
 
+The document family is implemented under `src/module/tool/document/`, with
+five explicit registry entries and the existing server tool-route composition.
+PdfFile owns source primitives, limits and bounded errors; pageSelection and
+orderedFile own pure transitions. Tool components retain operation state,
+focus, cancellation, generations, result URLs and identity-only telemetry.
+
+`pdfRuntime.client.ts` imports PDF.js 6.4.299 at operation time for inspection,
+rendering and independent output verification. Same-origin assets under
+`public/vendor/pdfjs/6.4.299/` contain the native worker and 14 standard fonts;
+no CMaps, image WASM or QuickJS assets are shipped. Only `pdfLib.worker.ts`
+imports pdf-lib 1.17.1 in production source, for Merge, Split and Images to PDF.
+PDF to JPG / PNG uses PDF.js and native canvas encoding/bitmap verification.
+Compress PDF composes a distinct short-lived `qpdf.worker.ts` with the pinned
+project-owned QPDF 12.4.2 JS/WASM in `public/vendor/qpdf/12.4.2/`, then compares
+bytes and independently verifies smaller candidates through PDF.js. It offers
+LOSSLESS_STRUCTURAL only; no reduction is a normal outcome.
+
+No document bytes are uploaded or processed by a server. Ordinary assets and
+separately enabled safe observability may use the network. Runtimes activate
+only for operations and cache on demand through the existing service worker;
+they are not shell precache assets. Warmed offline operations have inherited
+Batch 6 browser evidence, without promising cold offline availability. Normal
+builds consume committed vendor assets; controlled QPDF rebuilds belong to
+`script/qpdf/`. The standalone container serves the same assets and notices.
+See [PdfFile](modules/PdfFile.md), [PdfProcessing](modules/PdfProcessing.md)
+and the five operation specs. There is no universal PDF framework.
+
 Image Resizer, Image Compressor and Image Converter share narrow source-file rules and browser
 inspection in `module/tool/image/imageFile.ts` and `imageFile.client.ts` (see
 `modules/ImageFile.md`). Their identical source presentation is owned by the
@@ -240,6 +267,20 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
   above) and are not re-exported from `metadata.ts`
 
 ### Current tools
+
+The feature-branch registry contains 15 tools across six populated categories;
+the public sitemap derives 23 URLs. v0.3 document tools are implemented and
+unreleased; this list is not production deployment evidence.
+
+- **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
+- **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs
+- **Images to PDF** (`document/ImagesToPdfTool.tsx`) — JPEG/PNG page assembly
+- **PDF to JPG / PNG** (`document/PdfToImageTool.tsx`) — selected-page export
+- **Compress PDF** (`document/CompressPdfTool.tsx`) — lossless structural mode
+- **Image Resizer** (`image/ImageResizerTool.tsx`) — local dimension changes
+- **Image Compressor** (`image/ImageCompressorTool.tsx`) — truthful byte reduction
+- **JPG / PNG / WebP Converter** (`image/ImageConverterTool.tsx`) — local encoding
+- **HEIC → JPG / PNG Converter** (`image/HeicConverterTool.tsx`) — isolated decoder
 - **Slugify Text** (`text/SlugifyTool.tsx`) — Convert text into URL-safe slugs
 - **HTML Text Extractor** (`text/HtmlTextExtractorTool.tsx`) — Extract visible
   text from HTML with preserved line breaks
@@ -492,7 +533,9 @@ Dynamic metadata generation from tool definitions.
 ### Browser validation foundation
 - Document/PDF Batch 1 boundaries and the temporary test-only runtime harness
   are specified in [PdfFile](modules/PdfFile.md) and
-  [PdfProcessing](modules/PdfProcessing.md). No public document tool is registered.
+  [PdfProcessing](modules/PdfProcessing.md). All five public document tools are
+  registered; operation-specific unit/component and real-file browser tests
+  complement the foundation harness and document-family integration tests.
 - Playwright is a separate production-browser validation subsystem in
   `playwright.config.ts` and `test/e2e/`; it is not part of `script/verify.ts`.
 - `npm run build` precedes `npm run test:e2e`. Playwright owns a fresh production

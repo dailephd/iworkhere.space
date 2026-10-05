@@ -1,6 +1,60 @@
 # PROJECT STATUS
 
-## v0.3.0 planning freeze — 2026-10-04
+## v0.3.0 implementation complete — 2026-10-05
+
+TARGET_VERSION: 0.3.0 — PDF & Document Essentials
+
+VERSION_BRANCH: feature/v0.3.0-pdf-document-essentials
+
+IMPLEMENTATION_COMPLETE_SHA: 7a6e809448a4e360d5e15c9d66bc4914e028890d
+
+V0_3_IMPLEMENTATION: COMPLETE — 6 OF 6 BATCHES
+
+PACKAGE_VERSION: 0.2.0
+
+DOCUMENTATION_RECONCILIATION: COMPLETE
+
+Reconciliation validation passed: source/docs consistency and roadmap
+preservation, runtime checksums/notices, and `npm run verify` with 867 tests,
+zero skipped, typecheck/lint/build PASS. Reconciliation RUN_ID:
+`2026-10-05T13-51-46-865Z-e52ea5e0`; JSON/JUnit and command logs are under
+`test-report/2026-10-05T13-51-46-865Z-e52ea5e0/`. Full E2E/container and
+Observer evidence below is inherited from Batch 6, not rerun for docs edits.
+
+PRE_RELEASE_READINESS: NOT_RUN
+
+RELEASE_PREPARATION: NOT_RUN
+
+V0_3_RELEASE: NOT_RELEASED
+
+VERSION_BUMP: NOT_DONE
+
+V0_3_PR: NOT_CREATED
+
+V0_3_MERGE / DEPLOYMENT / PUBLICATION: NOT_DONE
+
+The current feature branch implements Merge PDF, Split PDF, Images to PDF,
+PDF to JPG / PNG and Compress PDF. The registry has 15 tools, six populated
+categories and 23 sitemap URLs. This is candidate implementation inventory,
+not a change to the Delivery 2 production inventory recorded below.
+
+Inherited final Batch 6 validation: aggregate verify passed with 867 tests;
+full E2E and container browser validation each passed 312 cases, with non-root
+runtime and clean shutdown. Document Observer passed 10/10 desktop/mobile
+lanes; homepage and image baselines were preserved. These are implementation
+results, not hosted v0.3 readiness. See the
+[implementation report](reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md)
+for final contracts, evidence and limitations. Implementation gaps: NONE.
+
+Exact next workflow after documentation reconciliation passes:
+READY_FOR_SEPARATE_PRE_RELEASE_READINESS. The planner issues a separate
+standardized workflow against the new exact documentation-reconciled SHA.
+Do not begin readiness or release preparation from this status record.
+
+## Historical v0.3.0 planning freeze — 2026-10-04
+
+The following planning snapshot is preserved; the current implementation
+record above supersedes its not-started status and Batch 1 next action.
 
 NEXT_NUMBERED_VERSION: 0.3.0
 
@@ -176,6 +230,17 @@ runtime validation does not resolve the separate HEIC license or release gate.
   guidelines)
 
 ### Tools implemented
+
+Current feature-branch inventory includes the following five unreleased
+document tools in addition to the ten existing tools below:
+
+- **Merge PDF** (`/tool/merge-pdf`) — ordered browser-local PDF page copying.
+- **Split PDF** (`/tool/split-pdf`) — ordered page groups and individual PDFs.
+- **Images to PDF** (`/tool/images-to-pdf`) — ordered JPEG/PNG assembly.
+- **PDF to JPG / PNG** (`/tool/pdf-to-image`) — selected-page raster exports.
+- **Compress PDF** (`/tool/compress-pdf`) — lossless structural optimization;
+  NO REDUCTION ACHIEVED is a normal possible outcome.
+
 - **Slugify Text** (`/tool/slugify`) — text category
 - **HTML Text Extractor** (`/tool/html-text-extractor`) — text category
 - **Calculator** (`/tool/calculator`) — math category
@@ -257,8 +322,11 @@ package. No broader image-tool rollout or release status change is implied.
 
 ## Next action
 
-Review the [frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
-and prepare the bounded Batch 1 prompt. v0.3 implementation is not started.
+After this documentation reconciliation passes, return its exact candidate SHA
+to the planner for separate pre-release readiness. The
+[frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
+has been implemented in all six batches. Readiness and release preparation
+have not run; no version bump, PR, merge or v0.3 deployment is performed here.
 External launch follow-up remains separately tracked in the Delivery 2 launch
 record and [deployment documentation](DEPLOYMENT.md).
 

@@ -19,6 +19,9 @@ The original v0.1.0 product baseline provides six registered utilities:
 The v0.2 image family brings the catalog to ten tools. Package version and
 implementation scope are tracked separately.
 
+The implemented, unreleased v0.3 document family brings the feature-branch
+catalog to fifteen tools. Root package metadata remains 0.2.0.
+
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
 Future development must preserve the existing architecture rather than adding parallel registries, routing systems, state systems, persistence paths, provider systems, or tool frameworks.
@@ -249,7 +252,10 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
-Status: PLANNING FROZEN — IMPLEMENTATION NOT STARTED
+Status: IMPLEMENTATION COMPLETE — five-tool planned scope implemented.
+NOT RELEASED; pre-release readiness and release preparation have not run.
+Root package metadata remains 0.2.0. Documentation reconciliation is the
+current workflow; its successful handoff is separate pre-release readiness.
 
 Frozen implementation contract: [v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md).
 
@@ -741,11 +747,13 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.0 planning is frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md).
-The planner should review it and prepare the bounded Batch 1 prompt;
-implementation remains not started. Operational launch follow-up below is separate.
+v0.3.0 planning remains frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md),
+and its five-tool implementation is complete. After documentation reconciliation
+passes, the planner issues the separate pre-release readiness workflow against
+the documentation-reconciled exact candidate SHA. Release preparation has not
+run. Operational launch follow-up below is separate.
 
-Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. No new catalog version has been created; v0.3.0 remains the next numbered version and is not started.
+Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. No new catalog release has been created; v0.3.0 remains the next numbered version, with implementation complete and release state unchanged.
 
 Historical v0.2 implementation and exact-SHA readiness record: the eight hosted
 workflows passed at 339091c5aaf4ad31be656756a7f4e4c121cc37de on the immutable

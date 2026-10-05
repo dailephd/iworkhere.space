@@ -4,6 +4,9 @@ Batch 1 establishes three distinct browser runtime boundaries under
 `src/module/tool/document/`. Batch 2 registers Merge PDF and Split PDF with guides;
 Batch 3 adds Images to PDF using the same mutation worker and output verifier.
 Batch 4 composes the accepted PDF.js runtime for sequential PNG/JPEG export.
+Batch 5 adds the explicit QPDF compression operation and independent smaller-
+output verifier. Batch 6 completes five-tool registry/guide/discovery, offline,
+accessibility and browser/container integration acceptance.
 There is no server processing endpoint.
 
 `pdfRuntime.client.ts` lazily imports pdfjs-dist 6.4.299 at operation time,
@@ -21,6 +24,9 @@ a processing failure.
 Runtime assets and their SHA-256 manifest live under `public/vendor/pdfjs/6.4.299/`.
 The shipped subset is selected against the accepted fixtures; CMaps, standard
 fonts and image WASM are evaluated explicitly, and scripting/QuickJS is excluded.
+The final shipped subset is the native worker and 14 standard fonts only;
+CMaps, image WASM and QuickJS are not shipped. `useSystemFonts` and `useWasm`
+are false, with the pinned standard-font URL configured explicitly.
 
 `pdfLib.workerType.ts`, `pdfLib.client.ts` and `pdfLib.worker.ts` own the
 short-lived pdf-lib 1.17.1 mutation worker, internal load/save smoke and Batch 2
@@ -39,8 +45,9 @@ diagnostics, rejects nonzero exit/warnings, removes staged files, transfers
 output and ends. No engine state survives an operation. Initialization,
 processing, timeout and protocol failures return bounded categories; cancellation
 uses AbortError. Clients terminate on every terminal path, clear handlers and
-timers, ignore mismatched identities and expose explicit cancellation. Future
-UI must cancel on replacement, Reset and unmount and reject stale generations.
+timers, ignore mismatched identities and expose explicit cancellation. The
+UI originally planned here is now implemented: each operation-local tool
+cancels on replacement, Reset and unmount and rejects stale generations.
 The QPDF client first uses the canonical PDF.js inspection owner and closes its
 handle before starting native processing. This rejects encrypted, malformed and
 over-limit sources with domain categories; the native password-error path is
@@ -57,6 +64,11 @@ the canonical JS/WASM identities. Verification starts with independently empty
 `/work/tmp` paths, UTC/C locale, Python hash seed 0, source epoch 0, Binaryen
 cores 1 and umask 0022. Canonical WASM SHA-256 is
 `38ca4cbe43a6767b43058399aef864574b1d5f6bce30b9d70a62037d3ce1c5c0`.
+Canonical qpdf.js SHA-256 is
+`6e9ada6ad324547b01a4c69118b3cf797565439d77df2ed9e6fdfd656565f6d0`.
+The earlier feasibility WASM identity is superseded: the root cause of its
+one-off divergence was not isolated, while controlled fresh-cache builds
+established the accepted canonical artifact. It is not an open blocker.
 Notices record factual source correspondence,
 without legal approval.
 Targeted Git attributes preserve upstream runtime, notice and fixture bytes
