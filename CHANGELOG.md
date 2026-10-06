@@ -11,7 +11,9 @@
 - Added explicit Production-only `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` activation.
 - Local, Preview, CI and container behavior remains disabled by default.
 
-The v0.3.1 source is release-prepared. Vercel project activation, production deployment and live page-view verification remain pending.
+v0.3.1 is released and publicly deployed. Production Web Analytics is enabled
+for the public project with Production-only activation; live page-view receipt
+and query/hash redaction were verified during launch.
 
 ## v0.3.0 — PDF & Document Essentials — 2026-10-06
 
