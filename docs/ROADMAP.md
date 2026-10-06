@@ -20,9 +20,12 @@ The original v0.1.0 product baseline provides six registered utilities:
 The v0.2 image family brings the catalog to ten tools. Package version and
 implementation scope are tracked separately.
 
-The release-prepared v0.3 document family brings the source catalog to fifteen
-tools. The live production catalog remains the Delivery 2 deployment until the
-separate release-integration and production-deployment workflow completes.
+The v0.3 document family brings the live catalog to fifteen tools. v0.3.0 was
+integrated through PR #9, merged to `master` at
+`008458651bc8786b46fcc4b27ef119147e1e2579`, published as GitHub release
+`v0.3.0` on 2026-10-06, and is now publicly deployed. Source-release identity
+and hosting/deployment identity remain separate records; this planning update
+does not invent an unverified Vercel deployment ID.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -254,10 +257,11 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
-Status: IMPLEMENTATION AND EXACT-SHA READINESS COMPLETE; RELEASE PREPARED.
-Application package metadata is 0.3.0. Integration and production deployment
-remain separate, pending workflow steps. The live production state is not
-changed by release preparation.
+Status: RELEASED AND PUBLICLY DEPLOYED on 2026-10-06.
+Application package metadata is 0.3.0. PR #9 merged the release branch to
+`master` at `008458651bc8786b46fcc4b27ef119147e1e2579`; GitHub release
+`v0.3.0` is published. Production deployment is owner-confirmed. Exact Vercel
+deployment metadata remains an operational record and is not guessed here.
 
 Frozen implementation contract: [v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md).
 
@@ -510,6 +514,38 @@ This checkpoint does not presume a redesign. The v0.1.1 architecture investigati
 
 The following capabilities support product versions and should be implemented when the first owning product version needs them. They are not standalone product versions in this roadmap.
 
+### Vercel Web Analytics
+
+Status: PLANNED — architecture and acceptance are documented; implementation has
+not started.
+
+Vercel Web Analytics is approved as additive, platform-level traffic analytics
+for the public Vercel project. It does not replace the existing application
+observability facade, Neon metric persistence, diagnostic logging, private
+dashboard, or Web Vitals ownership.
+
+The first integration is intentionally narrow:
+
+- automatic page-view and client-side navigation traffic only;
+- `@vercel/analytics` version 2, pinned to an exact compatible version during
+  implementation rather than a floating dependency;
+- an app-owned wrapper mounted from the root layout;
+- explicit production opt-in, with Preview/Development off unless separately
+  authorized;
+- a `beforeSend` privacy boundary that removes query strings and fragments
+  before transmission and can drop explicitly private routes;
+- no direct `track()` calls from tools in the first delivery;
+- no Vercel custom events, Speed Insights, Web Analytics API ingestion, or
+  dashboard embedding in the first delivery.
+
+Existing canonical tool events remain owned by the current analytics abstraction
+and observability pipeline. Any later Vercel custom-event support must enter
+through that abstraction rather than creating direct provider calls in tool
+components.
+
+See [Vercel Web Analytics integration plan](plans/vercel-web-analytics-integration-plan.md)
+for ownership, privacy, deployment and test requirements.
+
 ### Browser end-to-end validation
 
 Browser-level validation is implemented in v0.2.0 with separate production desktop/mobile Chromium and CI gates. Extend it proportionately for later browser-visible releases.
@@ -619,7 +655,11 @@ An About page remains a valid product/content candidate, but its content, route 
 
 ### Analytics provider swap
 
-The analytics abstraction supports provider replacement. Vendor, privacy, consent, configuration, network behavior, and validation decisions remain open.
+The analytics abstraction still supports a future replacement of the provider
+used for application-generated events. That work remains deferred. The planned
+Vercel Web Analytics integration is explicitly additive traffic analytics; it
+does not authorize replacing the existing analytics/observability providers or
+duplicating canonical tool events.
 
 ### Advertising provider integration
 

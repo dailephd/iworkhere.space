@@ -118,10 +118,23 @@ authority, not evidence that a batch or version was implemented.
 **Summary:** Frozen PDF & Document Essentials scope, browser-local architecture,
 pinned PDF.js/pdf-lib/project-owned QPDF runtimes, supply-chain and fidelity
 contracts, public limits, six ordered batches and separate release gates.
-**When to read:** Before preparing or executing any v0.3 implementation batch.
+**When to read:** When auditing the completed v0.3 implementation or its frozen
+implementation decisions.
 **Relations:** [Implementation plan](plans/v0.3.0-implementation-plan.md),
-ROADMAP.md and project-status.md. Planning is frozen and all six batches are
-implemented; readiness and release preparation remain separate, not run stages.
+ROADMAP.md and project-status.md. All six batches, readiness, release
+preparation, integration and public deployment are complete.
+
+### plans/vercel-web-analytics-integration-plan.md
+
+**Summary:** Frozen cross-version plan for additive Vercel Web Analytics on the
+public project. Defines platform-traffic versus application-observability
+ownership, production opt-in, URL redaction, provider isolation, deployment
+activation, tests and explicit exclusions.
+**When to read:** Before installing `@vercel/analytics`, enabling Web Analytics
+in Vercel, changing traffic analytics, or adding any Vercel custom event.
+**Relations:** ROADMAP.md, OBSERVABILITY.md, architecture.md and DEPLOYMENT.md.
+This plan does not replace the existing analytics facade/Neon observability and
+does not authorize Speed Insights or custom events.
 
 ### reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md
 

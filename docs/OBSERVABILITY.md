@@ -4,6 +4,45 @@
 
 Tools continue to call the observability facade. Existing analytics and logging provider interfaces select the sink. `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true` explicitly selects network analytics and the sanitized RustLogProvider in early client instrumentation. Absent/other values retain local behavior; production mode alone never activates telemetry. The only added root production dependency is `@neondatabase/serverless@1.1.0`, used server-side. Public flags are baked into the browser bundle: rebuild after changing them.
 
+## Planned Vercel Web Analytics boundary
+
+Vercel Web Analytics is planned as an additive platform traffic surface for the
+public `iworkhere-space` Vercel project. It is not a replacement for the
+application observability facade, `/api/metric`, `/api/log`, Neon persistence,
+Web Vitals, diagnostic error capture, or the protected observability dashboard.
+
+The first delivery is limited to automatic page views and client-side route
+transitions through `@vercel/analytics` version 2. Implementation must pin an
+exact compatible package version after registry verification. The root layout
+may compose one app-owned Analytics wrapper; tool components must not import or
+call Vercel Analytics directly.
+
+Activation is explicit. The planned build-time switch is
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true`, enabled only for the public
+production project unless Preview is separately authorized. Vercel Web Analytics
+must also be enabled in the Vercel project dashboard before the deployment that
+contains the integration. No secret is required by the browser package.
+
+Vercel documents automatic page-view collection as potentially including URL,
+filtered query parameters, referrer, coarse geolocation, OS/browser and device
+type. To preserve this application's stricter URL policy, the wrapper must use
+`beforeSend` to remove query strings and fragments before transmission and
+must be able to drop explicitly private routes. The existing application
+telemetry prohibition on file contents, filenames, document/image properties,
+entered text, generated output, storage/authentication data and raw diagnostic
+payloads remains unchanged.
+
+The first delivery does not call Vercel `track()`. Existing
+`tool_opened`, `tool_executed`, `tool_result_copied` and
+`tool_mode_changed` events remain owned by the current analytics abstraction
+and observability pipeline. If Vercel custom events are authorized later, they
+must be exposed through an app-owned provider/adapter and the canonical
+allowlist rather than direct calls from tools.
+
+Speed Insights, Web Analytics API ingestion, analytics data replication into
+Neon, analytics cards in the private dashboard, and replacement of the current
+analytics provider are out of scope for the first delivery.
+
 Both same-origin endpoints continue writing a structured server log per accepted request. `/api/log` and RustLogProvider retain their existing sanitized technical-diagnostic contract; they write dedicated diagnostic records when persistence is enabled, without adding text to metric tables. `/api/metric` is the sole durable measurement ingestion owner. With `OBSERVABILITY_PERSISTENCE_ENABLED=true`, it inserts explicit allowlisted columns into Neon through `persistence.server.ts`; otherwise it logs and returns 204 without a connection. Successful inserts return 204. Missing configuration/database failures return empty 503 and a fixed safe operational error, without raw SQL diagnostics or credentials. Browser providers remain fail-silent. Inspect server logs by `source=application-metric`, `application-log`, or `observability-operation`. No identity, session history or profiling is collected.
 
 ## Privacy contract

@@ -1,51 +1,48 @@
 # PROJECT STATUS
 
-## v0.3.0 release preparation complete — 2026-10-06
+## v0.3.0 released and publicly deployed — 2026-10-06
 
 TARGET_VERSION: 0.3.0 — PDF & Document Essentials
 
-VERSION_BRANCH: feature/v0.3.0-pdf-document-essentials
-
-IMPLEMENTATION_COMPLETE_SHA: 7a6e809448a4e360d5e15c9d66bc4914e028890d
-
-V0_3_IMPLEMENTATION: COMPLETE — 6 OF 6 BATCHES
-
 PACKAGE_VERSION: 0.3.0
 
-DOCUMENTATION_RECONCILIATION: COMPLETE
-
-Release candidate: `b0ee1bb251571ce2f83b08c55285a12ee68dc4c4`. Exact-SHA
-readiness passed all eight hosted workflows. Release preparation has bumped
-the application metadata to 0.3.0 and finalized the release-state documents.
+V0_3_IMPLEMENTATION: COMPLETE — 6 OF 6 BATCHES
 
 PRE_RELEASE_READINESS: PASS
 
 RELEASE_PREPARATION: COMPLETE
 
-V0_3_RELEASE: RELEASE_PREPARED; integration and production deployment remain
-pending
+V0_3_PR: #9 — MERGED
 
-VERSION_BUMP: COMPLETE
+V0_3_MASTER_SHA: `008458651bc8786b46fcc4b27ef119147e1e2579`
 
-V0_3_PR: NOT_CREATED
+V0_3_GITHUB_RELEASE: `v0.3.0` — PUBLISHED
 
-V0_3_MERGE / DEPLOYMENT: NOT_DONE
+V0_3_PRODUCTION_DEPLOYMENT: COMPLETE — owner-confirmed
 
-The release-prepared source implements Merge PDF, Split PDF, Images to PDF,
-PDF to JPG / PNG and Compress PDF. The registry has 15 tools, six populated
-categories and 23 sitemap URLs. These source-release capabilities are not yet
-part of live production; the Delivery 2 production inventory recorded below
-remains current.
+The v0.3.0 production release contains Merge PDF, Split PDF, Images to PDF,
+PDF to JPG / PNG and Compress PDF. The source catalog has 15 tools, six
+populated categories and 23 sitemap URLs. User PDF/image processing remains
+browser-local under the v0.3 contracts.
 
-Readiness passed with 867 unit tests, 312 E2E tests, 312 container browser
-tests, and 10/10 document Observer lanes. All eight hosted workflows passed on
-the exact candidate. See the
-[implementation report](reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md)
-for final contracts, evidence and limitations. Implementation gaps: NONE.
+The exact Vercel deployment ID is not invented by this documentation-only
+planning change. GitHub source-release identity is authoritative above; Vercel
+deployment metadata should be recorded separately when retrieved from an
+authoritative deployment source.
 
-The separate release-integration and production-deployment workflow owns the
-release PR, merge, production verification, and any subsequent tag or release
-record. Current production remains Delivery 2 until that workflow succeeds.
+NEXT_CROSS_VERSION_ENABLING_WORK: Vercel Web Analytics planning
+
+VERCEL_WEB_ANALYTICS: PLANNED — DOCUMENTATION FROZEN; IMPLEMENTATION NOT STARTED
+
+The planned first integration adds Vercel's platform-level automatic page-view
+analytics to the public project without replacing the existing observability
+facade, Neon persistence, diagnostics or private dashboard. Custom events,
+Speed Insights and Web Analytics API/dashboard integration are explicitly
+deferred. See
+[the Vercel Web Analytics integration plan](plans/vercel-web-analytics-integration-plan.md).
+
+No Analytics dependency, source code, Vercel project setting or production
+environment value is changed by this documentation commit.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 

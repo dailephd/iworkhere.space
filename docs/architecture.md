@@ -45,6 +45,34 @@ explicit error category/tool ID projection. Metric error identity deduplication
 is independent of diagnostic-log identity deduplication, preserving both sinks.
 See `OBSERVABILITY.md` and `../dashboard/DEPLOYMENT.md`.
 
+### Planned Vercel Web Analytics boundary
+
+Vercel Web Analytics is a separate platform-level traffic measurement surface,
+not another owner of application-domain telemetry. Automatic page views belong
+to the Vercel integration; canonical tool events, Web Vitals, errors and
+diagnostics remain owned by the existing application observability contracts.
+
+The planned code boundary is deliberately small:
+
+- `src/module/analytics/vercelWebAnalytics.client.ts` owns enablement and the
+  pure URL/event redaction helper;
+- `src/component/observability/VercelWebAnalytics.tsx` owns the framework
+  wrapper around `@vercel/analytics/next`;
+- `src/app/layout.tsx` composes that wrapper and contains no provider-specific
+  event logic.
+
+Equivalent file names may be adjusted during implementation if current
+repository retrieval shows an established owner that is more appropriate, but
+ownership must remain one-way: tools and domain modules do not import Vercel's
+provider package directly.
+
+The first delivery emits no custom Vercel events. A future custom-event
+integration must implement/extend the existing analytics-provider abstraction
+and canonical safe-event allowlist rather than introduce parallel event names or
+duplicate tool telemetry. The integration must also preserve default-off
+container/test behavior and must not add Vercel Analytics to the independent
+protected dashboard project without separate authorization.
+
 This document defines the architectural boundaries of the project.
 Any generated code MUST follow this structure.
 
