@@ -6,7 +6,7 @@ Implementation branch: `feature/v0.3.1-vercel-web-analytics`
 
 Starting planning commit: `70d3eefddd6b9d09c4215f3dffccc9373ac948fb`; inspected master baseline: `008458651bc8786b46fcc4b27ef119147e1e2579`.
 
-Validated implementation Git tree before this report: `e7c3980591c7ebe46d7d7f4ff2dededf6a567ed7`. This identifies the staged source/config/test/technical-doc snapshot without making a self-referential commit-hash claim. The code commit is the introducing commit of this report; final completion evidence records its published branch identity.
+Validated implementation Git tree before this report: `e7c3980591c7ebe46d7d7f4ff2dededf6a567ed7`. This identifies the staged source/config/test/technical-doc snapshot without making a self-referential commit-hash claim. Implementation code commit: `b292b8f8d60ef69aed910a9da9f2fed5c3947e93`. The report-only follow-up records that exact identity; production source is unchanged. Final completion evidence records the published branch identity and the last enabled proof against that revision.
 
 Target release: v0.3.1. Root package remains **0.3.0**. No release preparation or deployment was performed.
 
