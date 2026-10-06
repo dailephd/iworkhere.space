@@ -22,7 +22,7 @@ async function main(): Promise<void> {
     async function command(executable: string, argument: string[], log: string): Promise<string> {
         process.stdout.write(`Running ${log}\n`);
         const result = await new Promise<{ code: number; stdout: string; stderr: string }>((resolve, reject) => {
-            const child = spawn(executable, argument, { windowsHide: true, env: { ...process.env, NEXT_PUBLIC_ADSENSE_ENABLED: "false", NEXT_PUBLIC_OBSERVABILITY_ENABLED: "false", OBSERVABILITY_PERSISTENCE_ENABLED: "false", NEXT_TELEMETRY_DISABLED: "1" } });
+            const child = spawn(executable, argument, { windowsHide: true, env: { ...process.env, NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED: "false", NEXT_PUBLIC_ADSENSE_ENABLED: "false", NEXT_PUBLIC_OBSERVABILITY_ENABLED: "false", OBSERVABILITY_PERSISTENCE_ENABLED: "false", NEXT_TELEMETRY_DISABLED: "1" } });
             let stdout = "", stderr = "";
             child.stdout.on("data", data => { stdout += data.toString(); }); child.stderr.on("data", data => { stderr += data.toString(); });
             child.on("error", reject); child.on("close", code => resolve({ code: code ?? 1, stdout, stderr }));

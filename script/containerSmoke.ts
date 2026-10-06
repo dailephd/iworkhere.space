@@ -111,7 +111,7 @@ try {
   summary.dockerServerVersion = versions.Server?.Version ?? null;
 
   await runChecked("docker", ["compose", "config"]);
-  const build = await command("docker", ["build", "--pull", "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
+  const build = await command("docker", ["build", "--pull", "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--build-arg", "NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
   await writeFile(path.join(reportDir, "docker-build.log"), `${build.stdout}\n${build.stderr}`, "utf8");
   if (build.code !== 0) throw new Error(`Docker build failed (${build.code}).`);
   imageCreated = true;

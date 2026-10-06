@@ -7,9 +7,15 @@ vi.mock("@/module/tool/metadata", () => ({ getAvailableCategory: () => [] }));
 vi.mock("@/component/common/ThemeProvider", () => ({ ThemeProvider: ({ children }: { children: ReactNode }) => children }));
 vi.mock("@/component/layout/ServiceWorkerRegister", () => ({ ServiceWorkerRegister: () => null }));
 vi.mock("@/component/common/WebVitals", () => ({ WebVitals: () => null }));
+vi.mock("@/component/observability/VercelWebAnalytics", () => ({ VercelWebAnalytics: () => <script data-test-vercel-wrapper="true" /> }));
 vi.mock("@/component/layout/AppShell", () => ({ default: ({ headerBannerSlot, rightBannerSlot, footerBannerSlot, children }: { headerBannerSlot?: ReactNode; rightBannerSlot?: ReactNode; footerBannerSlot?: ReactNode; children: ReactNode }) => <><header>{headerBannerSlot}</header><main>{children}</main><aside>{rightBannerSlot}</aside><footer>{footerBannerSlot}</footer></> }));
 vi.mock("next/script", () => ({ default: (props: { id: string; src: string }) => <script async id={props.id} src={props.src} /> }));
 afterEach(() => { vi.unstubAllEnvs(); });
+
+it("composes exactly one Vercel Analytics wrapper", () => {
+    const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
+    expect(html.match(/data-test-vercel-wrapper=/g)).toHaveLength(1);
+});
 
 it("always exposes the exact verification metadata", () => {
     expect(metadata.other).toEqual({ "google-adsense-account": "ca-pub-7976885058339852" });

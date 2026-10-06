@@ -45,14 +45,14 @@ explicit error category/tool ID projection. Metric error identity deduplication
 is independent of diagnostic-log identity deduplication, preserving both sinks.
 See `OBSERVABILITY.md` and `../dashboard/DEPLOYMENT.md`.
 
-### Planned v0.3.1 Vercel Web Analytics boundary
+### v0.3.1 Vercel Web Analytics boundary
 
 v0.3.1 introduces Vercel Web Analytics as a separate platform-level traffic measurement surface,
 not another owner of application-domain telemetry. Automatic page views belong
 to the Vercel integration; canonical tool events, Web Vitals, errors and
 diagnostics remain owned by the existing application observability contracts.
 
-The planned code boundary is deliberately small:
+The implemented code boundary is deliberately small:
 
 - `src/module/analytics/vercelWebAnalytics.client.ts` owns enablement and the
   pure URL/event redaction helper;

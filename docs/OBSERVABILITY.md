@@ -2,9 +2,9 @@
 
 ## Ownership and activation
 
-Tools continue to call the observability facade. Existing analytics and logging provider interfaces select the sink. `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true` explicitly selects network analytics and the sanitized RustLogProvider in early client instrumentation. Absent/other values retain local behavior; production mode alone never activates telemetry. The only added root production dependency is `@neondatabase/serverless@1.1.0`, used server-side. Public flags are baked into the browser bundle: rebuild after changing them.
+Tools continue to call the observability facade. Existing analytics and logging provider interfaces select the sink. `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true` explicitly selects network analytics and the sanitized RustLogProvider in early client instrumentation. Absent/other values retain local behavior; production mode alone never activates telemetry. The Neon dependency `@neondatabase/serverless@1.1.0` remains server-only; Vercel page-view analytics is independently gated below. Public flags are baked into the browser bundle: rebuild after changing them.
 
-## Planned v0.3.1 Vercel Web Analytics boundary
+## v0.3.1 Vercel Web Analytics boundary
 
 v0.3.1 adds Vercel Web Analytics as an additive platform traffic surface for the
 public `iworkhere-space` Vercel project. It is not a replacement for the
@@ -12,12 +12,11 @@ application observability facade, `/api/metric`, `/api/log`, Neon persistence,
 Web Vitals, diagnostic error capture, or the protected observability dashboard.
 
 The first delivery is limited to automatic page views and client-side route
-transitions through `@vercel/analytics` version 2. Implementation must pin an
-exact compatible package version after registry verification. The root layout
-may compose one app-owned Analytics wrapper; tool components must not import or
+transitions through exact-pinned `@vercel/analytics` 2.0.1. The root layout
+composes one app-owned Analytics wrapper; tool components must not import or
 call Vercel Analytics directly.
 
-Activation is explicit. The planned build-time switch is
+Activation is explicit. The public build-time switch is
 `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true`, enabled only for the public
 production project unless Preview is separately authorized. Vercel Web Analytics
 must also be enabled in the Vercel project dashboard before the deployment that
@@ -152,3 +151,9 @@ Both capture paths emit severity JSON source=application-error before optional N
 Additive 002 creates observability.error_diagnostic with typed searchable fields, bounded JSONB and received/fingerprint/path/tool indexes. prune_diagnostics(reference_time default now()) deletes strictly older than 30 days by database received_at; exact-boundary records remain. Maintenance invokes it after existing atomic metric maintenance. Metrics retain 90-day rolled raw/indefinite daily history unchanged.
 
 Private dashboard adds a fifth read-only snapshot query for latest 25 diagnostics in the range. Actual messages, origin, IDs, deployment and runtime show in escaped ordinary HTML/native details, with bounded scrollable stack regions. Legacy metric rows contain no fabricated details. Production migration/grants must precede dashboard/public deployment.
+
+## Vercel URL policy and validation
+
+`vercelWebAnalytics.client.ts` accepts only page views, reconstructs HTTP(S) or root-relative URLs, removes search/hash, and returns only type and URL. Malformed inputs, credential-bearing URLs, non-HTTP schemes and custom events return null. No public private-route denylist is needed: the protected dashboard is a separate application. No tool/file/input/output fields are attached.
+
+Focused unit tests own this policy and the invisible wrapper. `npx tsx script/vercelAnalyticsSmoke.ts` creates a separate copied production build with the flag true, runs the actual SDK and official vendor runtime in fresh desktop/mobile contexts with service workers blocked, and fulfills intake locally. It checks initial/client-navigation page views, query/hash and filename privacy, and browser diagnostics. The runtime ignores automation by default; this proof overrides webdriver detection only in its isolated test context. It records runtime source/hash and requests in a unique report. It proves local behavior, not live Vercel receipt.

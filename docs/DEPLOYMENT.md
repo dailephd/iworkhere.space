@@ -97,18 +97,17 @@ not describe the current live production runtime.
 
 See [ADVERTISING](ADVERTISING.md) and [OBSERVABILITY](OBSERVABILITY.md). NEXT_PUBLIC_ADSENSE_ENABLED and NEXT_PUBLIC_OBSERVABILITY_ENABLED default false; exact true is explicit opt-in. Next public flags are baked at build time. Docker builder accepts each as a build argument with false defaults. Container validation forces false. Rebuild after changing flags; a runtime variable alone cannot activate an already-built browser bundle. Ad activation additionally requires verified ownership, site Ready, ads.txt Authorized and applicable Google-certified CMP / Privacy & messaging. Meta and ads.txt work while disabled. No public activation or deployment is performed by this implementation. Runtime stdout remains active; explicit server-only OBSERVABILITY_PERSISTENCE_ENABLED=true additionally enables Neon writes through OBSERVABILITY_DATABASE_URL. CRON_SECRET protects public-project maintenance. Dashboard uses only OBSERVABILITY_DASHBOARD_DATABASE_URL with read-only grants; no secret is NEXT_PUBLIC.
 
-## Planned v0.3.1 Vercel Web Analytics integration
+## v0.3.1 Vercel Web Analytics integration
 
-This section is the v0.3.1 deployment plan, not current implementation.
+The repository integration is implemented; production activation remains an external release step.
 
-The public project may add Vercel Web Analytics as additive traffic analytics.
+The public project includes default-off Vercel Web Analytics as additive traffic analytics.
 Before the first Analytics-enabled production deployment:
 
 1. Enable Web Analytics for the public `iworkhere-space` project in the Vercel
    dashboard.
-2. Implement and pin `@vercel/analytics` version 2 using the app-owned wrapper
-   defined by the analytics integration plan.
-3. Add the planned build-time switch
+2. Use the validated exact-pinned `@vercel/analytics` 2.0.1 integration and app-owned wrapper.
+3. Configure the public build-time switch
    `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED`; default it off and set exact
    `true` only for Production unless Preview analytics is separately approved.
 4. Use `beforeSend` to remove URL query strings/fragments and drop any
@@ -139,6 +138,7 @@ production state.
 | Name | Owner / visibility | Required when | Default / off behavior | Production | Preview | Development | Secret? |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `NEXT_PUBLIC_OBSERVABILITY_ENABLED` | Root / public build-time | Browser transport intentionally enabled | Unset/false uses local providers only | False until explicitly activated | False | False | No |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Root / public build-time | Public Web Analytics intentionally enabled | Only exact true enables; unset/false is off | True only after external public-project activation | False | False | No |
 | `OBSERVABILITY_PERSISTENCE_ENABLED` | Root / server-only | Durable metric writes intentionally enabled | Unset/false skips Neon connection | False until provisioned | False | False | No |
 | `OBSERVABILITY_DATABASE_URL` | Root / server-only | Persistence enabled | Empty; no DB connection | Writer credential after schema migration | Empty; never production DB | Empty or isolated local DB | Yes |
 | `CRON_SECRET` | Root / server-only | Public maintenance cron configured | Empty; endpoint fails closed | Set after cron setup | Empty | Empty | Yes |
@@ -183,3 +183,9 @@ The prior Delivery 2 deployment
 v0.3.0 source release. The observability dashboard remains a separate project
 with Vercel Authentication protection; never expose credentials or bypass
 values in deployment records.
+
+## Vercel Analytics build defaults
+
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` is a public build-time flag, not a secret. Only exact `true` enables the integration. Unset/false is off; Production should use true only after external Web Analytics activation. Docker exposes the flag as a builder ARG with false default. Container smoke explicitly passes false; normal Playwright server and PDF foundation validation also force false. Changing runtime environment alone cannot activate an already-built browser bundle.
+
+`npx tsx script/vercelAnalyticsSmoke.ts` builds an isolated copied project under `.my-dev-kit-workflow/` and writes unique evidence under `test-report/`. It does not overwrite the normal `.next` build or contact live intake. Image/document processing remains browser-local while explicitly enabled aggregate page views may use the network.
