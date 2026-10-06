@@ -325,10 +325,18 @@ constrained by the [implementation plan](plans/v0.3.0-implementation-plan.md).
 
 ## Version 0.3.1 — Vercel Web Analytics
 
-Status: PLANNED — IMPLEMENTATION PLAN FROZEN; IMPLEMENTATION NOT STARTED.
+Status: IMPLEMENTATION COMPLETE; DOCUMENTATION RECONCILED; PRE-RELEASE READINESS PENDING.
 
 Frozen implementation contract:
 [v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
+
+The implementation is complete on `feature/v0.3.1-vercel-web-analytics` at
+`bd5fec9a3a1bf66341a2164c7fde7fbb72b07ad4`. Documentation reconciliation and
+implementation-completeness audit are recorded in
+[the implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
+and [the reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
+The root package remains 0.3.0. Formal exact-SHA pre-release readiness has not
+started; v0.3.1 is not released, deployed, or enabled in the Vercel project.
 
 ### Goal
 
@@ -373,7 +381,7 @@ Requires:
 
 ### Acceptance
 
-v0.3.1 is complete when:
+The implementation scope is complete when:
 
 - an exact compatible `@vercel/analytics` v2 release is pinned;
 - automatic page views work for initial loads and client navigation without
@@ -384,7 +392,8 @@ v0.3.1 is complete when:
 - the existing application observability/Neon/diagnostic contracts continue to
   pass;
 - full repository validation passes;
-- the exact release candidate passes readiness and production smoke;
+- the exact release candidate passes the separate pre-release readiness and
+  production smoke stages;
 - the package version is bumped to 0.3.1 only during release preparation.
 
 ### Exclusions
@@ -749,6 +758,8 @@ v0.2.0  Image Utility Foundation
         ↓
 v0.3.0  PDF & Document Essentials
         ↓
+v0.3.1  Vercel Web Analytics (bounded infrastructure; readiness pending)
+        ↓
 v0.4.0  Core Text, Data & Sharing Utilities
         Priority A complete
         ↓
@@ -836,12 +847,18 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.0 planning remains frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md).
-Its five-tool implementation, exact-SHA readiness and release preparation are
-complete. The next workflow owns release integration and production deployment.
-Operational launch follow-up below is separate.
+v0.3.1 implementation and documentation reconciliation are complete. The next
+workflow is exact-SHA pre-release readiness; release preparation and deployment
+remain later stages. The v0.3.1 [frozen plan](plans/v0.3.1-implementation-plan.md)
+and [implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
+record scope and implementation evidence.
 
-Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. The v0.3.0 source is release-prepared; it has not yet been integrated into master or deployed to production.
+Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
+validated, merged, and publicly deployed. Delivery 3 technical launch is
+complete. Remaining operational follow-up is owner-authenticated Google Search
+Console and Bing Webmaster sitemap/priority-URL work, followed by the planned
+28-day measurement review. These steps do not imply ranking or traffic
+improvement. Current v0.3.0 production state is recorded in project-status.md.
 
 Historical v0.2 implementation and exact-SHA readiness record: the eight hosted
 workflows passed at 339091c5aaf4ad31be656756a7f4e4c121cc37de on the immutable

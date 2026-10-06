@@ -6,8 +6,9 @@ Tools continue to call the observability facade. Existing analytics and logging 
 
 ## v0.3.1 Vercel Web Analytics boundary
 
-v0.3.1 adds Vercel Web Analytics as an additive platform traffic surface for the
-public `iworkhere-space` Vercel project. It is not a replacement for the
+The v0.3.1 implementation adds Vercel Web Analytics as an additive platform
+traffic surface for the public `iworkhere-space` Vercel project. Implementation
+is complete but unreleased. It is not a replacement for the
 application observability facade, `/api/metric`, `/api/log`, Neon persistence,
 Web Vitals, diagnostic error capture, or the protected observability dashboard.
 
@@ -16,17 +17,18 @@ transitions through exact-pinned `@vercel/analytics` 2.0.1. The root layout
 composes one app-owned Analytics wrapper; tool components must not import or
 call Vercel Analytics directly.
 
-Activation is explicit. The public build-time switch is
-`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true`, enabled only for the public
-production project unless Preview is separately authorized. Vercel Web Analytics
-must also be enabled in the Vercel project dashboard before the deployment that
-contains the integration. No secret is required by the browser package.
+Activation is exact-true and build-time: only
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` enables the wrapper. Unset, false,
+or any other value disables it; local, Preview and container builds default off.
+The repository has not enabled the Vercel project setting or Production flag.
+Those remain external release steps. The public flag is not a secret.
 
 Vercel documents automatic page-view collection as potentially including URL,
 filtered query parameters, referrer, coarse geolocation, OS/browser and device
-type. To preserve this application's stricter URL policy, the wrapper must use
-`beforeSend` to remove query strings and fragments before transmission and
-must be able to drop explicitly private routes. The existing application
+type. To preserve this application's stricter URL policy, the wrapper's
+`beforeSend` sanitizer removes query strings and fragments before transmission
+and drops malformed or unexpected events. No public route denylist is needed.
+The existing application
 telemetry prohibition on file contents, filenames, document/image properties,
 entered text, generated output, storage/authentication data and raw diagnostic
 payloads remains unchanged.

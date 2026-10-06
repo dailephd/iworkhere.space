@@ -101,19 +101,22 @@ See [ADVERTISING](ADVERTISING.md) and [OBSERVABILITY](OBSERVABILITY.md). NEXT_PU
 
 The repository integration is implemented; production activation remains an external release step.
 
-The public project includes default-off Vercel Web Analytics as additive traffic analytics.
-Before the first Analytics-enabled production deployment:
+The public project code includes default-off Vercel Web Analytics as additive
+traffic analytics. The Vercel project setting and Production flag have not been
+changed. Before the first Analytics-enabled production deployment:
 
 1. Enable Web Analytics for the public `iworkhere-space` project in the Vercel
    dashboard.
-2. Use the validated exact-pinned `@vercel/analytics` 2.0.1 integration and app-owned wrapper.
-3. Configure the public build-time switch
-   `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED`; default it off and set exact
-   `true` only for Production unless Preview analytics is separately approved.
-4. Use `beforeSend` to remove URL query strings/fragments and drop any
-   explicitly private route before analytics transmission.
-5. Deploy and verify automatic page views in the Vercel Analytics dashboard
-   without duplicating the application's canonical tool events.
+2. Set `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for Production only. This is
+   a public build-time flag, not a secret; unset and non-exact values are off.
+   Preview, Development, local E2E and container builds remain off by default.
+3. Deploy the exact validated v0.3.1 release through the separate release
+   workflow.
+4. Verify real automatic initial and client-navigation page views in Vercel
+   Analytics. Local tests do not prove dashboard receipt.
+
+The app-owned `beforeSend` policy strips URL queries and fragments and drops
+malformed or unexpected events. No public route denylist is currently needed.
 
 Version 2 uses Vercel Resilient Intake, so validation must not hard-code one
 fixed analytics script/intake URL. Enabling Web Analytics can create
@@ -124,8 +127,9 @@ The independent protected dashboard project is not enrolled in this feature by
 default. Speed Insights, custom Vercel events and Web Analytics API ingestion are
 separate future decisions.
 
-See
-[the Vercel Web Analytics integration plan](plans/v0.3.1-implementation-plan.md)
+See the frozen [Vercel Web Analytics integration plan](plans/v0.3.1-implementation-plan.md),
+the [implementation evidence](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md),
+the [documentation reconciliation audit](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md),
 and [Production observability](OBSERVABILITY.md).
 
 ## Environment variable contract

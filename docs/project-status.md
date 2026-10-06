@@ -32,9 +32,39 @@ authoritative deployment source.
 
 NEXT_NUMBERED_VERSION: 0.3.1 — Vercel Web Analytics
 
+TARGET_VERSION: 0.3.1
+
+PACKAGE_VERSION: 0.3.0
+
+IMPLEMENTATION: COMPLETE
+
+IMPLEMENTATION_SHA: `bd5fec9a3a1bf66341a2164c7fde7fbb72b07ad4`
+
+DOCUMENTATION_RECONCILIATION: COMPLETE; formal pre-release readiness is the next stage.
+
+PRE_RELEASE_READINESS: NOT_RUN
+
+VERSION_BUMP: NOT_DONE
+
+RELEASE_PREPARATION: NOT_STARTED
+
+PR: NO
+
+MERGE: NO
+
+VERCEL_WEB_ANALYTICS_PROJECT_SETTING: NOT_CHANGED
+
+PRODUCTION_FLAG: NOT_ENABLED_BY_THIS_IMPLEMENTATION
+
+PRODUCTION_DEPLOYMENT: NO
+
+LIVE_ANALYTICS_VERIFIED: NO
+
+NEXT_ACTION: separate exact-SHA pre-release readiness.
+
 V0_3_1_PLANNING: FROZEN
 
-V0_3_1_IMPLEMENTATION: NOT_STARTED
+V0_3_1_IMPLEMENTATION: COMPLETE — NOT RELEASED
 
 V0_3_1_TARGET_PACKAGE_VERSION: 0.3.1
 
@@ -50,8 +80,11 @@ integration are explicitly deferred.
 Frozen implementation authority:
 [v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
 
-No v0.3.1 dependency, source code, Vercel project setting or production
-environment value is changed by this planning-only documentation commit.
+Implementation adds default-off automatic page-view analytics to the public
+application. It does not change existing application events or observability,
+and it has not enabled the Vercel project feature or Production flag. See the
+[implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
+and [documentation reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 

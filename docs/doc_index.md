@@ -50,6 +50,17 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
+Current v0.3.1 Vercel Web Analytics lifecycle references:
+
+- `plans/v0.3.1-implementation-plan.md`: frozen implementation authority; it
+  records intended scope and is not evidence of implementation.
+- `reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md`: durable
+  implementation and test evidence at the exact implementation SHA.
+- `reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md`: documentation
+  reconciliation, frozen-plan completeness matrix and scope audit.
+- `project-status.md` and `ROADMAP.md`: current implementation state and next
+  lifecycle stage. Pre-release readiness remains pending.
+
 Current persistent-observability references:
 
 - `OBSERVABILITY.md`: diagnostic/measurement split, bounded error metrics,
@@ -99,7 +110,10 @@ changed-file inventory, or execution report.
 **When to read:** Before planning any version or deciding whether work belongs
 in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
-do not replace or silently rewrite it.
+do not replace or silently rewrite it. The v0.3.1 plan remains frozen planning
+authority; implementation evidence is in its implementation report. The
+separate reconciliation report records the audit and current documentation
+status. Formal pre-release readiness remains the next lifecycle stage.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
