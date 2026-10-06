@@ -180,15 +180,15 @@ Current release:
 
 `v0.3.1` — Vercel Web Analytics
 
-Current production source:
+v0.3.1 release merge / launch source:
 
 `2c8c1dec611b228a73137c5ee8ae0a5cd60caab0`
 
-Production deployment:
+v0.3.1 launch deployment:
 
 `dpl_67zHEP485iQtHBiM4VNPaURo4iw6`
 
-Production deployment URL:
+v0.3.1 launch deployment URL:
 
 https://iworkhere-space-6f1o35an4-dailephds-projects.vercel.app
 
@@ -207,6 +207,13 @@ receipt. Existing application observability and the separately protected
 
 Historical Delivery 2 and v0.3.0 deployment records remain valid historical
 evidence but are not current production state.
+
+Because the public Vercel project automatically deploys later `master`
+commits, a documentation-only merge may create a newer production deployment SHA
+without changing application runtime behavior. The source/deployment above is
+therefore the durable v0.3.1 launch identity, not a promise that it remains the
+newest Vercel deployment forever. Query Vercel deployment metadata when the
+operationally current deployment ID/SHA is required.
 
 ## Vercel Analytics build defaults
 
