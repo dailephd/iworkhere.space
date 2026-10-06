@@ -174,23 +174,47 @@ production state is recorded below.
 ## Current public production state — 2026-10-06
 
 The public Vercel project is `iworkhere-space`, linked to this GitHub repository
-with automatic production deployment from `master`. v0.3.0 was integrated
-through PR #9 and merged to master at
-`008458651bc8786b46fcc4b27ef119147e1e2579`; GitHub release `v0.3.0` is
-published and the owner confirms the new version is deployed at
-https://iworkhere.space.
+with automatic production deployment from `master`.
 
-This documentation-only planning change does not invent a current Vercel
-deployment ID because authoritative deployment metadata was not retrieved here.
-The prior Delivery 2 deployment
-`dpl_48kp2LTbcC3Htczho459KZw1UCCy` at source
-`c8406412301ff382dcf4e10e00789e93caad6f39` is historical, not the current
-v0.3.0 source release. The observability dashboard remains a separate project
-with Vercel Authentication protection; never expose credentials or bypass
-values in deployment records.
+Current release:
+
+`v0.3.1` — Vercel Web Analytics
+
+Current production source:
+
+`2c8c1dec611b228a73137c5ee8ae0a5cd60caab0`
+
+Production deployment:
+
+`dpl_67zHEP485iQtHBiM4VNPaURo4iw6`
+
+Production deployment URL:
+
+https://iworkhere-space-6f1o35an4-dailephds-projects.vercel.app
+
+Public domain:
+
+https://iworkhere.space
+
+The deployment became READY at `2026-10-06T22:27:59.138Z`. Web Analytics is
+enabled on the public project and
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` is scoped to Production only;
+Preview and Development remain off. Live acceptance verified automatic
+page-view traffic, client navigation, query/hash redaction, file-input privacy,
+no custom Vercel events, clean browser diagnostics and aggregated page-view data
+receipt. Existing application observability and the separately protected
+`iworkhere-observability` dashboard remained healthy.
+
+Historical Delivery 2 and v0.3.0 deployment records remain valid historical
+evidence but are not current production state.
 
 ## Vercel Analytics build defaults
 
-`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` is a public build-time flag, not a secret. Only exact `true` enables the integration. Unset/false is off; Production should use true only after external Web Analytics activation. Docker exposes the flag as a builder ARG with false default. Container smoke explicitly passes false; normal Playwright server and PDF foundation validation also force false. Changing runtime environment alone cannot activate an already-built browser bundle.
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` is a public build-time flag, not a secret.
+Only exact `true` enables the integration. Production currently sets it to
+`true`; Preview and Development remain absent/off. Docker exposes the flag as a
+builder ARG with false default. Container smoke explicitly passes false; normal
+Playwright server and PDF foundation validation also force false. Changing
+runtime environment alone cannot activate an already-built browser bundle.
 
 `npx tsx script/vercelAnalyticsSmoke.ts` builds an isolated copied project under `.my-dev-kit-workflow/` and writes unique evidence under `test-report/`. It does not overwrite the normal `.next` build or contact live intake. Image/document processing remains browser-local while explicitly enabled aggregate page views may use the network.
