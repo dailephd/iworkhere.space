@@ -4,7 +4,7 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The root application package version is `0.3.0`; the independent dashboard
+The root application package version is `0.3.1`; the independent dashboard
 retains its own package version. Source release status and live production
 deployment status are tracked separately.
 
@@ -325,18 +325,20 @@ constrained by the [implementation plan](plans/v0.3.0-implementation-plan.md).
 
 ## Version 0.3.1 — Vercel Web Analytics
 
-Status: IMPLEMENTATION COMPLETE; DOCUMENTATION RECONCILED; PRE-RELEASE READINESS PENDING.
+Status: IMPLEMENTATION COMPLETE; DOCUMENTATION RECONCILED; PRE-RELEASE READINESS PASS; RELEASE PREPARED.
 
 Frozen implementation contract:
 [v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
 
-The implementation is complete on `feature/v0.3.1-vercel-web-analytics` at
-`bd5fec9a3a1bf66341a2164c7fde7fbb72b07ad4`. Documentation reconciliation and
+The readiness-passed implementation candidate was
+`3d0dc49a9f850f35f4b75709aa8cffa50768c49d`; release preparation sets package
+metadata to 0.3.1 on `release/v0.3.1`. Documentation reconciliation and
 implementation-completeness audit are recorded in
 [the implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
 and [the reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
-The root package remains 0.3.0. Formal exact-SHA pre-release readiness has not
-started; v0.3.1 is not released, deployed, or enabled in the Vercel project.
+The release-prepared source is not yet integrated or deployed. Current
+production remains v0.3.0; Web Analytics has not been enabled in the Vercel
+project or Production environment, and live page views have not been verified.
 
 ### Goal
 
@@ -758,7 +760,7 @@ v0.2.0  Image Utility Foundation
         ↓
 v0.3.0  PDF & Document Essentials
         ↓
-v0.3.1  Vercel Web Analytics (bounded infrastructure; readiness pending)
+v0.3.1  Vercel Web Analytics (implementation complete; readiness passed; release prepared)
         ↓
 v0.4.0  Core Text, Data & Sharing Utilities
         Priority A complete
@@ -847,9 +849,9 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.1 implementation and documentation reconciliation are complete. The next
-workflow is exact-SHA pre-release readiness; release preparation and deployment
-remain later stages. The v0.3.1 [frozen plan](plans/v0.3.1-implementation-plan.md)
+v0.3.1 implementation, documentation reconciliation, readiness and release
+preparation are complete. The next workflow is release integration and
+production launch. The v0.3.1 [frozen plan](plans/v0.3.1-implementation-plan.md)
 and [implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
 record scope and implementation evidence.
 

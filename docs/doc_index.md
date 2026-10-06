@@ -58,8 +58,9 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   implementation and test evidence at the exact implementation SHA.
 - `reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md`: documentation
   reconciliation, frozen-plan completeness matrix and scope audit.
-- `project-status.md` and `ROADMAP.md`: current implementation state and next
-  lifecycle stage. Pre-release readiness remains pending.
+- `project-status.md` and `ROADMAP.md`: current implementation, readiness and
+  release-preparation state, plus the next lifecycle stage. v0.3.1 is
+  release-prepared; production activation remains pending.
 
 Current persistent-observability references:
 

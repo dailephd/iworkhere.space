@@ -463,10 +463,11 @@ and `src/app/layout.test.tsx` cover the app-owned wrapper and single root mount.
 The normal `test/e2e/vercel-analytics.spec.ts` verifies disabled local behavior.
 `npx tsx script/vercelAnalyticsSmoke.ts` creates an isolated enabled production
 build and browser context to check automatic initial/navigation views and query,
-hash and tool/file privacy. It fulfills Analytics intake locally and does not
-prove live Vercel receipt. Local E2E and container builds keep the public flag
-false. See the implementation and reconciliation reports for version-specific
-results and evidence boundaries.
+hash and tool/file privacy. It validates intake semantically without assuming
+a fixed script or endpoint path, and does not prove live Vercel receipt. Local
+E2E and container builds keep the public flag false; container validation
+remains default-off. See the implementation and reconciliation reports for
+version-specific results and evidence boundaries.
 
 ## UI/discovery Delivery 2 acceptance
 

@@ -8,7 +8,8 @@ Tools continue to call the observability facade. Existing analytics and logging 
 
 The v0.3.1 implementation adds Vercel Web Analytics as an additive platform
 traffic surface for the public `iworkhere-space` Vercel project. Implementation
-is complete but unreleased. It is not a replacement for the
+and release preparation are complete; production activation is pending. Current
+live production remains v0.3.0. It is not a replacement for the
 application observability facade, `/api/metric`, `/api/log`, Neon persistence,
 Web Vitals, diagnostic error capture, or the protected observability dashboard.
 

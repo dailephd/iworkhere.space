@@ -88,10 +88,9 @@ readiness passed for the frozen v0.2 implementation candidate; its release
 preparation sets `HEIC_RELEASE_READY=YES` and `V0_2_RELEASE_READY=YES`.
 The earlier pre-deployment state is historical; Delivery 2 production launch
 is recorded below. The v0.3.0 source candidate passed readiness and release
-preparation, with application package metadata at 0.3.0. It has not yet been
-integrated or deployed; the current live production remains Delivery 2 at the
-source SHA and deployment recorded below. Its release-prepared PDF assets do
-not describe the current live production runtime.
+preparation with application package metadata at 0.3.0, and was later
+integrated and deployed. Its release-prepared PDF assets describe the current
+live production runtime recorded below.
 
 ## Opt-in production integrations
 
@@ -99,21 +98,23 @@ See [ADVERTISING](ADVERTISING.md) and [OBSERVABILITY](OBSERVABILITY.md). NEXT_PU
 
 ## v0.3.1 Vercel Web Analytics integration
 
-The repository integration is implemented; production activation remains an external release step.
+The repository integration is implemented and v0.3.1 source is release-prepared. Production activation remains an external release step. Current live production remains v0.3.0.
 
 The public project code includes default-off Vercel Web Analytics as additive
 traffic analytics. The Vercel project setting and Production flag have not been
-changed. Before the first Analytics-enabled production deployment:
+changed. The following launch steps remain pending:
 
 1. Enable Web Analytics for the public `iworkhere-space` project in the Vercel
    dashboard.
 2. Set `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for Production only. This is
    a public build-time flag, not a secret; unset and non-exact values are off.
    Preview, Development, local E2E and container builds remain off by default.
-3. Deploy the exact validated v0.3.1 release through the separate release
-   workflow.
+3. Deploy the exact validated v0.3.1 source through the separate release
+   integration workflow.
 4. Verify real automatic initial and client-navigation page views in Vercel
-   Analytics. Local tests do not prove dashboard receipt.
+   Analytics.
+5. Verify production query-string and URL-fragment redaction.
+6. Verify existing application observability remains functional.
 
 The app-owned `beforeSend` policy strips URL queries and fragments and drops
 malformed or unexpected events. No public route denylist is currently needed.
