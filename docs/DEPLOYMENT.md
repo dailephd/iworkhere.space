@@ -62,7 +62,7 @@ inside Docker and runs that same suite against the live container.
 
 ## Browser runtime assets
 
-The unreleased v0.3 feature branch additionally serves same-origin
+The release-prepared v0.3 source additionally serves same-origin
 `/vendor/pdfjs/6.4.299/` (native worker and standard fonts) and
 `/vendor/qpdf/12.4.2/` (pinned JS/WASM), with manifests and retained licenses.
 pdf-lib 1.17.1 runs only in its bundled dedicated mutation worker. Engines
@@ -87,8 +87,11 @@ production-license gate after reviewing the evidence bundle. Exact-SHA hosted
 readiness passed for the frozen v0.2 implementation candidate; its release
 preparation sets `HEIC_RELEASE_READY=YES` and `V0_2_RELEASE_READY=YES`.
 The earlier pre-deployment state is historical; Delivery 2 production launch
-is recorded below. v0.3 remains unreleased and undeployed, with readiness and
-release preparation not run and package version still 0.2.0.
+is recorded below. The v0.3.0 source candidate passed readiness and release
+preparation, with application package metadata at 0.3.0. It has not yet been
+integrated or deployed; the current live production remains Delivery 2 at the
+source SHA and deployment recorded below. Its release-prepared PDF assets do
+not describe the current live production runtime.
 
 ## Opt-in production integrations
 

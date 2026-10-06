@@ -1,6 +1,6 @@
 {
   "name": "iworkhere.space",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "npm run dev:check && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-Dev.ps1",

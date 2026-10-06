@@ -3,16 +3,17 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The feature branch implements the complete v0.3.0 PDF & Document Essentials
-scope: five browser-local document tools alongside the existing utilities.
-The root package version is `0.2.0`;
+The v0.3.0 release-prepared source includes five browser-local PDF and document
+tools alongside the existing utilities: PDF to JPG/PNG, Images to PDF, Merge
+PDF, Split PDF, and lossless structural Compress PDF. The root package version
+is `0.3.0`;
 the independently deployed dashboard remains at `0.1.0`. The root registry
 contains 15 tools across six populated categories, including four image tools
 and five document tools; the registry-derived sitemap contains 23 URLs.
-v0.3.0 is not released, release-prepared, version-bumped, merged or deployed.
-Separate pre-release readiness has not run. Delivery 2 production history is
-recorded in [deployment documentation](docs/DEPLOYMENT.md); feature-branch
-inventory does not describe the live production catalog.
+The exact v0.3.0 candidate passed pre-release readiness, and its release branch
+is prepared at version 0.3.0. This source release has not yet been integrated
+into master or deployed; the live production catalog remains the Delivery 2
+deployment recorded in [deployment documentation](docs/DEPLOYMENT.md).
 
 ## Getting Started
 

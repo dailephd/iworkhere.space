@@ -1,6 +1,6 @@
 # PROJECT STATUS
 
-## v0.3.0 implementation complete — 2026-10-05
+## v0.3.0 release preparation complete — 2026-10-06
 
 TARGET_VERSION: 0.3.0 — PDF & Document Essentials
 
@@ -10,46 +10,42 @@ IMPLEMENTATION_COMPLETE_SHA: 7a6e809448a4e360d5e15c9d66bc4914e028890d
 
 V0_3_IMPLEMENTATION: COMPLETE — 6 OF 6 BATCHES
 
-PACKAGE_VERSION: 0.2.0
+PACKAGE_VERSION: 0.3.0
 
 DOCUMENTATION_RECONCILIATION: COMPLETE
 
-Reconciliation validation passed: source/docs consistency and roadmap
-preservation, runtime checksums/notices, and `npm run verify` with 867 tests,
-zero skipped, typecheck/lint/build PASS. Reconciliation RUN_ID:
-`2026-10-05T13-51-46-865Z-e52ea5e0`; JSON/JUnit and command logs are under
-`test-report/2026-10-05T13-51-46-865Z-e52ea5e0/`. Full E2E/container and
-Observer evidence below is inherited from Batch 6, not rerun for docs edits.
+Release candidate: `b0ee1bb251571ce2f83b08c55285a12ee68dc4c4`. Exact-SHA
+readiness passed all eight hosted workflows. Release preparation has bumped
+the application metadata to 0.3.0 and finalized the release-state documents.
 
-PRE_RELEASE_READINESS: NOT_RUN
+PRE_RELEASE_READINESS: PASS
 
-RELEASE_PREPARATION: NOT_RUN
+RELEASE_PREPARATION: COMPLETE
 
-V0_3_RELEASE: NOT_RELEASED
+V0_3_RELEASE: RELEASE_PREPARED; integration and production deployment remain
+pending
 
-VERSION_BUMP: NOT_DONE
+VERSION_BUMP: COMPLETE
 
 V0_3_PR: NOT_CREATED
 
-V0_3_MERGE / DEPLOYMENT / PUBLICATION: NOT_DONE
+V0_3_MERGE / DEPLOYMENT: NOT_DONE
 
-The current feature branch implements Merge PDF, Split PDF, Images to PDF,
+The release-prepared source implements Merge PDF, Split PDF, Images to PDF,
 PDF to JPG / PNG and Compress PDF. The registry has 15 tools, six populated
-categories and 23 sitemap URLs. This is candidate implementation inventory,
-not a change to the Delivery 2 production inventory recorded below.
+categories and 23 sitemap URLs. These source-release capabilities are not yet
+part of live production; the Delivery 2 production inventory recorded below
+remains current.
 
-Inherited final Batch 6 validation: aggregate verify passed with 867 tests;
-full E2E and container browser validation each passed 312 cases, with non-root
-runtime and clean shutdown. Document Observer passed 10/10 desktop/mobile
-lanes; homepage and image baselines were preserved. These are implementation
-results, not hosted v0.3 readiness. See the
+Readiness passed with 867 unit tests, 312 E2E tests, 312 container browser
+tests, and 10/10 document Observer lanes. All eight hosted workflows passed on
+the exact candidate. See the
 [implementation report](reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md)
 for final contracts, evidence and limitations. Implementation gaps: NONE.
 
-Exact next workflow after documentation reconciliation passes:
-READY_FOR_SEPARATE_PRE_RELEASE_READINESS. The planner issues a separate
-standardized workflow against the new exact documentation-reconciled SHA.
-Do not begin readiness or release preparation from this status record.
+The separate release-integration and production-deployment workflow owns the
+release PR, merge, production verification, and any subsequent tag or release
+record. Current production remains Delivery 2 until that workflow succeeds.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 

@@ -4,8 +4,9 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The root application package version is `0.2.0`; the independent dashboard
-retains its own package version.
+The root application package version is `0.3.0`; the independent dashboard
+retains its own package version. Source release status and live production
+deployment status are tracked separately.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -19,8 +20,9 @@ The original v0.1.0 product baseline provides six registered utilities:
 The v0.2 image family brings the catalog to ten tools. Package version and
 implementation scope are tracked separately.
 
-The implemented, unreleased v0.3 document family brings the feature-branch
-catalog to fifteen tools. Root package metadata remains 0.2.0.
+The release-prepared v0.3 document family brings the source catalog to fifteen
+tools. The live production catalog remains the Delivery 2 deployment until the
+separate release-integration and production-deployment workflow completes.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -252,10 +254,10 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
-Status: IMPLEMENTATION COMPLETE — five-tool planned scope implemented.
-NOT RELEASED; pre-release readiness and release preparation have not run.
-Root package metadata remains 0.2.0. Documentation reconciliation is the
-current workflow; its successful handoff is separate pre-release readiness.
+Status: IMPLEMENTATION AND EXACT-SHA READINESS COMPLETE; RELEASE PREPARED.
+Application package metadata is 0.3.0. Integration and production deployment
+remain separate, pending workflow steps. The live production state is not
+changed by release preparation.
 
 Frozen implementation contract: [v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md).
 
@@ -747,13 +749,12 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.0 planning remains frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md),
-and its five-tool implementation is complete. After documentation reconciliation
-passes, the planner issues the separate pre-release readiness workflow against
-the documentation-reconciled exact candidate SHA. Release preparation has not
-run. Operational launch follow-up below is separate.
+v0.3.0 planning remains frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md).
+Its five-tool implementation, exact-SHA readiness and release preparation are
+complete. The next workflow owns release integration and production deployment.
+Operational launch follow-up below is separate.
 
-Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. No new catalog release has been created; v0.3.0 remains the next numbered version, with implementation complete and release state unchanged.
+Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. The v0.3.0 source is release-prepared; it has not yet been integrated into master or deployed to production.
 
 Historical v0.2 implementation and exact-SHA readiness record: the eight hosted
 workflows passed at 339091c5aaf4ad31be656756a7f4e4c121cc37de on the immutable

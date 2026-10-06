@@ -5,11 +5,11 @@ This document defines the CI discipline for this Next.js project.
 CI is not optional.
 Every pull request must pass all checks before merge.
 
-v0.3.0 implementation is complete on its feature branch with accepted local
-Batch 6 verify, E2E and container evidence. These results are not hosted
-candidate readiness. Separate pre-release readiness has not run; the planner
-must issue that workflow against the exact documentation-reconciled SHA.
-No v0.3 PR, merge, release preparation, version bump or deployment is claimed.
+The v0.3.0 candidate `b0ee1bb251571ce2f83b08c55285a12ee68dc4c4` passed exact-SHA
+pre-release readiness in all eight hosted workflows. Release preparation uses
+that candidate as its starting point. Because the workflows do not trigger on
+`release/**`, the release-prepared SHA is validated through an immutable
+`validation/**` ref. This does not claim that v0.3.0 has merged or deployed.
 Historical hosted v0.2/Delivery 2 evidence below remains version-specific.
 
 All eight workflows trigger on `pull_request` and pushes to `main`, `master`,
