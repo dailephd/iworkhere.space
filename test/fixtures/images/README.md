@@ -94,6 +94,12 @@ The existing `resizer-source.png` is also consumed by Image Compressor's
 no-reduction test: same-size native encoding produces the same 309-byte file,
 with no result URL or download. Its original provenance and checksum remain above.
 
+Images to PDF reuses `resizer-source.jpg`, `resizer-source.png` and
+`compressor-source.jpg` for ordered JPEG/PNG embedding and independent PDF.js
+rendering. The transparent PNG is rendered against a green viewer background to
+distinguish retained alpha from a white matte. `resizer-source.webp` proves the
+operation allowlist rejects WebP atomically. No fixture bytes or provenance change.
+
 
 ## Converter transparent WebP
 

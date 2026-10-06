@@ -3,9 +3,17 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The repository implements the v0.2.0 scope. The root package version is `0.2.0`;
+The v0.3.0 release-prepared source includes five browser-local PDF and document
+tools alongside the existing utilities: PDF to JPG/PNG, Images to PDF, Merge
+PDF, Split PDF, and lossless structural Compress PDF. The root package version
+is `0.3.0`;
 the independently deployed dashboard remains at `0.1.0`. The root registry
-contains 10 tools, including four local image utilities.
+contains 15 tools across six populated categories, including four image tools
+and five document tools; the registry-derived sitemap contains 23 URLs.
+The exact v0.3.0 candidate passed pre-release readiness, and its release branch
+is prepared at version 0.3.0. This source release has not yet been integrated
+into master or deployed; the live production catalog remains the Delivery 2
+deployment recorded in [deployment documentation](docs/DEPLOYMENT.md).
 
 ## Getting Started
 
@@ -72,8 +80,10 @@ pre-release checks; see [CI/CD](docs/CI_CD.md).
 
 `npm run verify` runs typecheck, lint, test and build; E2E remains separate.
 `npm run test:container` reuses the browser suite against a built Docker image.
-Neither E2E nor Container is part of `npm run verify`. Readiness passed at the
-implementation SHA recorded in [CI/CD](docs/CI_CD.md).
+Neither E2E nor Container is part of `npm run verify`. Historical v0.2.0
+readiness passed at the implementation SHA recorded in [CI/CD](docs/CI_CD.md).
+v0.3.0 local implementation validation is recorded in its
+[implementation report](docs/reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md).
 
 All eight workflow jobs must pass for a pull request. The local aggregate
 command does not replace them.

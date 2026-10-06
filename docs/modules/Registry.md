@@ -20,6 +20,13 @@ tools: `slugify`, `calculator`, `length-converter`, `html-text-extractor`,
 `weight-converter`, `time-arithmetic`, `image-resizer`, `image-compressor`, `image-converter`, `heic-converter`.
 There are four image tools. The dedicated HEIC worker contract and separate release-license gate are specified in `HeicConverter.md`.
 
+The preceding ten-tool count records the historical image Batch 5 baseline.
+Current v0.3 feature-branch implementation adds `merge-pdf`, `split-pdf`,
+`images-to-pdf`, `pdf-to-image` and `compress-pdf`, all in `document`, bringing
+the registry to 15 tools and six populated categories. Each has explicit
+component, SEO metadata, client-only/offline capability, no persistent state
+and no shareable query. Implementation does not imply release or deployment.
+
 ```typescript
 function getToolBySlug(slug: string): ToolDefinition | undefined
 function getToolByCategory(category: string): ToolDefinition[]

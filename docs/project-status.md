@@ -1,6 +1,56 @@
 # PROJECT STATUS
 
-## v0.3.0 planning freeze — 2026-10-04
+## v0.3.0 release preparation complete — 2026-10-06
+
+TARGET_VERSION: 0.3.0 — PDF & Document Essentials
+
+VERSION_BRANCH: feature/v0.3.0-pdf-document-essentials
+
+IMPLEMENTATION_COMPLETE_SHA: 7a6e809448a4e360d5e15c9d66bc4914e028890d
+
+V0_3_IMPLEMENTATION: COMPLETE — 6 OF 6 BATCHES
+
+PACKAGE_VERSION: 0.3.0
+
+DOCUMENTATION_RECONCILIATION: COMPLETE
+
+Release candidate: `b0ee1bb251571ce2f83b08c55285a12ee68dc4c4`. Exact-SHA
+readiness passed all eight hosted workflows. Release preparation has bumped
+the application metadata to 0.3.0 and finalized the release-state documents.
+
+PRE_RELEASE_READINESS: PASS
+
+RELEASE_PREPARATION: COMPLETE
+
+V0_3_RELEASE: RELEASE_PREPARED; integration and production deployment remain
+pending
+
+VERSION_BUMP: COMPLETE
+
+V0_3_PR: NOT_CREATED
+
+V0_3_MERGE / DEPLOYMENT: NOT_DONE
+
+The release-prepared source implements Merge PDF, Split PDF, Images to PDF,
+PDF to JPG / PNG and Compress PDF. The registry has 15 tools, six populated
+categories and 23 sitemap URLs. These source-release capabilities are not yet
+part of live production; the Delivery 2 production inventory recorded below
+remains current.
+
+Readiness passed with 867 unit tests, 312 E2E tests, 312 container browser
+tests, and 10/10 document Observer lanes. All eight hosted workflows passed on
+the exact candidate. See the
+[implementation report](reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md)
+for final contracts, evidence and limitations. Implementation gaps: NONE.
+
+The separate release-integration and production-deployment workflow owns the
+release PR, merge, production verification, and any subsequent tag or release
+record. Current production remains Delivery 2 until that workflow succeeds.
+
+## Historical v0.3.0 planning freeze — 2026-10-04
+
+The following planning snapshot is preserved; the current implementation
+record above supersedes its not-started status and Batch 1 next action.
 
 NEXT_NUMBERED_VERSION: 0.3.0
 
@@ -176,6 +226,17 @@ runtime validation does not resolve the separate HEIC license or release gate.
   guidelines)
 
 ### Tools implemented
+
+Current feature-branch inventory includes the following five unreleased
+document tools in addition to the ten existing tools below:
+
+- **Merge PDF** (`/tool/merge-pdf`) — ordered browser-local PDF page copying.
+- **Split PDF** (`/tool/split-pdf`) — ordered page groups and individual PDFs.
+- **Images to PDF** (`/tool/images-to-pdf`) — ordered JPEG/PNG assembly.
+- **PDF to JPG / PNG** (`/tool/pdf-to-image`) — selected-page raster exports.
+- **Compress PDF** (`/tool/compress-pdf`) — lossless structural optimization;
+  NO REDUCTION ACHIEVED is a normal possible outcome.
+
 - **Slugify Text** (`/tool/slugify`) — text category
 - **HTML Text Extractor** (`/tool/html-text-extractor`) — text category
 - **Calculator** (`/tool/calculator`) — math category
@@ -257,8 +318,11 @@ package. No broader image-tool rollout or release status change is implied.
 
 ## Next action
 
-Review the [frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
-and prepare the bounded Batch 1 prompt. v0.3 implementation is not started.
+After this documentation reconciliation passes, return its exact candidate SHA
+to the planner for separate pre-release readiness. The
+[frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
+has been implemented in all six batches. Readiness and release preparation
+have not run; no version bump, PR, merge or v0.3 deployment is performed here.
 External launch follow-up remains separately tracked in the Delivery 2 launch
 record and [deployment documentation](DEPLOYMENT.md).
 

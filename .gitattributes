@@ -1,0 +1,11 @@
+# Preserve pinned runtime/notice byte identities on Windows checkouts.
+script/qpdf/build.sh text eol=lf
+public/vendor/pdfjs/6.4.299/pdf.worker.mjs -text
+public/vendor/pdfjs/6.4.299/standard_fonts/* binary
+public/vendor/qpdf/12.4.2/qpdf.js -text
+public/vendor/qpdf/12.4.2/qpdf.wasm binary
+public/licenses/pdfjs-6.4.299/* -text
+public/licenses/pdf-lib-1.17.1/* -text
+public/licenses/pdf-lib-1.17.1-LICENSE.md -text
+public/licenses/qpdf-12.4.2/* -text
+test/fixtures/pdf/*.pdf binary

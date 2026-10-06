@@ -26,3 +26,27 @@ v0.2.0: `HEIC_RELEASE_LICENSE_APPROVAL = APPROVED_BY_OWNER`;
 
 The separate MIT synthetic image fixture license is recorded in
 `test/fixtures/images/README.md`; it does not resolve the decoder release gate.
+
+## PDF foundation
+
+PDF.js 6.4.299 (Apache-2.0) is distributed with its native worker and the
+standard-font files exercised by the fourteen-font fixture. Exact upstream
+license texts, including Foxit and Liberation font terms, are preserved under
+`public/licenses/pdfjs-6.4.299/`. pdf-lib 1.17.1 is MIT; its license is preserved
+at `public/licenses/pdf-lib-1.17.1-LICENSE.md`. Its installed dependencies are
+@pdf-lib/standard-fonts 1.0.0 (MIT), @pdf-lib/upng 1.0.1 (MIT), pako 1.0.11
+(MIT AND Zlib) and tslib 1.14.1 (0BSD). Their unmodified license texts and pako
+zlib-source notices are preserved in `public/licenses/pdf-lib-1.17.1/`.
+
+Project-owned QPDF 12.4.2 WASM uses the exact pinned Emscripten 4.0.15 recipe
+and native crypto. `public/licenses/qpdf-12.4.2/NOTICE.md` maps distributed
+components to retained source notices, including QPDF Apache-2.0, sphlib MIT/
+native AES attribution, RSA MD5, zlib, IJG libjpeg, Emscripten, musl, LLVM
+C++/ABI/unwinding/compiler runtime and dlmalloc. This software is based in part
+on the work of the Independent JPEG Group. Native MD5 derives from the RSA
+Data Security, Inc. MD5 Message-Digest Algorithm.
+
+Versioned runtime manifests record purpose, source version, byte identity and
+notice ownership. `script/qpdf/README.md` documents controlled rebuilds.
+These records describe factual source correspondence and do not claim legal
+approval. No QuickJS, scripting runtime or remote runtime code is distributed.

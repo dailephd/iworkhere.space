@@ -102,6 +102,28 @@ Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark,
 
 ## Change and documentation rules
 
+Batch 2–6 document tools use existing solid raised panels and semantic source,
+input, action, result and error tokens. Ordered source controls and split groups
+wrap/stack naturally with min-width-zero children; no theme geometry changes,
+drag/drop, animation, new palette or shared UI framework. Result headings receive
+programmatic focus, errors remain local alerts, and downloads are explicit links.
+Compress PDF uses one structural mode, stacked responsive size/savings metrics,
+and a neutral headed NO REDUCTION ACHIEVED panel distinct from the error alert.
+Each document action/settings form has a task-specific accessible name. Source,
+settings/action and guide regions remain independently navigable landmarks;
+document Observer acceptance checks their order, containment and natural scrolling
+at 1440×900 and 390×844 without changing homepage or image baselines.
+
+The complete five-tool document family is implemented and unreleased. Merge
+and Images to PDF keep ordered source lists; Split keeps independently edited
+page groups; PDF to JPG / PNG has page/format/DPI and conditional JPEG settings;
+Compress PDF retains its single structural action and truthful no-reduction
+state. These task-specific differences are not a universal workspace contract.
+Server guides and category-aware related document links use the existing page
+template. Batch 6 document Observer acceptance passed all ten desktop/mobile
+lanes, with homepage and image baseline hashes preserved. Loaded states,
+downloads, errors and focus remain covered by operation browser tests.
+
 Before changing a design or styling contract, update this document and then apply the decision consistently through the current owners. Architecture changes are documented in `docs/architecture.md`; project state belongs in `docs/project-status.md`; new abstractions require updating agent guidance. Use fresh source retrieval before proposing cross-cutting changes, and update affected component/module specifications. See `docs/doc_index.md` for the documentation map.
 
 ## Component-color review contract

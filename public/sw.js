@@ -66,7 +66,20 @@ self.addEventListener("fetch", function (event) {
     // Static assets: cache first, network fallback
     event.respondWith(
         caches.match(event.request).then(function (cached) {
-            if (cached) return cached;
+            if (cached) {
+                // Worker entries share a bootstrap pathname with different
+                // fragments. Keep its cached bytes/headers for offline use,
+                // but omit the stored response URL so the worker retains its
+                // own constructor URL and entry fragment.
+                if (url.pathname.startsWith("/_next/static/chunks/turbopack-worker-")) {
+                    return new Response(cached.body, {
+                        status: cached.status,
+                        statusText: cached.statusText,
+                        headers: cached.headers,
+                    });
+                }
+                return cached;
+            }
             return fetch(event.request).then(function (response) {
                 if (response.ok) {
                     var clone = response.clone();

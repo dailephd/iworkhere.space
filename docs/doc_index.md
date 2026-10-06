@@ -2,6 +2,46 @@
 
 # Documentation Index
 
+### docs/modules/CompressPdf.md
+
+**Summary:** Lossless structural QPDF compression, strict independent PDF.js
+verification, truthful byte comparison and local lifecycle/privacy.
+**When to read:** Changing Compress PDF.
+
+### docs/modules/PdfToImage.md
+
+**Summary:** Selected-page PNG/JPEG export, DPI/quality, atomic viewport preflight,
+native image verification and local cancellation/download ownership.
+**When to read:** Changing PDF to JPG / PNG.
+
+### docs/modules/ImagesToPdf.md
+
+**Summary:** Atomic ordered JPEG/PNG selection, intrinsic page sizing, direct
+worker embedding, independent alpha/content verification and local lifecycle.
+**When to read:** Changing Images to PDF.
+
+### docs/modules/MergePdf.md
+
+**Summary:** Atomic ordered PDF selection, existing worker merge operation,
+independent verification, local lifecycle/download/privacy and accessibility.
+**When to read:** Changing Merge PDF.
+
+### docs/modules/SplitPdf.md
+
+**Summary:** Explicit parsed output groups, existing worker split operation,
+ordered verification/downloads, local lifecycle/privacy and accessibility.
+**When to read:** Changing Split PDF.
+
+### docs/modules/PdfFile.md
+
+**Summary:** Batch 1 document source validation, frozen limits, bounded PDF
+inspection/errors, page selection and pure ordered-file transitions.
+
+### docs/modules/PdfProcessing.md
+
+**Summary:** Batch 1 lazy PDF.js/native worker, short-lived pdf-lib/QPDF workers,
+pinned supply chain/assets/notices and independent browser/container acceptance.
+
 ### docs/modules/HeicConverter.md
 
 **Summary:** Batch 5 HEIC/HEIF worker-only decoding, bounded inspection,
@@ -80,7 +120,17 @@ pinned PDF.js/pdf-lib/project-owned QPDF runtimes, supply-chain and fidelity
 contracts, public limits, six ordered batches and separate release gates.
 **When to read:** Before preparing or executing any v0.3 implementation batch.
 **Relations:** [Implementation plan](plans/v0.3.0-implementation-plan.md),
-ROADMAP.md and project-status.md. Planning is frozen; implementation is not started.
+ROADMAP.md and project-status.md. Planning is frozen and all six batches are
+implemented; readiness and release preparation remain separate, not run stages.
+
+### reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md
+
+**Summary:** Complete five-tool v0.3 implementation, exact implementation SHA,
+six-batch evidence, runtime ownership, final limits, canonical QPDF identities
+and inherited final validation. This is implementation evidence, not a release
+report or hosted readiness claim.
+**When to read:** Auditing v0.3 completeness or preparing its separate readiness
+workflow after documentation reconciliation.
 
 ### plans/ui-discovery-growth-plan.md
 **Summary:** Planner-authored, research-backed 2026-10-01 plan for a small

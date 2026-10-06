@@ -226,7 +226,7 @@ Specs in `test/e2e/` use a shared fixture that attaches listeners before navigat
 Every applicable route fails on `pageerror`, console errors and React hydration
 warnings/errors, without suppression or arbitrary allowlists. Expected 404 status
 is tested through a request to avoid treating an intentional failed resource as an
-unapproved browser diagnostic. Health response, all ten registered tool routes and catalog flows, calculator
+unapproved browser diagnostic. Health response, all fifteen registered tool routes and catalog flows, calculator
 and time arithmetic interactions, responsive shell/skip/navigation/footer,
 document scrolling, theme reload persistence and production SW are covered.
 
@@ -458,6 +458,51 @@ Default builds and E2E/container tests keep both public enable flags false/absen
 ## UI/discovery Delivery 2 acceptance
 
 Focused tests verify registry-derived sitemap membership, environment robots/noindex boundary, apex-stable canonical/social metadata, server guide content and canonical related IDs. Production E2E extends current image flows and checks breadcrumbs, initial HTML, metadata, Light/Dark responsive workspace allocation, downloads/reset/focus, and protected routes. Observer geometry uses the approved Resizer precedent at 1440×900 and 390×844 through semantic containment/allocation/order contracts. Child targets precede containers for the current directional fit API; intentional guide/document-height changes are not protected absolute Y coordinates. Frozen supplementary scroll lanes establish document scrolling and viewport reachability; its current capture API cannot apply selected-file/theme state, so Playwright owns those runtime states. Generated evidence remains under test-report/ or ignored project workflow roots.
+
+## Document family validation
+
+Adjacent document-domain Vitest tests cover frozen source/collection/render
+limits, page-selection order and deduplication, atomic additions, worker
+protocol/termination, independent verification, cancellation/stale generations,
+local errors, focus and URL cleanup. Registry/metadata/guide/sitemap tests
+protect five document tools, 15 total tools, six populated categories and
+23 canonical sitemap URLs. Operation-specific browser specs are
+`pdf-page-copy.spec.ts`, `images-to-pdf.spec.ts`, `pdf-to-image.spec.ts` and
+`compress-pdf.spec.ts`; `document-family.spec.ts` covers discovery/search,
+SSR/canonicals/related links, accessible landmarks, keyboard Reset, bounded
+source failures, four independent cold routes and all-five warmed offline
+operations. Parser/runtime acceptance uses real deterministic fixtures with
+provenance in `test/fixtures/pdf/README.md`; mock tests alone are not proof of
+PDF fidelity or native worker behavior.
+
+Existing PDF-specific commands use installed project-local dependencies:
+
+| Gate | Command |
+| --- | --- |
+| Runtime manifests, checksums and notices | `node node_modules/tsx/dist/cli.mjs script/pdfAssetsVerify.ts` |
+| Real production-browser foundation corpus | `node node_modules/tsx/dist/cli.mjs script/pdfFoundationSmoke.ts` |
+| Selected-page raster-export foundation | `node node_modules/tsx/dist/cli.mjs script/pdfFoundationSmoke.ts --pdf-to-image` |
+| Standalone foundation runtime | `node node_modules/tsx/dist/cli.mjs script/pdfFoundationSmoke.ts --container` |
+
+See [foundation instructions](../script/pdfFoundation.md) for the temporary
+test-only harness, unique reports, local browser cache, cleanup and normal
+rebuild requirements, and [QPDF build instructions](../script/qpdf/README.md)
+for controlled fresh-cache reproducibility. Normal builds do not compile QPDF.
+`npm run verify`, `npm run test:e2e` and `npm run test:container` retain their
+existing responsibilities; PDF-specific checks are explicit script commands,
+not additional package scripts. There is no `docs:check` package command.
+Documentation consistency uses a source/docs claim matrix, targeted searches,
+package-script checks and registry/metadata/guide/sitemap comparisons.
+
+Batch 6 used project-local headless my-frontend-observer 0.10.0 with ten
+document lanes: five routes at 1440×900 and 390×844. Semantic containment,
+visibility, ordering, overlap, scrolling and horizontal-overflow checks passed
+without recapturing homepage/image baselines. Idle Split observes its visible
+Add group control; loaded groups, result states and conditional JPEG controls
+are browser-test responsibilities. Local Batch 6 browser/container acceptance
+is inherited implementation evidence; hosted v0.3 exact-SHA readiness remains
+a separate workflow. Run IDs/counts belong in the implementation report and
+ignored run evidence, not generic command examples.
 
 ## Diagnostic hotfix
 

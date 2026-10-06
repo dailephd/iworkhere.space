@@ -89,8 +89,9 @@ test("initial server HTML, stable public metadata and crawl endpoints", async ({
     const sitemap = await request.get("/sitemap.xml");
     expect(sitemap.status()).toBe(200);
     const xml = await sitemap.text();
-    expect(xml.match(/<loc>/g)).toHaveLength(17);
-    expect(xml).not.toMatch(/category\/document|localhost|vercel\.app|<loc>[^<]*\?/);
+    expect(xml.match(/<loc>/g)).toHaveLength(23);
+    expect(xml).toContain("https://iworkhere.space/category/document");
+    expect(xml).not.toMatch(/localhost|vercel\.app|<loc>[^<]*\?/);
     const robots = await request.get("/robots.txt");
     expect(robots.status()).toBe(200);
     expect(await robots.text()).toContain("Allow: /");

@@ -9,8 +9,63 @@ import { ImageResizerTool } from "./image/ImageResizerTool";
 import { ImageCompressorTool } from "./image/ImageCompressorTool";
 import { ImageConverterTool } from "./image/ImageConverterTool";
 import { HeicConverterTool } from "./image/HeicConverterTool";
+import { MergePdfTool } from "./document/MergePdfTool";
+import { SplitPdfTool } from "./document/SplitPdfTool";
+import { ImagesToPdfTool } from "./document/ImagesToPdfTool";
+import { PdfToImageTool } from "./document/PdfToImageTool";
+import { CompressPdfTool } from "./document/CompressPdfTool";
 
 export const tool_definition_list: ToolDefinition[] = [
+    {
+        id: "merge-pdf", slug: "merge-pdf", name: "Merge PDF",
+        description: "Merge multiple PDF files into one PDF locally in your browser.",
+        category: "document",
+        seo: { title: "Merge PDF Files", description: "Merge 2 to 10 PDF files into one PDF locally in your browser.", canonicalPath: "/tool/merge-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "merge", "combine", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: MergePdfTool,
+    },
+    {
+        id: "split-pdf", slug: "split-pdf", name: "Split PDF",
+        description: "Split selected pages from a PDF into separate PDF files locally in your browser.",
+        category: "document",
+        seo: { title: "Split PDF Pages", description: "Split a PDF into up to 20 page groups locally in your browser.", canonicalPath: "/tool/split-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "split", "pages", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: SplitPdfTool,
+    },
+    {
+        id: "images-to-pdf", slug: "images-to-pdf", name: "Images to PDF",
+        description: "Combine JPEG and PNG images into one PDF locally in your browser.",
+        category: "document",
+        seo: { title: "Images to PDF", description: "Combine up to 20 JPEG and PNG images into one PDF locally in your browser.", canonicalPath: "/tool/images-to-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "image", "jpg", "jpeg", "png", "convert", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: ImagesToPdfTool,
+    },
+    {
+        id: "pdf-to-image", slug: "pdf-to-image", name: "PDF to JPG / PNG",
+        description: "Convert selected PDF pages to JPG or PNG images locally in your browser.",
+        category: "document",
+        seo: { title: "PDF to JPG / PNG Converter", description: "Convert selected PDF pages to JPG or PNG images locally in your browser.", canonicalPath: "/tool/pdf-to-image" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "image", "jpg", "jpeg", "png", "convert", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: PdfToImageTool,
+    },
+    {
+        id: "compress-pdf", slug: "compress-pdf", name: "Compress PDF",
+        description: "Compress PDF structure locally in your browser without rasterizing pages.",
+        category: "document",
+        seo: { title: "Compress PDF", description: "Compress PDF structure locally in your browser with lossless QPDF optimization.", canonicalPath: "/tool/compress-pdf" },
+        capability: ["client-only", "offline"],
+        tag: ["pdf", "document", "compress", "optimize", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: CompressPdfTool,
+    },
     {
         id: "slugify",
         slug: "slugify",

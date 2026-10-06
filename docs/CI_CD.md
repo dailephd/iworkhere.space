@@ -5,6 +5,13 @@ This document defines the CI discipline for this Next.js project.
 CI is not optional.
 Every pull request must pass all checks before merge.
 
+The v0.3.0 candidate `b0ee1bb251571ce2f83b08c55285a12ee68dc4c4` passed exact-SHA
+pre-release readiness in all eight hosted workflows. Release preparation uses
+that candidate as its starting point. Because the workflows do not trigger on
+`release/**`, the release-prepared SHA is validated through an immutable
+`validation/**` ref. This does not claim that v0.3.0 has merged or deployed.
+Historical hosted v0.2/Delivery 2 evidence below remains version-specific.
+
 All eight workflows trigger on `pull_request` and pushes to `main`, `master`,
 and `validation/**`. The narrow `validation/**` push namespace exists for
 immutable exact-SHA pre-release validation: a validation ref can point to a

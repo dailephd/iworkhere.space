@@ -1,0 +1,34 @@
+{
+    "builderImage":  "emscripten/emsdk:4.0.15",
+    "builderDigest":  "sha256:27bc6267cb285223b8aebb7627bfebae7cb3ad2aaa0d5923b8aa5321793033e8",
+    "emscriptenVersion":  "4.0.15",
+    "emscriptenCommit":  "09f52557f0d48b65b8c724853ed8f4e8bf80e669",
+    "qpdfTag":  "v12.4.2",
+    "qpdfTagObject":  "ceb29d85877b04a049dd4f6623cf4507c728d10e",
+    "qpdfCommit":  "4eba95899886e851cc41d76886483b347612f2a8",
+    "zlib":  {
+                 "version":  "1.3.1",
+                 "commit":  "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+                 "url":  "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
+                 "sha512":  "8c9642495bafd6fad4ab9fb67f09b268c69ff9af0f4f20cf15dfc18852ff1f312bd8ca41de761b3f8d8e90e77d79f2ccacd3d4c5b19e475ecf09d021fdfe9088"
+             },
+    "jpeg":  {
+                 "version":  "IJG 9f",
+                 "url":  "https://storage.googleapis.com/webassembly/emscripten-ports/jpegsrc.v9f.tar.gz",
+                 "sha512":  "7f733d79cf176c690dcf127352f9aa7ec48000455944f286faae606cdeada6f6865b4a3f9f01bda8947b5b1089bb3e52d2b56879b6e871279ec5cbd1829304dc",
+                 "commit":  "Not applicable: source archive; content pinned by SHA-512"
+             },
+    "cryptoProvider":  "native",
+    "sourceDateEpoch":  0,
+    "binaryenCores":  1,
+    "compileFlags":  "-fwasm-exceptions -O3 -ffile-prefix-map=/work=.",
+    "linkFlags":  "-fwasm-exceptions -O0 -g0 -sASSERTIONS=0 -sMODULARIZE=1 -sEXPORT_ES6=1 -sEXPORT_NAME=createQpdfModule -sENVIRONMENT=web,worker,node -sALLOW_MEMORY_GROWTH=1 -sSTACK_SIZE=2097152 -sINVOKE_RUN=0 -sEXIT_RUNTIME=0 -sEXPORTED_RUNTIME_METHODS=FS,callMain",
+    "outputs":  [
+                    {
+                        "wasmSha256":  "38ca4cbe43a6767b43058399aef864574b1d5f6bce30b9d70a62037d3ce1c5c0",
+                        "wasmBytes":  2718596,
+                        "jsBytes":  134128,
+                        "jsSha256":  "6e9ada6ad324547b01a4c69118b3cf797565439d77df2ed9e6fdfd656565f6d0"
+                    }
+                ]
+}

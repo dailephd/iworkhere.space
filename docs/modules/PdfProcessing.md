@@ -1,0 +1,97 @@
+# PdfProcessing
+
+Batch 1 establishes three distinct browser runtime boundaries under
+`src/module/tool/document/`. Batch 2 registers Merge PDF and Split PDF with guides;
+Batch 3 adds Images to PDF using the same mutation worker and output verifier.
+Batch 4 composes the accepted PDF.js runtime for sequential PNG/JPEG export.
+Batch 5 adds the explicit QPDF compression operation and independent smaller-
+output verifier. Batch 6 completes five-tool registry/guide/discovery, offline,
+accessibility and browser/container integration acceptance.
+There is no server processing endpoint.
+
+`pdfRuntime.client.ts` lazily imports pdfjs-dist 6.4.299 at operation time,
+configures its version-matched same-origin native worker, owns loading-task
+cleanup/cancellation and maps engine failures to PdfFile categories. It never
+loads scripting or executes PDF JavaScript, external actions, links or forms.
+Document data remains local. Page rendering is
+bounded before canvas allocation; native browser decoding verifies raster output.
+`measurePdfPage` provides no-canvas viewport preflight through that same owner.
+Rendering accepts an optional native background argument for explicit white JPEG
+composition; existing default rendering remains unchanged.
+Rendering accepts an AbortSignal, cancels the native RenderTask, removes its
+abort listener and preserves AbortError rather than reporting cancellation as
+a processing failure.
+Runtime assets and their SHA-256 manifest live under `public/vendor/pdfjs/6.4.299/`.
+The shipped subset is selected against the accepted fixtures; CMaps, standard
+fonts and image WASM are evaluated explicitly, and scripting/QuickJS is excluded.
+The final shipped subset is the native worker and 14 standard fonts only;
+CMaps, image WASM and QuickJS are not shipped. `useSystemFonts` and `useWasm`
+are false, with the pinned standard-font URL configured explicitly.
+
+`pdfLib.workerType.ts`, `pdfLib.client.ts` and `pdfLib.worker.ts` own the
+short-lived pdf-lib 1.17.1 mutation worker, internal load/save smoke and Batch 2
+merge/split page-copy operations and Batch 3 images-to-pdf embedding. Only the worker imports pdf-lib in production
+source. MergePdf.md, SplitPdf.md and ImagesToPdf.md define product contracts. Generated-output
+PDF.js inspection accepts the bounded 25 MiB worker output without changing the
+10 MiB source-input limit.
+`pdfLibVerification.client.ts` is the narrow independent page-copy verification
+helper for page-copy and image assembly operations: count, geometry and rotation with cancellable
+PDF.js handles. It owns no UI, URLs, worker pool or producing parser.
+
+`qpdf.workerType.ts`, `qpdf.client.ts` and `qpdf.worker.ts` own a distinct
+short-lived project-owned QPDF worker. Its internal structural rewrite stages
+bounded bytes in MEMFS, invokes the pinned CLI, captures bounded internal
+diagnostics, rejects nonzero exit/warnings, removes staged files, transfers
+output and ends. No engine state survives an operation. Initialization,
+processing, timeout and protocol failures return bounded categories; cancellation
+uses AbortError. Clients terminate on every terminal path, clear handlers and
+timers, ignore mismatched identities and expose explicit cancellation. The
+UI originally planned here is now implemented: each operation-local tool
+cancels on replacement, Reset and unmount and rejects stale generations.
+The QPDF client first uses the canonical PDF.js inspection owner and closes its
+handle before starting native processing. This rejects encrypted, malformed and
+over-limit sources with domain categories; the native password-error path is
+not the source classification owner. Cancellation covers inspection and worker.
+
+QPDF 12.4.2 commit `4eba95899886e851cc41d76886483b347612f2a8` is built using
+the frozen digest-pinned Emscripten 4.0.15 recipe, native crypto, verified zlib
+1.3.1/IJG 9f SDK ports and exact compile/link flags. `script/qpdf/` owns the
+source lock, Docker recipe and maintainer instructions; normal install/build
+consumes committed JS/WASM, never compiles C++. Runtime artifacts, notices and
+checksums live under `public/vendor/qpdf/12.4.2/`. Two clean builds must match
+the canonical JS/WASM identities. Verification starts with independently empty
+`EM_CACHE`, clean build/temp directories, stable `/source`, `/work/build` and
+`/work/tmp` paths, UTC/C locale, Python hash seed 0, source epoch 0, Binaryen
+cores 1 and umask 0022. Canonical WASM SHA-256 is
+`38ca4cbe43a6767b43058399aef864574b1d5f6bce30b9d70a62037d3ce1c5c0`.
+Canonical qpdf.js SHA-256 is
+`6e9ada6ad324547b01a4c69118b3cf797565439d77df2ed9e6fdfd656565f6d0`.
+The earlier feasibility WASM identity is superseded: the root cause of its
+one-off divergence was not isolated, while controlled fresh-cache builds
+established the accepted canonical artifact. It is not an open blocker.
+Notices record factual source correspondence,
+without legal approval.
+Targeted Git attributes preserve upstream runtime, notice and fixture bytes
+across Windows checkouts; the shell recipe explicitly retains LF endings.
+
+Build/test scripts follow the existing `script/` convention. A temporary
+test-only route generated by the foundation smoke script exercises actual Next
+bundling and production modules; it is removed in finally and never exists in
+normal builds. The standalone proof builds this temporary harness solely into
+an owned test image and cleans up its container/image. No user bytes are posted
+to a server. The harness is not a product capability or permanent route.
+
+The deterministic corpus covers text/vector, JPEG/PNG/mixed, rotation, mixed
+sizes, multiple pages, optimized, encrypted, malformed, damaged xref and geometry/
+page-count boundaries. PDF.js independently parses/renders pdf-lib/QPDF outputs.
+Unique browser/container reports belong under `test-report/<RUN_ID>/`.
+
+Home, Discover and existing tools request no PDF operation chunk/worker/vendor
+asset. Baseline/final cold-network and bundle evidence is ignored workflow state.
+The existing service-worker strategies remain: assets cache after requests,
+API requests remain network-only, and PDF assets are never precached. Its narrow
+Turbopack bootstrap response exception reconstructs cached responses without
+their stored URL because different worker entries share a pathname with
+fragment parameters. Cache API keys cannot distinguish those fragments;
+reusing a stored response URL can run the wrong entry. The constructor URL
+retains the correct bootstrap identity, including when operating offline.
