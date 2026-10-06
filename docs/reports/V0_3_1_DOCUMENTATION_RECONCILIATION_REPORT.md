@@ -7,7 +7,8 @@
 - Frozen planning SHA: `70d3eefddd6b9d09c4215f3dffccc9373ac948fb`
 - Frozen plan: `docs/plans/v0.3.1-implementation-plan.md`
 - Package version: `0.3.0`; release version bump has not started.
-- Documentation reconciliation commit: recorded in this report's final revision.
+- Documentation reconciliation commit: `7f61da1ce2d0fb8e668199814be91e5bb64e310a` (the commit that reconciles
+  current documentation; this report-only follow-up records its identity).
 - my-dev-kit: `@dailephd/my-dev-kit@1.12.5`, using
   `.my-dev-kit-context/indexes/iworkhere-space-v0.3.1-vercel-analytics-implementation`.
   The index contained the implementation module, wrapper and tests; indexed
