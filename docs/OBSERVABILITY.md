@@ -6,23 +6,23 @@ Tools continue to call the observability facade. Existing analytics and logging 
 
 ## v0.3.1 Vercel Web Analytics boundary
 
-The v0.3.1 implementation adds Vercel Web Analytics as an additive platform
-traffic surface for the public `iworkhere-space` Vercel project. Implementation
-and release preparation are complete; production activation is pending. Current
-live production remains v0.3.0. It is not a replacement for the
+v0.3.1 is live in the public `iworkhere-space` Vercel project. Vercel Web
+Analytics is an additive platform traffic surface, not a replacement for the
 application observability facade, `/api/metric`, `/api/log`, Neon persistence,
 Web Vitals, diagnostic error capture, or the protected observability dashboard.
 
-The first delivery is limited to automatic page views and client-side route
-transitions through exact-pinned `@vercel/analytics` 2.0.1. The root layout
-composes one app-owned Analytics wrapper; tool components must not import or
-call Vercel Analytics directly.
+The release uses exact-pinned `@vercel/analytics` 2.0.1 for automatic page
+views and client-side route transitions. The root layout composes one app-owned
+Analytics wrapper; tool components do not import or call Vercel Analytics
+directly.
 
-Activation is exact-true and build-time: only
-`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` enables the wrapper. Unset, false,
-or any other value disables it; local, Preview and container builds default off.
-The repository has not enabled the Vercel project setting or Production flag.
-Those remain external release steps. The public flag is not a secret.
+Activation is exact-true and build-time. Production sets
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true`; Preview, Development, local E2E
+and container validation remain off. The public flag is not a secret. Live
+production acceptance on 2026-10-06 verified provider activity, client
+navigation, query/hash redaction, no duplicate wrapper, file-input privacy and
+aggregated page-view receipt. Existing observability continued to return normal
+Web Vitals metric responses during the launch smoke.
 
 Vercel documents automatic page-view collection as potentially including URL,
 filtered query parameters, referrer, coarse geolocation, OS/browser and device
