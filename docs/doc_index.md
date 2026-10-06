@@ -52,15 +52,17 @@ production-license release gate. The generated positive fixture is within the fr
 
 Current v0.3.1 Vercel Web Analytics lifecycle references:
 
-- `plans/v0.3.1-implementation-plan.md`: frozen implementation authority; it
-  records intended scope and is not evidence of implementation.
+- `plans/v0.3.1-implementation-plan.md`: frozen implementation authority and
+  historical design decisions.
 - `reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md`: durable
   implementation and test evidence at the exact implementation SHA.
 - `reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md`: documentation
   reconciliation, frozen-plan completeness matrix and scope audit.
-- `project-status.md` and `ROADMAP.md`: current implementation, readiness and
-  release-preparation state, plus the next lifecycle stage. v0.3.1 is
-  release-prepared; production activation remains pending.
+- `reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md`: final release
+  integration, exact production deployment, live Analytics acceptance,
+  existing-observability regression and release identity.
+- `project-status.md` and `ROADMAP.md`: current lifecycle state. v0.3.1 is
+  released and publicly deployed; v0.4.0 is the next numbered version.
 
 Current persistent-observability references:
 
@@ -111,10 +113,10 @@ changed-file inventory, or execution report.
 **When to read:** Before planning any version or deciding whether work belongs
 in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
-do not replace or silently rewrite it. The v0.3.1 plan remains frozen planning
-authority; implementation evidence is in its implementation report. The
-separate reconciliation report records the audit and current documentation
-status. Formal pre-release readiness remains the next lifecycle stage.
+do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
+planning authority; implementation, reconciliation and launch evidence live in
+their respective reports. v0.3.1 is complete and v0.4.0 is the next numbered
+planning target.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
