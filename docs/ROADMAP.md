@@ -325,20 +325,20 @@ constrained by the [implementation plan](plans/v0.3.0-implementation-plan.md).
 
 ## Version 0.3.1 — Vercel Web Analytics
 
-Status: IMPLEMENTATION COMPLETE; DOCUMENTATION RECONCILED; PRE-RELEASE READINESS PASS; RELEASE PREPARED.
+Status: RELEASED AND PUBLICLY DEPLOYED — 2026-10-06.
 
 Frozen implementation contract:
 [v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
 
-The readiness-passed implementation candidate was
-`3d0dc49a9f850f35f4b75709aa8cffa50768c49d`; release preparation sets package
-metadata to 0.3.1 on `release/v0.3.1`. Documentation reconciliation and
-implementation-completeness audit are recorded in
-[the implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
-and [the reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
-The release-prepared source is not yet integrated or deployed. Current
-production remains v0.3.0; Web Analytics has not been enabled in the Vercel
-project or Production environment, and live page views have not been verified.
+The readiness-passed candidate was
+`3d0dc49a9f850f35f4b75709aa8cffa50768c49d`; release preparation produced
+`f0b26c00852fe048cb15839ddfc59504a8453de4`. PR #10 merged v0.3.1 to
+`master` at `2c8c1dec611b228a73137c5ee8ae0a5cd60caab0`. The exact merged
+source is deployed to the public `iworkhere-space` Vercel project, Web
+Analytics is enabled for Production only, live query/hash redaction and
+file-input privacy passed, and tag/GitHub Release `v0.3.1` are published.
+Detailed production evidence is in
+[the launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md).
 
 ### Goal
 

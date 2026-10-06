@@ -1,42 +1,12 @@
 # PROJECT STATUS
 
-## v0.3.0 released and publicly deployed — 2026-10-06
+## v0.3.1 released and publicly deployed — 2026-10-06
 
-TARGET_VERSION: 0.3.0 — PDF & Document Essentials
-
-PACKAGE_VERSION: 0.3.0
-
-V0_3_IMPLEMENTATION: COMPLETE — 6 OF 6 BATCHES
-
-PRE_RELEASE_READINESS: PASS
-
-RELEASE_PREPARATION: COMPLETE
-
-V0_3_PR: #9 — MERGED
-
-V0_3_MASTER_SHA: `008458651bc8786b46fcc4b27ef119147e1e2579`
-
-V0_3_GITHUB_RELEASE: `v0.3.0` — PUBLISHED
-
-V0_3_PRODUCTION_DEPLOYMENT: COMPLETE — owner-confirmed
-
-The v0.3.0 production release contains Merge PDF, Split PDF, Images to PDF,
-PDF to JPG / PNG and Compress PDF. The source catalog has 15 tools, six
-populated categories and 23 sitemap URLs. User PDF/image processing remains
-browser-local under the v0.3 contracts.
-
-The exact Vercel deployment ID is not invented by this documentation-only
-planning change. GitHub source-release identity is authoritative above; Vercel
-deployment metadata should be recorded separately when retrieved from an
-authoritative deployment source.
-
-NEXT_NUMBERED_VERSION: 0.3.1 — Vercel Web Analytics
-
-TARGET_VERSION: 0.3.1
+TARGET_VERSION: 0.3.1 — Vercel Web Analytics
 
 PACKAGE_VERSION: 0.3.1
 
-IMPLEMENTATION: COMPLETE
+V0_3_1_IMPLEMENTATION: COMPLETE
 
 IMPLEMENTATION_SHA: `3d0dc49a9f850f35f4b75709aa8cffa50768c49d`
 
@@ -44,51 +14,84 @@ DOCUMENTATION_RECONCILIATION: COMPLETE
 
 PRE_RELEASE_READINESS: PASS
 
-VERSION_BUMP: COMPLETE
-
 RELEASE_PREPARATION: COMPLETE
 
-RELEASE_BRANCH: `release/v0.3.1`
+RELEASE_PREP_SHA: `f0b26c00852fe048cb15839ddfc59504a8453de4`
 
-PR: NOT_CREATED
+V0_3_1_PR: #10 — MERGED
 
-MERGE: NOT_DONE
+MERGE_METHOD: MERGE COMMIT
 
-VERCEL_WEB_ANALYTICS_CODE: IMPLEMENTED
+V0_3_1_RELEASE_MERGE_SHA / LAUNCH_PRODUCTION_SOURCE_SHA:
+`2c8c1dec611b228a73137c5ee8ae0a5cd60caab0`
 
-VERCEL_WEB_ANALYTICS_PROJECT: NOT_ENABLED_BY_THIS_WORKFLOW
+V0_3_1_GITHUB_RELEASE: `v0.3.1` — PUBLISHED
 
-PRODUCTION_FLAG: NOT_ENABLED
+PRODUCTION_DEPLOYMENT: COMPLETE
 
-PRODUCTION_DEPLOYMENT: NO
+VERCEL_PROJECT: `iworkhere-space`
 
-LIVE_ANALYTICS_VERIFIED: NO
+V0_3_1_LAUNCH_DEPLOYMENT:
+`dpl_67zHEP485iQtHBiM4VNPaURo4iw6`
 
-NEXT_ACTION: separate release-integration and production-launch workflow.
+PUBLIC_DOMAIN: https://iworkhere.space
 
-V0_3_1_PLANNING: FROZEN
+The SHA and deployment above identify the validated v0.3.1 launch event. Later
+documentation-only commits on `master` may cause Vercel to create equivalent
+production deployments with newer Git SHAs; those are not new product releases
+and do not invalidate the v0.3.1 launch record.
 
-V0_3_1_IMPLEMENTATION: COMPLETE — RELEASE PREPARED; NOT LIVE
+VERCEL_WEB_ANALYTICS: LIVE
 
-V0_3_1_TARGET_PACKAGE_VERSION: 0.3.1
+PRODUCTION_FLAG:
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` — Production only
 
-V0_4_0_CATALOG_SCOPE: PRESERVED / FUTURE
+PREVIEW_ANALYTICS: OFF
 
-The v0.3.1 release is a bounded infrastructure/observability release between the
-deployed v0.3.0 document release and the planned v0.4.0 catalog release. It adds
-Vercel's automatic page-view analytics to the public project without replacing
-the existing observability facade, Neon persistence, diagnostics or private
-dashboard. Custom events, Speed Insights and Web Analytics API/dashboard
-integration are explicitly deferred.
+DEVELOPMENT_ANALYTICS: OFF
 
-Frozen implementation authority:
-[v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
+LIVE_ANALYTICS_VERIFIED: YES
 
-Implementation adds default-off automatic page-view analytics to the public
-application. It does not change existing application events or observability,
-and it has not enabled the Vercel project feature or Production flag. See the
-[implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
+LIVE_ANALYTICS_DATA_RECEIPT: PASS
+
+QUERY_REDACTION: PASS
+
+HASH_REDACTION: PASS
+
+CLIENT_NAVIGATION: PASS
+
+DUPLICATE_ANALYTICS: NONE
+
+FILE_INPUT_PRIVACY: PASS
+
+CUSTOM_VERCEL_EVENTS: NONE
+
+EXISTING_OBSERVABILITY: PASS / PRESERVED
+
+DASHBOARD_PROTECTION: PRESERVED
+
+RELEASE_BLOCKERS: NONE
+
+The v0.3.1 release adds automatic Vercel Web Analytics page-view traffic to the
+public application without replacing the existing application analytics,
+Web Vitals, Neon persistence, diagnostics, or the protected observability
+dashboard. Production acceptance verified initial/client navigation traffic,
+query/hash redaction, file-input privacy, no duplicate Analytics wrapper, and
+aggregated page-view receipt for public routes. No Vercel custom events or
+Speed Insights were added.
+
+See the
+[v0.3.1 launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md),
+[implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md),
 and [documentation reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
+
+NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
+
+V0_4_IMPLEMENTATION: NOT_STARTED
+
+NEXT_ACTION: inspect current repository state, resolve the remaining v0.4
+category decision, freeze docs/plans/v0.4.0-implementation-plan.md, then issue
+bounded implementation prompts according to the standard version workflow.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 

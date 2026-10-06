@@ -5,11 +5,16 @@ This document defines the CI discipline for this Next.js project.
 CI is not optional.
 Every pull request must pass all checks before merge.
 
-The v0.3.1 readiness-passed candidate was
-`3d0dc49a9f850f35f4b75709aa8cffa50768c49d`. Release-prepared exact-SHA
-validation uses an immutable `validation/**` ref because workflows do not
-trigger on `release/**`. This source state does not claim that v0.3.1 has merged
-or deployed. Historical hosted evidence below remains version-specific.
+v0.3.1 completed the full release lifecycle on 2026-10-06. The
+readiness-passed candidate was
+`3d0dc49a9f850f35f4b75709aa8cffa50768c49d`; release preparation produced
+`f0b26c00852fe048cb15839ddfc59504a8453de4`. PR #10 passed all eight required
+workflows and merged with a merge commit to
+`2c8c1dec611b228a73137c5ee8ae0a5cd60caab0`. All eight required workflows
+then passed again on that exact master SHA before final production acceptance.
+Detailed launch/runtime evidence is owned by
+[the v0.3.1 launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md).
+Historical hosted evidence below remains version-specific.
 
 All eight workflows trigger on `pull_request` and pushes to `main`, `master`,
 and `validation/**`. The narrow `validation/**` push namespace exists for
