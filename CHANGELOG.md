@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.3.1 — Vercel Web Analytics — 2026-10-06
+
+### Analytics
+- Added automatic Vercel Web Analytics page views for initial loads and client navigation in the public application.
+- Added app-owned `beforeSend` redaction for query strings and URL fragments.
+- Kept Vercel custom events disabled; existing application observability, Web Vitals, Neon persistence and diagnostics remain authoritative.
+
+### Deployment
+- Added explicit Production-only `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` activation.
+- Local, Preview, CI and container behavior remains disabled by default.
+
+The v0.3.1 source is release-prepared. Vercel project activation, production deployment and live page-view verification remain pending.
+
 ## v0.3.0 — PDF & Document Essentials — 2026-10-06
 
 ### Documents

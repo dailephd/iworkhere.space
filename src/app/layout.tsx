@@ -11,6 +11,7 @@ import { ADSENSE_CLIENT, adsenseEnabled } from "@/module/ad/config";
 import { AdSenseSlot } from "@/component/common/AdSenseSlot";
 import { AdSenseScript } from "@/component/common/AdSenseScript";
 import { WebVitals } from "@/component/common/WebVitals";
+import { VercelWebAnalytics } from "@/component/observability/VercelWebAnalytics";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -52,6 +53,7 @@ export default function RootLayout({
             </AppShell>
             <ServiceWorkerRegister />
             <WebVitals />
+            <VercelWebAnalytics />
             <AdSenseScript />
         </ThemeProvider>
         </body>

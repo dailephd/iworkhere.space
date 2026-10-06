@@ -88,14 +88,50 @@ readiness passed for the frozen v0.2 implementation candidate; its release
 preparation sets `HEIC_RELEASE_READY=YES` and `V0_2_RELEASE_READY=YES`.
 The earlier pre-deployment state is historical; Delivery 2 production launch
 is recorded below. The v0.3.0 source candidate passed readiness and release
-preparation, with application package metadata at 0.3.0. It has not yet been
-integrated or deployed; the current live production remains Delivery 2 at the
-source SHA and deployment recorded below. Its release-prepared PDF assets do
-not describe the current live production runtime.
+preparation with application package metadata at 0.3.0, and was later
+integrated and deployed. Its release-prepared PDF assets describe the current
+live production runtime recorded below.
 
 ## Opt-in production integrations
 
 See [ADVERTISING](ADVERTISING.md) and [OBSERVABILITY](OBSERVABILITY.md). NEXT_PUBLIC_ADSENSE_ENABLED and NEXT_PUBLIC_OBSERVABILITY_ENABLED default false; exact true is explicit opt-in. Next public flags are baked at build time. Docker builder accepts each as a build argument with false defaults. Container validation forces false. Rebuild after changing flags; a runtime variable alone cannot activate an already-built browser bundle. Ad activation additionally requires verified ownership, site Ready, ads.txt Authorized and applicable Google-certified CMP / Privacy & messaging. Meta and ads.txt work while disabled. No public activation or deployment is performed by this implementation. Runtime stdout remains active; explicit server-only OBSERVABILITY_PERSISTENCE_ENABLED=true additionally enables Neon writes through OBSERVABILITY_DATABASE_URL. CRON_SECRET protects public-project maintenance. Dashboard uses only OBSERVABILITY_DASHBOARD_DATABASE_URL with read-only grants; no secret is NEXT_PUBLIC.
+
+## v0.3.1 Vercel Web Analytics integration
+
+The repository integration is implemented and v0.3.1 source is release-prepared. Production activation remains an external release step. Current live production remains v0.3.0.
+
+The public project code includes default-off Vercel Web Analytics as additive
+traffic analytics. The Vercel project setting and Production flag have not been
+changed. The following launch steps remain pending:
+
+1. Enable Web Analytics for the public `iworkhere-space` project in the Vercel
+   dashboard.
+2. Set `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for Production only. This is
+   a public build-time flag, not a secret; unset and non-exact values are off.
+   Preview, Development, local E2E and container builds remain off by default.
+3. Deploy the exact validated v0.3.1 source through the separate release
+   integration workflow.
+4. Verify real automatic initial and client-navigation page views in Vercel
+   Analytics.
+5. Verify production query-string and URL-fragment redaction.
+6. Verify existing application observability remains functional.
+
+The app-owned `beforeSend` policy strips URL queries and fragments and drops
+malformed or unexpected events. No public route denylist is currently needed.
+
+Version 2 uses Vercel Resilient Intake, so validation must not hard-code one
+fixed analytics script/intake URL. Enabling Web Analytics can create
+Vercel-managed insight/intake routes after deployment. No analytics token or
+browser secret belongs in repository environment files.
+
+The independent protected dashboard project is not enrolled in this feature by
+default. Speed Insights, custom Vercel events and Web Analytics API ingestion are
+separate future decisions.
+
+See the frozen [Vercel Web Analytics integration plan](plans/v0.3.1-implementation-plan.md),
+the [implementation evidence](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md),
+the [documentation reconciliation audit](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md),
+and [Production observability](OBSERVABILITY.md).
 
 ## Environment variable contract
 
@@ -107,6 +143,7 @@ production state.
 | Name | Owner / visibility | Required when | Default / off behavior | Production | Preview | Development | Secret? |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `NEXT_PUBLIC_OBSERVABILITY_ENABLED` | Root / public build-time | Browser transport intentionally enabled | Unset/false uses local providers only | False until explicitly activated | False | False | No |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Root / public build-time | Public Web Analytics intentionally enabled | Only exact true enables; unset/false is off | True only after external public-project activation | False | False | No |
 | `OBSERVABILITY_PERSISTENCE_ENABLED` | Root / server-only | Durable metric writes intentionally enabled | Unset/false skips Neon connection | False until provisioned | False | False | No |
 | `OBSERVABILITY_DATABASE_URL` | Root / server-only | Persistence enabled | Empty; no DB connection | Writer credential after schema migration | Empty; never production DB | Empty or isolated local DB | Yes |
 | `CRON_SECRET` | Root / server-only | Public maintenance cron configured | Empty; endpoint fails closed | Set after cron setup | Empty | Empty | Yes |
@@ -134,12 +171,26 @@ fixture. They are not deployment variables and must not contain credentials.
 For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. The 2026-10-03 diagnostic hotfix report records the deployment state before Delivery 2 integration. Current public
 production state is recorded below.
 
-## Current public production state — 2026-10-04
+## Current public production state — 2026-10-06
 
-The public Vercel project is iworkhere-space, linked to this GitHub repository
-with automatic production deployment from master. Current production source is
-c8406412301ff382dcf4e10e00789e93caad6f39, deployment
-dpl_48kp2LTbcC3Htczho459KZw1UCCy, at https://iworkhere.space. Delivery 2
-technical launch checks passed. The observability dashboard remains a separate
-project with Vercel Authentication protection; never expose credentials or
-bypass values in deployment records.
+The public Vercel project is `iworkhere-space`, linked to this GitHub repository
+with automatic production deployment from `master`. v0.3.0 was integrated
+through PR #9 and merged to master at
+`008458651bc8786b46fcc4b27ef119147e1e2579`; GitHub release `v0.3.0` is
+published and the owner confirms the new version is deployed at
+https://iworkhere.space.
+
+This documentation-only planning change does not invent a current Vercel
+deployment ID because authoritative deployment metadata was not retrieved here.
+The prior Delivery 2 deployment
+`dpl_48kp2LTbcC3Htczho459KZw1UCCy` at source
+`c8406412301ff382dcf4e10e00789e93caad6f39` is historical, not the current
+v0.3.0 source release. The observability dashboard remains a separate project
+with Vercel Authentication protection; never expose credentials or bypass
+values in deployment records.
+
+## Vercel Analytics build defaults
+
+`NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` is a public build-time flag, not a secret. Only exact `true` enables the integration. Unset/false is off; Production should use true only after external Web Analytics activation. Docker exposes the flag as a builder ARG with false default. Container smoke explicitly passes false; normal Playwright server and PDF foundation validation also force false. Changing runtime environment alone cannot activate an already-built browser bundle.
+
+`npx tsx script/vercelAnalyticsSmoke.ts` builds an isolated copied project under `.my-dev-kit-workflow/` and writes unique evidence under `test-report/`. It does not overwrite the normal `.next` build or contact live intake. Image/document processing remains browser-local while explicitly enabled aggregate page views may use the network.

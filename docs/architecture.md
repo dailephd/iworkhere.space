@@ -45,6 +45,34 @@ explicit error category/tool ID projection. Metric error identity deduplication
 is independent of diagnostic-log identity deduplication, preserving both sinks.
 See `OBSERVABILITY.md` and `../dashboard/DEPLOYMENT.md`.
 
+### v0.3.1 Vercel Web Analytics boundary
+
+v0.3.1 introduces Vercel Web Analytics as a separate platform-level traffic measurement surface,
+not another owner of application-domain telemetry. Automatic page views belong
+to the Vercel integration; canonical tool events, Web Vitals, errors and
+diagnostics remain owned by the existing application observability contracts.
+
+The implemented code boundary is deliberately small:
+
+- `src/module/analytics/vercelWebAnalytics.client.ts` owns enablement and the
+  pure URL/event redaction helper;
+- `src/component/observability/VercelWebAnalytics.tsx` owns the framework
+  wrapper around `@vercel/analytics/next`;
+- `src/app/layout.tsx` composes that wrapper and contains no provider-specific
+  event logic.
+
+Equivalent file names may be adjusted during implementation if current
+repository retrieval shows an established owner that is more appropriate, but
+ownership must remain one-way: tools and domain modules do not import Vercel's
+provider package directly.
+
+The first delivery emits no custom Vercel events. A future custom-event
+integration must implement/extend the existing analytics-provider abstraction
+and canonical safe-event allowlist rather than introduce parallel event names or
+duplicate tool telemetry. The integration must also preserve default-off
+container/test behavior and must not add Vercel Analytics to the independent
+protected dashboard project without separate authorization.
+
 This document defines the architectural boundaries of the project.
 Any generated code MUST follow this structure.
 
@@ -589,7 +617,7 @@ move tool logic out of the existing application layers. See
 
 ## Production integration ownership
 
-Existing observability facade and analytics/logger interfaces remain authoritative. Explicit browser opt-in selects same-origin network providers; defaults stay local. Metric validation/transport and server-only Neon persistence belong to module/observability; API routes adapt transport. Structured hosting logs remain active. `/api/log` keeps technical diagnostics separate from durable `/api/metric` measurements. Early instrumentation selects providers before tool effects. An isolated Web Vitals client uses the Next hook. Public advertising configuration belongs to module/ad; one reusable slot and one Next Script compose through AppShell. No analytics vendor SDK, identity or image-processing changes. The independent dashboard and SQL maintenance boundaries are defined at the start of this document.
+Existing observability facade and analytics/logger interfaces remain authoritative. Explicit browser opt-in selects same-origin network providers; defaults stay local. Metric validation/transport and server-only Neon persistence belong to module/observability; API routes adapt transport. Structured hosting logs remain active. `/api/log` keeps technical diagnostics separate from durable `/api/metric` measurements. Early instrumentation selects providers before tool effects. An isolated Web Vitals client uses the Next hook. Public advertising configuration belongs to module/ad; one reusable slot and one Next Script compose through AppShell. The v0.3.1 Vercel Web Analytics SDK is an additive exception, isolated to `src/component/observability/VercelWebAnalytics.tsx` and composed once from `src/app/layout.tsx`; its exact-true policy and URL sanitizer belong to `src/module/analytics/vercelWebAnalytics.client.ts`. It sends automatic page views only and remains default-off pending external production activation. Existing analytics, observability, Web Vitals and instrumentation-client ownership are preserved. The independent dashboard and SQL maintenance boundaries are defined at the start of this document.
 
 ## UI/discovery Delivery 2 ownership
 

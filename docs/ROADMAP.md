@@ -4,7 +4,7 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The root application package version is `0.3.0`; the independent dashboard
+The root application package version is `0.3.1`; the independent dashboard
 retains its own package version. Source release status and live production
 deployment status are tracked separately.
 
@@ -20,9 +20,12 @@ The original v0.1.0 product baseline provides six registered utilities:
 The v0.2 image family brings the catalog to ten tools. Package version and
 implementation scope are tracked separately.
 
-The release-prepared v0.3 document family brings the source catalog to fifteen
-tools. The live production catalog remains the Delivery 2 deployment until the
-separate release-integration and production-deployment workflow completes.
+The v0.3 document family brings the live catalog to fifteen tools. v0.3.0 was
+integrated through PR #9, merged to `master` at
+`008458651bc8786b46fcc4b27ef119147e1e2579`, published as GitHub release
+`v0.3.0` on 2026-10-06, and is now publicly deployed. Source-release identity
+and hosting/deployment identity remain separate records; this planning update
+does not invent an unverified Vercel deployment ID.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -254,10 +257,11 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 
 ## Version 0.3.0 — PDF & Document Essentials
 
-Status: IMPLEMENTATION AND EXACT-SHA READINESS COMPLETE; RELEASE PREPARED.
-Application package metadata is 0.3.0. Integration and production deployment
-remain separate, pending workflow steps. The live production state is not
-changed by release preparation.
+Status: RELEASED AND PUBLICLY DEPLOYED on 2026-10-06.
+Application package metadata is 0.3.0. PR #9 merged the release branch to
+`master` at `008458651bc8786b46fcc4b27ef119147e1e2579`; GitHub release
+`v0.3.0` is published. Production deployment is owner-confirmed. Exact Vercel
+deployment metadata remains an operational record and is not guessed here.
 
 Frozen implementation contract: [v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md).
 
@@ -318,6 +322,96 @@ NONE THAT BLOCK IMPLEMENTATION. The frozen plan resolves dependency/runtime
 selection, resource limits and browser-local processing for all five operations;
 SERVER_BOUNDARY: NOT_REQUIRED. Ordinary batch-local engineering details remain
 constrained by the [implementation plan](plans/v0.3.0-implementation-plan.md).
+
+## Version 0.3.1 — Vercel Web Analytics
+
+Status: IMPLEMENTATION COMPLETE; DOCUMENTATION RECONCILED; PRE-RELEASE READINESS PASS; RELEASE PREPARED.
+
+Frozen implementation contract:
+[v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
+
+The readiness-passed implementation candidate was
+`3d0dc49a9f850f35f4b75709aa8cffa50768c49d`; release preparation sets package
+metadata to 0.3.1 on `release/v0.3.1`. Documentation reconciliation and
+implementation-completeness audit are recorded in
+[the implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
+and [the reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
+The release-prepared source is not yet integrated or deployed. Current
+production remains v0.3.0; Web Analytics has not been enabled in the Vercel
+project or Production environment, and live page views have not been verified.
+
+### Goal
+
+Add Vercel Web Analytics to the public `iworkhere-space` project as a bounded
+traffic-measurement integration without changing the utility catalog or
+replacing the existing application observability system.
+
+### Scope
+
+- automatic page views and client-side navigation traffic through
+  `@vercel/analytics` version 2;
+- one app-owned Analytics wrapper composed from the root layout;
+- explicit production-only opt-in;
+- `beforeSend` sanitization that removes query strings and URL fragments before
+  transmission;
+- preservation of the existing analytics facade, Neon metrics, Web Vitals,
+  diagnostics and protected observability dashboard;
+- focused unit/browser/container validation and normal release/deployment
+  validation.
+
+### Dependencies
+
+Requires:
+
+- released and deployed v0.3.0;
+- the existing analytics/observability abstractions;
+- the public `iworkhere-space` Vercel project;
+- Web Analytics enabled in that Vercel project before the first
+  Analytics-enabled production deployment.
+
+### Constraints
+
+- Do not add a second application-domain event system.
+- Do not call Vercel `track()` from tools in v0.3.1.
+- Do not send file/input/output data, query strings, fragments, raw diagnostics,
+  storage/authentication data or object URLs to Vercel Analytics.
+- Preview, Development, local E2E and container validation remain disabled by
+  default.
+- Provider-specific imports remain isolated behind an app-owned wrapper.
+- Do not change the independent protected dashboard project.
+- Do not combine this infrastructure release with v0.4 catalog implementation.
+
+### Acceptance
+
+The implementation scope is complete when:
+
+- an exact compatible `@vercel/analytics` v2 release is pinned;
+- automatic page views work for initial loads and client navigation without
+  duplicate wrappers/manual page-view calls;
+- production activation is explicit and default-off elsewhere;
+- outgoing Analytics URLs contain no application query/hash data;
+- no Vercel custom events are emitted;
+- the existing application observability/Neon/diagnostic contracts continue to
+  pass;
+- full repository validation passes;
+- the exact release candidate passes the separate pre-release readiness and
+  production smoke stages;
+- the package version is bumped to 0.3.1 only during release preparation.
+
+### Exclusions
+
+- new utilities;
+- Vercel custom events;
+- Speed Insights;
+- Vercel Web Analytics API ingestion;
+- analytics replication into Neon;
+- analytics cards in the private dashboard;
+- Google Analytics;
+- session replay;
+- analytics-provider replacement;
+- advertising changes.
+
+This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
@@ -619,7 +713,11 @@ An About page remains a valid product/content candidate, but its content, route 
 
 ### Analytics provider swap
 
-The analytics abstraction supports provider replacement. Vendor, privacy, consent, configuration, network behavior, and validation decisions remain open.
+The analytics abstraction still supports a future replacement of the provider
+used for application-generated events. That work remains deferred. The planned
+Vercel Web Analytics integration is explicitly additive traffic analytics; it
+does not authorize replacing the existing analytics/observability providers or
+duplicating canonical tool events.
 
 ### Advertising provider integration
 
@@ -661,6 +759,8 @@ v0.1.1  Development Validation Hardening
 v0.2.0  Image Utility Foundation
         ↓
 v0.3.0  PDF & Document Essentials
+        ↓
+v0.3.1  Vercel Web Analytics (implementation complete; readiness passed; release prepared)
         ↓
 v0.4.0  Core Text, Data & Sharing Utilities
         Priority A complete
@@ -749,12 +849,18 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.0 planning remains frozen in the [implementation plan](plans/v0.3.0-implementation-plan.md).
-Its five-tool implementation, exact-SHA readiness and release preparation are
-complete. The next workflow owns release integration and production deployment.
-Operational launch follow-up below is separate.
+v0.3.1 implementation, documentation reconciliation, readiness and release
+preparation are complete. The next workflow is release integration and
+production launch. The v0.3.1 [frozen plan](plans/v0.3.1-implementation-plan.md)
+and [implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
+record scope and implementation evidence.
 
-Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed on master SHA c8406412301ff382dcf4e10e00789e93caad6f39. Delivery 3 technical launch is complete. Remaining operational follow-up is owner-authenticated Google Search Console and Bing Webmaster sitemap/priority-URL work, followed by the planned 28-day measurement review. These steps do not imply ranking or traffic improvement. The v0.3.0 source is release-prepared; it has not yet been integrated into master or deployed to production.
+Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
+validated, merged, and publicly deployed. Delivery 3 technical launch is
+complete. Remaining operational follow-up is owner-authenticated Google Search
+Console and Bing Webmaster sitemap/priority-URL work, followed by the planned
+28-day measurement review. These steps do not imply ranking or traffic
+improvement. Current v0.3.0 production state is recorded in project-status.md.
 
 Historical v0.2 implementation and exact-SHA readiness record: the eight hosted
 workflows passed at 339091c5aaf4ad31be656756a7f4e4c121cc37de on the immutable

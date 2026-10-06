@@ -50,6 +50,18 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
+Current v0.3.1 Vercel Web Analytics lifecycle references:
+
+- `plans/v0.3.1-implementation-plan.md`: frozen implementation authority; it
+  records intended scope and is not evidence of implementation.
+- `reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md`: durable
+  implementation and test evidence at the exact implementation SHA.
+- `reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md`: documentation
+  reconciliation, frozen-plan completeness matrix and scope audit.
+- `project-status.md` and `ROADMAP.md`: current implementation, readiness and
+  release-preparation state, plus the next lifecycle stage. v0.3.1 is
+  release-prepared; production activation remains pending.
+
 Current persistent-observability references:
 
 - `OBSERVABILITY.md`: diagnostic/measurement split, bounded error metrics,
@@ -99,7 +111,10 @@ changed-file inventory, or execution report.
 **When to read:** Before planning any version or deciding whether work belongs
 in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
-do not replace or silently rewrite it.
+do not replace or silently rewrite it. The v0.3.1 plan remains frozen planning
+authority; implementation evidence is in its implementation report. The
+separate reconciliation report records the audit and current documentation
+status. Formal pre-release readiness remains the next lifecycle stage.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
@@ -118,10 +133,25 @@ authority, not evidence that a batch or version was implemented.
 **Summary:** Frozen PDF & Document Essentials scope, browser-local architecture,
 pinned PDF.js/pdf-lib/project-owned QPDF runtimes, supply-chain and fidelity
 contracts, public limits, six ordered batches and separate release gates.
-**When to read:** Before preparing or executing any v0.3 implementation batch.
+**When to read:** When auditing the completed v0.3 implementation or its frozen
+implementation decisions.
 **Relations:** [Implementation plan](plans/v0.3.0-implementation-plan.md),
-ROADMAP.md and project-status.md. Planning is frozen and all six batches are
-implemented; readiness and release preparation remain separate, not run stages.
+ROADMAP.md and project-status.md. All six batches, readiness, release
+preparation, integration and public deployment are complete.
+
+### plans/v0.3.1-implementation-plan.md
+
+**Summary:** Frozen v0.3.1 Vercel Web Analytics implementation plan. Defines the
+bounded infrastructure release between v0.3.0 and v0.4.0, platform-traffic
+versus application-observability ownership, production opt-in, URL redaction,
+provider isolation, deployment activation, tests and explicit exclusions.
+**When to read:** Before implementing v0.3.1, installing
+`@vercel/analytics`, enabling Web Analytics in Vercel, changing traffic
+analytics, or proposing any Vercel custom event.
+**Relations:** ROADMAP.md, project-status.md, OBSERVABILITY.md, architecture.md
+and DEPLOYMENT.md. v0.3.1 does not replace the existing analytics facade/Neon
+observability and does not authorize Speed Insights or custom events. v0.4.0
+catalog scope remains separate and future.
 
 ### reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md
 
