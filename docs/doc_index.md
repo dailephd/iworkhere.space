@@ -124,17 +124,19 @@ implementation decisions.
 ROADMAP.md and project-status.md. All six batches, readiness, release
 preparation, integration and public deployment are complete.
 
-### plans/vercel-web-analytics-integration-plan.md
+### plans/v0.3.1-implementation-plan.md
 
-**Summary:** Frozen cross-version plan for additive Vercel Web Analytics on the
-public project. Defines platform-traffic versus application-observability
-ownership, production opt-in, URL redaction, provider isolation, deployment
-activation, tests and explicit exclusions.
-**When to read:** Before installing `@vercel/analytics`, enabling Web Analytics
-in Vercel, changing traffic analytics, or adding any Vercel custom event.
-**Relations:** ROADMAP.md, OBSERVABILITY.md, architecture.md and DEPLOYMENT.md.
-This plan does not replace the existing analytics facade/Neon observability and
-does not authorize Speed Insights or custom events.
+**Summary:** Frozen v0.3.1 Vercel Web Analytics implementation plan. Defines the
+bounded infrastructure release between v0.3.0 and v0.4.0, platform-traffic
+versus application-observability ownership, production opt-in, URL redaction,
+provider isolation, deployment activation, tests and explicit exclusions.
+**When to read:** Before implementing v0.3.1, installing
+`@vercel/analytics`, enabling Web Analytics in Vercel, changing traffic
+analytics, or proposing any Vercel custom event.
+**Relations:** ROADMAP.md, project-status.md, OBSERVABILITY.md, architecture.md
+and DEPLOYMENT.md. v0.3.1 does not replace the existing analytics facade/Neon
+observability and does not authorize Speed Insights or custom events. v0.4.0
+catalog scope remains separate and future.
 
 ### reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md
 

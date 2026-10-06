@@ -4,9 +4,9 @@
 
 Tools continue to call the observability facade. Existing analytics and logging provider interfaces select the sink. `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true` explicitly selects network analytics and the sanitized RustLogProvider in early client instrumentation. Absent/other values retain local behavior; production mode alone never activates telemetry. The only added root production dependency is `@neondatabase/serverless@1.1.0`, used server-side. Public flags are baked into the browser bundle: rebuild after changing them.
 
-## Planned Vercel Web Analytics boundary
+## Planned v0.3.1 Vercel Web Analytics boundary
 
-Vercel Web Analytics is planned as an additive platform traffic surface for the
+v0.3.1 adds Vercel Web Analytics as an additive platform traffic surface for the
 public `iworkhere-space` Vercel project. It is not a replacement for the
 application observability facade, `/api/metric`, `/api/log`, Neon persistence,
 Web Vitals, diagnostic error capture, or the protected observability dashboard.

@@ -323,6 +323,85 @@ selection, resource limits and browser-local processing for all five operations;
 SERVER_BOUNDARY: NOT_REQUIRED. Ordinary batch-local engineering details remain
 constrained by the [implementation plan](plans/v0.3.0-implementation-plan.md).
 
+## Version 0.3.1 — Vercel Web Analytics
+
+Status: PLANNED — IMPLEMENTATION PLAN FROZEN; IMPLEMENTATION NOT STARTED.
+
+Frozen implementation contract:
+[v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
+
+### Goal
+
+Add Vercel Web Analytics to the public `iworkhere-space` project as a bounded
+traffic-measurement integration without changing the utility catalog or
+replacing the existing application observability system.
+
+### Scope
+
+- automatic page views and client-side navigation traffic through
+  `@vercel/analytics` version 2;
+- one app-owned Analytics wrapper composed from the root layout;
+- explicit production-only opt-in;
+- `beforeSend` sanitization that removes query strings and URL fragments before
+  transmission;
+- preservation of the existing analytics facade, Neon metrics, Web Vitals,
+  diagnostics and protected observability dashboard;
+- focused unit/browser/container validation and normal release/deployment
+  validation.
+
+### Dependencies
+
+Requires:
+
+- released and deployed v0.3.0;
+- the existing analytics/observability abstractions;
+- the public `iworkhere-space` Vercel project;
+- Web Analytics enabled in that Vercel project before the first
+  Analytics-enabled production deployment.
+
+### Constraints
+
+- Do not add a second application-domain event system.
+- Do not call Vercel `track()` from tools in v0.3.1.
+- Do not send file/input/output data, query strings, fragments, raw diagnostics,
+  storage/authentication data or object URLs to Vercel Analytics.
+- Preview, Development, local E2E and container validation remain disabled by
+  default.
+- Provider-specific imports remain isolated behind an app-owned wrapper.
+- Do not change the independent protected dashboard project.
+- Do not combine this infrastructure release with v0.4 catalog implementation.
+
+### Acceptance
+
+v0.3.1 is complete when:
+
+- an exact compatible `@vercel/analytics` v2 release is pinned;
+- automatic page views work for initial loads and client navigation without
+  duplicate wrappers/manual page-view calls;
+- production activation is explicit and default-off elsewhere;
+- outgoing Analytics URLs contain no application query/hash data;
+- no Vercel custom events are emitted;
+- the existing application observability/Neon/diagnostic contracts continue to
+  pass;
+- full repository validation passes;
+- the exact release candidate passes readiness and production smoke;
+- the package version is bumped to 0.3.1 only during release preparation.
+
+### Exclusions
+
+- new utilities;
+- Vercel custom events;
+- Speed Insights;
+- Vercel Web Analytics API ingestion;
+- analytics replication into Neon;
+- analytics cards in the private dashboard;
+- Google Analytics;
+- session replay;
+- analytics-provider replacement;
+- advertising changes.
+
+This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
+
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
 Status: Planned
@@ -513,38 +592,6 @@ This checkpoint does not presume a redesign. The v0.1.1 architecture investigati
 ## Cross-version enabling work
 
 The following capabilities support product versions and should be implemented when the first owning product version needs them. They are not standalone product versions in this roadmap.
-
-### Vercel Web Analytics
-
-Status: PLANNED — architecture and acceptance are documented; implementation has
-not started.
-
-Vercel Web Analytics is approved as additive, platform-level traffic analytics
-for the public Vercel project. It does not replace the existing application
-observability facade, Neon metric persistence, diagnostic logging, private
-dashboard, or Web Vitals ownership.
-
-The first integration is intentionally narrow:
-
-- automatic page-view and client-side navigation traffic only;
-- `@vercel/analytics` version 2, pinned to an exact compatible version during
-  implementation rather than a floating dependency;
-- an app-owned wrapper mounted from the root layout;
-- explicit production opt-in, with Preview/Development off unless separately
-  authorized;
-- a `beforeSend` privacy boundary that removes query strings and fragments
-  before transmission and can drop explicitly private routes;
-- no direct `track()` calls from tools in the first delivery;
-- no Vercel custom events, Speed Insights, Web Analytics API ingestion, or
-  dashboard embedding in the first delivery.
-
-Existing canonical tool events remain owned by the current analytics abstraction
-and observability pipeline. Any later Vercel custom-event support must enter
-through that abstraction rather than creating direct provider calls in tool
-components.
-
-See [Vercel Web Analytics integration plan](plans/vercel-web-analytics-integration-plan.md)
-for ownership, privacy, deployment and test requirements.
 
 ### Browser end-to-end validation
 

@@ -30,19 +30,28 @@ planning change. GitHub source-release identity is authoritative above; Vercel
 deployment metadata should be recorded separately when retrieved from an
 authoritative deployment source.
 
-NEXT_CROSS_VERSION_ENABLING_WORK: Vercel Web Analytics planning
+NEXT_NUMBERED_VERSION: 0.3.1 — Vercel Web Analytics
 
-VERCEL_WEB_ANALYTICS: PLANNED — DOCUMENTATION FROZEN; IMPLEMENTATION NOT STARTED
+V0_3_1_PLANNING: FROZEN
 
-The planned first integration adds Vercel's platform-level automatic page-view
-analytics to the public project without replacing the existing observability
-facade, Neon persistence, diagnostics or private dashboard. Custom events,
-Speed Insights and Web Analytics API/dashboard integration are explicitly
-deferred. See
-[the Vercel Web Analytics integration plan](plans/vercel-web-analytics-integration-plan.md).
+V0_3_1_IMPLEMENTATION: NOT_STARTED
 
-No Analytics dependency, source code, Vercel project setting or production
-environment value is changed by this documentation commit.
+V0_3_1_TARGET_PACKAGE_VERSION: 0.3.1
+
+V0_4_0_CATALOG_SCOPE: PRESERVED / FUTURE
+
+The v0.3.1 release is a bounded infrastructure/observability release between the
+deployed v0.3.0 document release and the planned v0.4.0 catalog release. It adds
+Vercel's automatic page-view analytics to the public project without replacing
+the existing observability facade, Neon persistence, diagnostics or private
+dashboard. Custom events, Speed Insights and Web Analytics API/dashboard
+integration are explicitly deferred.
+
+Frozen implementation authority:
+[v0.3.1 implementation plan](plans/v0.3.1-implementation-plan.md).
+
+No v0.3.1 dependency, source code, Vercel project setting or production
+environment value is changed by this planning-only documentation commit.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 

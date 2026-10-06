@@ -97,9 +97,9 @@ not describe the current live production runtime.
 
 See [ADVERTISING](ADVERTISING.md) and [OBSERVABILITY](OBSERVABILITY.md). NEXT_PUBLIC_ADSENSE_ENABLED and NEXT_PUBLIC_OBSERVABILITY_ENABLED default false; exact true is explicit opt-in. Next public flags are baked at build time. Docker builder accepts each as a build argument with false defaults. Container validation forces false. Rebuild after changing flags; a runtime variable alone cannot activate an already-built browser bundle. Ad activation additionally requires verified ownership, site Ready, ads.txt Authorized and applicable Google-certified CMP / Privacy & messaging. Meta and ads.txt work while disabled. No public activation or deployment is performed by this implementation. Runtime stdout remains active; explicit server-only OBSERVABILITY_PERSISTENCE_ENABLED=true additionally enables Neon writes through OBSERVABILITY_DATABASE_URL. CRON_SECRET protects public-project maintenance. Dashboard uses only OBSERVABILITY_DASHBOARD_DATABASE_URL with read-only grants; no secret is NEXT_PUBLIC.
 
-## Planned Vercel Web Analytics integration
+## Planned v0.3.1 Vercel Web Analytics integration
 
-This section is a deployment plan, not current implementation.
+This section is the v0.3.1 deployment plan, not current implementation.
 
 The public project may add Vercel Web Analytics as additive traffic analytics.
 Before the first Analytics-enabled production deployment:
@@ -126,7 +126,7 @@ default. Speed Insights, custom Vercel events and Web Analytics API ingestion ar
 separate future decisions.
 
 See
-[the Vercel Web Analytics integration plan](plans/vercel-web-analytics-integration-plan.md)
+[the Vercel Web Analytics integration plan](plans/v0.3.1-implementation-plan.md)
 and [Production observability](OBSERVABILITY.md).
 
 ## Environment variable contract
