@@ -22,7 +22,7 @@ V0_3_1_PR: #10 — MERGED
 
 MERGE_METHOD: MERGE COMMIT
 
-V0_3_1_MASTER_SHA / PRODUCTION_SOURCE_SHA:
+V0_3_1_RELEASE_MERGE_SHA / LAUNCH_PRODUCTION_SOURCE_SHA:
 `2c8c1dec611b228a73137c5ee8ae0a5cd60caab0`
 
 V0_3_1_GITHUB_RELEASE: `v0.3.1` — PUBLISHED
@@ -31,10 +31,15 @@ PRODUCTION_DEPLOYMENT: COMPLETE
 
 VERCEL_PROJECT: `iworkhere-space`
 
-VERCEL_PRODUCTION_DEPLOYMENT:
+V0_3_1_LAUNCH_DEPLOYMENT:
 `dpl_67zHEP485iQtHBiM4VNPaURo4iw6`
 
 PUBLIC_DOMAIN: https://iworkhere.space
+
+The SHA and deployment above identify the validated v0.3.1 launch event. Later
+documentation-only commits on `master` may cause Vercel to create equivalent
+production deployments with newer Git SHAs; those are not new product releases
+and do not invalidate the v0.3.1 launch record.
 
 VERCEL_WEB_ANALYTICS: LIVE
 
