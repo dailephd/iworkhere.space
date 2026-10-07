@@ -135,6 +135,13 @@ registry-derived contracts (no edit to `sitemap.ts`, Home, Discover or nav).
   `test/e2e/json-formatter.spec.ts` ran separately as RUN_ID
   `2026-10-07T11-48-11-690Z-791951f9` (8 passed).
 - No local container gate (no runtime dependency added); CI runs it.
+- PR CI found one defect missed by the local search: `script/containerSmoke.ts`
+  asserts the public route inventory (`publicRoutes.length !== 23`). The first
+  container job (run 37617478770, job 112779213556) failed with "Container
+  public route inventory mismatch." This was reproducible and caused by Batch 1,
+  not transient, so it was fixed (23 → 25) in a follow-up commit rather than
+  rerun. All other jobs passed on the first run. Lesson: catalog-count searches
+  must include `script/`.
 
 Changes to existing specs: affected count assertions 15→16 (app-navigation
 including the route list and loop, image-compressor, image-converter) and
