@@ -119,23 +119,35 @@ Acceptance: all four workflows and inherited tests pass; page content and destin
 ### Delivery 3 — Authorized launch, measurement, and distribution
 
 **Status: Technical launch complete (2026-10-04).** The public production
-deployment is live at https://iworkhere.space. The public origin, robots policy,
-17-URL sitemap, canonicals, server-rendered image guides, representative image
-workflows, observability persistence, and protected dashboard were verified.
-The HEIC production-license gate was approved before launch. No new numbered
-version was created.
+deployment is live at https://iworkhere.space. At launch the public origin,
+robots policy, 17-URL sitemap, canonicals, server-rendered image guides,
+representative image workflows, observability persistence, and protected
+dashboard were verified. The HEIC production-license gate was approved before
+launch. No new numbered version was created.
 
-**Remaining operational follow-up:** once authenticated, submit or confirm the production sitemap in Google Search Console and Bing Webmaster Tools. Inspect the seven priority URLs and request indexing at most once where appropriate:
+The catalog subsequently expanded through v0.3.x. On 2026-10-07 the live
+registry-derived sitemap contained 23 canonical HTTPS apex URLs. A Search
+Console "Page with redirect" notice was investigated against Google inspection
+and live crawl evidence. Known redirect variants are intentional HTTP→HTTPS and
+trailing-slash normalization; all 23 current sitemap URLs returned direct 200
+responses, were indexable, and exposed self-canonical apex URLs. The current
+sitemap was re-submitted to Google Search Console for re-download.
 
-- https://iworkhere.space/
-- https://iworkhere.space/discover
-- https://iworkhere.space/category/image
-- https://iworkhere.space/tool/image-resizer
-- https://iworkhere.space/tool/image-compressor
-- https://iworkhere.space/tool/image-converter
-- https://iworkhere.space/tool/heic-converter
+**Remaining operational follow-up:**
 
-No console submission or URL request has been made; no request guarantees index inclusion or ranking. The suggested owned-site write-up/link remains optional separate distribution work and was not performed in this launch.
+- verify in Vercel that `www.iworkhere.space` permanently redirects to the
+  canonical apex host with no unnecessary redirect chain; Google retains
+  historical `www` indexing evidence;
+- monitor Google's canonical recrawl/index inclusion after the current sitemap
+  re-download; do not treat submission as a guarantee of indexing or ranking;
+- submit or confirm the production sitemap in Bing Webmaster Tools;
+- retain the original seven priority URLs as useful monitoring examples, but do
+  not repeatedly request indexing merely to chase a status change.
+
+The suggested owned-site write-up/link remains optional separate distribution
+work and was not performed in this launch. See
+[the pre-v0.4 indexing checkpoint report](../reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md)
+for the current evidence and boundary.
 
 Review after enough public data is available. REVIEW WINDOW: 28 days after
 public launch (2026-10-04; earliest review 2026-11-01). This window does not
