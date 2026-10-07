@@ -12,11 +12,15 @@ PDF image export has 20 outputs, 72/150/300 DPI (150 default), 4096 per side /
 16 MP and JPEG quality 0.50–1.00 (0.85 default). Compress PDF has one lossless
 structural mode and explicitly describes normal NO REDUCTION ACHIEVED outcomes.
 No ZIP, OCR, signing, repair, password entry or lossy PDF compression is claimed.
-Related IDs stay within the respective document/image family and resolve through
-metadata; the shared template derives the category-aware related-tools heading.
+Related IDs resolve through metadata, and each guide may select any relevant
+registered tools; the document and image guides happen to relate only siblings
+of their own family. The shared template labels the related set by the related
+tools' own category when they all share one (`Related image tools`), and uses the
+neutral `Related tools` when they span categories or the set is empty. The
+source tool's category never determines the heading.
 
 v0.4.0 Batch 1 adds the `json-formatter` guide (the first `developer` tool):
 strict RFC 8259 JSON with any root value, rejected non-JSON syntax, token-
 preserving formatting (insignificant whitespace only; no number coercion,
 escape normalization, duplicate-member collapse or reordering), the 1 MiB UTF-8
-limit, and local processing. Related IDs: `html-text-extractor`, `slugify`.
+limit, and local processing. Related IDs: `html-text-extractor`, `slugify`, which are `text` tools, so the page shows `Related text tools`.

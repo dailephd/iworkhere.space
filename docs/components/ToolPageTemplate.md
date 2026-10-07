@@ -34,4 +34,8 @@ Manual review and updates are encouraged to add implementation details.
 
 ## Delivery 2 server presentation contract
 
-The shared server template renders compact truthful breadcrumbs before the title and optional guide sections after the interactive workspace. Its route supplies display-ready breadcrumb items, guide data, and resolved related tool definitions. Ancestor links use canonical public paths. Guides render in initial HTML for four image tools only; other tools receive breadcrumbs without image prose. No structured-data family is introduced.
+The shared server template renders compact truthful breadcrumbs before the title and optional guide sections after the interactive workspace. Its route supplies display-ready breadcrumb items, guide data, and resolved related tool definitions. Ancestor links use canonical public paths. Guides render in server HTML for every tool that has guide data; tools without guide data receive breadcrumbs only. No structured-data family is introduced.
+
+### Related-tools heading
+
+The related-tools heading is derived from the actual related tools, never from the source tool's own category. When the resolved related set is non-empty and every related tool has the same category, the heading is `Related <that category> tools` (for example the JSON Formatter, a `developer` tool, shows `Related text tools` above its two text-tool links). When the related tools span more than one category, or the set is empty, the heading is the neutral `Related tools`. The template adds no category-label registry and no per-guide heading string.

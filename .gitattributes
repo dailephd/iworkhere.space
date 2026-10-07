@@ -8,4 +8,5 @@ public/licenses/pdfjs-6.4.299/* -text
 public/licenses/pdf-lib-1.17.1/* -text
 public/licenses/pdf-lib-1.17.1-LICENSE.md -text
 public/licenses/qpdf-12.4.2/* -text
+public/licenses/uqr-0.1.3-LICENSE.txt -text
 test/fixtures/pdf/*.pdf binary

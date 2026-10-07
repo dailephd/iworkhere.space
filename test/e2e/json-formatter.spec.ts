@@ -13,9 +13,12 @@ test("JSON Formatter route, SEO, breadcrumb, guide and related links are server-
     expect(html).toContain('href="/category/developer"');
     for (const text of ["How to use", "Strict JSON", "RFC 8259", "Token-preserving formatting", "1 MiB", "not uploaded for formatting or validation"]) expect(html).toContain(text);
     for (const href of ["/tool/html-text-extractor", "/tool/slugify"]) expect(html).toContain(`href="${href}"`);
+    expect(html).toContain("Related text tools");
+    expect(html).not.toContain("Related developer tools");
     await page.goto("/tool/json-formatter", { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { level: 1, name: "JSON Formatter / Validator", exact: true })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Developer" })).toHaveAttribute("href", "/category/developer");
+    await expect(page.getByRole("heading", { level: 2, name: "Related text tools", exact: true })).toBeVisible();
     await expect(page.getByRole("main").getByRole("link", { name: /Slugify/ }).first()).toHaveAttribute("href", "/tool/slugify");
 });
 
