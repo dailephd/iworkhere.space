@@ -116,6 +116,22 @@ for (const [name, payload] of PAYLOADS) {
     });
 }
 
+test("PNG encoding does not depend on the idle-scheduled canvas.toBlob", async ({ page }) => {
+    // toBlob waits for browser idle periods and measured 1.6 s or more on a busy page, which delayed the preview.
+    await page.addInitScript(() => {
+        const counter = window as unknown as { __toBlobCalls: number };
+        counter.__toBlobCalls = 0;
+        const original = HTMLCanvasElement.prototype.toBlob;
+        HTMLCanvasElement.prototype.toBlob = function (...args: Parameters<HTMLCanvasElement["toBlob"]>) {
+            counter.__toBlobCalls += 1;
+            return original.apply(this, args);
+        };
+    });
+    await page.goto("/tool/qr-code-generator", { waitUntil: "networkidle" });
+    await generate(page, "no toBlob");
+    expect(await page.evaluate(() => (window as unknown as { __toBlobCalls: number }).__toBlobCalls)).toBe(0);
+});
+
 test("editing the input removes the stale preview and download before a new generation", async ({ page }) => {
     await page.goto("/tool/qr-code-generator", { waitUntil: "networkidle" });
     await generate(page, "first payload");
@@ -136,6 +152,36 @@ test("rejects over-limit text without a result and keeps the input", async ({ pa
     await expect(page.getByLabel("Text or URL", { exact: true })).toHaveValue(text);
     await expect(preview(page)).toHaveCount(0);
     await expect(downloadLink(page)).toHaveCount(0);
+});
+
+// The encoder's own error text identifies its emitted chunk without relying on hashed file names.
+const UQR_SIGNATURE = "uqr only supports encoding string and binary data";
+const UNRELATED_ROUTES = ["/", "/discover", "/tool/calculator", "/tool/json-formatter", "/tool/word-character-counter"];
+
+const isStaticScript = (url: string) => {
+    const { pathname } = new URL(url);
+    return pathname.startsWith("/_next/static/") && pathname.endsWith(".js");
+};
+
+test("the uqr encoder chunk is requested only by the QR route, never by unrelated routes", async ({ browser, baseURL }) => {
+    for (const route of UNRELATED_ROUTES) {
+        const context = await browser.newContext({ baseURL });
+        const page = await context.newPage();
+        const bodies: Array<Promise<string>> = [];
+        page.on("response", response => { if (isStaticScript(response.url())) bodies.push(response.text()); });
+        await page.goto(route, { waitUntil: "networkidle" });
+        const texts = await Promise.all(bodies);
+        expect(texts.length, `${route} loaded client scripts`).toBeGreaterThan(0);
+        expect(texts.filter(text => text.includes(UQR_SIGNATURE)), `${route} must not load the uqr encoder`).toEqual([]);
+        await context.close();
+    }
+
+    const context = await browser.newContext({ baseURL });
+    const page = await context.newPage();
+    const encoderLoaded = page.waitForResponse(async response => isStaticScript(response.url()) && (await response.text()).includes(UQR_SIGNATURE));
+    await page.goto("/tool/qr-code-generator", { waitUntil: "networkidle" });
+    await encoderLoaded;
+    await context.close();
 });
 
 test("generation stays local: no payload leaves the browser, no query or storage", async ({ page }) => {

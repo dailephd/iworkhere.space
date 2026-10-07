@@ -533,3 +533,6 @@ small test-only reader to prove error-correction level M. Playwright downloads
 the real PNG, checks its signature and IHDR (512×512), redraws it in the browser
 and decodes the pixels with `jsqr` in Node. Encoder self-validation (the library
 decoding or describing its own output) is not accepted as correctness proof.
+A Playwright bundle-isolation test additionally proves, from emitted production
+scripts and fresh browser contexts, that the `uqr` chunk is delivered only on the
+QR route.

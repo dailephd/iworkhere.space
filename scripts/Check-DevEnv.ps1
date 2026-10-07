@@ -21,8 +21,8 @@ if ([int]$Matches['major'] -ne 24) {
 $requiredPaths = @(
     'package.json',
     'src\app',
-    'doc\ROADMAP.md',
-    'doc\project-status.md'
+    'docs\ROADMAP.md',
+    'docs\project-status.md'
 )
 foreach ($relativePath in $requiredPaths) {
     if (-not (Test-Path -LiteralPath (Join-Path $repoRoot $relativePath))) {

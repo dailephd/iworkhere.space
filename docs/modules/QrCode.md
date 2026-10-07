@@ -70,9 +70,21 @@ offsetY }` with `width = height = 512` and `data.length = 512 * 512 * 4`.
 
 ### PNG correctness expectations
 
-The component encodes the raster as a PNG. The downloaded file must carry the PNG
+The component encodes the raster as a PNG (synchronously, via `toDataURL`). The downloaded file must carry the PNG
 signature `89 50 4E 47 0D 0A 1A 0A`, a first `IHDR` chunk reporting 512×512, and
 pixels that an independent decoder reads back as the original payload.
+
+### Loading boundary
+
+`qrCode.ts` keeps its direct, synchronous `uqr` import for unit-level QR logic,
+but it is never imported statically by client code. `QrCodeGeneratorTool.tsx`
+loads it through one memoized dynamic `import("./qrCode")`, so `uqr` is emitted
+as a separate local chunk: it is requested only when the QR tool component
+renders (the component preloads it after mount so QR generation keeps working
+offline once the page has loaded), and unrelated routes (home, Discover and the
+other tools) never request it. Dynamic loading is a dependency-performance
+boundary only; generation still happens entirely in the browser and nothing is
+fetched from a remote QR service.
 
 ### Test boundary
 

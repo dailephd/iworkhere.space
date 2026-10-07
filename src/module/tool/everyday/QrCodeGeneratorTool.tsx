@@ -2,11 +2,40 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ToolComponentProp } from "../type";
-import { generateQrRaster, QR_OUTPUT_SIZE } from "./qrCode";
-import { trackEvent } from "@/module/observability";
+import { trackEvent, captureError } from "@/module/observability";
 
 const slug = "qr-code-generator";
 const PNG_ERROR = "Could not prepare the QR code PNG.";
+const GENERATE_ERROR = "Could not generate the QR code.";
+const PREVIEW_SIZE = 512;
+const PNG_DATA_URL_PREFIX = "data:image/png;base64,";
+
+// The PNG is encoded synchronously: canvas.toBlob() is scheduled on browser idle periods and can
+// take seconds to call back when the page's main thread stays busy, which delayed the preview.
+function encodePng(canvas: HTMLCanvasElement): Blob | null {
+    try {
+        const dataUrl = canvas.toDataURL("image/png");
+        if (!dataUrl.startsWith(PNG_DATA_URL_PREFIX)) return null;
+        const binary = atob(dataUrl.slice(PNG_DATA_URL_PREFIX.length));
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+        return new Blob([bytes], { type: "image/png" });
+    } catch {
+        return null;
+    }
+}
+
+// qrCode.ts (and its uqr encoder) is loaded through a dynamic import so the encoder stays out of
+// the client code every other route loads; it is requested only when this component renders.
+let qrCodeModulePromise: Promise<typeof import("./qrCode")> | undefined;
+
+function loadQrCodeModule() {
+    qrCodeModulePromise ??= import("./qrCode").catch((error: unknown) => {
+        qrCodeModulePromise = undefined;
+        throw error;
+    });
+    return qrCodeModulePromise;
+}
 
 export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
     const [input, setInput] = useState("");
@@ -30,17 +59,33 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
         currentUrl.current = null;
     }, []);
 
+    // Warm the local encoder chunk once the QR tool is on screen; a failure here is retried on Generate.
+    useEffect(() => {
+        loadQrCodeModule().catch(() => undefined);
+    }, []);
+
     const handleInputChange = useCallback((value: string) => {
         discardResult();
         setInput(value);
     }, [discardResult]);
 
-    const handleGenerate = useCallback(() => {
+    const handleGenerate = useCallback(async () => {
         if (input.length === 0) return;
         discardResult();
         const ticket = generation.current;
 
-        const result = generateQrRaster(input);
+        let qrCode: typeof import("./qrCode");
+        try {
+            qrCode = await loadQrCodeModule();
+        } catch (e) {
+            if (ticket !== generation.current) return;
+            captureError(e, { toolId, boundary: "QrCodeGeneratorTool.loadQrCodeModule" });
+            setError(GENERATE_ERROR);
+            return;
+        }
+        if (ticket !== generation.current) return;
+
+        const result = qrCode.generateQrRaster(input);
         if (!result.ok) {
             setError(result.error.message);
             return;
@@ -59,17 +104,15 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
         image.data.set(raster.data);
         context.putImageData(image, 0, 0);
 
-        canvas.toBlob((blob) => {
-            if (ticket !== generation.current) return;
-            if (!blob) {
-                setError(PNG_ERROR);
-                return;
-            }
-            const url = URL.createObjectURL(blob);
-            currentUrl.current = url;
-            setDownloadUrl(url);
-            trackEvent("tool_executed", { toolId, slug });
-        }, "image/png");
+        const blob = encodePng(canvas);
+        if (!blob) {
+            setError(PNG_ERROR);
+            return;
+        }
+        const url = URL.createObjectURL(blob);
+        currentUrl.current = url;
+        setDownloadUrl(url);
+        trackEvent("tool_executed", { toolId, slug });
     }, [input, toolId, discardResult]);
 
     const handleReset = useCallback(() => {
@@ -125,8 +168,8 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
                     <img
                         src={downloadUrl}
                         alt="Generated QR code preview"
-                        width={QR_OUTPUT_SIZE}
-                        height={QR_OUTPUT_SIZE}
+                        width={PREVIEW_SIZE}
+                        height={PREVIEW_SIZE}
                         className="h-auto w-full max-w-xs"
                     />
                 </div>
