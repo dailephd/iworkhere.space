@@ -415,7 +415,9 @@ This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
-Status: Planned
+Status: Planned — implementation plan frozen 2026-10-07; implementation not started.
+
+Frozen plan: [v0.4.0 implementation plan](plans/v0.4.0-implementation-plan.md).
 
 ### Goal
 
@@ -436,12 +438,13 @@ At completion of v0.4.0, all Priority A utilities are implemented.
 Requires:
 
 - stable tool/catalog contracts from earlier releases;
-- completion of the bounded pre-v0.4 canonical-host configuration check:
-  verify that Vercel permanently redirects `www.iworkhere.space` to the
-  canonical HTTPS apex host without adding a parallel application redirect
-  layer; Google recrawl/index inclusion continues as measurement and does not
-  block v0.4 unless it reveals a real canonical production defect;
-- a resolved category decision for developer-oriented utilities before the v0.4.0 implementation plan is frozen.
+- the bounded pre-v0.4 canonical-host configuration check, now complete
+  (2026-10-07): Vercel permanently redirects `www.iworkhere.space` and HTTP
+  variants to the canonical HTTPS apex host with no parallel application
+  redirect layer; Google recrawl/index inclusion continues as measurement and
+  does not block v0.4 unless it reveals a real canonical production defect;
+- the category decision for developer-oriented utilities, now resolved (see
+  below).
 
 ### Constraints
 
@@ -467,12 +470,17 @@ v0.4.0 is complete when:
 - analytics-provider replacement
 - server persistence
 
-### Unresolved planning decisions
+### Resolved planning decisions
 
-Before implementation-plan freeze, decide:
+- `developer` becomes a canonical `ToolCategory`, with one canonical runtime
+  category-definition owner (no duplicated category lists);
+- JSON Formatter / Validator belongs to `developer`;
+- Word / Character Counter belongs to `text`; QR Code Generator belongs to
+  `everyday`; no existing tool moves.
 
-- whether `developer` becomes a canonical `ToolCategory`;
-- the canonical category assignment for JSON Formatter / Validator.
+The three-tool v0.4.0 scope and the exclusions above are unchanged. Detailed
+contracts, dependency decision, batch structure and test responsibilities live
+in the [frozen implementation plan](plans/v0.4.0-implementation-plan.md).
 
 ## Version 0.5.0 — Developer & Text Utility Suite
 
