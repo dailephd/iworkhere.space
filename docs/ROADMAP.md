@@ -415,7 +415,7 @@ This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
-Status: Planned — implementation plan frozen 2026-10-07; implementation not started.
+Status: Implementation complete; documentation reconciled; pre-release readiness pending. The implementation plan was frozen 2026-10-07; v0.4.0 is not released.
 
 Frozen plan: [v0.4.0 implementation plan](plans/v0.4.0-implementation-plan.md).
 

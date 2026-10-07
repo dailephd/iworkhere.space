@@ -226,7 +226,7 @@ Specs in `test/e2e/` use a shared fixture that attaches listeners before navigat
 Every applicable route fails on `pageerror`, console errors and React hydration
 warnings/errors, without suppression or arbitrary allowlists. Expected 404 status
 is tested through a request to avoid treating an intentional failed resource as an
-unapproved browser diagnostic. Health response, all fifteen registered tool routes and catalog flows, calculator
+unapproved browser diagnostic. Health response, every registered tool route (18 in the v0.4 candidate) and catalog flows, calculator
 and time arithmetic interactions, responsive shell/skip/navigation/footer,
 document scrolling, theme reload persistence and production SW are covered.
 
@@ -479,8 +479,9 @@ Adjacent document-domain Vitest tests cover frozen source/collection/render
 limits, page-selection order and deduplication, atomic additions, worker
 protocol/termination, independent verification, cancellation/stale generations,
 local errors, focus and URL cleanup. Registry/metadata/guide/sitemap tests
-protect five document tools, 15 total tools, six populated categories and
-23 canonical sitemap URLs. Operation-specific browser specs are
+protect five document tools; the current v0.4 candidate registry has 18 total
+tools, seven populated categories and 27 canonical sitemap URLs (v0.3.1 had 15,
+six and 23). Operation-specific browser specs are
 `pdf-page-copy.spec.ts`, `images-to-pdf.spec.ts`, `pdf-to-image.spec.ts` and
 `compress-pdf.spec.ts`; `document-family.spec.ts` covers discovery/search,
 SSR/canonicals/related links, accessible landmarks, keyboard Reset, bounded
