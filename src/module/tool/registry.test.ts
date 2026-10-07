@@ -101,7 +101,7 @@ describe("registry invariants", () => {
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
         expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter", "heic-converter"])
-        expect(tool_definition_list).toHaveLength(17)
+        expect(tool_definition_list).toHaveLength(18)
     })
 
     it("registers Converter with its exact offline contract", () => {
@@ -139,6 +139,19 @@ describe("registry invariants", () => {
         })
         expect(tool?.popularity).toBeUndefined()
         expect(getToolByCategory("text").map(entry => entry.id)).toEqual(["slugify", "html-text-extractor", "word-character-counter"])
+    })
+
+    it("registers QR Code Generator with its exact local offline everyday contract", () => {
+        const tool = getToolBySlug("qr-code-generator")
+        expect(tool).toMatchObject({
+            id: "qr-code-generator", slug: "qr-code-generator", name: "QR Code Generator", category: "everyday",
+            description: "Generate a QR code from text or a URL locally in your browser.",
+            seo: { title: "QR Code Generator", description: "Generate a QR code from text or a URL locally in your browser and download it as a PNG.", canonicalPath: "/tool/qr-code-generator" },
+            capability: ["client-only", "offline"], tag: ["qr", "code", "generator", "url", "everyday", "utility"],
+            statePolicy: { persist: "none", shareableQuery: false },
+        })
+        expect(tool?.popularity).toBeUndefined()
+        expect(getToolByCategory("everyday").map(entry => entry.id)).toEqual(["length-converter", "weight-converter", "qr-code-generator"])
     })
 
     it("returns undefined for an unknown slug", () => {

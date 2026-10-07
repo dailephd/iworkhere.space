@@ -50,3 +50,30 @@ Versioned runtime manifests record purpose, source version, byte identity and
 notice ownership. `script/qpdf/README.md` documents controlled rebuilds.
 These records describe factual source correspondence and do not claim legal
 approval. No QuickJS, scripting runtime or remote runtime code is distributed.
+
+## QR Code Generator
+
+### uqr 0.1.3 (production)
+
+Upstream: https://github.com/unjs/uqr (npm package metadata
+`git+https://github.com/unjs/uqr.git`).
+
+The exact installed package version is 0.1.3. npm package license metadata is
+`MIT`. It is the QR encoder used by the QR Code Generator tool and is bundled
+into the client JavaScript for that tool; it has no runtime dependencies and
+makes no network requests. The unmodified installed `node_modules/uqr/LICENSE`
+(Project Nayuki and Anthony Fu copyright notices) is preserved at
+`public/licenses/uqr-0.1.3-LICENSE.txt`.
+
+### jsQR 1.4.0 (test only)
+
+Upstream: https://github.com/cozmo/jsQR (npm package metadata
+`git+https://github.com/cozmo/jsQR.git`).
+
+The exact installed package version is 1.4.0. npm package license metadata is
+`Apache-2.0`. It is a devDependency used only by unit and browser tests to decode
+project-rendered and downloaded QR pixels independently of the encoder. It is
+not imported by production code and is not distributed with the application.
+
+These records describe factual package, license and distribution state and make
+no legal-compliance claim.

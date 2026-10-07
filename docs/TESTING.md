@@ -521,3 +521,14 @@ ignored run evidence, not generic command examples.
 ## Diagnostic hotfix
 
 Diagnostic validation includes serializer/redactor/API/client/server tests, additive migration order, actual PostgreSQL insertion/30-day pruning/read-role rejection/all range query plans, independent dashboard verify/runtime/visual, root verify, public E2E and container. Existing unique report directories apply. Production smoke uses exactly one operator-controlled diagnostic and checks matching UUID/message/stack/deployment in logs, Neon and protected dashboard.
+
+## QR Code Generator validation
+
+The production QR encoder (`uqr`) and the test decoder (`jsqr`) are independent
+and both exact-pinned; `jsqr` is a devDependency and is never imported from
+production source (a unit test asserts this). Unit tests decode the
+project-rendered RGBA pixels with `jsqr` and read the matrix format bits with a
+small test-only reader to prove error-correction level M. Playwright downloads
+the real PNG, checks its signature and IHDR (512×512), redraws it in the browser
+and decodes the pixels with `jsqr` in Node. Encoder self-validation (the library
+decoding or describing its own output) is not accepted as correctness proof.

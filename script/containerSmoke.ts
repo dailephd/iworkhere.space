@@ -152,8 +152,8 @@ try {
   const sitemap = await fetch(`${baseUrl}/sitemap.xml`);
   if (!sitemap.ok) throw new Error("Container sitemap is unavailable.");
   const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
-  if (publicRoutes.length !== 26 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
-  const routes = [...publicRoutes, "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
+  if (publicRoutes.length !== 27 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
+  const routes = [...publicRoutes, "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt", "/licenses/uqr-0.1.3-LICENSE.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {
     const response = await fetch(`${baseUrl}${route}`);
@@ -170,7 +170,7 @@ try {
   summary.serviceWorkerResult = routeResults["/sw.js"] === 200 ? "PASS" : "FAIL";
   summary.heicRuntimeResult = routeResults["/tool/heic-converter"] === 200 && routeResults["/licenses/heic-to-LICENSE.txt"] === 200 && routeResults["/licenses/libheif-COPYING.txt"] === 200 ? "ROUTE_PASS_E2E_PENDING" : "FAIL";
 
-  const runtimePaths = await runChecked("docker", ["exec", containerName, "node", "-e", "const fs=require('node:fs'); const absent=['/app/src','/app/test','/app/docs','/app/.git','/app/.github','/app/test-report','/app/.my-dev-kit-context','/app/.my-dev-kit-workflow','/app/.my-dev-kit-orchestrator','/app/.frontend-observer','/app/.env','/app/.env.local','/app/.env.production','/app/.env.production.local','/app/.env.development','/app/.env.test','/app/node_modules/@playwright/test','/app/node_modules/playwright','/app/node_modules/playwright-core']; const missing=['/app/THIRD_PARTY_NOTICES.md','/app/public/licenses/heic-to-LICENSE.txt','/app/public/licenses/libheif-COPYING.txt']; const present=absent.filter(fs.existsSync); const absentRequired=missing.filter(path=>!fs.existsSync(path)); if(present.length||absentRequired.length){console.error(JSON.stringify({unexpected:present,missing:absentRequired}));process.exit(1)}"]);
+  const runtimePaths = await runChecked("docker", ["exec", containerName, "node", "-e", "const fs=require('node:fs'); const absent=['/app/src','/app/test','/app/docs','/app/.git','/app/.github','/app/test-report','/app/.my-dev-kit-context','/app/.my-dev-kit-workflow','/app/.my-dev-kit-orchestrator','/app/.frontend-observer','/app/.env','/app/.env.local','/app/.env.production','/app/.env.production.local','/app/.env.development','/app/.env.test','/app/node_modules/@playwright/test','/app/node_modules/playwright','/app/node_modules/playwright-core']; const missing=['/app/THIRD_PARTY_NOTICES.md','/app/public/licenses/heic-to-LICENSE.txt','/app/public/licenses/libheif-COPYING.txt','/app/public/licenses/uqr-0.1.3-LICENSE.txt']; const present=absent.filter(fs.existsSync); const absentRequired=missing.filter(path=>!fs.existsSync(path)); if(present.length||absentRequired.length){console.error(JSON.stringify({unexpected:present,missing:absentRequired}));process.exit(1)}"]);
   void runtimePaths;
 
   const e2eRunId = `${runId}-browser`;

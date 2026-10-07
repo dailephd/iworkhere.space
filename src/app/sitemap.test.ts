@@ -5,9 +5,9 @@ import { getAllTool, getAvailableCategory } from "@/module/tool/metadata";
 describe("public sitemap", () => {
     it("enumerates the canonical registry and only populated categories once", () => {
         const urls = sitemap().map(entry => entry.url);
-        expect(getAllTool()).toHaveLength(17);
+        expect(getAllTool()).toHaveLength(18);
         expect(getAvailableCategory()).toHaveLength(7);
-        expect(urls).toHaveLength(26);
+        expect(urls).toHaveLength(27);
         expect(urls).toHaveLength(2 + getAllTool().length + getAvailableCategory().length);
         expect(new Set(urls).size).toBe(urls.length);
         expect(urls).toContain("https://iworkhere.space/");
@@ -15,7 +15,7 @@ describe("public sitemap", () => {
         for (const tool of getAllTool()) expect(urls).toContain(`https://iworkhere.space${tool.seo.canonicalPath}`);
         for (const category of getAvailableCategory()) expect(urls).toContain(`https://iworkhere.space/category/${category}`);
         expect(urls).toContain("https://iworkhere.space/category/document");
-        for (const url of ["https://iworkhere.space/tool/json-formatter", "https://iworkhere.space/category/developer", "https://iworkhere.space/tool/word-character-counter"]) expect(urls.filter(entry => entry === url)).toHaveLength(1);
+        for (const url of ["https://iworkhere.space/tool/json-formatter", "https://iworkhere.space/category/developer", "https://iworkhere.space/tool/word-character-counter", "https://iworkhere.space/tool/qr-code-generator"]) expect(urls.filter(entry => entry === url)).toHaveLength(1);
         for (const url of urls) {
             expect(url).toMatch(/^https:\/\/iworkhere\.space\//);
             expect(url).not.toMatch(/api\/|\?|#|localhost|vercel\.app|dashboard|_not-found/);

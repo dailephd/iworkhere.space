@@ -55,6 +55,16 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).toContain("Related text tools");
                 return;
             }
+            if (tool.id === "qr-code-generator") {
+                expect(tool.category).toBe("everyday");
+                expect(guide).toBeDefined();
+                for (const text of ["Text and URLs", "encoded exactly as you enter it", "does not fetch, open or check URLs", "Fixed QR settings", "error correction level M", "512 × 512", "quiet zone", "Payload limit", "2048 UTF-8 bytes", "denser QR symbols", "Not every camera or scanner", "Local processing", "not uploaded for QR generation"]) expect(html).toContain(text);
+                expect(related.map(item => item.id)).toEqual(["length-converter", "weight-converter"]);
+                expect(related.every(item => item.category === "everyday")).toBe(true);
+                for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
+                expect(html).toContain("Related everyday tools");
+                return;
+            }
             if (tool.category !== "image") {
                 expect(guide).toBeUndefined();
                 expect(html).not.toContain("Supported images and limits");

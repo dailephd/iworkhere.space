@@ -124,6 +124,16 @@ const guideById: Partial<Record<ToolId, ToolGuide>> = {
         ],
         relatedToolId: ["slugify", "html-text-extractor"],
     },
+    "qr-code-generator": {
+        instruction: ["Enter text or a URL in the Text or URL box.", "Select Generate QR code.", "Scan or review the preview.", "Select Download PNG to save the image if needed.", "Select Reset to clear the text and the QR code."],
+        section: [
+            { heading: "Text and URLs", text: "The text is encoded exactly as you enter it. It is not trimmed, normalized or rewritten, so spaces, capitalization, Unicode and emoji are kept as typed, and a URL is not changed or given a missing https://. The tool does not fetch, open or check URLs." },
+            { heading: "Fixed QR settings", text: "Every QR code uses error correction level M, black modules on a white background, a fixed 512 × 512 pixel PNG and the standard four-module quiet zone around the symbol. There are no color, size or error-correction options." },
+            { heading: "Payload limit", text: "Text is limited to 2048 UTF-8 bytes, which can be fewer than 2048 characters when the text includes accented letters, non-Latin scripts or emoji. Larger payloads create denser QR symbols, and shorter payloads are generally easier to scan. Not every camera or scanner can read a QR code at the maximum size." },
+            { heading: "Local processing", text: "The QR code is generated locally in this browser, and your text is not uploaded for QR generation. It is not saved or placed in the page address. The site still loads ordinary application assets and may use separately enabled site observability, which never receives your text." },
+        ],
+        relatedToolId: ["length-converter", "weight-converter"],
+    },
 };
 
 export function getToolGuide(toolId: ToolId): ToolGuide | undefined {
