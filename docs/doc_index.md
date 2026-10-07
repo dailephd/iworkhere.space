@@ -517,3 +517,9 @@ version plan remains historical process debt; no retrospective plan was authored
 - [TextMetric contract](modules/TextMetric.md): pure four-metric counting rules, `Intl.Segmenter` handling and the 1 MiB limit.
 - [WordCharacterCounterTool](components/WordCharacterCounterTool.md): Word / Character Counter UI, behavior, telemetry and privacy contract.
 - [v0.4.0 Batch 2 implementation report](reports/V0_4_BATCH_2_IMPLEMENTATION_REPORT.md): Batch 2 evidence (created at batch completion).
+
+## v0.4.0 Batch 3 specifications
+
+- [QrCode contract](modules/QrCode.md): pure payload limit, fixed ECC M encoder options, quiet-zone and 512×512 raster rules, and the independent-proof boundary.
+- [QrCodeGeneratorTool](components/QrCodeGeneratorTool.md): QR Code Generator UI, PNG/object-URL lifecycle, stale-result safety, telemetry and privacy contract.
+- [v0.4.0 Batch 3 implementation report](reports/V0_4_BATCH_3_IMPLEMENTATION_REPORT.md): Batch 3 evidence (created at batch completion).
