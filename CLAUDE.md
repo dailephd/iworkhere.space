@@ -134,7 +134,11 @@ setQuery?: (next: Record<string, string>) => void;
 }
 
 Tool categories:
-document, image, text, math, time, everyday
+document, image, text, math, time, everyday, developer
+
+Category definitions (ids, canonical order, page title/description, validation)
+are owned by src/module/tool/category.ts. ToolCategory derives from it. Do not
+create category lists elsewhere. The registry owns which categories are populated.
 
 Tool capabilities:
 client-only, offline, requires-network
@@ -143,7 +147,8 @@ Tool components must be self-contained and must not depend on routing.
 
 ### Registry-first policy
 
-- src/module/tool/registry.ts is the single source of truth for all tool data
+- src/module/tool/registry.ts is the single source of truth for registered tool data and therefore category population
+- src/module/tool/category.ts is the single source of truth for category definitions
 - src/module/tool/metadata.ts provides higher-level queries over the registry
 - Never duplicate tool data outside the registry
 - New metadata queries go in metadata.ts

@@ -104,6 +104,16 @@ const guideById: Partial<Record<ToolId, ToolGuide>> = {
         ],
         relatedToolId: ["image-converter", "image-resizer", "image-compressor"],
     },
+    "json-formatter": {
+        instruction: ["Paste JSON into the input.", "Select Format JSON for 2-space indentation or Minify JSON to remove whitespace.", "Review the output, or read the validation error and its line and column.", "Select Copy result to copy a valid result."],
+        section: [
+            { heading: "Strict JSON", text: "Input must be strict JSON as defined by RFC 8259. Any value is accepted as the root: an object, array, string, number, true, false or null. Comments, trailing commas, single-quoted strings, unquoted property names, NaN, Infinity, leading-zero numbers and extra content after the value are rejected with an error that names the problem and its position." },
+            { heading: "Token-preserving formatting", text: "Formatting and minifying change only insignificant whitespace. Numbers, string escape spelling, true/false/null, member order and duplicate member names are copied exactly as written. Nothing is converted to a JavaScript value first, so very large integers, exponent notation, -0 and escaped Unicode are not coerced, normalized, collapsed or reordered." },
+            { heading: "Size limit", text: "Input is limited to 1 MiB of UTF-8. Larger input is rejected before it is checked. Pretty-printing extremely deeply nested JSON can produce very large output; if that would happen the tool stops with an explanation, and Minify still works." },
+            { heading: "Local processing", text: "JSON is processed locally in this browser and is not uploaded for formatting or validation. The site still loads ordinary application assets and may use separately enabled site observability, which never receives your JSON." },
+        ],
+        relatedToolId: ["html-text-extractor", "slugify"],
+    },
 };
 
 export function getToolGuide(toolId: ToolId): ToolGuide | undefined {

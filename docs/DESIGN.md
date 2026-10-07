@@ -37,7 +37,7 @@ Themes define palette; components consume shared semantic visual roles. Category
 
 Light uses a dark navy header, clean white category-marked cards, a cool search surface, slate settings and preview, and mint completed output. Dark uses a deeper shell, cool slate panels, inset preview and restrained dark green results. One Dark uses its purple, blue, cyan, yellow, green and red families. Geometry, typography, spacing, navigation and processing remain theme-independent.
 
-Shared visual-role tokens are header-bg/text/muted; nav-hover-bg/active-bg/active-text; search-bg/border; card-bg/border/hover-bg; panel-bg/border; preview-bg/border; result-bg/border; secondary-action-bg/border; footer-bg. Inputs and danger-soft have shared role tokens. Category image/text/math/time/everyday/document colors and soft tints live in the canonical theme CSS, with no independent palette registry. Small category chips and card edges carry identity; broad saturated tiles are forbidden. Primary actions use accent/contrast, secondary actions use their own surface/border, and result/error states also retain headings, metrics and actionable messages.
+Shared visual-role tokens are header-bg/text/muted; nav-hover-bg/active-bg/active-text; search-bg/border; card-bg/border/hover-bg; panel-bg/border; preview-bg/border; result-bg/border; secondary-action-bg/border; footer-bg. Inputs and danger-soft have shared role tokens. Category image/text/math/time/everyday/document/developer colors and soft tints live in the canonical theme CSS, with no independent palette registry. Small category chips and card edges carry identity; broad saturated tiles are forbidden. Primary actions use accent/contrast, secondary actions use their own surface/border, and result/error states also retain headings, metrics and actionable messages.
 
 Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `global.css`. All text combinations target AA; focus retains its ring and contrast support. This component-color candidate remains approved for Delivery 1 by the user on 2026-10-03.
 
@@ -128,7 +128,7 @@ Before changing a design or styling contract, update this document and then appl
 
 ## Component-color review contract
 
-Five visual contexts cover four choices: system-light, system-dark, light, dark, onedark. Review the focused 17-image homepage/success/error matrix. Category mapping is image cyan, text indigo/One Dark blue, math violet/purple, time amber/yellow, everyday green, document rose/red. Secondary accents do not replace status meaning. Functional evidence does not grant visual approval.
+Five visual contexts cover four choices: system-light, system-dark, light, dark, onedark. Review the focused 17-image homepage/success/error matrix. Category mapping is image cyan, text indigo/One Dark blue, math violet/purple, time amber/yellow, everyday green, document rose/red, developer orange. Developer tokens: Light `--category-developer: #c2410c` / soft `#fff0e8`; Dark (system-dark and explicit) `#fb923c` / `#3b2418`; One Dark `#d19a66` / `#3a3027`, mapped through `[data-category="developer"]` like the other categories. Contrast references: Light ~5.18:1 on white and ~4.66:1 on its soft tint; Dark ~8.53:1 and ~6.39:1; One Dark ~6.25:1 and ~5.22:1. Secondary accents do not replace status meaning. Functional evidence does not grant visual approval.
 
 ## Peer islands and expressive material pilot
 

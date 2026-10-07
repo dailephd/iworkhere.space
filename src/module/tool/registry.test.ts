@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { getToolByCategory, getToolBySlug, tool_definition_list } from "./registry"
+import { tool_category_definition_list } from "./category"
 
 describe("registry invariants", () => {
     it("registers exactly the five implemented public document tools", () => {
@@ -32,7 +33,7 @@ describe("registry invariants", () => {
     })
 
     it("all tools have valid categories", () => {
-        const validCategories = ["document", "image", "text", "math", "time", "everyday"]
+        const validCategories: string[] = tool_category_definition_list.map(definition => definition.id)
         for (const tool of tool_definition_list) {
             expect(validCategories).toContain(tool.category)
         }
@@ -100,7 +101,7 @@ describe("registry invariants", () => {
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
         expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter", "heic-converter"])
-        expect(tool_definition_list).toHaveLength(15)
+        expect(tool_definition_list).toHaveLength(16)
     })
 
     it("registers Converter with its exact offline contract", () => {
@@ -112,6 +113,19 @@ describe("registry invariants", () => {
             statePolicy: { persist: "none", shareableQuery: false },
         })
         expect(getToolBySlug("image-converter")?.popularity).toBeUndefined()
+    })
+
+    it("registers JSON Formatter / Validator with its exact local offline developer contract", () => {
+        const tool = getToolBySlug("json-formatter")
+        expect(tool).toMatchObject({
+            id: "json-formatter", slug: "json-formatter", name: "JSON Formatter / Validator", category: "developer",
+            description: "Format, minify, and validate strict JSON locally in your browser.",
+            seo: { title: "JSON Formatter / Validator", description: "Format, minify, and validate strict JSON locally in your browser without uploading your data.", canonicalPath: "/tool/json-formatter" },
+            capability: ["client-only", "offline"], tag: ["json", "developer", "format", "validate", "minify", "utility"],
+            statePolicy: { persist: "none", shareableQuery: false },
+        })
+        expect(tool?.popularity).toBeUndefined()
+        expect(getToolByCategory("developer").map(entry => entry.id)).toEqual(["json-formatter"])
     })
 
     it("returns undefined for an unknown slug", () => {

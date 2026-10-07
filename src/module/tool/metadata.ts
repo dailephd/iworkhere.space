@@ -1,5 +1,6 @@
 import { tool_definition_list } from "./registry"
 import type { ToolDefinition, ToolCategory, ToolSeo, ToolId } from "./type"
+import { tool_category_definition_list } from "./category"
 
 export interface ToolBreadcrumb {
     label: string
@@ -37,11 +38,13 @@ export function getAllToolSeo(): ToolSeo[] {
 }
 
 export function getAvailableCategory(): ToolCategory[] {
-    const set = new Set<ToolCategory>()
+    const populated = new Set<ToolCategory>()
     for (const t of tool_definition_list) {
-        set.add(t.category)
+        populated.add(t.category)
     }
-    return Array.from(set)
+    return tool_category_definition_list
+        .map((definition) => definition.id)
+        .filter((id) => populated.has(id))
 }
 
 export function getToolCount(): number {

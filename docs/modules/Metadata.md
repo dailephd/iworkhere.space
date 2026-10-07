@@ -28,6 +28,10 @@ function getToolByTag(tag: string): ToolDefinition[]
 function getToolByPopularity(): ToolDefinition[]
 ```
 
+- `getAvailableCategory()` derives which categories occur in
+  `tool_definition_list`, then returns the canonical category ids from
+  `category.ts` that are populated, in canonical order. A canonical category
+  with no registered tool is omitted. It is not a category identity source.
 - Does not duplicate registry data — every function reads
   `tool_definition_list` from `registry.ts` at call time.
 - `getToolBySlug`/`getToolByCategory` are **not** exported here; they remain

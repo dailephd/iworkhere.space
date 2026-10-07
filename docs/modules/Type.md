@@ -24,6 +24,14 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 - Merge signals: single-file-unit
 
 <!-- section-id: notes -->
+## Contract (v0.4.0 Batch 1)
+
+`ToolCategory` is derived from the canonical category-definition list in
+`src/module/tool/category.ts` and re-exported from `type.ts` so existing
+`import type { ToolCategory } from "./type"` sites remain valid. `type.ts`
+holds no category id list. `ToolId`/`ToolSlug` remain plain strings.
+`ToolDefinition.category` is a `ToolCategory`.
+
 ## Notes
 
 This document was generated from the Milestone 12 merged-unit ingestion pass.
