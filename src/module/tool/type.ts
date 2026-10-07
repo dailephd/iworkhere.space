@@ -1,17 +1,12 @@
 import type React from "react";
+import type { ToolCategory } from "./category";
 
 /* ---- Core identifiers ---- */
 
 export type ToolId = string;
 export type ToolSlug = string;
 
-export type ToolCategory =
-    | "document"
-    | "image"
-    | "text"
-    | "math"
-    | "time"
-    | "everyday";
+export type { ToolCategory };
 
 /* ---- Capabilities ---- */
 

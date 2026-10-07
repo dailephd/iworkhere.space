@@ -90,5 +90,5 @@ test("PDF to image: initial SSR guide, metadata, registry discovery and sitemap"
     await expect(page.getByRole("region", { name: "Image tools", exact: true }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(0);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("pdf to"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
     await page.goto("/category/document"); const links = page.getByRole("main").locator('a[href^="/tool/"]'); await expect(links).toHaveCount(5); await expect(links).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(23); expect(xml.split("<loc>https://iworkhere.space/tool/pdf-to-image</loc>")).toHaveLength(2);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(25); expect(xml.split("<loc>https://iworkhere.space/tool/pdf-to-image</loc>")).toHaveLength(2);
 });

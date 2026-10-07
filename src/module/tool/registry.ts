@@ -14,6 +14,7 @@ import { SplitPdfTool } from "./document/SplitPdfTool";
 import { ImagesToPdfTool } from "./document/ImagesToPdfTool";
 import { PdfToImageTool } from "./document/PdfToImageTool";
 import { CompressPdfTool } from "./document/CompressPdfTool";
+import { JsonFormatterTool } from "./developer/JsonFormatterTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -241,6 +242,22 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["image", "converter", "heic", "heif", "jpg", "png"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: HeicConverterTool,
+    },
+    {
+        id: "json-formatter",
+        slug: "json-formatter",
+        name: "JSON Formatter / Validator",
+        description: "Format, minify, and validate strict JSON locally in your browser.",
+        category: "developer",
+        seo: {
+            title: "JSON Formatter / Validator",
+            description: "Format, minify, and validate strict JSON locally in your browser without uploading your data.",
+            canonicalPath: "/tool/json-formatter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["json", "developer", "format", "validate", "minify", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: JsonFormatterTool,
     },
 ];
 

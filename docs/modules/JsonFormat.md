@@ -55,6 +55,16 @@ engine `JSON.parse` wording. Invalid input yields no output.
 accepted; one more byte is rejected before scanning. String `.length` is never
 the limit. The limit constant is exported from this module.
 
+### Output-size guard
+
+Pretty-printing deeply nested input grows output quadratically with indentation
+(a 1 MiB input of nested `[` would otherwise need terabytes). Formatting
+therefore stops with the stable code `output-too-large` once the output would
+exceed 16,777,216 characters (`JSON_MAX_OUTPUT_LENGTH`), returning a normal
+error. Minify has no indentation and is unaffected, so valid deeply nested
+input can still be minified. This guard is an implementation safety bound, not
+a change to the accepted grammar.
+
 ### Privacy
 
 The module receives and returns text only. It performs no logging or telemetry.

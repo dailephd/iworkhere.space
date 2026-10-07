@@ -35,6 +35,16 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).not.toContain("Related image tools");
                 return;
             }
+            if (tool.category === "developer") {
+                expect(tool.id).toBe("json-formatter");
+                expect(guide).toBeDefined();
+                for (const text of ["Strict JSON", "RFC 8259", "Token-preserving formatting", "1 MiB", "not uploaded for formatting or validation"]) expect(html).toContain(text);
+                expect(related.map(item => item.id)).toEqual(["html-text-extractor", "slugify"]);
+                for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
+                expect(html).not.toContain("Related image tools");
+                expect(html).not.toContain("Related document tools");
+                return;
+            }
             if (tool.category !== "image") {
                 expect(guide).toBeUndefined();
                 expect(html).not.toContain("Supported images and limits");

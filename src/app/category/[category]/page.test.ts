@@ -8,7 +8,7 @@ vi.mock("next/link", () => ({
         createElement("a", { href, ...props }, children as never),
 }));
 
-import CategoryPage from "./page";
+import CategoryPage, { generateMetadata } from "./page";
 
 describe("category route", () => {
     it("renders Image Resizer through the existing image category", async () => {
@@ -34,5 +34,30 @@ describe("category route", () => {
         expect(html).toContain("Text &amp; Code Tool");
         expect(html).toContain('href="/tool/slugify"');
         expect(html).toContain('id="main-content"');
+    });
+    it("renders the developer category with the JSON Formatter / Validator", async () => {
+        const content = await CategoryPage({ params: Promise.resolve({ category: "developer" }) });
+        const html = renderToStaticMarkup(content);
+        expect(html).toContain("Developer Tool");
+        expect(html).toContain("Format, validate, transform, and inspect developer data.");
+        expect(html).toContain('href="/tool/json-formatter"');
+        expect(html).toContain("JSON Formatter / Validator");
+        expect(html).not.toContain("No tool available");
+    });
+    it("keeps the exact title of each pre-v0.4 category", async () => {
+        const titles = { document: "Document Tool", image: "Image &amp; Media Tool", text: "Text &amp; Code Tool", math: "Math &amp; Calculator Tool", time: "Time &amp; Date Tool", everyday: "Everyday Utility" };
+        for (const [category, title] of Object.entries(titles)) {
+            const html = renderToStaticMarkup(await CategoryPage({ params: Promise.resolve({ category }) }));
+            expect(html).toContain(`>${title}</h1>`);
+        }
+    });
+    it("calls notFound for an unknown category and returns no metadata for it", async () => {
+        await expect(CategoryPage({ params: Promise.resolve({ category: "unknown" }) })).rejects.toThrow();
+        expect(await generateMetadata({ params: Promise.resolve({ category: "unknown" }) })).toEqual({});
+    });
+    it("builds canonical metadata for developer from the category owner", async () => {
+        const metadata = await generateMetadata({ params: Promise.resolve({ category: "developer" }) });
+        expect(metadata.title).toBe("Developer Tool — iworkhere.space");
+        expect(metadata.description).toBe("Format, validate, transform, and inspect developer data.");
     });
 });

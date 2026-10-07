@@ -2,17 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getToolByCategory } from "@/module/tool/registry";
 import { buildCategoryMetadata } from "@/lib/seo";
-import type { ToolCategory } from "@/module/tool/type";
+import { getToolCategoryDefinition, isToolCategory } from "@/module/tool/category";
 import Link from "next/link";
-
-const VALID_CATEGORY: ToolCategory[] = [
-    "document",
-    "image",
-    "text",
-    "math",
-    "time",
-    "everyday",
-];
 
 interface CategoryPageProp {
     params: Promise<{ category: string }>;
@@ -20,29 +11,26 @@ interface CategoryPageProp {
 
 export async function generateMetadata({ params }: CategoryPageProp): Promise<Metadata> {
     const { category } = await params;
-    if (!VALID_CATEGORY.includes(category as ToolCategory)) return {};
-    return buildCategoryMetadata(
-        category,
-        formatCategoryTitle(category as ToolCategory),
-        categoryDescription(category as ToolCategory),
-    );
+    if (!isToolCategory(category)) return {};
+    const definition = getToolCategoryDefinition(category);
+    return buildCategoryMetadata(category, definition.title, definition.description);
 }
 
 export default async function CategoryPage({ params }: CategoryPageProp) {
     const { category } = await params;
-    const typed = category as ToolCategory;
 
-    if (!VALID_CATEGORY.includes(typed)) {
+    if (!isToolCategory(category)) {
         return notFound();
     }
 
-    const toolList = getToolByCategory(typed);
+    const definition = getToolCategoryDefinition(category);
+    const toolList = getToolByCategory(category);
 
     return (
         <div className="space-y-6">
             <div className="space-y-2">
-                <h1 className="text-2xl font-semibold tracking-tight">{formatCategoryTitle(typed)}</h1>
-                <p>{categoryDescription(typed)}</p>
+                <h1 className="text-2xl font-semibold tracking-tight">{definition.title}</h1>
+                <p>{definition.description}</p>
             </div>
 
             {toolList.length === 0 ? (
@@ -61,44 +49,4 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
             )}
         </div>
     );
-}
-
-/* ---------- helpers ---------- */
-
-function formatCategoryTitle(category: ToolCategory): string {
-    switch (category) {
-        case "document":
-            return "Document Tool";
-        case "image":
-            return "Image & Media Tool";
-        case "text":
-            return "Text & Code Tool";
-        case "math":
-            return "Math & Calculator Tool";
-        case "time":
-            return "Time & Date Tool";
-        case "everyday":
-            return "Everyday Utility";
-        default:
-            return category;
-    }
-}
-
-function categoryDescription(category: ToolCategory): string {
-    switch (category) {
-        case "document":
-            return "Tool for working with PDFs and documents.";
-        case "image":
-            return "Convert, resize, and optimize image.";
-        case "text":
-            return "Format, transform, and analyze text and code.";
-        case "math":
-            return "Calculator and numerical utility.";
-        case "time":
-            return "Timezone, date, and calendar tool.";
-        case "everyday":
-            return "Simple utility for daily task.";
-        default:
-            return "";
-    }
 }

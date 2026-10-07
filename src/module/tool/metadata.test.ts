@@ -106,6 +106,10 @@ describe("tool metadata index", () => {
             }
         })
 
+        it("returns populated categories in canonical order", () => {
+            expect(getAvailableCategory()).toEqual(["document", "text", "math", "everyday", "time", "image", "developer"])
+        })
+
         it("does not include categories absent from registry", () => {
             const result = getAvailableCategory()
             const registryCategory = new Set(
