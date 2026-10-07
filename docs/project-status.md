@@ -135,15 +135,33 @@ See
 
 NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
+## v0.4.0 planning freeze — 2026-10-07
+
+PRE_V0_4_INDEXING_CHECKPOINT: COMPLETE
+
+WWW_TO_APEX_DEPLOYMENT_VERIFICATION: PASS
+
+V0_4_PLANNING: FROZEN
+
 V0_4_IMPLEMENTATION: NOT_STARTED
 
-NEXT_ACTION: perform fresh my-dev-kit retrieval against the current repository,
-resolve the remaining v0.4 category decision, freeze
-`docs/plans/v0.4.0-implementation-plan.md`, and issue bounded implementation
-prompts according to the standard version workflow. Google recrawl/indexing
-monitoring continues in parallel and Bing Webmaster submission remains
-operational follow-up; neither blocks v0.4 unless it reveals a real canonical
-production defect.
+PACKAGE_VERSION: 0.3.1
+
+PLANNING_BASE_COMMIT: 8b72983ea0ff8f5c25a222ae1a6a767c529d078a
+
+PLANNING_BRANCH: planning/v0.4.0
+
+IMPLEMENTATION_PLAN: [docs/plans/v0.4.0-implementation-plan.md](plans/v0.4.0-implementation-plan.md)
+
+Frozen decisions: `developer` is a canonical `ToolCategory` with one canonical
+runtime category-definition owner; JSON Formatter / Validator → `developer`,
+Word / Character Counter → `text`, QR Code Generator → `everyday`; exactly three
+`DIRECT_IMPLEMENTATION` batches (1: category + JSON, 2: counter, 3: QR). No v0.4
+source, dependency, registry or category change exists yet. Google recrawl and
+index inclusion continue in parallel and are not claimed complete.
+
+NEXT_ACTION: Planner review and preparation of the bounded v0.4 Batch 1
+implementation prompt.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 

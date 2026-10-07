@@ -155,6 +155,19 @@ and DEPLOYMENT.md. v0.3.1 does not replace the existing analytics facade/Neon
 observability and does not authorize Speed Insights or custom events. v0.4.0
 catalog scope remains separate and future.
 
+### plans/v0.4.0-implementation-plan.md
+
+**Summary:** Frozen v0.4.0 implementation plan (implementation not started).
+Defines the canonical `developer` category owner, category assignments, the
+frozen JSON Formatter / Validator, Word / Character Counter and QR Code
+Generator contracts, the QR dependency decision, the three-batch structure,
+affected specification owners, test responsibilities and stop conditions.
+**When to read:** Before preparing or running any v0.4.0 implementation batch or
+changing the category model.
+**Relations:** ROADMAP.md, project-status.md, architecture.md, DESIGN.md and
+reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md. v0.5.0 and v0.6.0 scope are
+unchanged.
+
 ### reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md
 
 **Summary:** Complete five-tool v0.3 implementation, exact implementation SHA,
