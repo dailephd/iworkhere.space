@@ -13,16 +13,16 @@ test("home loads with one main landmark", async ({ page }) => {
     for (const slug of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) {
         await expect(imageSection.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     }
-    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(16);
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(17);
     await expect(page.getByRole("main").getByRole("link", { name: /Image Resizer/ })).toHaveAttribute("href", "/tool/image-resizer");
 });
 
-test("discover exposes all sixteen registered tools and reachable routes", async ({ page }) => {
+test("discover exposes all seventeen registered tools and reachable routes", async ({ page }) => {
     expect((await page.goto("/discover"))?.status()).toBe(200);
     const catalog = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(catalog).toHaveCount(16);
+    await expect(catalog).toHaveCount(17);
     const reached = new Set<string>();
-    for (let index = 0; index < 16; index += 1) {
+    for (let index = 0; index < 17; index += 1) {
         if (index > 0) await page.goto("/discover");
         await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
         await catalog.nth(index).click();
@@ -32,7 +32,7 @@ test("discover exposes all sixteen registered tools and reachable routes", async
     }
     expect([...reached].sort()).toEqual([
         "/tool/calculator", "/tool/compress-pdf", "/tool/heic-converter", "/tool/html-text-extractor", "/tool/image-compressor", "/tool/image-converter", "/tool/image-resizer",
-        "/tool/images-to-pdf", "/tool/json-formatter", "/tool/length-converter", "/tool/merge-pdf", "/tool/pdf-to-image", "/tool/slugify", "/tool/split-pdf", "/tool/time-arithmetic", "/tool/weight-converter",
+        "/tool/images-to-pdf", "/tool/json-formatter", "/tool/length-converter", "/tool/merge-pdf", "/tool/pdf-to-image", "/tool/slugify", "/tool/split-pdf", "/tool/time-arithmetic", "/tool/weight-converter", "/tool/word-character-counter",
     ]);
 });
 
@@ -46,13 +46,14 @@ test("shared search filters registered tags and destinations remain links", asyn
     await expect(results).toHaveText(/HEIC → JPG \/ PNG Converter/);
 });
 
-test("text category preserves its two known text tools", async ({ page }) => {
+test("text category lists its three registered text tools", async ({ page }) => {
     expect((await page.goto("/category/text"))?.status()).toBe(200);
     await expect(page.getByRole("heading", { name: "Text & Code Tool", exact: true })).toBeVisible();
     const main = page.getByRole("main");
-    await expect(main.locator('a[href^="/tool/"]')).toHaveCount(2);
+    await expect(main.locator('a[href^="/tool/"]')).toHaveCount(3);
     await expect(main.locator('a[href="/tool/slugify"]')).toContainText("Slugify Text");
     await expect(main.locator('a[href="/tool/html-text-extractor"]')).toContainText("HTML Text Extractor");
+    await expect(main.locator('a[href="/tool/word-character-counter"]')).toContainText("Word / Character Counter");
 });
 
 test("calculator evaluates a deterministic expression", async ({ page }) => {

@@ -152,7 +152,7 @@ try {
   const sitemap = await fetch(`${baseUrl}/sitemap.xml`);
   if (!sitemap.ok) throw new Error("Container sitemap is unavailable.");
   const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
-  if (publicRoutes.length !== 25 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
+  if (publicRoutes.length !== 26 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
   const routes = [...publicRoutes, "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {

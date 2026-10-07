@@ -114,6 +114,16 @@ const guideById: Partial<Record<ToolId, ToolGuide>> = {
         ],
         relatedToolId: ["html-text-extractor", "slugify"],
     },
+    "word-character-counter": {
+        instruction: ["Enter or paste text into the Text box.", "Review the four live counts: Words, Characters, Characters excluding whitespace and Lines.", "Edit the text as needed; the counts update as you type.", "Select Reset to clear the text and return every count to zero."],
+        section: [
+            { heading: "Word counting", text: "A word is a run of Unicode letters and numbers. Combining marks stay with the run they follow, and a single straight (') or curly (’) apostrophe between two runs joins them, so don't and don’t are one word. Punctuation around a word is not counted. Hyphens, underscores and slashes separate words, so well-known counts as two words. The rule does not depend on the language or locale, and a continuous run of Chinese, Japanese or Korean characters counts as one word." },
+            { heading: "Character counting", text: "Characters are Unicode grapheme clusters, the units a reader sees as one character. An accented letter written with a combining accent, an emoji with a skin tone, an emoji sequence joined by zero-width joiners and a flag each count once. This needs the browser's built-in Intl.Segmenter support; without it the tool says so instead of showing an approximate count." },
+            { heading: "Whitespace and lines", text: "Characters excluding whitespace removes characters with the Unicode White_Space property, including spaces, tabs, line breaks, non-breaking spaces and ideographic spaces. A zero-width space (U+200B) is not White_Space and is counted. Lines are separated by CRLF, CR or LF only: empty text has zero lines, any other text has one more line than it has separators, so a trailing line break starts another line. Unicode NEL, line separator and paragraph separator characters do not start a new line." },
+            { heading: "Limits and local processing", text: "Text is limited to 1 MiB of UTF-8; larger text is not counted and is not truncated. Counting happens locally in this browser. Your text is not uploaded, saved or placed in the page address. The site still loads ordinary application assets and may use separately enabled site observability, which never receives your text." },
+        ],
+        relatedToolId: ["slugify", "html-text-extractor"],
+    },
 };
 
 export function getToolGuide(toolId: ToolId): ToolGuide | undefined {
