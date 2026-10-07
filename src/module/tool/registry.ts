@@ -16,6 +16,7 @@ import { PdfToImageTool } from "./document/PdfToImageTool";
 import { CompressPdfTool } from "./document/CompressPdfTool";
 import { JsonFormatterTool } from "./developer/JsonFormatterTool";
 import { WordCharacterCounterTool } from "./text/WordCharacterCounterTool";
+import { QrCodeGeneratorTool } from "./everyday/QrCodeGeneratorTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -275,6 +276,22 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["text", "word", "character", "counter", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: WordCharacterCounterTool,
+    },
+    {
+        id: "qr-code-generator",
+        slug: "qr-code-generator",
+        name: "QR Code Generator",
+        description: "Generate a QR code from text or a URL locally in your browser.",
+        category: "everyday",
+        seo: {
+            title: "QR Code Generator",
+            description: "Generate a QR code from text or a URL locally in your browser and download it as a PNG.",
+            canonicalPath: "/tool/qr-code-generator",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["qr", "code", "generator", "url", "everyday", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: QrCodeGeneratorTool,
     },
 ];
 

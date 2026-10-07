@@ -80,7 +80,7 @@ test("text category, discovery search, home and sitemap include the counter and 
     await expect(page).toHaveURL(/\/tool\/word-character-counter$/);
 
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(26);
+    expect(xml.match(/<loc>/g)).toHaveLength(27);
     expect(xml.split("<loc>https://iworkhere.space/tool/word-character-counter</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/category/text</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/category/developer</loc>")).toHaveLength(2);

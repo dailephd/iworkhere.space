@@ -89,7 +89,7 @@ test("developer category, discovery search, home chip and sitemap include JSON F
     await expect(page.locator('a[data-category="developer"][href="/category/developer"]')).toHaveCount(1);
 
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(26);
+    expect(xml.match(/<loc>/g)).toHaveLength(27);
     for (const route of ["/tool/json-formatter", "/category/developer"]) expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);
     expect((await request.get("/category/unknown")).status()).toBe(404);
