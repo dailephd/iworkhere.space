@@ -18,6 +18,12 @@ export function ToolPageTemplate({
                                      guide,
                                      relatedTool,
                                  }: ToolPageTemplateProp) {
+    const relatedCategory =
+        relatedTool.length > 0 && relatedTool.every((related) => related.category === relatedTool[0].category)
+            ? relatedTool[0].category
+            : undefined;
+    const relatedHeading = relatedCategory ? `Related ${relatedCategory} tools` : "Related tools";
+
     return (
         <section className="min-w-0 space-y-6">
             <header className="space-y-2">
@@ -43,7 +49,7 @@ export function ToolPageTemplate({
                     <p className="text-text-muted">{section.text}</p>
                 </section>)}
                 <section className="space-y-2">
-                    <h2 className="text-xl font-semibold">{`Related ${tool.category} tools`}</h2>
+                    <h2 className="text-xl font-semibold">{relatedHeading}</h2>
                     <ul className="flex flex-wrap gap-3">{relatedTool.map(related => <li key={related.id}>
                         <a href={related.seo.canonicalPath} className="inline-block rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 underline underline-offset-4">{related.name}</a>
                     </li>)}</ul>

@@ -100,3 +100,59 @@ describe("server guide and breadcrumb composition", () => {
         }
     });
 });
+
+describe("related-tools heading truthfulness", () => {
+    function renderGuided(toolId: string, relatedId?: string[]) {
+        const tool = getAllTool().find(entry => entry.id === toolId)!;
+        const guide = getToolGuide(tool.id)!;
+        const related = getToolByIdList(relatedId ?? guide.relatedToolId);
+        const html = renderToStaticMarkup(<ToolPageTemplate tool={tool} toolUi={<div>Interactive workspace</div>} breadcrumb={getToolBreadcrumb(tool)} guide={guide} relatedTool={related} />);
+        return { html, related, heading: html.match(/<h2[^>]*>(Related[^<]*)<\/h2>/)?.[1] };
+    }
+
+    it("labels every guided tool's related set by the related tools' own categories", () => {
+        const guided = getAllTool().filter(tool => getToolGuide(tool.id));
+        expect(guided.length).toBeGreaterThanOrEqual(12);
+        for (const tool of guided) {
+            const { related, heading } = renderGuided(tool.id);
+            const categories = [...new Set(related.map(entry => entry.category))];
+            expect(related.length, tool.id).toBeGreaterThan(0);
+            if (categories.length === 1) {
+                expect(heading, tool.id).toBe(`Related ${categories[0]} tools`);
+            } else {
+                expect(heading, tool.id).toBe("Related tools");
+            }
+        }
+    });
+
+    it("says Related text tools on the JSON Formatter page, not Related developer tools", () => {
+        const tool = getAllTool().find(entry => entry.id === "json-formatter")!;
+        const { html, related, heading } = renderGuided("json-formatter");
+        expect(tool.category).toBe("developer");
+        expect(related.map(entry => entry.id)).toEqual(["html-text-extractor", "slugify"]);
+        expect(related.map(entry => entry.category)).toEqual(["text", "text"]);
+        expect(heading).toBe("Related text tools");
+        expect(html).not.toContain("Related developer tools");
+        for (const entry of related) expect(html).toContain(`href="${entry.seo.canonicalPath}"`);
+    });
+
+    it("keeps the existing correct headings", () => {
+        expect(renderGuided("word-character-counter").heading).toBe("Related text tools");
+        expect(renderGuided("qr-code-generator").heading).toBe("Related everyday tools");
+        for (const id of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) expect(renderGuided(id).heading, id).toBe("Related image tools");
+        for (const id of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image", "compress-pdf"]) expect(renderGuided(id).heading, id).toBe("Related document tools");
+    });
+
+    it("uses the neutral heading for a mixed-category related set without naming either category", () => {
+        const { html, related, heading } = renderGuided("json-formatter", ["slugify", "json-formatter"]);
+        expect(related.map(entry => entry.category)).toEqual(["text", "developer"]);
+        expect(heading).toBe("Related tools");
+        expect(html).not.toContain("Related text tools");
+        expect(html).not.toContain("Related developer tools");
+    });
+
+    it("uses the neutral heading when a guide has no resolvable related tools", () => {
+        const { heading } = renderGuided("json-formatter", []);
+        expect(heading).toBe("Related tools");
+    });
+});
