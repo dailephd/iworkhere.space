@@ -313,8 +313,8 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
 ### Current tools
 
-The feature-branch registry contains 15 tools across six populated categories;
-the public sitemap derives 23 URLs. v0.3 document tools are implemented and
+The feature-branch registry contains 16 tools across seven populated categories
+(v0.4.0 Batch 1 adds the `developer` category); the public sitemap derives 25 URLs. v0.3 document tools are implemented and
 unreleased; this list is not production deployment evidence.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
@@ -326,6 +326,9 @@ unreleased; this list is not production deployment evidence.
 - **Image Compressor** (`image/ImageCompressorTool.tsx`) — truthful byte reduction
 - **JPG / PNG / WebP Converter** (`image/ImageConverterTool.tsx`) — local encoding
 - **HEIC → JPG / PNG Converter** (`image/HeicConverterTool.tsx`) — isolated decoder
+- **JSON Formatter / Validator** (`developer/JsonFormatterTool.tsx`) — strict,
+  token-preserving local JSON format/minify/validate (`developer/jsonFormat.ts`
+  holds the pure iterative scanner/emitter)
 - **Slugify Text** (`text/SlugifyTool.tsx`) — Convert text into URL-safe slugs
 - **HTML Text Extractor** (`text/HtmlTextExtractorTool.tsx`) — Extract visible
   text from HTML with preserved line breaks
