@@ -511,3 +511,9 @@ version plan remains historical process debt; no retrospective plan was authored
 - [JsonFormat contract](modules/JsonFormat.md): strict, token-preserving, iterative JSON scanner/emitter and error contract.
 - [JsonFormatterTool](components/JsonFormatterTool.md): JSON Formatter / Validator UI, interaction and privacy contract.
 - [v0.4.0 Batch 1 implementation report](reports/V0_4_BATCH_1_IMPLEMENTATION_REPORT.md): Batch 1 evidence (created at batch completion).
+
+## v0.4.0 Batch 2 specifications
+
+- [TextMetric contract](modules/TextMetric.md): pure four-metric counting rules, `Intl.Segmenter` handling and the 1 MiB limit.
+- [WordCharacterCounterTool](components/WordCharacterCounterTool.md): Word / Character Counter UI, behavior, telemetry and privacy contract.
+- [v0.4.0 Batch 2 implementation report](reports/V0_4_BATCH_2_IMPLEMENTATION_REPORT.md): Batch 2 evidence (created at batch completion).
