@@ -21,6 +21,35 @@ Only the dashboard project enables Vercel Authentication → All Deployments.
 The public site remains anonymously reachable. The dashboard has no public
 navigation or sitemap registration and includes noindex/nofollow metadata; these
 do not replace external deployment protection. No application auth is added.
+
+### Public canonical-host policy
+
+The canonical public origin is `https://iworkhere.space`. Application
+canonical metadata, robots sitemap declaration, and generated sitemap URLs must
+use that HTTPS apex host.
+
+Host normalization belongs to Vercel/custom-domain configuration:
+
+- `http://iworkhere.space/*` → `https://iworkhere.space/*`;
+- `http://www.iworkhere.space/*` → `https://iworkhere.space/*`;
+- `https://www.iworkhere.space/*` → `https://iworkhere.space/*`.
+
+Use permanent redirects with the shortest practical chain. Next.js may continue
+to normalize trailing-slash route variants to the canonical non-trailing-slash
+route. Redirecting HTTP, `www`, or trailing-slash variants are not sitemap
+targets and are not expected to be indexed separately.
+
+Do not duplicate the host redirect in application middleware or
+`next.config.ts` when Vercel already owns the canonical-domain redirect.
+Before the v0.4.0 implementation plan is frozen, verify the current Vercel
+custom-domain state because Google retains historical `www` indexing evidence.
+If the deployed domain configuration differs from this contract, correct the
+deployment/domain layer first. Search Console recrawl/index inclusion is
+monitored separately and does not justify changing correct canonical behavior.
+
+See
+[the pre-v0.4 indexing checkpoint report](reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md).
+
 Follow [exact later setup](../dashboard/DEPLOYMENT.md), including
 Marketplace → Neon, writer/read-only credentials, explicit migration,
 production environment variables, daily public-project cron and mandatory
