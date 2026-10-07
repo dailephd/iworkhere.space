@@ -45,6 +45,16 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).not.toContain("Related document tools");
                 return;
             }
+            if (tool.id === "word-character-counter") {
+                expect(tool.category).toBe("text");
+                expect(guide).toBeDefined();
+                for (const text of ["Word counting", "Character counting", "Whitespace and lines", "Limits and local processing", "grapheme clusters", "Intl.Segmenter", "White_Space", "U+200B", "CRLF, CR or LF", "1 MiB", "not uploaded, saved or placed in the page address"]) expect(html).toContain(text);
+                expect(related.map(item => item.id)).toEqual(["slugify", "html-text-extractor"]);
+                expect(related.every(item => item.category === "text")).toBe(true);
+                for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
+                expect(html).toContain("Related text tools");
+                return;
+            }
             if (tool.category !== "image") {
                 expect(guide).toBeUndefined();
                 expect(html).not.toContain("Supported images and limits");

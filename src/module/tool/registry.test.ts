@@ -101,7 +101,7 @@ describe("registry invariants", () => {
             seo: { title: "Image Compressor", canonicalPath: "/tool/image-compressor", description: "Compress JPEG, PNG, and WebP images locally in your browser." },
             capability: ["client-only", "offline"], tag: ["image", "compress", "utility"], statePolicy: { persist: "none", shareableQuery: false } })
         expect(getToolByCategory("image").map(entry => entry.slug)).toEqual(["image-resizer", "image-compressor", "image-converter", "heic-converter"])
-        expect(tool_definition_list).toHaveLength(16)
+        expect(tool_definition_list).toHaveLength(17)
     })
 
     it("registers Converter with its exact offline contract", () => {
@@ -126,6 +126,19 @@ describe("registry invariants", () => {
         })
         expect(tool?.popularity).toBeUndefined()
         expect(getToolByCategory("developer").map(entry => entry.id)).toEqual(["json-formatter"])
+    })
+
+    it("registers Word / Character Counter with its exact local offline text contract", () => {
+        const tool = getToolBySlug("word-character-counter")
+        expect(tool).toMatchObject({
+            id: "word-character-counter", slug: "word-character-counter", name: "Word / Character Counter", category: "text",
+            description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.",
+            seo: { title: "Word / Character Counter", description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.", canonicalPath: "/tool/word-character-counter" },
+            capability: ["client-only", "offline"], tag: ["text", "word", "character", "counter", "utility"],
+            statePolicy: { persist: "none", shareableQuery: false },
+        })
+        expect(tool?.popularity).toBeUndefined()
+        expect(getToolByCategory("text").map(entry => entry.id)).toEqual(["slugify", "html-text-extractor", "word-character-counter"])
     })
 
     it("returns undefined for an unknown slug", () => {

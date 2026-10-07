@@ -15,6 +15,7 @@ import { ImagesToPdfTool } from "./document/ImagesToPdfTool";
 import { PdfToImageTool } from "./document/PdfToImageTool";
 import { CompressPdfTool } from "./document/CompressPdfTool";
 import { JsonFormatterTool } from "./developer/JsonFormatterTool";
+import { WordCharacterCounterTool } from "./text/WordCharacterCounterTool";
 
 export const tool_definition_list: ToolDefinition[] = [
     {
@@ -258,6 +259,22 @@ export const tool_definition_list: ToolDefinition[] = [
         tag: ["json", "developer", "format", "validate", "minify", "utility"],
         statePolicy: { persist: "none", shareableQuery: false },
         Component: JsonFormatterTool,
+    },
+    {
+        id: "word-character-counter",
+        slug: "word-character-counter",
+        name: "Word / Character Counter",
+        description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.",
+        category: "text",
+        seo: {
+            title: "Word / Character Counter",
+            description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.",
+            canonicalPath: "/tool/word-character-counter",
+        },
+        capability: ["client-only", "offline"],
+        tag: ["text", "word", "character", "counter", "utility"],
+        statePolicy: { persist: "none", shareableQuery: false },
+        Component: WordCharacterCounterTool,
     },
 ];
 
