@@ -436,6 +436,11 @@ At completion of v0.4.0, all Priority A utilities are implemented.
 Requires:
 
 - stable tool/catalog contracts from earlier releases;
+- completion of the bounded pre-v0.4 canonical-host configuration check:
+  verify that Vercel permanently redirects `www.iworkhere.space` to the
+  canonical HTTPS apex host without adding a parallel application redirect
+  layer; Google recrawl/index inclusion continues as measurement and does not
+  block v0.4 unless it reveals a real canonical production defect;
 - a resolved category decision for developer-oriented utilities before the v0.4.0 implementation plan is frozen.
 
 ### Constraints
@@ -624,7 +629,22 @@ Measure production bundle/dependency impact when image/PDF/developer tools intro
 
 Existing per-tool/category metadata is a foundation, not evidence that discovery is complete. The 2026-10-01 repository review identified script-button catalog navigation, an inactive header search field, minimal tool-page presentation, and no sitemap/robots implementation in the inspected app/public listings.
 
-Basic crawlable links, useful image-tool landing-page text, metadata consistency, and sitemap/crawler policy are now planned alongside the near-term visual pilot. They must not wait solely for the catalog to reach thirty tools. See [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md) for the source evidence, research, bounded delivery sequence, and measurement limits.
+The bounded discovery work subsequently added crawlable links, server-rendered
+guide content, metadata/canonical consistency, and a registry-derived
+sitemap/robots policy. After the v0.3 document family, the live sitemap contains
+23 canonical HTTPS apex URLs. A 2026-10-07 Search Console redirect notice was
+investigated: the known redirected variants are intentional HTTP/HTTPS and
+trailing-slash normalization, while all 23 current sitemap URLs passed a live
+direct-200, indexable, self-canonical audit. The current sitemap was re-submitted
+to Google for re-download. The remaining pre-v0.4 infrastructure check is to
+verify the Vercel `www` → apex redirect because Google retains historical
+`www` crawl/index evidence. Search-engine recrawl and index inclusion remain
+measurement, not a product-version gate unless they expose an actual canonical
+production defect.
+
+See [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md) and
+the [pre-v0.4 indexing checkpoint report](reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md)
+for the bounded operational evidence and remaining follow-up.
 
 This changes the priority of a bounded discovery subset, not the catalog version sequence. Broader ranking/recommendation systems, new analytics vendors, and server-backed search remain deferred. Neither search eligibility nor modern styling guarantees rankings, traffic, or LLM citations.
 
@@ -632,17 +652,21 @@ This changes the priority of a bounded discovery subset, not the catalog version
 
 Status: Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
 validated, merged, and publicly deployed. Delivery 3 technical launch is
-complete; manual Google Search Console and Bing Webmaster submissions and a
-later measurement review remain operational follow-up.
+complete. Google Search Console now has the production sitemap submitted and
+re-submitted after the catalog expanded to 23 canonical URLs; canonical recrawl
+and indexing remain under observation. Bing Webmaster submission and the later
+measurement review remain operational follow-up.
 
 Goal: make the existing tools more useful and visually distinct before expanding the amount of redesign work. Start with the homepage and Image Resizer, proposing compact top navigation and a settings-plus-preview workspace rather than repeating the existing permanent-sidebar composition. Preserve the registry, routes, themes, local-processing/privacy contracts, and existing banner decisions unless explicitly revised.
 
 Delivery 2 extends the accepted pattern across the other three image tools and
 adds the bounded search foundation above. Its public production technical
-launch completed on 2026-10-04. Webmaster-console submissions await owner
-account access; measurement is future evidence collection, and owned-site
-distribution remains a separate optional task. The owner approved the HEIC
-production-license gate for v0.2.0.
+launch completed on 2026-10-04. Google Search Console sitemap submission has
+since been completed and the current 23-URL sitemap was re-submitted on
+2026-10-07 after redirect/canonical verification. Bing Webmaster submission
+remains operational follow-up; measurement is future evidence collection, and
+owned-site distribution remains a separate optional task. The owner approved
+the HEIC production-license gate for v0.2.0.
 
 The [detailed plan](plans/ui-discovery-growth-plan.md) owns this enhancement's delivery boundaries. It is not a retroactive v0.2 implementation plan or a new numbered catalog version. No new utility, bulk processing, target-size compression, generic file framework, large content program, or AI-specific integration is added to the first delivery.
 
