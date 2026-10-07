@@ -3,16 +3,23 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The current v0.3.1 release adds production Vercel Web Analytics automatic
-page-view traffic alongside the browser-local PDF and document tools:
-PDF to JPG/PNG, Images to PDF, Merge PDF, Split PDF, and lossless structural
-Compress PDF. The root package version is `0.3.1`; the independently deployed
-dashboard remains at `0.1.0`. The root registry contains 15 tools across six
-populated categories, including four image tools and five document tools; the
-registry-derived sitemap contains 23 URLs. Web Analytics is enabled only for the
-public Production deployment, with query/hash redaction and no Vercel custom
-events; the existing application observability system remains separate. See
-[deployment documentation](docs/DEPLOYMENT.md).
+**Released state.** The current formally released and publicly deployed version
+is v0.3.1, which adds production Vercel Web Analytics automatic page-view traffic
+alongside the browser-local PDF and document tools: PDF to JPG/PNG, Images to
+PDF, Merge PDF, Split PDF, and lossless structural Compress PDF. Web Analytics is
+enabled only for the public Production deployment, with query/hash redaction and
+no Vercel custom events; the existing application observability system remains
+separate. See [deployment documentation](docs/DEPLOYMENT.md).
+
+**Repository candidate state.** `master` also contains the unreleased v0.4.0
+implementation candidate (Core Text, Data & Sharing Utilities). It adds the
+canonical `developer` category, the JSON Formatter / Validator, the Word /
+Character Counter and the QR Code Generator, bringing the registry to 18 tools
+across seven populated categories, with a registry-derived sitemap of 27 URLs.
+The root package version remains `0.3.1` (the independently deployed dashboard
+remains at `0.1.0`); v0.4.0 has not been released or deployed, and pre-release
+readiness is a separate pending stage. See
+[the v0.4 reconciliation report](docs/reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
 ## Getting Started
 

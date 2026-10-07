@@ -135,7 +135,53 @@ See
 
 NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
-## v0.4.0 planning freeze — 2026-10-07
+## v0.4.0 implementation candidate — 2026-10-07
+
+TARGET_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
+
+PACKAGE_VERSION: 0.3.1
+
+CURRENT_RELEASED_VERSION: v0.3.1
+
+V0_4_PLANNING: FROZEN
+
+V0_4_IMPLEMENTATION: COMPLETE
+
+V0_4_DOCUMENTATION_RECONCILIATION: COMPLETE
+
+V0_4_PRE_RELEASE_READINESS: NOT_STARTED
+
+V0_4_RELEASE_PREPARATION: NOT_STARTED
+
+V0_4_RELEASED: NO
+
+Implementation lineage on `master`: Batch 1 (canonical `developer` category +
+JSON Formatter / Validator) merged at `59318b5f7b142a8154fead3153674a6c35eca4f2`
+(PR #15); Batch 2 (Word / Character Counter) merged at
+`d6cd802724bd6fbacc5ffc021cde4f49d52108c3` (PR #16); Batch 3 (QR Code Generator)
+merged at `519bedf072be17593c371bfd7242713bdae93b95` (PR #17); a bounded
+related-tool-heading correction found by the completeness audit merged at
+`6601e119b67715f0ec5e34b86298136b7429572a` (PR #18).
+
+Candidate catalog: 18 tools, 7 populated categories, 27 registry-derived sitemap
+URLs. The deployed production catalog is still v0.3.1 (23 URLs); nothing in this
+record is deployment evidence.
+
+Reports:
+[Batch 1](reports/V0_4_BATCH_1_IMPLEMENTATION_REPORT.md),
+[Batch 2](reports/V0_4_BATCH_2_IMPLEMENTATION_REPORT.md),
+[Batch 3](reports/V0_4_BATCH_3_IMPLEMENTATION_REPORT.md),
+[related-tool label correction](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md),
+[completeness and reconciliation](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
+
+NEXT_ACTION: Run the separate standardized v0.4.0 pre-release readiness workflow.
+
+## Historical v0.4.0 planning freeze — 2026-10-07
+
+The following planning snapshot is preserved unchanged; the implementation
+candidate record above supersedes its not-started status and Batch 1 next action.
+
+### v0.4.0 planning freeze — 2026-10-07
 
 PRE_V0_4_INDEXING_CHECKPOINT: COMPLETE
 

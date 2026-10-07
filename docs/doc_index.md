@@ -157,7 +157,7 @@ catalog scope remains separate and future.
 
 ### plans/v0.4.0-implementation-plan.md
 
-**Summary:** Frozen v0.4.0 implementation plan (implementation not started).
+**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation is now complete, documentation reconciled and pre-release readiness pending).
 Defines the canonical `developer` category owner, category assignments, the
 frozen JSON Formatter / Validator, Word / Character Counter and QR Code
 Generator contracts, the QR dependency decision, the three-batch structure,
@@ -501,7 +501,7 @@ version plan remains historical process debt; no retrospective plan was authored
 
 ## Delivery 2 guide and crawl evidence
 
-- [Guide contract](modules/Guide.md): server-consumed image operation content and related-ID ownership.
+- [Guide contract](modules/Guide.md): server-consumed guide content for image, document and v0.4 tools, and related-ID ownership.
 - [Delivery 2 implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md): bounded image rollout, crawl foundation, validation and limitations (created by this delivery).
 - [Delivery 2 launch report](reports/UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md): merge, exact-SHA CI, production technical checks, webmaster action status, and measurement follow-up.
 
@@ -524,3 +524,4 @@ version plan remains historical process debt; no retrospective plan was authored
 - [QrCodeGeneratorTool](components/QrCodeGeneratorTool.md): QR Code Generator UI, PNG/object-URL lifecycle, stale-result safety, telemetry and privacy contract.
 - [v0.4.0 Batch 3 implementation report](reports/V0_4_BATCH_3_IMPLEMENTATION_REPORT.md): Batch 3 evidence (created at batch completion).
 - [v0.4.0 related-tool label correction report](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md): completeness-audit correction making the related-tools heading reflect the related tools' categories.
+- [v0.4.0 implementation-completeness and reconciliation report](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md): final audit of the assembled v0.4 candidate against the frozen plan and the documentation reconciliation (implementation complete, documentation reconciled, pre-release readiness pending).

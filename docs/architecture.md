@@ -313,9 +313,11 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
 ### Current tools
 
-The feature-branch registry contains 16 tools across seven populated categories
-(v0.4.0 Batch 1 adds the `developer` category); the public sitemap derives 25 URLs. v0.3 document tools are implemented and
-unreleased; this list is not production deployment evidence.
+The `master` registry (the unreleased v0.4.0 candidate) contains 18 tools across
+seven populated categories in canonical order document, text, math, everyday,
+time, image, developer; the public sitemap derives 27 URLs. The released and
+deployed v0.3.1 catalog has 15 tools, six populated categories and 23 URLs. This
+list describes repository source and is not production deployment evidence.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
 - **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs
@@ -329,6 +331,14 @@ unreleased; this list is not production deployment evidence.
 - **JSON Formatter / Validator** (`developer/JsonFormatterTool.tsx`) — strict,
   token-preserving local JSON format/minify/validate (`developer/jsonFormat.ts`
   holds the pure iterative scanner/emitter)
+- **Word / Character Counter** (`text/WordCharacterCounterTool.tsx`) — live
+  Unicode word, grapheme-cluster character, non-whitespace and line counts
+  (`text/textMetric.ts` holds the pure measurement rules; no per-keystroke
+  telemetry)
+- **QR Code Generator** (`everyday/QrCodeGeneratorTool.tsx`) — local QR
+  generation to a fixed 512 × 512 PNG (`everyday/qrCode.ts` holds the pure
+  payload validation, ECC-M matrix generation and RGBA raster; the component owns
+  the canvas, PNG Blob and object-URL lifecycle)
 - **Slugify Text** (`text/SlugifyTool.tsx`) — Convert text into URL-safe slugs
 - **HTML Text Extractor** (`text/HtmlTextExtractorTool.tsx`) — Extract visible
   text from HTML with preserved line breaks
@@ -340,6 +350,11 @@ unreleased; this list is not production deployment evidence.
 - **Time Arithmetic** (`time/TimeArithmeticTool.tsx`) — Add and subtract
   HH:MM time values with carry/borrow normalization (`time/timeArithmetic.ts`
   holds the pure `calculateTime`/`addTime`/`subtractTime` logic)
+
+QR dependency boundary: `qrCode.ts` is the only production importer of the
+exact-pinned encoder `uqr` (0.1.3, no dependencies); the test-only decoder `jsqr`
+(1.4.0, devDependency) is never imported by production source. Pure owners hold
+no React, storage, telemetry or network access.
 
 ### Recently used tool tracking (`src/module/tool/recentlyUsed.ts`)
 - `getRecentTool()` — Returns list of recently used tool slugs
