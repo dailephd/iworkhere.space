@@ -87,7 +87,7 @@ and [documentation reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILI
 
 ## Pre-v0.4 indexing and canonical-host checkpoint — 2026-10-07
 
-PRE_V0_4_INDEXING_CHECKPOINT: IN_PROGRESS
+PRE_V0_4_INDEXING_CHECKPOINT: COMPLETE
 
 CANONICAL_PUBLIC_ORIGIN: https://iworkhere.space
 
@@ -110,17 +110,19 @@ GOOGLE_SITEMAP: RESUBMITTED 2026-10-07 — Google accepted the current productio
 sitemap for re-download. Submission does not guarantee crawl, index inclusion,
 ranking, or traffic.
 
-WWW_HOST_STATE: NEEDS_DEPLOYMENT_VERIFICATION
+WWW_TO_APEX_DEPLOYMENT_VERIFICATION: PASS
 
-Google historical inspection shows `https://www.iworkhere.space/` was indexed
-on 2026-09-29 while the current source, sitemap, canonical metadata, and launch
-documentation use the HTTPS apex host. Before v0.4.0 planning is frozen, verify
-that Vercel owns a permanent `www.iworkhere.space` → `iworkhere.space`
-redirect with no unnecessary redirect chain. Correct the Vercel/domain
-configuration if needed; do not add a parallel Next.js host-redirect layer
-unless the hosting layer cannot enforce the canonical host.
+Google historical inspection showed `https://www.iworkhere.space/` was indexed
+on 2026-09-29. An earlier 2026-10-07 verification found `www` had no DNS record
+and was not attached to Vercel (preserved in the checkpoint report). The owner
+then completed the Namecheap DNS and Vercel domain setup. Independent
+re-verification (no agent-side configuration change) shows `www` resolves,
+both domains are attached to project `iworkhere-space`, and every HTTP/`www`
+variant reaches the HTTPS apex with the path preserved via permanent 308
+redirects (`https://www` in one hop; `http://www` in two). No application
+host-redirect layer exists or is needed.
 
-SOURCE_REPAIR_REQUIRED: NO CURRENT EVIDENCE
+SOURCE_REPAIR_REQUIRED: NO — APPLICATION_SOURCE_REPAIR: NOT_REQUIRED
 
 GOOGLE_INDEXING_MONITORING: CONTINUES IN PARALLEL. Canonical Google recrawl and
 index inclusion are evidence collection, not a reason to rewrite working
@@ -135,14 +137,13 @@ NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
 V0_4_IMPLEMENTATION: NOT_STARTED
 
-NEXT_ACTION: complete the bounded pre-v0.4 operational checkpoint by verifying
-the Vercel `www` → apex redirect and preserving the current canonical URL
-contract; then inspect the current repository with fresh my-dev-kit retrieval,
+NEXT_ACTION: perform fresh my-dev-kit retrieval against the current repository,
 resolve the remaining v0.4 category decision, freeze
 `docs/plans/v0.4.0-implementation-plan.md`, and issue bounded implementation
 prompts according to the standard version workflow. Google recrawl/indexing
-monitoring continues in parallel and does not block v0.4 unless it reveals a
-real canonical production defect.
+monitoring continues in parallel and Bing Webmaster submission remains
+operational follow-up; neither blocks v0.4 unless it reveals a real canonical
+production defect.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 
