@@ -317,7 +317,9 @@ The `master` registry (the unreleased v0.4.0 candidate) contains 18 tools across
 seven populated categories in canonical order document, text, math, everyday,
 time, image, developer; the public sitemap derives 27 URLs. The released and
 deployed v0.3.1 catalog has 15 tools, six populated categories and 23 URLs. This
-list describes repository source and is not production deployment evidence.
+list describes repository source. Production deploys `master` continuously, so
+the live site currently serves this catalog (verified 2026-10-07), but the formal
+v0.4.0 release lifecycle has not completed.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
 - **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs

@@ -2,7 +2,9 @@
 
 ## Unreleased — v0.4.0 — Core Text, Data & Sharing Utilities
 
-Implemented on `master`; not released and not deployed. The root package version
+Implemented on `master` and, because the public Vercel project deploys `master`
+continuously, already served by production; not formally released (no v0.4.0 tag
+or GitHub Release, no version bump or release date). The root package version
 remains `0.3.1`. Candidate catalog: 18 tools, 7 populated categories, 27
 registry-derived sitemap URLs.
 

@@ -24,9 +24,22 @@ There are no mode, color, size or ECC controls.
 Generate is disabled only when `input.length === 0`; the input is never trimmed,
 so whitespace-only text is a valid payload. For non-empty input the component:
 validates and encodes through `generateQrRaster`; draws the 512×512 RGBA into an
-offscreen canvas; asks the canvas for a PNG Blob; creates one object URL for the
-Blob; shows the preview and `Download PNG`; and only then emits telemetry.
+offscreen canvas; encodes it to a PNG Blob synchronously (`canvas.toDataURL`, see
+"PNG encoding" below); creates one object URL for the Blob; shows the preview and
+`Download PNG`; and only then emits telemetry.
 Generation is always explicit; there is no live regeneration.
+
+### Encoder loading
+
+The component loads `qrCode.ts` (and its `uqr` encoder) through a single memoized
+dynamic import. It requests the chunk once on mount, without generating anything,
+emitting telemetry, using payload text or surfacing an error; a failed preload is
+retried when Generate is selected. Generate therefore awaits the module before
+rasterizing, and the generation ticket guards this wait: an edit, replacement generation, Reset or unmount while the module is
+loading discards the continuation. If the module cannot be loaded, the bounded
+message `Could not generate the QR code.` is shown, `captureError` receives only
+the tool id and a fixed boundary name (never the payload), no preview or download
+is created and no success event is emitted.
 
 ### Stale-result clearing
 
@@ -35,15 +48,26 @@ preview, the download action and any error. A QR for previous text is never
 downloadable after editing.
 
 Every generation takes a local sequence number. Input edits, replacement
-generations, Reset and unmount advance the sequence, and the asynchronous
-`canvas.toBlob` callback installs its URL only if its number is still current.
-An old callback never installs a stale URL; no timing delays are used.
+generations, Reset and unmount advance the sequence, and the continuation after
+the asynchronous module load proceeds only if its number is still current. Once the
+module is available the rest of generation (rasterize, draw, PNG encode, create the
+URL) runs synchronously in one task, so no stale result can be installed after that
+point; no timing delays are used.
+
+### PNG encoding
+
+The PNG is produced with the synchronous `canvas.toDataURL("image/png")`, decoded to
+bytes and wrapped in an `image/png` Blob. `canvas.toBlob` is deliberately not used:
+Chromium schedules its encoding on idle periods, so on a page whose main thread has no
+idle time the callback was measured at about 1.6–1.9 s in this app (and could stretch
+toward 5 s), delaying the preview. A response that is not a PNG data URL, malformed
+base64 or an encoding exception produces the bounded `Could not prepare the QR code
+PNG.` error with no download.
 
 ### Object-URL lifecycle
 
 Each PNG object URL is revoked before it is replaced, when input invalidates the
-result, on Reset and on unmount. A URL created by a callback that turns out to be
-stale is never created in the first place.
+result, on Reset and on unmount. A stale generation never creates a URL.
 
 ### Download
 
@@ -79,9 +103,13 @@ module count, URL, PNG bytes and Blob URL never appear in `trackEvent`,
 
 ### Tests
 
-Initial state, disabled Generate, whitespace-only input, generation, preview,
+Production-bundle isolation: a Playwright test requests every unrelated route in a
+fresh browser context and asserts that no emitted script contains the `uqr` encoder
+(identified by its own error text, not by hashed file names), and that the QR route
+does load it. Initial state, disabled Generate, whitespace-only input, generation, preview,
 Blob/URL creation, download action and filename, stale clearing on edit,
-revocation on edit/replacement/Reset/unmount, stale `toBlob` callback,
-over-limit, encoder failure, PNG failure, identity-only telemetry, no network,
+revocation on edit/replacement/Reset/unmount, stale module-load continuations,
+synchronous PNG encoding (no `toBlob`), over-limit, encoder failure, PNG-encode
+failure modes, identity-only telemetry, no network,
 no storage, no query state. Browser tests download the real PNG, verify its
 signature and IHDR, and decode it independently with test-only `jsqr`.

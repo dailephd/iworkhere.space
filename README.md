@@ -3,8 +3,8 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Released state.** The current formally released and publicly deployed version
-is v0.3.1, which adds production Vercel Web Analytics automatic page-view traffic
+**Released state.** The current formally released version is v0.3.1 (released and
+publicly deployed 2026-10-06), which adds production Vercel Web Analytics automatic page-view traffic
 alongside the browser-local PDF and document tools: PDF to JPG/PNG, Images to
 PDF, Merge PDF, Split PDF, and lossless structural Compress PDF. Web Analytics is
 enabled only for the public Production deployment, with query/hash redaction and
@@ -17,8 +17,12 @@ canonical `developer` category, the JSON Formatter / Validator, the Word /
 Character Counter and the QR Code Generator, bringing the registry to 18 tools
 across seven populated categories, with a registry-derived sitemap of 27 URLs.
 The root package version remains `0.3.1` (the independently deployed dashboard
-remains at `0.1.0`); v0.4.0 has not been released or deployed, and pre-release
-readiness is a separate pending stage. See
+remains at `0.1.0`). The public Vercel project deploys `master` continuously, so
+the v0.4 implementation candidate may already be served by production (as of
+2026-10-07 it is: the live site serves the 18-tool, 27-URL catalog). It has not
+completed the formal v0.4.0 release lifecycle: the root package remains 0.3.1,
+pre-release readiness must pass on the corrected candidate, and no v0.4.0 tag or
+GitHub Release exists yet. See
 [the v0.4 reconciliation report](docs/reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
 ## Getting Started

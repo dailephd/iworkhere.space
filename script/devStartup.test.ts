@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 
@@ -31,8 +31,18 @@ describe("development startup contract", () => {
     expect(environmentCheck).toMatch(/\[int\]\$Matches\['major'\]\s+-ne\s+24/);
     expect(environmentCheck).toContain("'package.json'");
     expect(environmentCheck).toContain("'src\\app'");
-    expect(environmentCheck).toContain("'doc\\ROADMAP.md'");
-    expect(environmentCheck).toContain("'doc\\project-status.md'");
+    expect(environmentCheck).toContain("'docs\\ROADMAP.md'");
+    expect(environmentCheck).toContain("'docs\\project-status.md'");
+  });
+
+  test("every repository path the environment check requires exists and the obsolete doc paths are gone", () => {
+    const block = environmentCheck.match(/\$requiredPaths\s*=\s*@\(([\s\S]*?)\)/)?.[1] ?? "";
+    const requiredPaths = [...block.matchAll(/'([^']+)'/g)].map(match => match[1]);
+    expect(requiredPaths.length).toBeGreaterThanOrEqual(4);
+    for (const requiredPath of requiredPaths) {
+      expect(existsSync(join(projectRoot, ...requiredPath.split("\\"))), requiredPath).toBe(true);
+    }
+    expect(environmentCheck).not.toContain("'doc\\");
   });
 
   test("startup resolves port 3000 and only stops Node owners", () => {
