@@ -85,13 +85,64 @@ See the
 [implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md),
 and [documentation reconciliation report](reports/V0_3_1_DOCUMENTATION_RECONCILIATION_REPORT.md).
 
+## Pre-v0.4 indexing and canonical-host checkpoint — 2026-10-07
+
+PRE_V0_4_INDEXING_CHECKPOINT: IN_PROGRESS
+
+CANONICAL_PUBLIC_ORIGIN: https://iworkhere.space
+
+CURRENT_LIVE_SITEMAP: https://iworkhere.space/sitemap.xml — 23 canonical URLs
+
+CANONICAL_URL_LIVE_AUDIT: PASS — all 23 current sitemap URLs returned 200,
+did not redirect, were indexable, and exposed self-canonical HTTPS apex URLs.
+
+GOOGLE_REDIRECT_NOTICE: INVESTIGATED
+
+The Search Console "Page with redirect" notice is currently explained by
+intentional URL normalization rather than a demonstrated application defect.
+Google URL Inspection identifies the HTTP homepage variants as redirecting, and
+live checks confirm Next.js trailing-slash variants such as `/discover/`,
+`/tool/slugify/`, and `/category/text/` redirect with 308 to the canonical
+non-trailing-slash URL. These redirecting variants are not sitemap targets and
+must not be made indexable merely to clear the notice.
+
+GOOGLE_SITEMAP: RESUBMITTED 2026-10-07 — Google accepted the current production
+sitemap for re-download. Submission does not guarantee crawl, index inclusion,
+ranking, or traffic.
+
+WWW_HOST_STATE: NEEDS_DEPLOYMENT_VERIFICATION
+
+Google historical inspection shows `https://www.iworkhere.space/` was indexed
+on 2026-09-29 while the current source, sitemap, canonical metadata, and launch
+documentation use the HTTPS apex host. Before v0.4.0 planning is frozen, verify
+that Vercel owns a permanent `www.iworkhere.space` → `iworkhere.space`
+redirect with no unnecessary redirect chain. Correct the Vercel/domain
+configuration if needed; do not add a parallel Next.js host-redirect layer
+unless the hosting layer cannot enforce the canonical host.
+
+SOURCE_REPAIR_REQUIRED: NO CURRENT EVIDENCE
+
+GOOGLE_INDEXING_MONITORING: CONTINUES IN PARALLEL. Canonical Google recrawl and
+index inclusion are evidence collection, not a reason to rewrite working
+canonical/redirect behavior. Escalate to a source repair only if later inspection
+shows a canonical production URL itself redirects, is blocked, is non-indexable,
+or advertises a conflicting canonical.
+
+See
+[the pre-v0.4 indexing checkpoint report](reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md).
+
 NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
 V0_4_IMPLEMENTATION: NOT_STARTED
 
-NEXT_ACTION: inspect current repository state, resolve the remaining v0.4
-category decision, freeze docs/plans/v0.4.0-implementation-plan.md, then issue
-bounded implementation prompts according to the standard version workflow.
+NEXT_ACTION: complete the bounded pre-v0.4 operational checkpoint by verifying
+the Vercel `www` → apex redirect and preserving the current canonical URL
+contract; then inspect the current repository with fresh my-dev-kit retrieval,
+resolve the remaining v0.4 category decision, freeze
+`docs/plans/v0.4.0-implementation-plan.md`, and issue bounded implementation
+prompts according to the standard version workflow. Google recrawl/indexing
+monitoring continues in parallel and does not block v0.4 unless it reveals a
+real canonical production defect.
 
 ## Historical v0.3.0 planning freeze — 2026-10-04
 
