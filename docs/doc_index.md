@@ -504,3 +504,10 @@ version plan remains historical process debt; no retrospective plan was authored
 - [Guide contract](modules/Guide.md): server-consumed image operation content and related-ID ownership.
 - [Delivery 2 implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md): bounded image rollout, crawl foundation, validation and limitations (created by this delivery).
 - [Delivery 2 launch report](reports/UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md): merge, exact-SHA CI, production technical checks, webmaster action status, and measurement follow-up.
+
+## v0.4.0 Batch 1 specifications
+
+- [Category contract](modules/Category.md): canonical category-definition owner, order, titles/descriptions and validation.
+- [JsonFormat contract](modules/JsonFormat.md): strict, token-preserving, iterative JSON scanner/emitter and error contract.
+- [JsonFormatterTool](components/JsonFormatterTool.md): JSON Formatter / Validator UI, interaction and privacy contract.
+- [v0.4.0 Batch 1 implementation report](reports/V0_4_BATCH_1_IMPLEMENTATION_REPORT.md): Batch 1 evidence (created at batch completion).

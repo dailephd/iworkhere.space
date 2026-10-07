@@ -14,3 +14,9 @@ structural mode and explicitly describes normal NO REDUCTION ACHIEVED outcomes.
 No ZIP, OCR, signing, repair, password entry or lossy PDF compression is claimed.
 Related IDs stay within the respective document/image family and resolve through
 metadata; the shared template derives the category-aware related-tools heading.
+
+v0.4.0 Batch 1 adds the `json-formatter` guide (the first `developer` tool):
+strict RFC 8259 JSON with any root value, rejected non-JSON syntax, token-
+preserving formatting (insignificant whitespace only; no number coercion,
+escape normalization, duplicate-member collapse or reordering), the 1 MiB UTF-8
+limit, and local processing. Related IDs: `html-text-extractor`, `slugify`.

@@ -23,7 +23,10 @@ There are four image tools. The dedicated HEIC worker contract and separate rele
 The preceding ten-tool count records the historical image Batch 5 baseline.
 Current v0.3 feature-branch implementation adds `merge-pdf`, `split-pdf`,
 `images-to-pdf`, `pdf-to-image` and `compress-pdf`, all in `document`, bringing
-the registry to 15 tools and six populated categories. Each has explicit
+the registry to 15 tools and six populated categories. v0.4.0 Batch 1 adds
+`json-formatter` in the canonical `developer` category (16 tools, seven
+populated categories); the registry remains the authority on population while
+`category.ts` owns category definitions. Each has explicit
 component, SEO metadata, client-only/offline capability, no persistent state
 and no shareable query. Implementation does not imply release or deployment.
 

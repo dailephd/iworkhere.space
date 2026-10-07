@@ -24,6 +24,15 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 - Merge signals: single-file-unit
 
 <!-- section-id: notes -->
+## Contract (category route, v0.4.0 Batch 1)
+
+`src/app/category/[category]/page.tsx` is a Server Component. It validates the
+slug with `isToolCategory` and resolves title and description from
+`src/module/tool/category.ts`; it holds no category list, title switch or
+description switch. Unknown slugs call `notFound()`. Tools come from
+`getToolByCategory`. Titles and descriptions of the six pre-v0.4 categories are
+unchanged; `developer` is "Developer Tool".
+
 ## Notes
 
 This document was generated from the Milestone 12 merged-unit ingestion pass.

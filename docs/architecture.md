@@ -279,6 +279,23 @@ graph TD
 Tools are the core domain concept. Each tool is a React component registered
 in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
+### Category definitions (`src/module/tool/category.ts`)
+- Single runtime owner of canonical category identity: ids, canonical order,
+  page title, page description, and validation (`isToolCategory`, definition
+  lookup). Static `as const` list; no reflection or dynamic registration.
+- `ToolCategory` is derived from this list and re-exported by
+  `src/module/tool/type.ts`; there is no second hand-maintained union.
+- Canonical order: `document, text, math, everyday, time, image, developer`.
+- The registry remains the authority for registered tools and therefore for
+  which categories are populated. `getAvailableCategory()` (metadata.ts)
+  returns the populated categories in canonical order.
+- The category route (`app/category/[category]/page.tsx`) validates and
+  describes categories through this module; it keeps no category list or
+  title/description switch of its own. Nav, home chips and breadcrumbs keep
+  deriving short labels from the id.
+- Category color identity is theme tokens in `src/style/theme.css`
+  (`[data-category]`); see DESIGN.md.
+
 ### Registry (`src/module/tool/registry.ts`)
 - Single source of truth for all tool definitions
 - Provides low-level queries: `getToolBySlug()`, `getToolByCategory()`
