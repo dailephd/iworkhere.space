@@ -119,16 +119,84 @@ Before its implementation plan is frozen:
 Google recrawl and index inclusion continue in parallel and do not block v0.4
 unless they reveal a real canonical production defect.
 
+## Canonical-host verification — 2026-10-07 (final)
+
+Verified from master `1bcee32b86c1b13bd70de3a07cef7c41bd0a8922`, package
+version `0.3.1`.
+
+### First verification attempt (preserved)
+
+An earlier verification run found `www.iworkhere.space` had no DNS record and
+was not attached to the Vercel project (resolver: could not resolve host). The
+apex behaved correctly. That run stopped with `BLOCKED_VERCEL_DOMAIN_CONFIGURATION`
+because the fix required Namecheap DNS and Vercel domain configuration by the
+owner. No application source was involved.
+
+### Owner configuration and re-verification
+
+The owner then added the `www` DNS record at Namecheap and attached
+`www.iworkhere.space` to the Vercel project with a redirect to the apex. This
+agent run made no Vercel, DNS or application-source change.
+
+DNS (public resolver):
+
+- `iworkhere.space` A → `216.198.79.1`;
+- `www.iworkhere.space` CNAME → a `vercel-dns-017.com` target resolving to
+  Vercel addresses (`216.198.79.65`, `64.29.17.65`).
+
+Vercel (CLI 62.2.0, user `dailephd`, team `dailephds-projects`): project
+`iworkhere-space` lists both `iworkhere.space` and `www.iworkhere.space`. The
+domain registrar nameservers remain Namecheap (third party); the CLI's
+nameserver-mismatch marker is expected for the DNS-record setup and is not a
+defect. HTTPS completes with valid certificates on both hosts (curl performed
+no certificate bypass).
+
+Redirect matrix (curl, each hop recorded):
+
+| Start URL | Hops | Chain | Final |
+|---|---|---|---|
+| `http://iworkhere.space/` | 1 | 308 → `https://iworkhere.space/` → 200 | apex |
+| `https://iworkhere.space/` | 0 | 200 | apex |
+| `http://www.iworkhere.space/` | 2 | 308 → `https://www.iworkhere.space/` → 308 → `https://iworkhere.space/` → 200 | apex |
+| `https://www.iworkhere.space/` | 1 | 308 → `https://iworkhere.space/` → 200 | apex |
+| `http://iworkhere.space/discover` | 1 | 308 → `https://iworkhere.space/discover` → 200 | apex |
+| `https://iworkhere.space/discover` | 0 | 200 | apex |
+| `http://www.iworkhere.space/discover` | 2 | 308 → `https://www…/discover` → 308 → `https://iworkhere.space/discover` → 200 | apex |
+| `https://www.iworkhere.space/discover` | 1 | 308 → `https://iworkhere.space/discover` → 200 | apex |
+| `https://iworkhere.space/discover/` | 1 | 308 → `/discover` → 200 | apex |
+| `https://iworkhere.space/tool/slugify/` | 1 | 308 → `/tool/slugify` → 200 | apex |
+| `https://iworkhere.space/category/text/` | 1 | 308 → `/category/text` → 200 | apex |
+
+Paths are preserved, no loops, and no `vercel.app` hostname is traversed. The
+two-hop `http://www` chain is the accepted deterministic HTTP→HTTPS→apex form.
+
+### Sitemap, robots and canonical audit
+
+The live `https://iworkhere.space/sitemap.xml` (200, no redirect) was parsed,
+not copied from a list. It contains 23 URLs: home, Discover, 15 tools and 6
+populated categories. Every URL is HTTPS, host exactly `iworkhere.space`, free of
+query/fragment/`www`/`vercel.app`, returns a direct 200, has no `noindex`
+(meta or header), and carries a self-referencing canonical (the root's canonical
+is the equivalent slashless origin form). `https://iworkhere.space/robots.txt`
+returns 200, allows all crawling, and declares exactly
+`https://iworkhere.space/sitemap.xml`.
+
 ## Current verdict
 
 CANONICAL_SITEMAP_URLS: PASS
 
 REDIRECT_NOTICE: INTENTIONAL_FOR_KNOWN_VARIANTS
 
-APPLICATION_SOURCE_REPAIR: NOT_CURRENTLY_REQUIRED
+APPLICATION_SOURCE_REPAIR: NOT_REQUIRED
 
-WWW_TO_APEX_DEPLOYMENT_VERIFICATION: PENDING
+WWW_TO_APEX_DEPLOYMENT_VERIFICATION: PASS
 
-GOOGLE_SITEMAP_REDOWNLOAD: PENDING
+PRE_V0_4_INDEXING_CHECKPOINT: COMPLETE
+
+GOOGLE_INDEXING_MONITORING: CONTINUES_IN_PARALLEL — the 2026-10-07 sitemap
+re-download and canonical recrawl are asynchronous; indexing, rankings and
+traffic are not claimed. Do not repeatedly resubmit or request indexing.
+
+BING_WEBMASTER_SUBMISSION: OPERATIONAL_FOLLOW_UP (not a v0.4 blocker)
 
 V0_4_IMPLEMENTATION: NOT_STARTED
