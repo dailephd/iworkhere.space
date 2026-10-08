@@ -277,9 +277,14 @@ production-license release boundaries.
 preserves registry, storage and observability contracts in architecture.md.
 
 ### project-tree.txt
-**Summary:** A text representation of the file structure.
-**When to read:** To understand where files are located.
-**Relations:** Visualizes the structure defined in `architecture.md`.
+**Summary:** A historical text snapshot of repository structure; it is not a
+complete or authoritative current file inventory.
+**When to read:** For historical context only. Use the current tracked Git tree
+for actual file locations and `architecture.md` for architectural
+responsibilities.
+**Relations:** Historical structural snapshot; current repository paths are
+verified from Git, while ownership is defined by `architecture.md` and the
+current implementation.
 
 ---
 
@@ -392,12 +397,12 @@ and `TESTING.md`.
 
 ## 8. Component & Module Specification Layer (docs/components/, docs/modules/)
 
-**Summary:** A separate implementation/design-contract layer, one file per
-component (`docs/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
-2026-08-07 = 19) or module/logical-unit (`docs/modules/*.md`, 27 files). Each
-file identifies representative/member source files and (where reconciled)
-a real contract: exported functions, storage keys, dependencies, and known
-implementation/documentation gaps.
+**Summary:** A separate implementation/design-contract layer. The current
+tracked inventory (2026-10-08) contains 24 component specifications and 46
+module specifications, 70 Markdown files total. These documents vary in
+completeness and source reconciliation; their presence does not establish that
+their descriptions match current behavior. Verify implementation and tests,
+and use `architecture.md` for current structural authority.
 
 **When to read:** Before modifying a specific component or module — check
 whether its `.md` file already documents a contract you must preserve.
@@ -406,43 +411,68 @@ whether its `.md` file already documents a contract you must preserve.
 (cross-cutting contracts) without duplicating them; this layer is
 per-unit detail.
 
-**Status as of 2026-08-07 reconciliation:** all 46 files were produced by an
-automated "Milestone 1 / Milestone 12" ingestion pass
-(`log/iworkhere-timearith-prepared/`) and, except where noted below, contain
-only generation metadata (representative file, member files, inferred role,
-merge signals) with **no real contract content** — every unreconciled file
-ends with "Manual review and updates are encouraged to add implementation
-details." This reconciliation pass added a `## Contract` section with real
-exported signatures, storage keys, dependencies, and known implementation gaps
-to the files judged most architecturally load-bearing: `Registry.md`,
-`Metadata.md`, `Storage.md`, `RecentlyUsed.md`, `Observability.md`, `Seo.md`,
-`ThemeRegistry.md`, `ThemeStorage.md`, `ThemeRuntime.md`, plus a newly created
-`TimeArithmeticTool.md` (previously undocumented despite being a registered
-tool). The remaining ~36 files (all `docs/components/*.md` except
-`TimeArithmeticTool.md`, and `docs/modules/{Analytics,Button,ExtractHtmlText,
-Input,Layout,NavData,Page,Provider,Route,RustLogProvider,StatusPanel,
-ThemeProvider,ThemeToggle,ToolSearch,Type,Types,Util,Logger}.md`) remain thin
-generation stubs. This is recorded as an open documentation gap, not silently
-fixed — see the Architecture Assimilation Report handoff for the full list.
+### Current tracked specification inventory (verified 2026-10-08)
+
+The current Git tree contains 24 Markdown files under `docs/components/` and
+46 under `docs/modules/`, for 70 tracked specifications combined. These are
+inventory counts, not a completeness or accuracy assessment. Current file
+locations should be checked against Git; current structural ownership should
+be checked against `architecture.md` and implementation.
+
+### Historical generated-document inventory and reconciliation (2026-08-07)
+
+The August 2026 ingestion pass described 46 documents from the then-existing
+component/module inventory, generated through the automated "Milestone 1 /
+Milestone 12" pass (`log/iworkhere-timearith-prepared/`). This is a historical
+count and is not the current combined inventory. The 2026-08-07 reconciliation
+added source-backed contract sections to `Registry.md`, `Metadata.md`,
+`Storage.md`, `RecentlyUsed.md`, `Observability.md`, `Seo.md`,
+`ThemeRegistry.md`, `ThemeStorage.md`, and `ThemeRuntime.md`, and added
+`docs/components/TimeArithmeticTool.md` for a registered tool that had not
+previously been documented. See the Architecture Assimilation Report handoff
+for the historical reconciliation record.
+
+### Reconciliation status and limits
+
+The 2026-10-08 repository audit mechanically matched generated-stub markers in
+45 of the 70 currently tracked specifications. This marker search is only a
+triage signal: it does not establish that exactly 45 files lack meaningful
+contracts, nor does a missing marker establish that a specification is
+complete or source-backed. Each document requires individual comparison with
+current source and tests. In addition to the historical reconciliation above,
+the repository contains detailed specifications for areas including category
+and guide ownership, JSON formatting, text metrics, QR generation, and image
+and PDF processing. Treat those documents as useful contracts only to the
+extent their claims are verified against current implementation and tests.
+
+Older generated inventories named a number of files as thin stubs, including
+component specifications other than `TimeArithmeticTool.md` and
+`docs/modules/{Analytics,Button,ExtractHtmlText,Input,Layout,NavData,Page,
+Provider,Route,RustLogProvider,StatusPanel,ThemeProvider,ThemeToggle,
+ToolSearch,Type,Types,Util,Logger}.md`. Preserve that list as historical
+triage evidence, not a verified current classification. The open documentation
+gap remains for individual review; no specification is rewritten by this
+index.
 
 ---
 
 ## 9. Layer Inventories (docs/features/)
 
-**Summary:** Four files (`src-app.md`, `src-component.md`, `src-lib.md`,
+**Summary:** Four historical generated files (`src-app.md`, `src-component.md`, `src-lib.md`,
 `src-module.md`) that are raw, auto-generated per-`src/`-subdirectory file
 listings from the same ingestion pass, not component specs (their original
 titles named an arbitrary member file, e.g. "Component: HomeClient" for the
 whole `src/app` group — corrected 2026-08-07 to accurate layer-inventory
 titles).
 
-**When to read:** As a cross-check of file membership per layer, or to spot
-files not yet covered by an individual component/module doc. Not for
-authoritative responsibility descriptions — use `architecture.md` for that.
+**When to read:** As a historical cross-check of file membership per layer, or
+to spot files not yet covered by an individual component/module doc. These are
+not authoritative current source maps; verify current paths from the tracked
+Git tree. Use `architecture.md` for structural responsibilities.
 
-**Relations:** Subordinate to `architecture.md`; overlaps with
-`project-tree.txt` (file locations) but grouped by classifier heuristics
-rather than directory structure.
+**Relations:** Historical and subordinate to `architecture.md`; grouped by
+classifier heuristics rather than current directory structure. `project-tree.txt`
+is also a historical snapshot, not the current file inventory.
 
 ---
 
