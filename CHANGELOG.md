@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.0 — Core Text, Data & Sharing Utilities
+## v0.4.0 — Core Text, Data & Sharing Utilities — 2026-10-08
 
 This release completes the canonical developer category and adds three
 browser-local utilities. The registry contains 18 tools across seven populated
