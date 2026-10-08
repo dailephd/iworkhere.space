@@ -50,7 +50,7 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-Current v0.3.1 Vercel Web Analytics lifecycle references:
+Historical v0.3.1 Vercel Web Analytics lifecycle references:
 
 - `plans/v0.3.1-implementation-plan.md`: frozen implementation authority and
   historical design decisions.
@@ -62,7 +62,8 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current lifecycle state. v0.3.1 is
-  released and publicly deployed; v0.4.0 is the next numbered version.
+  a released, deployed predecessor; v0.4.0 is the latest GitHub Release
+  (2026-10-08), and v0.5.0 is the next planned catalog version.
 
 Current persistent-observability references:
 
@@ -115,8 +116,8 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
-their respective reports. v0.3.1 is complete and v0.4.0 is the next numbered
-planning target.
+their respective reports. v0.4.0 is now released; v0.5.0 is the next planned
+catalog implementation target.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
@@ -153,11 +154,11 @@ analytics, or proposing any Vercel custom event.
 **Relations:** ROADMAP.md, project-status.md, OBSERVABILITY.md, architecture.md
 and DEPLOYMENT.md. v0.3.1 does not replace the existing analytics facade/Neon
 observability and does not authorize Speed Insights or custom events. v0.4.0
-catalog scope remains separate and future.
+catalog scope was subsequently implemented and released.
 
 ### plans/v0.4.0-implementation-plan.md
 
-**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation, documentation reconciliation, and exact-candidate pre-release readiness are complete).
+**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation, documentation reconciliation, readiness, and release integration are complete).
 Defines the canonical `developer` category owner, category assignments, the
 frozen JSON Formatter / Validator, Word / Character Counter and QR Code
 Generator contracts, the QR dependency decision, the three-batch structure,
@@ -174,8 +175,8 @@ unchanged.
 six-batch evidence, runtime ownership, final limits, canonical QPDF identities
 and inherited final validation. This is implementation evidence, not a release
 report or hosted readiness claim.
-**When to read:** Auditing v0.3 completeness or preparing its separate readiness
-workflow after documentation reconciliation.
+**When to read:** Auditing the completed v0.3 implementation and its historical
+readiness evidence.
 
 ### plans/ui-discovery-growth-plan.md
 **Summary:** Planner-authored, research-backed 2026-10-01 plan for a small
