@@ -1,0 +1,198 @@
+IWORKHERE.SPACE — REPOSITORY OWNERSHIP MANIFEST
+File: manifest.txt
+Purpose: Mandatory directory/subdirectory ownership map and anti-scatter rule for coding agents.
+Evidence baseline: dailephd/iworkhere.space master at b619920048239e1b60ea20c4db5a4d0f01bdcd39 (2026-10-08).
+Scope: Tracked Git tree, 76 tracked directories and 530 tracked files at the baseline; ignored runtime/workflow directories are documented separately.
+Status: Source-structure orientation. This is NOT a license to refactor, move, delete, or implement features.
+
+0. REQUIRED READING / AUTHORITY / STOP RULE
+------------------------------------------------------------
+BEFORE every coding-agent task that reads or changes this repository:
+  A. Read the root AGENTS.md and CLAUDE.md (the tracked names are .md, NOT agents.txt/claude.txt).
+  B. Read this complete manifest.txt alongside them, before choosing an edit destination.
+  C. If local agents.txt or claude.txt exist, read them too as supplemental task guidance; do not assume they are tracked or more authoritative.
+  D. Read docs/architecture.md, docs/doc_index.md, and the exact applicable domain spec/plan as needed.
+  E. Verify Git branch, commit, status and current tracked paths. This manifest is a snapshot; current Git/source wins for facts.
+  F. Use my-dev-kit against the current relevant source roots: search -> lookup -> bounded slice when useful -> exact source -> continuation/local dependencies. Full source/test reads only as a documented last resort.
+  G. State the existing owner, extension point, closest tests, allowed edit paths and excluded paths before editing.
+  H. Stop and report an exact conflict if current Git, AGENTS.md, CLAUDE.md, specs and this manifest cannot be reconciled. Do not guess or create a parallel owner.
+
+Authority is field-specific: user-approved scope + docs/ROADMAP.md govern planned work; current source and tests govern implemented behavior; docs/architecture.md and current contracts govern boundaries; docs/DESIGN.md governs visual changes; docs/TESTING.md and CI_CD.md govern validation; docs/project-status.md and release/deployment evidence govern current lifecycle. Frozen version plans govern their approved batches, not future features. This manifest maps directory roles, not the semantics of every API.
+
+For every coding change, report: path owner, why it belongs there, my-dev-kit evidence, relevant existing pattern, tests, docs, diff, any newly created directory with justification, and whether the file/folder inventory changed. A directory is NOT a feature-version, experiment, or coding-agent workspace.
+
+1. ROOT OWNERSHIP — DO NOT CONFUSE PRODUCTS
+------------------------------------------------------------
+./ : Public Next.js utility application, root npm package and Git repository. Root package.json and package-lock.json own public-site dependencies and scripts, with Node 24.x. Root next.config.ts, eslint.config.mjs, tsconfig.json, postcss.config.mjs, vitest.config.mts, playwright.config.ts, vercel.json, Dockerfile and docker-compose.yml own public-site build/test/runtime configuration. .env.example supplies safe placeholders only; .gitignore/.dockerignore/.gitattributes enforce packaging and byte identities. README.md is public orientation; CHANGELOG.md is release history; THIRD_PARTY_NOTICES.md and LICENSE notices preserve dependency provenance. AGENTS.md/CLAUDE.md + this manifest are coding-agent entry instructions.
+
+dashboard/ : SECOND, INDEPENDENT deployable Next.js application with its OWN package.json/package-lock.json, tsconfig, Next/Vitest/ESLint/PostCSS configuration, .gitignore, .env.example, README.md and DEPLOYMENT.md. It reads observability data with SELECT-only production access. No dashboard code, dependencies, secrets, styles, routes, or authentication are to be folded into root public app. Protection is external Vercel Authentication for the dashboard project only.
+
+database/ : SQL assets for observability; not a generic persistence or product-data layer. Exact migrations and grants live under database/observability/.
+
+docs/ : ONLY current tracked project documentation root. Do not recreate historical doc/. Architecture, scopes, specs, reports and evidence have distinct owners (Section 3).
+
+public/ : Root PUBLIC static assets shipped to browsers. Anything added here becomes externally accessible. Never place secrets, local reports, source/build caches, private dashboard, uploaded user files or raw vendor sources here. Pinned PDF/QPDF and license resources are deliberately included.
+
+script/ : Root TypeScript/tsx verification, fixtures, migration, smoke-test, asset and packaging helpers. Not application domain code. This is different from scripts/ (PowerShell wrappers).
+
+scripts/ : Root Windows PowerShell launch/development/Docker readiness wrappers, not a second location for TypeScript build helpers.
+
+src/ : Root public application production source and colocated tests. Four distinct layers: app (routes), module (domain), component (reusable UI), lib (generic helpers); style owns theme CSS. Root instrumentation.ts/instrumentation-client.ts and tests own Next instrumentation wiring, not a separate analytics system.
+
+test/ : Non-colocated public-site browser/integration support and immutable fixture assets; most focused Vitest tests stay beside their modules under src/.
+
+.github/ : GitHub workflow infrastructure and validation, not application code.
+
+.idea/ : Existing TRACKED JetBrains project files, although .gitignore contains .idea/. Treat as an audit/cleanup candidate, NOT permission to delete, untrack or rewrite without a separate review of contributors' configuration and Git history.
+
+2. COMPLETE TRACKED FOLDER AND SUBFOLDER OWNERSHIP
+------------------------------------------------------------
+The paths below enumerate every directory returned by the nontruncated Git tree at the evidence baseline. Directory roles are based on tracked files and repository documentation. If a path changes, verify the current tree before applying a rule.
+
+.github/
+  .github/workflows/ : Eight separate GitHub Actions workflows: root typecheck, lint, test, build, E2E, container; independent dashboard and observability-database checks. Preserve exact-SHA gate/report behavior. Do not invent one umbrella workflow or weaken required checks.
+
+.idea/
+  .idea/inspectionProfiles/ : Tracked IDE inspection profile. IDE metadata, not app source or normative architecture. Tracked/ignored mismatch needs separately authorized cleanup.
+
+dashboard/
+  dashboard/script/ : Independent dashboard runtime/query/visual smoke and verify commands; no root script/ ownership.
+  dashboard/src/ : Dashboard-local declarations (including server-only typing); application boundary independent of root src/.
+  dashboard/src/app/ : Dashboard App Router, layout, page, dashboard-specific CSS, safe error/unavailable state, robots.
+  dashboard/src/component/ : Dashboard presentation (DashboardView); no public tool component registry.
+  dashboard/src/lib/ : Dashboard read-only database server adapter, query/view-model/range logic and colocated tests. Never import from public tool source or expose database credentials in client bundles.
+  dashboard/src/test/ : Dashboard-specific deterministic fixture repository used only for isolated tests/visual smoke.
+
+database/
+  database/observability/ : Tracked numbered SQL migrations (001 schema, 002 diagnostics), explicit dashboard-role grants template and database README. Database changes must preserve existing rollup/retention, read-only grants and migration order. NEVER auto-run production migration at app startup.
+
+docs/
+  docs/components/ : Individual reusable/UI/tool component specifications. Keep requirements for actual component owner here; some are historical/generator-produced and must be checked against code.
+  docs/features/ : Four generated historical layer inventories (src-app, src-component, src-lib, src-module). These are NOT complete/current source trees or authoritative architecture; original inventories predate later utilities.
+  docs/modules/ : Domain/platform module, utility-operation and helper specifications; e.g. Category, Registry, JsonFormat, TextMetric, QrCode, PdfFile, PdfProcessing. Some are generated stubs: verify actual behavior against source/tests instead of treating placeholder inference as contract.
+  docs/plans/ : Version-specific frozen implementation plans and independent approved planning studies. Preserve v0.3.0, v0.3.1, v0.4.0 plans historically; a v0.5.0 plan belongs here only when approved/frozen. Never replace docs/ROADMAP.md or invent retroactive plans.
+  docs/reports/ : Durable, tracked historical reports, audits, release/implementation outcomes and documented exceptions. Preserve evidence/provenance; DO NOT put ephemeral test-report output here or discard established history casually.
+
+public/
+  public/icon/ : PWA/app icon assets (192, 512, maskable).
+  public/licenses/ : Retained third-party runtime/license identity and provenance, including HEIC, PDF, QPDF, uqr and manifest. Do not alter license bytes or claimed provenance casually.
+    public/licenses/pdf-lib-1.17.1/ : Exact retained pdf-lib license components.
+    public/licenses/pdfjs-6.4.299/ : Exact retained PDF.js license components.
+    public/licenses/qpdf-12.4.2/ : Exact retained QPDF license components.
+  public/vendor/ : Public static pinned browser runtime subtree, not a place for arbitrary npm copies.
+    public/vendor/pdfjs/ : PDF.js runtime family boundary.
+      public/vendor/pdfjs/6.4.299/ : Pinned PDF worker, version manifest and README; do not replace with an unverified version.
+        public/vendor/pdfjs/6.4.299/standard_fonts/ : Pinned PDF.js standard font resources; byte-sensitive.
+    public/vendor/qpdf/ : QPDF runtime family boundary.
+      public/vendor/qpdf/12.4.2/ : Pinned QPDF JS/WASM and manifest. Rebuild only via controlled script/qpdf pipeline and byte/provenance checks.
+
+script/
+  script/qpdf/ : Controlled QPDF source lock, containerized build script and maintainer instructions. Never invoke normal builds to regenerate pinned artifacts. Observe retained identities/licensing.
+
+scripts/
+  (no tracked subdirectories) : Check-DevEnv.ps1, Start-Dev.ps1, Start-DockerDesktop.ps1 are distinct Windows host startup/readiness wrappers.
+
+src/
+  src/app/ : Next public app routes, page/layout composition, global CSS, navigation declarations, sitemap and robots. Server Components by default. HomeClient and DiscoverClient are existing route-level client composition exceptions, not permission to put new domain transformations in routes.
+    src/app/api/ : Routing boundary for the exact public operational APIs.
+      src/app/api/health/ : Health route.
+      src/app/api/log/ : Sanitized diagnostic HTTP entry; canonical diagnostic behavior belongs to module/observability.
+      src/app/api/metric/ : Validated technical metric HTTP entry; persistence belongs to observability server module/database.
+      src/app/api/observability/ : Parent of the protected maintenance route; no generic observability endpoints added by inference.
+        src/app/api/observability/maintenance/ : Secret-protected database maintenance/cron API; never run migrations here.
+    src/app/category/ : Dynamic category route namespace.
+      src/app/category/[category]/ : Registry/category-driven Server page and its route tests. Canonical category definitions live in src/module/tool/category.ts.
+    src/app/discover/ : Discovery server route and its existing route-local DiscoverClient. Data comes from registry/metadata; do not fork catalog identity.
+    src/app/tool/ : Dynamic tool route namespace.
+      src/app/tool/[slug]/ : Generic tool Server page. New utilities are registered in module/tool/registry.ts; DO NOT create a page per tool.
+  src/component/ : Reusable presentation, shell and cross-tool UI infrastructure; do not move individual domain operations here.
+    src/component/common/ : Generic Button, Input, StatusPanel, theme controls, ToolSearch, island, ad slot/script and WebVitals UI wrappers; no domain-processing logic.
+    src/component/layout/ : AppShell, Header, Footer, nav, ad layout, service-worker client register and layout types. No new application routing/registry ownership.
+    src/component/observability/ : Single root-composed Vercel Web Analytics wrapper and test. Analytics policy/transport remains in module/analytics and module/observability.
+    src/component/tool/ : Shared ToolClientFrame (URL query/telemetry), ToolPageTemplate, ToolErrorBoundary, ToolSection. Domain-specific tool state and processing still belong to src/module/tool/<category>/.
+      src/component/tool/image/ : Narrow presentation-only ImageSourcePanel with display-ready props. It owns neither file processing nor URLs/state; do not generalize into an all-file tool framework.
+  src/lib/ : Generic non-React SEO, storage and utility helpers. NEVER import src/module/ into src/lib/. No domain logic here merely because helpers are reusable.
+  src/module/ : Public site's business/domain/tool platform subsystems; no routes and no dashboard code.
+    src/module/ad/ : Advertising configuration/runtime behavior, production-gated; no bypass of AdSense/CMP activation or user-content telemetry restrictions.
+    src/module/analytics/ : Typed analytics provider/event abstraction and gated Vercel traffic integration. No direct SDK/event calls in tool implementations.
+    src/module/log/ : Logger/provider transports, including RustLogProvider; do not create parallel logger owners.
+    src/module/observability/ : Shared observability facade, safe client instrumentation, redaction/diagnostics, metric schemas, guarded server persistence/transport and tests. NO user input/output/secrets or full URL/query/hash telemetry.
+    src/module/theme/ : Theme registry, client runtime and storage; CSS token values live under src/style/theme.css. Do not create second theme registry.
+    src/module/tool/ : DOMAIN catalog: canonical category, single registry, derived metadata, guide prose, recently used, shared tool types and their tests. All new tools integrate through these existing owners.
+      src/module/tool/developer/ : Developer-facing utility components and operation modules (currently JSON Formatter); suitable for approved v0.5 developer tools, with pure helpers local and browser state local to tool UI. No new developer registry.
+      src/module/tool/document/ : PDF/document operations and tools. Local validation/page selection, workers, PDF.js, pdf-lib, QPDF, result URL, cancellation and state; maintain strict worker and dependency boundaries.
+      src/module/tool/everyday/ : General-purpose converter tools and browser-local QR code generator/encoder; no generic sharing engine.
+      src/module/tool/image/ : Image Resize/Compress/Convert/HEIC tools, narrow common imageFile primitives and isolated HEIC worker; preserve independent encoders, local state and exact file limits.
+      src/module/tool/math/ : Calculator tool; future percent-calculator scope belongs to v0.6, not to a v0.5 arbitrary math refactor.
+      src/module/tool/text/ : Slugify, HTML text extraction, Word/Character Counter and pure textMetric/extraction helpers; approved text-oriented v0.5 tools should reuse this precedent as appropriate.
+      src/module/tool/time/ : Time Arithmetic and its pure logic; v0.6 Timestamp/Date/Age changes are not v0.5 scope.
+  src/style/ : Root theme and category color tokens (theme.css). Design changes require docs/DESIGN.md and preserve theme-independent layout.
+
+test/
+  test/e2e/ : Production Chromium Playwright application/user-flow specs, including tools, routing, accessibility/responsiveness, diagnostics, worker/bundle/resource loading. Desktop/mobile coverage is separate from Vitest.
+    test/e2e/support/ : Browser diagnostic listener, navigation fixture and test helpers. Do not duplicate exception filtering/test fixture infrastructure.
+  test/fixtures/ : Approved deterministic test input assets, not production user uploads.
+    test/fixtures/images/ : Image/HEIC fixtures plus provenance README. Preserve real codec coverage, licensing and fixture identity.
+      test/fixtures/images/licenses/ : Fixture-specific retained HEIC attribution/license.
+    test/fixtures/pdf/ : PDF fixtures and provenance README for genuine output/boundary/security testing. Preserve binary/provenance identity.
+
+3. DOC AND TEST ROUTING RULES
+------------------------------------------------------------
+docs/ROADMAP.md: approved version sequence, utility catalog scope, acceptance, exclusions and deferred work; not batch logs.
+docs/project-status.md: factual current implementation/deployment/release state and next action; not a roadmap.
+docs/doc_index.md: documentation navigation/ownership; not a substitute for reading relevant docs.
+docs/architecture.md: four layers, public/private boundaries, subsystem ownership.
+docs/DESIGN.md: visual and theme contract; style/presentation changes update this first.
+docs/SCHEMA.md and docs/API.md: shared types, payloads and externally-used contract details; verify with current source.
+docs/TESTING.md and docs/CI_CD.md: test responsibility and CI topology; do not treat local verify as complete CI.
+docs/DEPLOYMENT.md, docs/ADVERTISING.md, docs/OBSERVABILITY.md: hosting, gating, privacy and operator boundaries.
+docs/components/ and docs/modules/: update the spec of the actual unit being changed before code where current project policy requires it; do not rewrite all generated stubs.
+docs/plans/: only frozen planner-authorized implementation plans; no generic development session logs.
+docs/reports/: durable reviewed evidence, distinct from ignored test-report.
+
+Root colocated *.test.ts(x): close unit and contract tests; test/e2e/*.spec.ts: real Chromium behavior and flows; script/*.test.ts: scripts/maintenance/validation tests. dashboard/src/lib/*.test.ts(x): independent dashboard tests. database SQL: validate with root test:observability-db, not mocked SQL alone. Root npm run verify owns typecheck/lint/Vitest/build; separate E2E and container gates remain separate. Dashboard verify is independent. Capture actual run reports and SHA, never claim an unrun gate passed.
+
+4. TRACKED VERSUS GENERATED / PRIVATE FILE HYGIENE
+------------------------------------------------------------
+Tracked public/repository artifacts: src, docs, test fixtures, intended public/vendor assets, SQL migrations, GitHub workflows, exact package/config files, AGENTS.md, CLAUDE.md, manifest.txt and durable reviewed reports when authorized.
+
+Generated/local-only (confirm .gitignore and current status before editing): .my-dev-kit/, .my-dev-kit-context/, .my-dev-kit-workflow/, .my-dev-kit-orchestrator/, .frontend-observer/, .next/, dashboard/.next/, node_modules/, dashboard/node_modules/, test-report/, dashboard/test-report/, coverage/, playwright-report/, test-results/, .vercel/, .claude/, environment secrets, caches, tool installs, temporary workspaces, local browser profiles and pack/build logs. Existing ignore definitions have directory-specific limits; verify exclusions rather than assuming global glob behavior. Never stage generated content with git add . or git add -A.
+
+The .idea/ directory is presently tracked despite .gitignore ignoring it. Treat it as a documented cleanup decision, not a reason to run git rm automatically.
+
+Source snapshots/working trees created by a coding-agent workflow belong INSIDE the owning repository's project-local .my-dev-kit-workflow/ tree when a worktree is actually authorized. Never scatter sibling clones/worktrees under C:\Users\daile\Projects or global/user TEMP for this project. Do not open visible GUI windows/popups.
+
+5. CHANGING OR CREATING A FILE — MANDATORY DECISION GATE
+------------------------------------------------------------
+1. Identify requested behavior and exact authorized version/batch.
+2. Inspect current Git tree and relevant AGENTS.md + CLAUDE.md + manifest.txt + architecture/spec.
+3. Retrieve existing owner/contracts/tests with my-dev-kit. Filename similarity alone is insufficient.
+4. Select an existing directory/symbol. If creating a new folder, explain why no listed owner works and obtain planner authorization for that boundary.
+5. Maintain clear separation: domain algorithm and tool-local React UI in src/module/tool/<category>/; shared pure generic helper ONLY in src/lib after evidence; generic reusable presentation in src/component; app only routing/composition.
+6. Registration: extend src/module/tool/registry.ts explicitly; category identity comes ONLY from category.ts, metadata queries from metadata.ts, guides from guide.ts. Do not create independent arrays/registries/tool pages.
+7. Preserve browser-only data privacy; no user contents in URL sharing, telemetry, storage or server unless explicitly authorized and documented. New security-sensitive utilities default to no persistence/query sharing.
+8. Extend corresponding tests and only relevant specs. Test negative and boundary behavior and adjacent regressions. For visible UI, preserve browser, accessibility, desktop/mobile and styling evidence.
+9. Run required validation and inspect Git diff for wrong-layer edits, unintended file moves, generated artifacts and changed docs. Return an exact structured report.
+10. No release, tag, publish, deploy, branch deletion or irreversible cleanup without explicit authorization.
+
+6. CLEANUP AUDIT QUEUE — CANDIDATES, NOT AUTHORIZED DELETIONS
+------------------------------------------------------------
+C1. TRACKED-IGNORED CONFLICT: .idea/ is tracked but .gitignore says .idea/ should be ignored. Inspect history and contributor needs; propose untracking in an isolated PR ONLY after approval; do not delete local settings as a side effect.
+C2. OUTDATED FILE INVENTORY: docs/project-tree.txt currently references a historical smaller source tree (including src/app/scroll.css, absent at the inspected baseline), and omits substantial image/PDF/dashboard/observability/CI structure. Replace/update only through a separately approved, validated tree-inventory procedure; do not cite it as current authority.
+C3. STALE GENERATOR INVENTORIES: docs/features/src-app.md, src-component.md, src-lib.md and src-module.md are explicitly described as historical machine-generated layer listings, incomplete for current releases. Audit whether they should remain archival, be regenerated, or be renamed/labeled as historical; preserve provenance.
+C4. GENERATED SPEC DEBT: docs/modules/ and docs/components/ include mixed complete contracts and generated placeholder stubs. Compare each with actual owner before polishing/removing; selectively reconcile touched units. Never auto-delete all stubs or invent contracts.
+C5. DOCUMENTATION DUPLICATION: AGENTS.md and CLAUDE.md have extensive overlapping governance text, with small wording/detail differences. Keep both entrypoints and inspect exact differences before any deduplication. This manifest is the single folder-ownership map, not a replacement for either instruction document.
+C6. HISTORICAL REPORTS: docs/reports/ has durable accepted history and planning evidence; decide retention/archival policy only after per-report provenance inventory; do not conflate with ignored test-report output.
+C7. DISTINCT SCRIPT ROOTS: script/ (TypeScript programmatic checks) and scripts/ (PowerShell wrappers) coexist intentionally. Do NOT merge them simply because names look similar.
+C8. VENDOR / LICENSE ASSETS: public/vendor, public/licenses, test/fixtures and script/qpdf hold pinned binary/licensing fixtures. They are not trash or build junk. Clean only under separate supply-chain/byte-identity review.
+C9. DOCUMENTATION STATUS DRIFT: review current post-v0.4 release docs separately from frozen historical plans, and reconcile approved PR #22 before relying on newly frozen v0.5 planning state.
+C10. ROOT VS DASHBOARD: two separate package roots and deployables are deliberate; do not flatten dashboard into the public app to shorten directories.
+
+Required cleanup workflow before any deletion/move:
+ inventory tracked paths + ignored/untracked user work; identify actual owners and consumers through my-dev-kit and Git; compare Git history and accepted docs; produce path-by-path KEEP / REVISE / RELOCATE / ARCHIVE / PROPOSE DELETE with rationale, impact and tests; obtain explicit approval for exact removals; implement bounded non-destructive batches; validate; use PR; no blanket cleanup or history rewrite. Do not perform major cleanup inside v0.5 utility implementation batches.
+
+7. MANIFEST UPKEEP
+------------------------------------------------------------
+When an authorized change creates, moves or deletes any tracked directory, update manifest.txt in the SAME proposed change after verifying current paths and purpose. Do not record temporary directories as permanent architecture. Preserve history of approved relocations in reports instead of replacing it with a fresh unexplained folder map. Keep the complete ordered scope and old reports in their designated docs.
+
+Read this manifest together with AGENTS.md and CLAUDE.md on every coding task. If the repository state differs, verify and correct the mapping through a separately authorized documentation change before building on invented structure.
