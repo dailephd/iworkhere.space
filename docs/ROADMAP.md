@@ -175,7 +175,7 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 Status: Implementation, exact-SHA readiness, integration, and production
 technical launch are complete. Delivery 2 was merged and deployed on 2026-10-04;
-root package metadata remains 0.2.0 and the independent dashboard remains 0.1.0.
+at that launch root package metadata was 0.2.0 and the independent dashboard was 0.1.0.
 Manual Google Search Console and Bing Webmaster actions and the later 28-day
 measurement review remain operational follow-up. No ranking or traffic change
 is claimed.
@@ -258,7 +258,7 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 ## Version 0.3.0 — PDF & Document Essentials
 
 Status: RELEASED AND PUBLICLY DEPLOYED on 2026-10-06.
-Application package metadata is 0.3.0. PR #9 merged the release branch to
+Application package metadata was 0.3.0 at that release. PR #9 merged the release branch to
 `master` at `008458651bc8786b46fcc4b27ef119147e1e2579`; GitHub release
 `v0.3.0` is published. Production deployment is owner-confirmed. Exact Vercel
 deployment metadata remains an operational record and is not guessed here.
