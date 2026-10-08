@@ -135,13 +135,13 @@ See
 
 NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
-## v0.4.0 implementation candidate — 2026-10-07
+## v0.4.0 release content
 
 TARGET_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
-PACKAGE_VERSION: 0.3.1
+PACKAGE_VERSION: 0.4.0
 
-CURRENT_RELEASED_VERSION: v0.3.1
+PREVIOUS_FORMAL_RELEASE: v0.3.1
 
 V0_4_PLANNING: FROZEN
 
@@ -149,21 +149,21 @@ V0_4_IMPLEMENTATION: COMPLETE
 
 V0_4_DOCUMENTATION_RECONCILIATION: COMPLETE
 
-V0_4_PRE_RELEASE_READINESS: NEEDS_CORRECTION — the first run on `196d4c34b5c1a59bb8e5c5eacf5d850ce1fac418` found three issues (QR encoder bundle isolation, `npm run dev:check` stale paths, deployment-state wording); a complete new run is required after the readiness-correction merge
+V0_4_PRE_RELEASE_READINESS: PASS_READY_FOR_RELEASE_PREP — exact implementation candidate `34272e42a0bac1fc27860e1e60a8696f7a15044f`
 
-V0_4_RELEASE_PREPARATION: NOT_STARTED
+V0_4_RELEASE_PREPARATION: IN_PROGRESS — release content finalized on `release/v0.4.0`
 
 V0_4_RELEASED: NO
 
-FORMAL_RELEASE_VERSION: v0.3.1
+FORMAL_RELEASE_VERSION: v0.3.1 until release integration is approved and completed
 
-V0_4_FORMAL_RELEASE: NO — no v0.4.0 tag, GitHub Release or version bump exists
+V0_4_FORMAL_RELEASE: PENDING — release integration, production acceptance, tag and GitHub Release are separate subsequent steps
 
 PRODUCTION_CONTINUOUS_DEPLOYMENT: ACTIVE — the public Vercel project `iworkhere-space` deploys `master` automatically (see [DEPLOYMENT](DEPLOYMENT.md)); a continuous deployment is not a numbered release
 
-PRODUCTION_SOURCE_SHA (verified 2026-10-07): `196d4c34b5c1a59bb8e5c5eacf5d850ce1fac418` (Production deployment `dpl_8pVqUG4iN3vyC6f13e8jQnTQopi2`, matched to the GitHub deployment record for that SHA); later `master` merges redeploy automatically
+PRODUCTION_SOURCE_SHA (verified 2026-10-07): `34272e42a0bac1fc27860e1e60a8696f7a15044f` (GitHub Production deployment record `6923149452`); later `master` merges redeploy automatically
 
-LIVE_CATALOG (verified 2026-10-07): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
+LIVE_CATALOG (verified 2026-10-08): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
 
 Implementation lineage on `master`: Batch 1 (canonical `developer` category +
 JSON Formatter / Validator) merged at `59318b5f7b142a8154fead3153674a6c35eca4f2`
@@ -173,11 +173,10 @@ merged at `519bedf072be17593c371bfd7242713bdae93b95` (PR #17); a bounded
 related-tool-heading correction found by the completeness audit merged at
 `6601e119b67715f0ec5e34b86298136b7429572a` (PR #18).
 
-Candidate catalog: 18 tools, 7 populated categories, 27 registry-derived sitemap
-URLs. This candidate source is already served by the continuously deployed
-production project (see the production fields above); the formally released
-version remains v0.3.1, whose original launch record (23 URLs) is preserved below
-as history.
+Release-content catalog: 18 tools, 7 populated categories, 27 registry-derived
+sitemap URLs. The package version is 0.4.0. Continuous production deployment
+source and formal release integration are separate lifecycle facts; the
+v0.3.1 launch record (23 URLs) below is historical.
 
 Reports:
 [Batch 1](reports/V0_4_BATCH_1_IMPLEMENTATION_REPORT.md),
@@ -186,7 +185,7 @@ Reports:
 [related-tool label correction](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md),
 [completeness and reconciliation](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
-NEXT_ACTION: Run the full new standardized v0.4.0 pre-release readiness workflow on the corrected `master` SHA.
+NEXT_ACTION: Complete release-branch validation and required PR CI; await user approval before release integration.
 
 ## Historical v0.4.0 planning freeze — 2026-10-07
 

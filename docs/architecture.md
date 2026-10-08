@@ -313,13 +313,12 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
 ### Current tools
 
-The `master` registry (the unreleased v0.4.0 candidate) contains 18 tools across
+The `master` registry (v0.4.0 release content) contains 18 tools across
 seven populated categories in canonical order document, text, math, everyday,
 time, image, developer; the public sitemap derives 27 URLs. The released and
-deployed v0.3.1 catalog has 15 tools, six populated categories and 23 URLs. This
-list describes repository source. Production deploys `master` continuously, so
-the live site currently serves this catalog (verified 2026-10-07), but the formal
-v0.4.0 release lifecycle has not completed.
+v0.3.1 launch catalog historically had 15 tools, six populated categories
+and 23 URLs. This list describes repository source; production deploys `master`
+continuously.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
 - **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs
@@ -654,7 +653,7 @@ move tool logic out of the existing application layers. See
 
 ## Production integration ownership
 
-Existing observability facade and analytics/logger interfaces remain authoritative. Explicit browser opt-in selects same-origin network providers; defaults stay local. Metric validation/transport and server-only Neon persistence belong to module/observability; API routes adapt transport. Structured hosting logs remain active. `/api/log` keeps technical diagnostics separate from durable `/api/metric` measurements. Early instrumentation selects providers before tool effects. An isolated Web Vitals client uses the Next hook. Public advertising configuration belongs to module/ad; one reusable slot and one Next Script compose through AppShell. The v0.3.1 Vercel Web Analytics SDK is an additive exception, isolated to `src/component/observability/VercelWebAnalytics.tsx` and composed once from `src/app/layout.tsx`; its exact-true policy and URL sanitizer belong to `src/module/analytics/vercelWebAnalytics.client.ts`. It sends automatic page views only and remains default-off pending external production activation. Existing analytics, observability, Web Vitals and instrumentation-client ownership are preserved. The independent dashboard and SQL maintenance boundaries are defined at the start of this document.
+Existing observability facade and analytics/logger interfaces remain authoritative. Explicit browser opt-in selects same-origin network providers; defaults stay local. Metric validation/transport and server-only Neon persistence belong to module/observability; API routes adapt transport. Structured hosting logs remain active. `/api/log` keeps technical diagnostics separate from durable `/api/metric` measurements. Early instrumentation selects providers before tool effects. An isolated Web Vitals client uses the Next hook. Public advertising configuration belongs to module/ad; one reusable slot and one Next Script compose through AppShell. The v0.3.1 Vercel Web Analytics SDK is an additive exception, isolated to `src/component/observability/VercelWebAnalytics.tsx` and composed once from `src/app/layout.tsx`; its exact-true policy and URL sanitizer belong to `src/module/analytics/vercelWebAnalytics.client.ts`. It sends automatic page views only and is enabled for the public Production deployment. Existing analytics, observability, Web Vitals and instrumentation-client ownership are preserved. The independent dashboard and SQL maintenance boundaries are defined at the start of this document.
 
 ## UI/discovery Delivery 2 ownership
 

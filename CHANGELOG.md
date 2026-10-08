@@ -1,12 +1,10 @@
 # Changelog
 
-## Unreleased — v0.4.0 — Core Text, Data & Sharing Utilities
+## v0.4.0 — Core Text, Data & Sharing Utilities
 
-Implemented on `master` and, because the public Vercel project deploys `master`
-continuously, already served by production; not formally released (no v0.4.0 tag
-or GitHub Release, no version bump or release date). The root package version
-remains `0.3.1`. Candidate catalog: 18 tools, 7 populated categories, 27
-registry-derived sitemap URLs.
+This release completes the canonical developer category and adds three
+browser-local utilities. The registry contains 18 tools across seven populated
+categories and produces 27 canonical sitemap URLs.
 
 ### Catalog and categories
 - Added the canonical `developer` category with a single runtime category-definition owner; canonical order is document, text, math, everyday, time, image, developer.
@@ -19,7 +17,7 @@ registry-derived sitemap URLs.
 - Added the Word / Character Counter: Unicode word, grapheme-cluster character, non-whitespace character and line counts, with a 1 MiB UTF-8 limit. Counts update live without per-keystroke telemetry.
 
 ### QR
-- Added the QR Code Generator: browser-local generation, fixed error-correction level M, a 2048 UTF-8 byte limit, a fixed 512 × 512 black-on-white PNG preview and download.
+- Added the QR Code Generator: browser-local generation, fixed error-correction level M, a 2048 UTF-8 byte limit, a fixed 512 × 512 black-on-white PNG preview and download. The encoder loads lazily and creates PNG output synchronously for reliable preview and download.
 
 ### Dependencies
 - Added exact-pinned production dependency `uqr` 0.1.3 (MIT) and exact-pinned test-only decoder `jsqr` 1.4.0 (Apache-2.0); notices and the retained `uqr` license are recorded.
@@ -52,8 +50,8 @@ and query/hash redaction were verified during launch.
 - Kept document processing in the browser and loaded heavy PDF runtimes only
   when an operation requires them.
 
-This entry describes the release-prepared source. Production deployment remains
-a separate integration step.
+v0.3.0 was released and publicly deployed; this note records the shipped
+release content.
 
 ## v0.2.0 - 2026-10-02
 

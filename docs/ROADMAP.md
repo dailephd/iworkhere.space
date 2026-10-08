@@ -4,7 +4,7 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The root application package version is `0.3.1`; the independent dashboard
+The root application package version is `0.4.0`; the independent dashboard
 retains its own package version. Source release status and live production
 deployment status are tracked separately.
 
@@ -415,7 +415,7 @@ This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
-Status: Implementation complete; documentation reconciled; pre-release readiness pending. The implementation plan was frozen 2026-10-07; v0.4.0 is not released.
+Status: v0.4.0 release content is complete; implementation, documentation reconciliation, and exact-candidate pre-release readiness passed. The implementation plan was frozen 2026-10-07.
 
 Frozen plan: [v0.4.0 implementation plan](plans/v0.4.0-implementation-plan.md).
 
