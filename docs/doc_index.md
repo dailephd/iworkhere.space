@@ -157,7 +157,7 @@ catalog scope remains separate and future.
 
 ### plans/v0.4.0-implementation-plan.md
 
-**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation is now complete, documentation reconciled and pre-release readiness pending).
+**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation, documentation reconciliation, and exact-candidate pre-release readiness are complete).
 Defines the canonical `developer` category owner, category assignments, the
 frozen JSON Formatter / Validator, Word / Character Counter and QR Code
 Generator contracts, the QR dependency decision, the three-batch structure,
@@ -489,7 +489,8 @@ version plan remains historical process debt; no retrospective plan was authored
   `code-generation-guidelines.md` and visible in the file structure.
 - **Browser validation:** `TESTING.md` documents the implemented production
   desktop/mobile Chromium gate and current image-tool browser proofs. Hosted
-  E2E execution remains pending the final version PR.
+  E2E passed on the exact v0.4.0 implementation candidate; release pull
+  requests independently validate their release-content commits.
 - **Theme token detail remains implementation-owned:** `DESIGN.md` records the
   cross-theme contract; exact per-theme token values remain defined in
   `src/style/theme.css`.
@@ -524,5 +525,5 @@ version plan remains historical process debt; no retrospective plan was authored
 - [QrCodeGeneratorTool](components/QrCodeGeneratorTool.md): QR Code Generator UI, PNG/object-URL lifecycle, stale-result safety, telemetry and privacy contract.
 - [v0.4.0 Batch 3 implementation report](reports/V0_4_BATCH_3_IMPLEMENTATION_REPORT.md): Batch 3 evidence (created at batch completion).
 - [v0.4.0 related-tool label correction report](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md): completeness-audit correction making the related-tools heading reflect the related tools' categories.
-- [v0.4.0 implementation-completeness and reconciliation report](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md): final audit of the assembled v0.4 candidate against the frozen plan and the documentation reconciliation (implementation complete, documentation reconciled, pre-release readiness pending).
+- [v0.4.0 implementation-completeness and reconciliation report](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md): final audit of the assembled v0.4 candidate against the frozen plan and the documentation reconciliation (implementation complete and documentation reconciled; pre-release readiness was completed in a later run).
 - [v0.4.0 pre-release readiness correction report](reports/V0_4_PRE_RELEASE_READINESS_CORRECTION_REPORT.md): fixes for the first readiness run (QR encoder bundle isolation, `dev:check` stale paths, deployed-state wording) and the QR preview-latency finding.

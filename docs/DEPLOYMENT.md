@@ -127,26 +127,20 @@ See [ADVERTISING](ADVERTISING.md) and [OBSERVABILITY](OBSERVABILITY.md). NEXT_PU
 
 ## v0.3.1 Vercel Web Analytics integration
 
-The repository integration is implemented and v0.3.1 source is release-prepared. Production activation remains an external release step. Current live production remains v0.3.0.
+v0.3.1 was formally released and publicly deployed on 2026-10-06. Vercel Web
+Analytics is enabled for the public Production deployment, with URL query/hash
+redaction and no Vercel custom events. The public Vercel project continuously
+deploys `master`; this deployment behavior is independent of numbered release
+integration. v0.4.0 release preparation and its later integration are tracked
+separately in the release workflow and project status. See the verified
+[v0.3.1 launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md).
 
-The public project code includes default-off Vercel Web Analytics as additive
-traffic analytics. The Vercel project setting and Production flag have not been
-changed. The following launch steps remain pending:
+The public build-time flag is `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for
+Production only. Preview, Development, local E2E and container builds remain
+off by default. The app-owned `beforeSend` policy strips URL queries and
+fragments and drops malformed or unexpected events.
 
-1. Enable Web Analytics for the public `iworkhere-space` project in the Vercel
-   dashboard.
-2. Set `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for Production only. This is
-   a public build-time flag, not a secret; unset and non-exact values are off.
-   Preview, Development, local E2E and container builds remain off by default.
-3. Deploy the exact validated v0.3.1 source through the separate release
-   integration workflow.
-4. Verify real automatic initial and client-navigation page views in Vercel
-   Analytics.
-5. Verify production query-string and URL-fragment redaction.
-6. Verify existing application observability remains functional.
-
-The app-owned `beforeSend` policy strips URL queries and fragments and drops
-malformed or unexpected events. No public route denylist is currently needed.
+No public route denylist is currently needed.
 
 Version 2 uses Vercel Resilient Intake, so validation must not hard-code one
 fixed analytics script/intake URL. Enabling Web Analytics can create
