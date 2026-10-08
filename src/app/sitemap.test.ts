@@ -7,11 +7,12 @@ describe("public sitemap", () => {
         const urls = sitemap().map(entry => entry.url);
         expect(getAllTool()).toHaveLength(18);
         expect(getAvailableCategory()).toHaveLength(7);
-        expect(urls).toHaveLength(27);
-        expect(urls).toHaveLength(2 + getAllTool().length + getAvailableCategory().length);
+        expect(urls).toHaveLength(28);
+        expect(urls).toHaveLength(3 + getAllTool().length + getAvailableCategory().length);
         expect(new Set(urls).size).toBe(urls.length);
         expect(urls).toContain("https://iworkhere.space/");
         expect(urls).toContain("https://iworkhere.space/discover");
+        expect(urls.filter(url => url === "https://iworkhere.space/privacy")).toHaveLength(1);
         for (const tool of getAllTool()) expect(urls).toContain(`https://iworkhere.space${tool.seo.canonicalPath}`);
         for (const category of getAvailableCategory()) expect(urls).toContain(`https://iworkhere.space/category/${category}`);
         expect(urls).toContain("https://iworkhere.space/category/document");

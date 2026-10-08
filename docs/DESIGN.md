@@ -43,6 +43,12 @@ Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `glob
 
 ## Typography, spacing, and shape
 
+The public privacy page uses the existing AppShell, a readable `max-w-3xl`
+article, one H1 and H2 section headings with ordinary document scrolling.
+Policy and footer links are underlined with visible semantic focus rings.
+The existing footer keeps its copyright and wraps the Privacy Policy link
+onto a separate line on small screens. No new palette or material is introduced.
+
 Use one system sans-serif family for interface text and the existing monospace role for code. Establish hierarchy through size and weight, not display faces, decorative tracking, or excessive letter spacing. Keep spacing predictable and content comfortable without wasting workspace. Use consistent, slightly rounded shapes and subtle borders. Shadows separate surfaces; they do not decorate them.
 
 Use a consistent spacing rhythm instead of dense layouts or per-tool pixel tuning. Use size and weight for title, section, body, and caption hierarchy. Keep shadows subtle in every theme. Motion is optional; use only short, purposeful hover or focus transitions that do not move layout geometry. Avoid bounce, scale effects on primary layout, giant blur halos and decorative shadows. Expressive material shadows are bounded, directional and never the sole boundary.

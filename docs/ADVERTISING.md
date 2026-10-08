@@ -26,6 +26,35 @@ One Next Script, root-composed once with `afterInteractive` and `crossOrigin=ano
 
 AppShell remains the layout owner. Header/nav is followed by a labeled responsive horizontal top ad and then content. The top reserves at least 100px mobile / 90px from the small desktop breakpoint, with no clipping or maximum height. This reduces insertion CLS but cannot guarantee Google's filled size. Right uses a stable 176px column at xl (1280px), hidden narrower; the vertical unit has no fixed height. Neither slot is a utility control or receives expressive material styling. Footer slot capability remains, but root provides no fake footer banner and no footer ad is configured.
 
+## Public privacy disclosure (F-01)
+
+The server-rendered `/privacy` page uses `buildPageMetadata`, the existing
+AppShell and a site-wide Footer link. It is included in the public sitemap.
+It describes current first-party metrics and diagnostic processing separately
+from Vercel Web Analytics and currently disabled Google advertising.
+
+Disclosure evidence is owned by `metric.ts`, `logSafety.ts`, `diagnostic.ts`,
+`persistence.server.ts`, the database maintenance contracts, and
+`vercelWebAnalytics.client.ts`. Local preferences are owned by `themeStorage.ts`
+and `recentlyUsed.ts`; URL state by ToolClientFrame and the registry; offline
+page caching by `public/sw.js`. Tool processing remains local. The policy
+does not promise that hosting providers never process IP addresses, that all
+analytics are anonymous, or that database retention governs vendor logs.
+
+Google advertising text follows [Required content](https://support.google.com/adsense/answer/1348695)
+and links to Google Ad Settings and aboutads.info. It is conditional on future
+activation and does not claim that consent has been collected. Before any
+separately authorized activation, the publisher must confirm participating
+ad vendors and applicable consent configuration and update disclosures.
+Publisher identity/contact, jurisdiction-specific rights and legal basis,
+hosting-log settings and vendor retention require publisher/legal review
+before making additional claims; no unverified values are published.
+This F-01 implementation does not establish full legal compliance, resolve
+other audit findings, or claim AdSense approval. Tests exercise public SSR,
+metadata, footer navigation, disclosures, desktop/mobile layout and zero live
+advertising requests. Existing Observer configuration is evidence-only and
+does not supply executable acceptance for this page.
+
 ## External deployment gate
 
 Do not set the public ad flag true until the operator confirms all of:
