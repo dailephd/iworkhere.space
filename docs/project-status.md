@@ -133,7 +133,7 @@ or advertises a conflicting canonical.
 See
 [the pre-v0.4 indexing checkpoint report](reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md).
 
-NEXT_NUMBERED_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
+RELEASE_CONTENT_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
 ## v0.4.0 release content
 
@@ -151,17 +151,11 @@ V0_4_DOCUMENTATION_RECONCILIATION: COMPLETE
 
 V0_4_PRE_RELEASE_READINESS: PASS_READY_FOR_RELEASE_PREP — exact implementation candidate `34272e42a0bac1fc27860e1e60a8696f7a15044f`
 
-V0_4_RELEASE_PREPARATION: IN_PROGRESS — release content finalized on `release/v0.4.0`
-
-V0_4_RELEASED: NO
-
-FORMAL_RELEASE_VERSION: v0.3.1 until release integration is approved and completed
-
-V0_4_FORMAL_RELEASE: PENDING — release integration, production acceptance, tag and GitHub Release are separate subsequent steps
+V0_4_RELEASE_PREPARATION: COMPLETE
 
 PRODUCTION_CONTINUOUS_DEPLOYMENT: ACTIVE — the public Vercel project `iworkhere-space` deploys `master` automatically (see [DEPLOYMENT](DEPLOYMENT.md)); a continuous deployment is not a numbered release
 
-PRODUCTION_SOURCE_SHA (verified 2026-10-07): `34272e42a0bac1fc27860e1e60a8696f7a15044f` (GitHub Production deployment record `6923149452`); later `master` merges redeploy automatically
+PRE_RELEASE_PRODUCTION_SOURCE_SHA (verified 2026-10-07): `34272e42a0bac1fc27860e1e60a8696f7a15044f` (GitHub Production deployment record `6923149452`); later `master` merges redeploy automatically
 
 LIVE_CATALOG (verified 2026-10-08): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
 
@@ -185,7 +179,7 @@ Reports:
 [related-tool label correction](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md),
 [completeness and reconciliation](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
-NEXT_ACTION: Complete release-branch validation and required PR CI; await user approval before release integration.
+Release integration, GitHub Release identity, and final production acceptance are evidenced through the corresponding GitHub records and release launch report. Those event identities are recorded only after verification.
 
 ## Historical v0.4.0 planning freeze — 2026-10-07
 
