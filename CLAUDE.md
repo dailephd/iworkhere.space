@@ -2,6 +2,25 @@
 
 This file provides guidance to Claude Code when working with code in this repository.
 
+## Mandatory repository structure manifest
+
+Before planning, retrieving source for, editing, testing, or moving any repository file,
+read this file AND the root `manifest.txt` AND the other tracked agent entrypoint
+(`AGENTS.md` or `CLAUDE.md`) together. The actual tracked names use `.md`,
+not `agents.txt` or `claude.txt`. If supplementary local `.txt` agent
+instructions exist, read those too without treating them as a replacement for
+the tracked contracts.
+
+Use `manifest.txt` to select the existing directory owner and avoid scattering
+new code, tests, reports, worktrees, scripts or generated artifacts. Current
+Git/source and the relevant architecture/specification documents govern
+implementation facts; the manifest is an evidence-backed directory map, not
+permission to restructure the project. If a proposed new directory or file
+location conflicts with the manifest, stop and obtain a planner-owned ownership
+decision before editing. Every authorized directory creation, move or removal
+must update the manifest in the same change. Do not run large cleanup, remove
+tracked files or merge distinct source roots just because they look similar.
+
 ## Build & Development Commands
 
 npm run dev          # Start dev server (localhost:3000)
