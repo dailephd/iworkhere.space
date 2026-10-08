@@ -1,5 +1,29 @@
 # PROJECT STATUS
 
+## Current release and next implementation — 2026-10-08
+
+CURRENT_ROOT_PACKAGE_VERSION: 0.4.0 (private Next.js application; no npm publication)
+
+LATEST_GITHUB_RELEASE: v0.4.0 — published 2026-10-08
+
+RELEASE_PR: #21 — merged into `master` at `b619920048239e1b60ea20c4db5a4d0f01bdcd39`
+
+ANNOTATED_TAG: `v0.4.0` — peeled to the same merge commit
+
+CURRENT_REGISTERED_CATALOG: 18 utilities, 7 populated categories, 27 canonical sitemap URLs
+
+INDEPENDENT_DASHBOARD_PACKAGE_VERSION: 0.1.0
+
+NEXT_CATALOG_VERSION: v0.5.0 — Developer & Text Utility Suite (planned; not implemented)
+
+NEXT_REQUIRED_STEP: Inspect the current released source and retrieve fresh
+my-dev-kit evidence, then create/freeze `plans/v0.5.0-implementation-plan.md`
+from the preserved nine-tool ROADMAP scope before writing implementation
+prompts. The released v0.4.0 tag and its GitHub Release prove source-release
+identity, not a specific post-merge Vercel deployment. Earlier live technical
+acceptance is recorded in the v0.4 section below; do not silently promote it
+to post-tag deployment acceptance.
+
 ## v0.3.1 released and publicly deployed — 2026-10-06
 
 TARGET_VERSION: 0.3.1 — Vercel Web Analytics
@@ -135,13 +159,17 @@ See
 
 RELEASE_CONTENT_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
-## v0.4.0 release content
+## v0.4.0 release evidence and implementation lineage
 
 TARGET_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
 PACKAGE_VERSION: 0.4.0
 
 PREVIOUS_FORMAL_RELEASE: v0.3.1
+
+V0_4_GITHUB_RELEASE: `v0.4.0` — PUBLISHED 2026-10-08
+
+V0_4_MERGED_MAIN_SHA: `b619920048239e1b60ea20c4db5a4d0f01bdcd39` (PR #21)
 
 V0_4_PLANNING: FROZEN
 
@@ -179,7 +207,10 @@ Reports:
 [related-tool label correction](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md),
 [completeness and reconciliation](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
-Release integration, GitHub Release identity, and final production acceptance are evidenced through the corresponding GitHub records and release launch report. Those event identities are recorded only after verification.
+GitHub release integration and annotated tag are verified at the merge commit
+above. The pre-merge production technical snapshot in this section is historical;
+a separate post-merge deployment verification is required before claiming the
+numbered release's live deployment acceptance.
 
 ## Historical v0.4.0 planning freeze — 2026-10-07
 
@@ -485,13 +516,16 @@ package. No broader image-tool rollout or release status change is implied.
 
 ## Next action
 
-After this documentation reconciliation passes, return its exact candidate SHA
-to the planner for separate pre-release readiness. The
-[frozen v0.3.0 implementation plan](plans/v0.3.0-implementation-plan.md)
-has been implemented in all six batches. Readiness and release preparation
-have not run; no version bump, PR, merge or v0.3 deployment is performed here.
-External launch follow-up remains separately tracked in the Delivery 2 launch
-record and [deployment documentation](DEPLOYMENT.md).
+v0.4.0 release integration completed on 2026-10-08. Before starting v0.5.0,
+verify current `master` and deployment state and use a fresh my-dev-kit index to
+recover actual code ownership, canonical category/registry contracts, existing
+component patterns, tests, and browser acceptance. Create and freeze
+`plans/v0.5.0-implementation-plan.md` only after this retrieval; the plan does
+not yet exist and must not be treated as implemented. Preserve all nine
+Priority B tools and exclusions in ROADMAP.md. Proceed by bounded batches and
+separate documentation reconciliation, pre-release readiness, and release
+integration. Continue separately tracked Search Console/Bing and 28-day
+measurements without treating them as v0.5 implementation blockers.
 
 ## Theme refresh pilot
 

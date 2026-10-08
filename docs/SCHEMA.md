@@ -25,7 +25,7 @@ Silent reinterpretation of data is forbidden.
 
 ## 2. Tool Definition Schema
 
-**Source:** `src/module/tool/type.ts`, `src/module/tool/registry.ts`
+**Source:** `src/module/tool/type.ts`, `src/module/tool/category.ts`, `src/module/tool/registry.ts`
 
 A `ToolDefinition` represents one registered tool.
 
@@ -51,10 +51,13 @@ tools (`slugify`, `length-converter`, `html-text-extractor`,
 
 ### Allowed Category Values
 
-`document` | `image` | `text` | `math` | `time` | `everyday`
+`document` | `text` | `math` | `everyday` | `time` | `image` | `developer`
 
-New categories must be added to the `ToolCategory` type and to this document
-before use.
+The category IDs and their order are defined once by
+`tool_category_definition_list` in `src/module/tool/category.ts`; `ToolCategory`
+is derived from that list. The `developer` category was added in v0.4.0.
+New categories must be added to that single definition list and to this
+document before use.
 
 ### Allowed Capability Values
 

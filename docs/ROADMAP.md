@@ -175,7 +175,7 @@ Priority C and heavier processing utilities are intentionally outside this concr
 
 Status: Implementation, exact-SHA readiness, integration, and production
 technical launch are complete. Delivery 2 was merged and deployed on 2026-10-04;
-root package metadata remains 0.2.0 and the independent dashboard remains 0.1.0.
+at that launch root package metadata was 0.2.0 and the independent dashboard was 0.1.0.
 Manual Google Search Console and Bing Webmaster actions and the later 28-day
 measurement review remain operational follow-up. No ranking or traffic change
 is claimed.
@@ -258,7 +258,7 @@ remain pending owner access. No indexing, ranking, or traffic result is implied.
 ## Version 0.3.0 — PDF & Document Essentials
 
 Status: RELEASED AND PUBLICLY DEPLOYED on 2026-10-06.
-Application package metadata is 0.3.0. PR #9 merged the release branch to
+Application package metadata was 0.3.0 at that release. PR #9 merged the release branch to
 `master` at `008458651bc8786b46fcc4b27ef119147e1e2579`; GitHub release
 `v0.3.0` is published. Production deployment is owner-confirmed. Exact Vercel
 deployment metadata remains an operational record and is not guessed here.
@@ -415,7 +415,10 @@ This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
-Status: v0.4.0 release content is complete; implementation, documentation reconciliation, and exact-candidate pre-release readiness passed. The implementation plan was frozen 2026-10-07.
+Status: Released on 2026-10-08. PR #21 merged v0.4.0 into `master` at
+`b619920048239e1b60ea20c4db5a4d0f01bdcd39`; annotated tag `v0.4.0`
+and the GitHub Release refer to that commit. The implementation plan was frozen
+2026-10-07. Live deployment evidence remains separate from release identity.
 
 Frozen plan: [v0.4.0 implementation plan](plans/v0.4.0-implementation-plan.md).
 
@@ -792,9 +795,9 @@ v0.2.0  Image Utility Foundation
         ↓
 v0.3.0  PDF & Document Essentials
         ↓
-v0.3.1  Vercel Web Analytics (implementation complete; readiness passed; release prepared)
+v0.3.1  Vercel Web Analytics (released 2026-10-06)
         ↓
-v0.4.0  Core Text, Data & Sharing Utilities
+v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         Priority A complete
         ↓
 v0.5.0  Developer & Text Utility Suite
@@ -881,11 +884,21 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.1 implementation, documentation reconciliation, readiness and release
-preparation are complete. The next workflow is release integration and
-production launch. The v0.3.1 [frozen plan](plans/v0.3.1-implementation-plan.md)
-and [implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
-record scope and implementation evidence.
+v0.4.0 was merged, tagged, and published as a GitHub Release on
+2026-10-08. The root application package is `0.4.0` (private; no npm
+publication); the independent dashboard remains `0.1.0`. The next catalog
+implementation is **v0.5.0 — Developer & Text Utility Suite**. Before coding,
+inspect the released implementation, obtain a fresh my-dev-kit index and
+bounded owner/contract/test evidence, resolve security/runtime and UX
+contracts for the nine agreed utilities, then create and freeze
+`docs/plans/v0.5.0-implementation-plan.md`. That plan must contain bounded
+implementation batches, applicable use-case and browser acceptance, tests,
+dependencies, and exclusions. Do not invent the batch sequence in this roadmap.
+Release tagging does not on its own verify the resulting production deployment.
+
+Historical v0.3.1 scope and decisions remain in the
+[frozen plan](plans/v0.3.1-implementation-plan.md) and
+[implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md).
 
 Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
 validated, merged, and publicly deployed. Delivery 3 technical launch is

@@ -131,8 +131,8 @@ v0.3.1 was formally released and publicly deployed on 2026-10-06. Vercel Web
 Analytics is enabled for the public Production deployment, with URL query/hash
 redaction and no Vercel custom events. The public Vercel project continuously
 deploys `master`; this deployment behavior is independent of numbered release
-integration. v0.4.0 release preparation and its later integration are tracked
-separately in the release workflow and project status. See the verified
+integration. The later v0.4.0 source release completed on 2026-10-08; its deployment
+identity and acceptance must be verified separately from this historical launch. See the verified
 [v0.3.1 launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md).
 
 The public build-time flag is `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for
@@ -194,12 +194,12 @@ fixture. They are not deployment variables and must not contain credentials.
 For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. The 2026-10-03 diagnostic hotfix report records the deployment state before Delivery 2 integration. Current public
 production state is recorded below.
 
-## Current public production state — 2026-10-06
+## Historical public production launch — 2026-10-06
 
 The public Vercel project is `iworkhere-space`, linked to this GitHub repository
 with automatic production deployment from `master`.
 
-Current release:
+Release at the time:
 
 `v0.3.1` — Vercel Web Analytics
 
@@ -237,6 +237,22 @@ without changing application runtime behavior. The source/deployment above is
 therefore the durable v0.3.1 launch identity, not a promise that it remains the
 newest Vercel deployment forever. Query Vercel deployment metadata when the
 operationally current deployment ID/SHA is required.
+
+## v0.4.0 source release — 2026-10-08
+
+The current root application package version is `0.4.0`. PR #21 merged into
+`master` at `b619920048239e1b60ea20c4db5a4d0f01bdcd39`; the annotated
+tag `v0.4.0` and the published GitHub Release identify that same commit. It
+contains 18 registered utilities and seven populated categories. Pre-merge
+production checks on 2026-10-08 reported 27 sitemap URLs and HTTP 200 for
+the JSON Formatter, Word / Character Counter and QR Code Generator routes.
+
+Because Vercel deploys `master` continuously, the GitHub release alone does
+not prove the identity, health, or completion of the post-merge production
+deployment. Verify current Vercel deployment ID, source commit, domain, route
+health and browser acceptance independently before marking v0.4.0's numbered
+release as production-accepted. Do not replace the durable v0.3.1 launch
+identity above with an inferred deployment record.
 
 ## Vercel Analytics build defaults
 
