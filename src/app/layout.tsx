@@ -16,6 +16,7 @@ import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...buildPageMetadata({ title: "Utility Tool Platform", description: "Browser tools for images, text, math, time and everyday tasks.", canonicalPath: "/" }),
+  manifest: "/manifest.webmanifest",
   metadataBase: new URL(SITE_URL),
   other: { "google-adsense-account": ADSENSE_CLIENT },
 };
