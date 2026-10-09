@@ -49,7 +49,7 @@ test("document family: complete discovery, search, canonical SSR and related nav
     }
     expect(new Set(titles).size).toBe(5); expect(new Set(descriptions).size).toBe(5);
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(27);
+    expect(xml.match(/<loc>/g)).toHaveLength(28);
     for (const route of [...documents.map(tool => `/tool/${tool.slug}`), "/category/document"])
         expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/\/api\/|dashboard|vercel\.app|<loc>[^<]*[?#]/);

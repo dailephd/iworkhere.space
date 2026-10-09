@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { hasExpectedPublicSitemapUrls } from "./publicRouteInventory";
 
 interface CommandResult {
   code: number;
@@ -151,9 +152,9 @@ try {
 
   const sitemap = await fetch(`${baseUrl}/sitemap.xml`);
   if (!sitemap.ok) throw new Error("Container sitemap is unavailable.");
-  const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
-  if (publicRoutes.length !== 27 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
-  const routes = [...publicRoutes, "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt", "/licenses/uqr-0.1.3-LICENSE.txt"];
+  const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+  if (!hasExpectedPublicSitemapUrls(publicRoutes)) throw new Error("Container public route inventory mismatch.");
+  const routes = [...publicRoutes.map(url => new URL(url).pathname), "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt", "/licenses/uqr-0.1.3-LICENSE.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {
     const response = await fetch(`${baseUrl}${route}`);
