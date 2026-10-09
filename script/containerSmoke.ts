@@ -14,9 +14,11 @@ const runId = `${new Date().toISOString().replace(/[:.]/g, "-")}-${randomBytes(4
 const reportDir = path.resolve("test-report", "container", runId);
 const imageName = `iworkhere-space:container-test-${runId}`;
 const containerName = `iworkhere-container-test-${runId}`;
+const nodeBaseImage = process.env.CONTAINER_NODE_IMAGE?.trim() || "node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6";
 const summary: Record<string, unknown> = {
   CONTAINER_RUN_ID: runId,
   startingSha: "unavailable",
+  nodeBaseImage,
   dockerClientVersion: null,
   dockerServerVersion: null,
   imageId: null,
@@ -112,7 +114,7 @@ try {
   summary.dockerServerVersion = versions.Server?.Version ?? null;
 
   await runChecked("docker", ["compose", "config"]);
-  const build = await command("docker", ["build", "--pull", "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--build-arg", "NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
+  const build = await command("docker", ["build", "--pull", "--build-arg", `NODE_BASE_IMAGE=${nodeBaseImage}`, "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--build-arg", "NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
   await writeFile(path.join(reportDir, "docker-build.log"), `${build.stdout}\n${build.stderr}`, "utf8");
   if (build.code !== 0) throw new Error(`Docker build failed (${build.code}).`);
   imageCreated = true;

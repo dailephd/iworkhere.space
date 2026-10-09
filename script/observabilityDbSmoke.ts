@@ -8,6 +8,7 @@ interface SmokeQuery { text: string; parameter: string[] }
 const runId = `observability-db-${new Date().toISOString().replace(/[:.]/g, "-")}-${randomBytes(4).toString("hex")}`;
 const reportDir = path.resolve("test-report", runId);
 const container = `iworkhere-observability-${runId.toLowerCase()}`;
+const postgresImage = process.env.OBSERVABILITY_POSTGRES_IMAGE?.trim() || "postgres:17";
 mkdirSync(reportDir, { recursive: true });
 const log: string[] = [];
 let created = false;
@@ -29,7 +30,7 @@ function assertSql(condition: string, label: string): void {
 async function smoke(): Promise<void> {
     process.stdout.write(`OBSERVABILITY_DB_RUN_ID: ${runId}\nReport: ${reportDir}\n`);
     try {
-        docker(["run", "--detach", "--name", container, "--env", "POSTGRES_HOST_AUTH_METHOD=trust", "postgres:17"]);
+        docker(["run", "--detach", "--name", container, "--env", "POSTGRES_HOST_AUTH_METHOD=trust", postgresImage]);
         created = true;
         let ready = false;
         for (let attempt = 0; attempt < 60; attempt++) {
@@ -147,7 +148,7 @@ async function smoke(): Promise<void> {
     } finally {
         if (created) docker(["rm", "--force", container]); // only this uniquely named container
         writeFileSync(path.join(reportDir, "postgres.log"), log.join("\n"));
-        writeFileSync(path.join(reportDir, "summary.json"), JSON.stringify({ runId, passed, container, cleaned: created }, null, 2));
+        writeFileSync(path.join(reportDir, "summary.json"), JSON.stringify({ runId, passed, container, image: postgresImage, cleaned: created }, null, 2));
     }
     process.stdout.write("Disposable Postgres schema/rollup/retention smoke passed.\n");
 }
