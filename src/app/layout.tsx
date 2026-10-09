@@ -7,9 +7,7 @@ import { getAvailableCategory } from "@/module/tool/metadata"
 import type { NavItem } from "@/component/layout/type"
 import "./global.css";
 import {ReactNode} from "react";
-import { ADSENSE_CLIENT, adsenseEnabled } from "@/module/ad/config";
-import { AdSenseSlot } from "@/component/common/AdSenseSlot";
-import { AdSenseScript } from "@/component/common/AdSenseScript";
+import { ADSENSE_CLIENT } from "@/module/ad/config";
 import { WebVitals } from "@/component/common/WebVitals";
 import { VercelWebAnalytics } from "@/component/observability/VercelWebAnalytics";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo";
@@ -46,15 +44,12 @@ export default function RootLayout({
         <ThemeProvider>
             <AppShell
                 navItem={navItem}
-                headerBannerSlot={adsenseEnabled() ? <AdSenseSlot placement="header" /> : undefined}
-                rightBannerSlot={adsenseEnabled() ? <AdSenseSlot placement="right" /> : undefined}
             >
                 {children}
             </AppShell>
             <ServiceWorkerRegister />
             <WebVitals />
             <VercelWebAnalytics />
-            <AdSenseScript />
         </ThemeProvider>
         </body>
         </html>
