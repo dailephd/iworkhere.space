@@ -65,6 +65,17 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).toContain("Related everyday tools");
                 return;
             }
+            if (["slugify", "length-converter", "weight-converter", "html-text-extractor"].includes(tool.id)) {
+                expect(guide).toBeDefined();
+                expect(html).toContain("How to use");
+                expect(html).toContain("Interactive workspace");
+                for (const section of guide!.section) expect(html).toContain(section.heading);
+                expect(new Set(guide!.relatedToolId).size).toBe(guide!.relatedToolId.length);
+                expect(guide!.relatedToolId).not.toContain(tool.id);
+                expect(related.map(item => item.id)).toEqual(guide!.relatedToolId);
+                for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
+                return;
+            }
             if (tool.category !== "image") {
                 expect(guide).toBeUndefined();
                 expect(html).not.toContain("Supported images and limits");

@@ -1,5 +1,9 @@
 # PROJECT STATUS
 
+## F-03 / A-01 local implementation - 2026-10-09
+
+Four existing utility guides and the visible associated Slugify input label are implemented in an isolated, uncommitted feature worktree. Local verification and desktop/mobile acceptance pass; route-specific Observer acceptance remains REVIEW_REQUIRED. See [local validation report](reports/adsense-f03-a01-local-validation.md) for container results and exact evidence. F-01 and F-02 remain separate unmerged PRs; this work is not deployed and does not enable advertising.
+
 ## v0.3.1 released and publicly deployed — 2026-10-06
 
 TARGET_VERSION: 0.3.1 — Vercel Web Analytics
