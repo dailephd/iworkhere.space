@@ -2,15 +2,25 @@ import { afterEach, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import RootLayout, { metadata } from "./layout";
+import type { AppShellProps } from "@/component/layout/AppShell";
+
+const { appShell } = vi.hoisted(() => ({ appShell: vi.fn() }));
+const adRegionProps = ["headerBannerSlot", "leftBannerSlot", "rightBannerSlot", "footerBannerSlot"] as const;
+function assertNoAdRegions(props: AppShellProps) {
+    for (const name of adRegionProps) expect(props[name], name).toBeUndefined();
+}
 
 vi.mock("@/module/tool/metadata", () => ({ getAvailableCategory: () => [] }));
 vi.mock("@/component/common/ThemeProvider", () => ({ ThemeProvider: ({ children }: { children: ReactNode }) => children }));
 vi.mock("@/component/layout/ServiceWorkerRegister", () => ({ ServiceWorkerRegister: () => null }));
 vi.mock("@/component/common/WebVitals", () => ({ WebVitals: () => null }));
 vi.mock("@/component/observability/VercelWebAnalytics", () => ({ VercelWebAnalytics: () => <script data-test-vercel-wrapper="true" /> }));
-vi.mock("@/component/layout/AppShell", () => ({ default: ({ headerBannerSlot, rightBannerSlot, footerBannerSlot, children }: { headerBannerSlot?: ReactNode; rightBannerSlot?: ReactNode; footerBannerSlot?: ReactNode; children: ReactNode }) => <><header>{headerBannerSlot}</header><main>{children}</main><aside>{rightBannerSlot}</aside><footer>{footerBannerSlot}</footer></> }));
+vi.mock("@/component/layout/AppShell", () => ({ default: (props: AppShellProps) => {
+    appShell(props);
+    return <><header>{props.headerBannerSlot}</header><aside>{props.leftBannerSlot}</aside><main>{props.children}</main><aside>{props.rightBannerSlot}</aside><footer>{props.footerBannerSlot}</footer></>;
+} }));
 vi.mock("next/script", () => ({ default: (props: { id: string; src: string }) => <script async id={props.id} src={props.src} /> }));
-afterEach(() => { vi.unstubAllEnvs(); });
+afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
 
 it("composes exactly one Vercel Analytics wrapper", () => {
     const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
@@ -28,15 +38,19 @@ it("disabled root supplies no advertisement or footer placeholder", () => {
     expect(html).not.toContain("Right banner");
     expect(html).toContain("Workspace");
 });
-it("enabled root composes one script and exactly the supplied top/right slots", () => {
+it("keeps root and navigation content ad-free even when the global flag is enabled", () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "true");
     const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
-    expect(html.match(/id="google-adsense"/g)).toHaveLength(1);
-    expect(html.match(/data-ad-slot=/g)).toHaveLength(2);
-    expect(html).toContain('data-ad-slot="4100977160"');
-    expect(html).toContain('data-ad-slot="2496999884"');
-    expect(html.indexOf('data-ad-slot="4100977160"')).toBeLessThan(html.indexOf("Workspace"));
-    expect(html.indexOf('data-ad-slot="2496999884"')).toBeGreaterThan(html.indexOf("Workspace"));
+    expect(appShell).toHaveBeenCalledTimes(1);
+    assertNoAdRegions(appShell.mock.calls[0][0]);
+    expect(html).not.toContain("google-adsense");
+    expect(html).not.toContain("adsbygoogle");
+    expect(html).not.toContain("Advertisement");
     expect(html).toContain("<footer></footer>");
+});
+
+it.each(adRegionProps)("the root regression assertion rejects an accidentally supplied %s", name => {
+    const props: AppShellProps = { children: <h1>Workspace</h1>, [name]: <div>Accidental advertising region</div> };
+    expect(() => assertNoAdRegions(props)).toThrow();
 });
