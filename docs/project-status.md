@@ -1,8 +1,8 @@
 # PROJECT STATUS
 
-## F-03 / A-01 local implementation - 2026-10-09
+## AdSense remediation and Le branding integration candidate - 2026-10-09
 
-Four existing utility guides and the visible associated Slugify input label are implemented in an isolated, uncommitted feature worktree. Local verification and desktop/mobile acceptance pass; route-specific Observer acceptance remains REVIEW_REQUIRED. See [local validation report](reports/adsense-f03-a01-local-validation.md) for container results and exact evidence. F-01 and F-02 remain separate unmerged PRs; this work is not deployed and does not enable advertising.
+The accepted changes from PRs #24–27 are integrated on `integration/adsense-remediation-and-le-logo`: F-01 privacy policy, F-02 advertising eligibility, F-03/A-01 utility guides and Slugify accessibility, and Le branding/icons. Local verification and desktop/mobile browser acceptance pass; route-specific Observer acceptance remains REVIEW_REQUIRED. The candidate has 18 registered tools and 28 public sitemap URLs. It is an unmerged integration candidate, is not deployed, and does not enable advertising. AdSense approval and publisher/legal review remain external and unverified. See [local validation report](reports/adsense-f03-a01-local-validation.md) for feature-specific evidence.
 
 ## v0.3.1 released and publicly deployed — 2026-10-06
 
