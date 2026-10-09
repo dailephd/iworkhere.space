@@ -1,5 +1,7 @@
 # Design system
 
+Slugify uses a visible Text label explicitly associated with `slugify-input`. Its input follows existing semantic input tokens, full-width responsive sizing and a visible keyboard focus outline. This applies the existing form convention without adding tokens or changing the page template.
+
 This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `docs/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
 
 The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The user approved Delivery 1 (homepage, compact navigation, Image Resizer, and current theme/material behavior) on 2026-10-03. Delivery 2 image-family rollout and search foundation was implemented, validated, merged, and publicly deployed on 2026-10-04. The visual/layout acceptance remains recorded in the plan and launch evidence; no new design-system scope was added.
