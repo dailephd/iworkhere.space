@@ -6,8 +6,19 @@ import * as ts from "typescript";
 import { canonicalUrl, SITE_URL } from "@/lib/seo";
 
 function readRegisteredToolUrls(source: string): string[] {
+    const syntaxDiagnostics = ts.transpileModule(source, {
+        fileName: "registry.ts",
+        compilerOptions: {
+            target: ts.ScriptTarget.ES2022,
+            module: ts.ModuleKind.ESNext,
+        },
+        reportDiagnostics: true,
+    }).diagnostics ?? [];
+    if (syntaxDiagnostics.some(diagnostic => diagnostic.category === ts.DiagnosticCategory.Error)) {
+        throw new Error("Registry parser: TypeScript syntax could not be parsed");
+    }
+
     const file = ts.createSourceFile("registry.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-    if (file.parseDiagnostics.length > 0) throw new Error("Registry parser: TypeScript syntax could not be parsed");
     const declaration = file.statements.find((statement): statement is ts.VariableStatement =>
         ts.isVariableStatement(statement) && statement.declarationList.declarations.some(item =>
             ts.isIdentifier(item.name) && item.name.text === "tool_definition_list"));
@@ -229,6 +240,9 @@ test("sitemap tool inventory tolerates informational routes and rejects tool reg
     expect(() => expectToolRouteInventories(expected, replacedDiscoverRoute, replacedSitemapRoute)).toThrow();
     expect(() => expectToolRouteInventories(expected, discover, duplicateToolRoute)).toThrow();
     expect(() => expectToolRouteInventories(expected, discover, duplicateNonToolRoute)).toThrow();
+    expect(() => readRegisteredToolUrls('export const tool_definition_list = [;')).toThrow(/syntax could not be parsed/);
+    expect(readRegisteredToolUrls('export const tool_definition_list = [{ id: "valid", slug: "valid", seo: { canonicalPath: "/tool/valid" } }];'))
+        .toEqual([canonicalUrl("/tool/valid")]);
     expect(() => readRegisteredToolUrls('export const tool_definition_list = [{ id: "bad", slug: "bad", seo: {} }];')).toThrow(/canonicalPath/);
 
     await testInfo.attach("sitemap-inventory-proof", {
