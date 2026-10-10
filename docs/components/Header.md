@@ -34,7 +34,8 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current presentation
 
-The home link displays `iworkhere.space`. Compact navigation links are composed from the existing navigation owner and populated category metadata. A `Search tools` link leads to the existing Discover search instead of rendering an inactive search input. The shared theme trigger displays `Themes`. Navigation wraps on narrow screens. The Delivery 1 pilot is visually approved by the user on 2026-10-03. See `docs/DESIGN.md`.
+The home link displays the Le brand mark (`LeMark`, decorative for assistive
+technology) beside `iworkhere.space`. Compact navigation links are composed from the existing navigation owner and populated category metadata. A `Search tools` link leads to the existing Discover search instead of rendering an inactive search input. The shared theme trigger displays `Themes`. Navigation wraps on narrow screens. The Delivery 1 pilot is visually approved by the user on 2026-10-03. See `docs/DESIGN.md`.
 
 
 ### Component-color correction (Delivery 1 visually approved 2026-10-03)

@@ -20,12 +20,18 @@ The original v0.1.0 product baseline provides six registered utilities:
 The v0.2 image family brings the catalog to ten tools. Package version and
 implementation scope are tracked separately.
 
-The v0.3 document family brings the live catalog to fifteen tools. v0.3.0 was
+The v0.3 document family brought the catalog to fifteen tools. v0.3.0 was
 integrated through PR #9, merged to `master` at
 `008458651bc8786b46fcc4b27ef119147e1e2579`, published as GitHub release
 `v0.3.0` on 2026-10-06, and is now publicly deployed. Source-release identity
 and hosting/deployment identity remain separate records; this planning update
 does not invent an unverified Vercel deployment ID.
+
+v0.4.0 was formally released on 2026-10-08 (PR #21; tag and GitHub
+Release `v0.4.0`), completing Priority A at 18 registered utilities. The
+subsequent PR #28 merge on 2026-10-10 added the public privacy route, bringing
+the current `master` sitemap to 28 URLs (27 at the v0.4.0 release). This does
+not create a new numbered catalog release or prove the latest Vercel deployment.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -415,7 +421,10 @@ This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
-Status: v0.4.0 release content is complete; implementation, documentation reconciliation, and exact-candidate pre-release readiness passed. The implementation plan was frozen 2026-10-07.
+Status: RELEASED — 2026-10-08. PR #21 merged v0.4.0 into `master`;
+Git tag and GitHub Release `v0.4.0` are published. The implementation plan
+was frozen 2026-10-07. Post-release PR #28 is tracked separately; it does not
+change the v0.4.0 release contents.
 
 Frozen plan: [v0.4.0 implementation plan](plans/v0.4.0-implementation-plan.md).
 
@@ -484,7 +493,7 @@ in the [frozen implementation plan](plans/v0.4.0-implementation-plan.md).
 
 ## Version 0.5.0 — Developer & Text Utility Suite
 
-Status: Planned
+Status: NEXT PLANNED VERSION — implementation plan not yet frozen
 
 ### Goal
 
@@ -644,9 +653,10 @@ sitemap/robots policy. After the v0.3 document family, the live sitemap contains
 investigated: the known redirected variants are intentional HTTP/HTTPS and
 trailing-slash normalization, while all 23 current sitemap URLs passed a live
 direct-200, indexable, self-canonical audit. The current sitemap was re-submitted
-to Google for re-download. The remaining pre-v0.4 infrastructure check is to
-verify the Vercel `www` → apex redirect because Google retains historical
-`www` crawl/index evidence. Search-engine recrawl and index inclusion remain
+to Google for re-download. The remaining pre-v0.4 infrastructure check was subsequently resolved:
+Vercel `www` → apex redirects were verified PASS on 2026-10-07. The
+23-URL crawl audit above is a dated historical measurement, not the current
+sitemap inventory. Current `master` derives 28 URLs including `/privacy`. Search-engine recrawl and index inclusion remain
 measurement, not a product-version gate unless they expose an actual canonical
 production defect.
 
@@ -751,9 +761,15 @@ Vercel Web Analytics integration is explicitly additive traffic analytics; it
 does not authorize replacing the existing analytics/observability providers or
 duplicating canonical tool events.
 
-### Advertising provider integration
+### Advertising activation and future provider evolution
 
-Advertising placeholders exist, but provider, privacy, loading, security, responsive, failure, and slot behavior are unresolved.
+The application has an implemented, default-off Google AdSense integration.
+Manual slots are restricted to eligible tool pages, with responsive placement,
+privacy disclosure, and failure handling documented in `ADVERTISING.md`.
+External account approval, publisher/legal review, `ads.txt` authorization,
+applicable consent configuration, and any production activation remain separate
+unverified operational decisions. A future replacement or expansion of the
+advertising provider remains Version TBD; do not implement it as part of v0.5.0.
 
 ### Server-side storage backend
 
@@ -783,7 +799,7 @@ These are not canceled. They remain future candidates for a later catalog planni
 The current concrete product sequence is:
 
 ```text
-v0.1.0  Current product baseline
+v0.1.0  Original product baseline
 
 v0.1.1  Development Validation Hardening
         integrated / accepted validation baseline
@@ -792,9 +808,9 @@ v0.2.0  Image Utility Foundation
         ↓
 v0.3.0  PDF & Document Essentials
         ↓
-v0.3.1  Vercel Web Analytics (implementation complete; readiness passed; release prepared)
+v0.3.1  Vercel Web Analytics (released 2026-10-06)
         ↓
-v0.4.0  Core Text, Data & Sharing Utilities
+v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         Priority A complete
         ↓
 v0.5.0  Developer & Text Utility Suite
@@ -881,18 +897,25 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-v0.3.1 implementation, documentation reconciliation, readiness and release
-preparation are complete. The next workflow is release integration and
-production launch. The v0.3.1 [frozen plan](plans/v0.3.1-implementation-plan.md)
-and [implementation report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_IMPLEMENTATION_REPORT.md)
-record scope and implementation evidence.
+The v0.4.0 implementation and formal GitHub release are complete. PR #28
+subsequently merged the public privacy page, ad eligibility correction,
+utility guides, accessibility work, and Le branding into `master`. The
+next numbered roadmap version is **v0.5.0 — Developer & Text Utility Suite**.
+
+Before coding, inspect the current `master` candidate with fresh my-dev-kit
+evidence, resolve the nine tools' security, input/output, runtime and UI/test
+contracts, and create `docs/plans/v0.5.0-implementation-plan.md`. Freeze
+context-sharing batches and acceptance criteria there, not in this roadmap.
+Do not reopen the v0.4.0 batches, move v0.6.0 work forward, or treat AdSense
+approval, Search Console recrawl, or Bing submission as v0.5.0 feature scope.
 
 Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
 validated, merged, and publicly deployed. Delivery 3 technical launch is
 complete. Remaining operational follow-up is owner-authenticated Google Search
 Console and Bing Webmaster sitemap/priority-URL work, followed by the planned
 28-day measurement review. These steps do not imply ranking or traffic
-improvement. Current v0.3.0 production state is recorded in project-status.md.
+improvement. Current repository/release state is recorded in project-status.md; exact
+latest deployment identity requires separate Vercel verification.
 
 Historical v0.2 implementation and exact-SHA readiness record: the eight hosted
 workflows passed at 339091c5aaf4ad31be656756a7f4e4c121cc37de on the immutable

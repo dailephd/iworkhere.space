@@ -41,8 +41,9 @@ targets and are not expected to be indexed separately.
 
 Do not duplicate the host redirect in application middleware or
 `next.config.ts` when Vercel already owns the canonical-domain redirect.
-Before the v0.4.0 implementation plan is frozen, verify the current Vercel
-custom-domain state because Google retains historical `www` indexing evidence.
+The pre-v0.4.0 domain checkpoint on 2026-10-07 verified the configured
+Vercel `www` to HTTPS apex redirects as PASS. Reverify the domain configuration
+if future production evidence shows a canonical-host defect.
 If the deployed domain configuration differs from this contract, correct the
 deployment/domain layer first. Search Console recrawl/index inclusion is
 monitored separately and does not justify changing correct canonical behavior.
@@ -131,8 +132,8 @@ v0.3.1 was formally released and publicly deployed on 2026-10-06. Vercel Web
 Analytics is enabled for the public Production deployment, with URL query/hash
 redaction and no Vercel custom events. The public Vercel project continuously
 deploys `master`; this deployment behavior is independent of numbered release
-integration. v0.4.0 release preparation and its later integration are tracked
-separately in the release workflow and project status. See the verified
+integration. v0.4.0 was subsequently released on 2026-10-08; the later
+PR #28 source merge is not itself proof of a Vercel production deployment. See the verified
 [v0.3.1 launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md).
 
 The public build-time flag is `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for
@@ -194,14 +195,17 @@ fixture. They are not deployment variables and must not contain credentials.
 For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. The 2026-10-03 diagnostic hotfix report records the deployment state before Delivery 2 integration. Current public
 production state is recorded below.
 
-## Current public production state — 2026-10-06
+## Verified historical v0.3.1 production launch — 2026-10-06
 
 The public Vercel project is `iworkhere-space`, linked to this GitHub repository
 with automatic production deployment from `master`.
 
-Current release:
+Latest numbered GitHub Release (verified 2026-10-10):
 
-`v0.3.1` — Vercel Web Analytics
+`v0.4.0` — Core Text, Data & Sharing Utilities, published 2026-10-08.
+The exact newest Vercel deployment for subsequent `master` commits was not
+verified by this documentation update. The following SHA and deployment ID
+belong to the historical v0.3.1 launch, not to the latest release.
 
 v0.3.1 release merge / launch source:
 

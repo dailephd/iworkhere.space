@@ -1,8 +1,45 @@
 # PROJECT STATUS
 
-## AdSense remediation and Le branding integration candidate - 2026-10-09
+## Current repository and next planning step — 2026-10-10
 
-The accepted changes from PRs #24–27 are integrated on `integration/adsense-remediation-and-le-logo`: F-01 privacy policy, F-02 advertising eligibility, F-03/A-01 utility guides and Slugify accessibility, and Le branding/icons. Local verification and desktop/mobile browser acceptance pass; route-specific Observer acceptance remains REVIEW_REQUIRED. The candidate has 18 registered tools and 28 public sitemap URLs. It is an unmerged integration candidate, is not deployed, and does not enable advertising. AdSense approval and publisher/legal review remain external and unverified. See [local validation report](reports/adsense-f03-a01-local-validation.md) for feature-specific evidence.
+DEFAULT_BRANCH: `master`
+
+LATEST_VERIFIED_MASTER_SHA: `2f1f3ab71ac9483a661b1c061302ccb7b604dc93`
+
+CURRENT_ROOT_PACKAGE_VERSION: `0.4.0` (independent dashboard: `0.1.0`)
+
+LATEST_NUMBERED_GITHUB_RELEASE: `v0.4.0` — published 2026-10-08;
+release PR #21 merged at `b619920048239e1b60ea20c4db5a4d0f01bdcd39`.
+
+CURRENT_SOURCE_CATALOG: 18 registered tools; seven populated categories;
+28 registry-derived sitemap URLs, including `/privacy`. The tagged v0.4.0
+release contained 27 URLs before that additional route.
+
+POST_RELEASE_SOURCE_INTEGRATION: PR #28 — MERGED 2026-10-10 at the master SHA above.
+
+PRODUCTION_DEPLOYMENT: The public Vercel project is configured to deploy
+`master` continuously. The exact latest post-merge Vercel deployment SHA,
+status, advertising activation state and AdSense approval were not independently
+verified by this repository/documentation audit; no deployment or approval is
+inferred from the GitHub merge.
+
+NEXT_NUMBERED_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
+`docs/plans/v0.5.0-implementation-plan.md` does not yet exist. Next action:
+planner-owned contract/architecture/test design and a frozen version plan before
+implementation. Preserve the v0.6.0 and Version-TBD boundaries in ROADMAP.md.
+
+## AdSense remediation and Le branding source integration — 2026-10-10
+
+PR #28 merged the accepted changes from PRs #24–27 into `master`: F-01 privacy
+policy, F-02 advertising eligibility, F-03/A-01 utility guides and Slugify
+accessibility, and Le branding/icons. The prior candidate's local verification
+and desktop/mobile browser acceptance passed; route-specific Observer acceptance
+remained REVIEW_REQUIRED. The source includes 18 tools and 28 sitemap URLs.
+This GitHub merge does not independently establish a successful current Vercel
+deployment or enable advertising. AdSense approval and publisher/legal review
+remain external and unverified. See the
+[local validation report](reports/adsense-f03-a01-local-validation.md)
+for feature-specific evidence.
 
 ## v0.3.1 released and publicly deployed — 2026-10-06
 
@@ -145,7 +182,7 @@ TARGET_VERSION: 0.4.0 — Core Text, Data & Sharing Utilities
 
 PACKAGE_VERSION: 0.4.0
 
-PREVIOUS_FORMAL_RELEASE: v0.3.1
+PREVIOUS_FORMAL_RELEASE_AT_V0_4_RELEASE: v0.3.1
 
 V0_4_PLANNING: FROZEN
 
@@ -161,7 +198,7 @@ PRODUCTION_CONTINUOUS_DEPLOYMENT: ACTIVE — the public Vercel project `iworkher
 
 PRE_RELEASE_PRODUCTION_SOURCE_SHA (verified 2026-10-07): `34272e42a0bac1fc27860e1e60a8696f7a15044f` (GitHub Production deployment record `6923149452`); later `master` merges redeploy automatically
 
-LIVE_CATALOG (verified 2026-10-08): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
+V0_4_RELEASE_DAY_CATALOG (verified 2026-10-08): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
 
 Implementation lineage on `master`: Batch 1 (canonical `developer` category +
 JSON Formatter / Validator) merged at `59318b5f7b142a8154fead3153674a6c35eca4f2`
@@ -183,7 +220,10 @@ Reports:
 [related-tool label correction](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md),
 [completeness and reconciliation](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
-Release integration, GitHub Release identity, and final production acceptance are evidenced through the corresponding GitHub records and release launch report. Those event identities are recorded only after verification.
+V0_4_GITHUB_RELEASE: `v0.4.0` — PUBLISHED 2026-10-08. PR #21 merged
+at `b619920048239e1b60ea20c4db5a4d0f01bdcd39`. This numbered release
+record is separate from later `master` deployments and PR #28. The exact
+latest post-release Vercel deployment identity remains unverified here.
 
 ## Historical v0.4.0 planning freeze — 2026-10-07
 
@@ -475,7 +515,7 @@ implemented in the working tree and is `PILOT_IMPLEMENTED_PENDING_VISUAL_APPROVA
 Its visual artifacts and final technical validation remain part of the review
 package. No broader image-tool rollout or release status change is implied.
 
-## External production integration status
+## Historical external production integration status — v0.3.0 checkpoint
 
 - Visual approval of the homepage/Image Resizer pilot before image-family rollout.
 - Any removal of the currently retained right/footer banners requires explicit approval.
@@ -487,7 +527,7 @@ package. No broader image-tool rollout or release status change is implied.
   enrichment, About content and RustLogProvider activation. The new plan defines
   only the bounded near-term discovery subset, not these entire workstreams.
 
-## Next action
+## Historical next action — v0.3.0 documentation checkpoint
 
 After this documentation reconciliation passes, return its exact candidate SHA
 to the planner for separate pre-release readiness. The
@@ -497,7 +537,7 @@ have not run; no version bump, PR, merge or v0.3 deployment is performed here.
 External launch follow-up remains separately tracked in the Delivery 2 launch
 record and [deployment documentation](DEPLOYMENT.md).
 
-## Theme refresh pilot
+## Historical theme refresh pilot — superseded by Delivery 1 approval
 
 Four selectable themes: System (Light/Dark only), Light, Dark, One Dark (developer syntax palette). Component-color correction extends the uncommitted UI pilot and remains pending human visual review. No rollout, commit or deployment is authorized by passing functional checks.
 

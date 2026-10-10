@@ -80,6 +80,7 @@ Destructive button styling uses the danger token only for destructive actions. I
 
 Home remains a utility-first entry point. Discover remains a utility catalog. Category pages remain concise work and navigation pages. Tool pages keep the tool workspace dominant. Do not replace existing product content with invented promotional copy, metrics, or testimonials.
 
+The header home link includes the Le brand mark and the text `iworkhere.space`.
 The theme trigger label is exactly `Themes`, remains a compact secondary control, and has no palette icon in the trigger. Preserve the picker, all four choices, theme persistence, and existing runtime mechanism. Footer identity text is exactly:
 
 > © 2026 iworkhere.space created by dailephd LLC
@@ -94,19 +95,19 @@ Assume mobile devices and slow networks. Prefer the system font stack and minima
 
 All analytics go through the existing `track()` abstraction and declared event names. Persistent state continues through the existing storage abstraction. Treat inputs as untrusted, prefer current client-side processing, and do not add dynamic execution. These implementation boundaries are governed by the architecture and retrieval-first instructions; design work does not authorize changes to them.
 
-## Planned workspace-first pilot
+## Accepted workspace-first pilot (historical rollout specification)
 
 Status: Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed. The Delivery 1 approved visual baseline remains unchanged. The planner-authored [UI/discovery plan](plans/ui-discovery-growth-plan.md) owns scope, research, rollout, and search requirements.
 
-The candidate changes the working composition: compact top navigation in place of the permanent left navigation rail; a functional search entry point rather than the inactive header search field; and compact image settings beside a larger preview/result stage. Mobile uses a logical stacked workspace and compact wrapping navigation, not a new drawer or modal system. Existing route identities and AppShell ownership remain.
+The accepted implementation changed the working composition: compact top navigation in place of the permanent left navigation rail; a functional search entry point rather than the inactive header search field; and compact image settings beside a larger preview/result stage. Mobile uses a logical stacked workspace and compact wrapping navigation, not a new drawer or modal system. Existing route identities and AppShell ownership remain.
 
-The homepage becomes a compact launcher with one working search surface, populated categories, real linked tool cards, and a curated image-tool group. It must not become a full-screen promotional hero. Do not describe curated tools as popular without usage evidence.
+The homepage is a compact launcher with one working search surface, populated categories, real linked tool cards, and a curated image-tool group. It must not become a full-screen promotional hero. Do not describe curated tools as popular without usage evidence.
 
 Pilot values are approximately 280–320px for the desktop settings column and 28–32px for tool titles, with a flexible preview stage, the existing near-1280px content maximum, and existing semantic tokens. These are accepted local workspace targets, not new global CSS requirements. Preserve all four themes, accessible focus, error quality, actual image aspect ratios, truthful result metrics, and natural document scrolling.
 
 Production integration supersedes placeholder restrictions: root supplies real top/right AdSense slots only when explicitly enabled. No fake footer or right banner is visible; left remains absent.
 
-Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before rolling the pattern to the other image tools. Functional or Observer evidence is not a substitute for visual approval. The current-layout and affected component contracts describe the pilot implementation with the Delivery 1 visual direction approved.
+The completed Delivery 1 visual review covered the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before the Delivery 2 image-family rollout. Functional or Observer evidence is not a substitute for visual approval. The current-layout and affected component contracts describe the pilot implementation with the Delivery 1 visual direction approved.
 
 ## Change and documentation rules
 
@@ -122,7 +123,8 @@ settings/action and guide regions remain independently navigable landmarks;
 document Observer acceptance checks their order, containment and natural scrolling
 at 1440×900 and 390×844 without changing homepage or image baselines.
 
-The complete five-tool document family is implemented and unreleased. Merge
+The complete five-tool document family was released as v0.3.0 on
+2026-10-06. Merge
 and Images to PDF keep ordered source lists; Split keeps independently edited
 page groups; PDF to JPG / PNG has page/format/DPI and conditional JPEG settings;
 Compress PDF retains its single structural action and truthful no-reduction

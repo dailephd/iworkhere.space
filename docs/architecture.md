@@ -315,9 +315,9 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
 The `master` registry (v0.4.0 release content) contains 18 tools across
 seven populated categories in canonical order document, text, math, everyday,
-time, image, developer; the public sitemap derives 27 URLs. The released and
-v0.3.1 launch catalog historically had 15 tools, six populated categories
-and 23 URLs. This list describes repository source; production deploys `master`
+time, image, developer; current `master` derives 28 sitemap URLs including
+`/privacy`. The tagged v0.4.0 release contained 27 URLs before `/privacy`;
+the v0.3.1 launch historically had 15 tools, six populated categories and 23 URLs. This list describes repository source; production deploys `master`
 continuously.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
