@@ -92,7 +92,7 @@ inside Docker and runs that same suite against the live container.
 
 ## Browser runtime assets
 
-The release-prepared v0.3 source additionally serves same-origin
+The released v0.3-and-later application source serves same-origin
 `/vendor/pdfjs/6.4.299/` (native worker and standard fonts) and
 `/vendor/qpdf/12.4.2/` (pinned JS/WASM), with manifests and retained licenses.
 pdf-lib 1.17.1 runs only in its bundled dedicated mutation worker. Engines
