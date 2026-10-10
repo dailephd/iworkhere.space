@@ -479,9 +479,10 @@ Adjacent document-domain Vitest tests cover frozen source/collection/render
 limits, page-selection order and deduplication, atomic additions, worker
 protocol/termination, independent verification, cancellation/stale generations,
 local errors, focus and URL cleanup. Registry/metadata/guide/sitemap tests
-protect five document tools; the current v0.4 candidate registry has 18 total
-tools, seven populated categories and 27 canonical sitemap URLs (v0.3.1 had 15,
-six and 23). Operation-specific browser specs are
+protect five document tools; post-release `master` contains 18 total
+tools, seven populated categories and 28 canonical sitemap URLs including
+`/privacy` (the v0.4.0 release had 27; v0.3.1 had 15 tools, six categories
+and 23 URLs). Operation-specific browser specs are
 `pdf-page-copy.spec.ts`, `images-to-pdf.spec.ts`, `pdf-to-image.spec.ts` and
 `compress-pdf.spec.ts`; `document-family.spec.ts` covers discovery/search,
 SSR/canonicals/related links, accessible landmarks, keyboard Reset, bounded

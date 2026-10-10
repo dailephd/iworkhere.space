@@ -1,6 +1,20 @@
 # Changelog
 
-## v0.4.0 — Core Text, Data & Sharing Utilities
+## Unreleased — post-v0.4.0 source updates
+
+- Added the public `/privacy` page and its footer link, expanding the current
+  registry-derived sitemap from the v0.4.0 release's 27 URLs to 28 without adding
+  another utility.
+- Restricted manually composed AdSense slots and the AdSense script to eligible,
+  working tool pages; advertising activation remains off pending separate
+  external approval and privacy/consent requirements.
+- Expanded operation-specific utility guides and improved Slugify input
+  accessibility.
+- Added the Le brand mark to the application header and a matching vector icon.
+  These changes were merged into `master` in PR #28 on 2026-10-10, after the
+  numbered v0.4.0 GitHub Release.
+
+## v0.4.0 — Core Text, Data & Sharing Utilities — 2026-10-08
 
 This release completes the canonical developer category and adds three
 browser-local utilities. The registry contains 18 tools across seven populated
