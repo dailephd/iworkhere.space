@@ -213,7 +213,7 @@ test("everyday category, Discover search and sitemap include the QR Code Generat
     await expect(results).toHaveAttribute("href", "/tool/qr-code-generator");
 
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(27);
+    expect(xml.match(/<loc>/g)).toHaveLength(28);
     expect(xml.split("<loc>https://iworkhere.space/tool/qr-code-generator</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/category/everyday</loc>")).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);

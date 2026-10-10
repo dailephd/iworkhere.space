@@ -20,6 +20,7 @@ describe("AppShell", () => {
         expect(html).toContain('id="main-content"');
         expect(html).toContain("Skip to main content");
         expect(html).toContain("© 2026 iworkhere.space created by dailephd LLC");
+        expect(html).toContain('href="/privacy"');
         expect(html).not.toContain("MainScroll");
         expect(html.indexOf("Workspace")).toBeLessThan(
             html.indexOf("© 2026 iworkhere.space created by dailephd LLC"),

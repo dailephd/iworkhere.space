@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ADSENSE_CLIENT, ADSENSE_SLOT, ADSENSE_SCRIPT, ADS_TXT, adsenseEnabled } from "./config";
 import { initializeAdSlot } from "./runtime.client";
-import { AdSenseSlot } from "@/component/common/AdSenseSlot";
 import { AdSenseScript } from "@/component/common/AdSenseScript";
+import { AdSenseEligiblePage } from "@/component/common/AdSenseEligiblePage";
 import { captureError } from "@/module/observability";
 
 vi.mock("@/module/observability", () => ({ captureError: vi.fn() }));
@@ -36,11 +36,15 @@ describe("centralized AdSense", () => {
     });
     it("renders no script, slot, label or empty placeholder when disabled", () => {
         vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
-        expect(renderToStaticMarkup(<><AdSenseScript /><AdSenseSlot placement="header" /><AdSenseSlot placement="right" /></>)).toBe("");
+        const html = renderToStaticMarkup(<AdSenseEligiblePage><h1>JSON Formatter</h1></AdSenseEligiblePage>);
+        expect(html).toContain("JSON Formatter");
+        expect(html).not.toContain("google-adsense");
+        expect(html).not.toContain("adsbygoogle");
+        expect(html).not.toContain("Advertisement");
     });
-    it("renders one nonblocking global script and the two correct slots", () => {
+    it("renders the script and both correct slots only inside an eligible page frame", () => {
         enable();
-        const html = renderToStaticMarkup(<><AdSenseScript /><AdSenseSlot placement="header" /><AdSenseSlot placement="right" /></>);
+        const html = renderToStaticMarkup(<AdSenseEligiblePage><h1>JSON Formatter</h1></AdSenseEligiblePage>);
         expect(html.match(/id="google-adsense"/g)).toHaveLength(1);
         expect(html).toContain(ADSENSE_SCRIPT.replace(/&/g, "&amp;"));
         expect(html).toContain('crossorigin="anonymous"');

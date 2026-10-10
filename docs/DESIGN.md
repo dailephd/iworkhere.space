@@ -1,5 +1,7 @@
 # Design system
 
+Slugify uses a visible Text label explicitly associated with `slugify-input`. Its input follows existing semantic input tokens, full-width responsive sizing and a visible keyboard focus outline. This applies the existing form convention without adding tokens or changing the page template.
+
 This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `docs/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
 
 The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The user approved Delivery 1 (homepage, compact navigation, Image Resizer, and current theme/material behavior) on 2026-10-03. Delivery 2 image-family rollout and search foundation was implemented, validated, merged, and publicly deployed on 2026-10-04. The visual/layout acceptance remains recorded in the plan and launch evidence; no new design-system scope was added.
@@ -42,6 +44,12 @@ Shared visual-role tokens are header-bg/text/muted; nav-hover-bg/active-bg/activ
 Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `global.css`. All text combinations target AA; focus retains its ring and contrast support. This component-color candidate remains approved for Delivery 1 by the user on 2026-10-03.
 
 ## Typography, spacing, and shape
+
+The public privacy page uses the existing AppShell, a readable `max-w-3xl`
+article, one H1 and H2 section headings with ordinary document scrolling.
+Policy and footer links are underlined with visible semantic focus rings.
+The existing footer keeps its copyright and wraps the Privacy Policy link
+onto a separate line on small screens. No new palette or material is introduced.
 
 Use one system sans-serif family for interface text and the existing monospace role for code. Establish hierarchy through size and weight, not display faces, decorative tracking, or excessive letter spacing. Keep spacing predictable and content comfortable without wasting workspace. Use consistent, slightly rounded shapes and subtle borders. Shadows separate surfaces; they do not decorate them.
 

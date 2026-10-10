@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { hasExpectedPublicSitemapUrls } from "./publicRouteInventory";
 
 interface CommandResult {
   code: number;
@@ -13,9 +14,11 @@ const runId = `${new Date().toISOString().replace(/[:.]/g, "-")}-${randomBytes(4
 const reportDir = path.resolve("test-report", "container", runId);
 const imageName = `iworkhere-space:container-test-${runId}`;
 const containerName = `iworkhere-container-test-${runId}`;
+const nodeBaseImage = process.env.CONTAINER_NODE_IMAGE?.trim() || "node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6";
 const summary: Record<string, unknown> = {
   CONTAINER_RUN_ID: runId,
   startingSha: "unavailable",
+  nodeBaseImage,
   dockerClientVersion: null,
   dockerServerVersion: null,
   imageId: null,
@@ -111,7 +114,7 @@ try {
   summary.dockerServerVersion = versions.Server?.Version ?? null;
 
   await runChecked("docker", ["compose", "config"]);
-  const build = await command("docker", ["build", "--pull", "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--build-arg", "NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
+  const build = await command("docker", ["build", "--pull", "--build-arg", `NODE_BASE_IMAGE=${nodeBaseImage}`, "--build-arg", "NEXT_PUBLIC_ADSENSE_ENABLED=false", "--build-arg", "NEXT_PUBLIC_OBSERVABILITY_ENABLED=false", "--build-arg", "NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=false", "--tag", imageName, "--file", "Dockerfile", "."]);
   await writeFile(path.join(reportDir, "docker-build.log"), `${build.stdout}\n${build.stderr}`, "utf8");
   if (build.code !== 0) throw new Error(`Docker build failed (${build.code}).`);
   imageCreated = true;
@@ -151,9 +154,9 @@ try {
 
   const sitemap = await fetch(`${baseUrl}/sitemap.xml`);
   if (!sitemap.ok) throw new Error("Container sitemap is unavailable.");
-  const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
-  if (publicRoutes.length !== 27 || new Set(publicRoutes).size !== publicRoutes.length) throw new Error("Container public route inventory mismatch.");
-  const routes = [...publicRoutes, "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt", "/licenses/uqr-0.1.3-LICENSE.txt"];
+  const publicRoutes = [...(await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+  if (!hasExpectedPublicSitemapUrls(publicRoutes)) throw new Error("Container public route inventory mismatch.");
+  const routes = [...publicRoutes.map(url => new URL(url).pathname), "/sitemap.xml", "/api/health", "/ads.txt", "/sw.js", "/manifest.webmanifest", "/vendor/pdfjs/6.4.299/pdf.worker.mjs", "/vendor/pdfjs/6.4.299/standard_fonts/LiberationSans-Regular.ttf", "/vendor/qpdf/12.4.2/qpdf.js", "/vendor/qpdf/12.4.2/qpdf.wasm", "/licenses/heic-to-LICENSE.txt", "/licenses/libheif-COPYING.txt", "/licenses/uqr-0.1.3-LICENSE.txt"];
   const routeResults: Record<string, number> = {};
   for (const route of routes) {
     const response = await fetch(`${baseUrl}${route}`);

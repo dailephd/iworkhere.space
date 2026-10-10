@@ -31,6 +31,8 @@ jobs:
 
       - name: Container validation
         run: npm run test:container
+        env:
+          CONTAINER_NODE_IMAGE: public.ecr.aws/docker/library/node@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
 
       - name: Upload container report
         if: always()

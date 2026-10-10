@@ -65,7 +65,7 @@ test("Compress PDF: SSR guide, discovery, category and exact sitemap", async ({ 
     await page.goto("/"); await expect(page.getByRole("region", { name: "All other tools" }).locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("compress pdf"); await expect(page.getByRole("main").locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
     await page.goto("/category/document"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(5);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(27); expect(xml.match(/<loc>https:\/\/iworkhere.space\/tool\/compress-pdf<\/loc>/g)).toHaveLength(1);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(28); expect(xml.match(/<loc>https:\/\/iworkhere.space\/tool\/compress-pdf<\/loc>/g)).toHaveLength(1);
 });
 test("Compress PDF: cold unrelated routes request no PDF processing payload", async ({ browser }, info) => {
     for (const route of ["/", "/discover", "/tool/image-converter"]) {

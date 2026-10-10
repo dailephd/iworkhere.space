@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { ToolComponentProp } from "@/module/tool/type";
-import { ToolErrorBoundary } from "./ToolErrorBoundary";
 import { logEvent, captureError, trackEvent } from "@/module/observability";
 
 export interface ToolClientFrameProp {
@@ -66,9 +65,5 @@ export function ToolClientFrame(prop: ToolClientFrameProp) {
         [router, pathname, searchParams, toolId]
     );
 
-    return (
-        <ToolErrorBoundary toolId={toolId}>
-            <ToolComponent toolId={toolId} query={query} setQuery={setQuery} />
-        </ToolErrorBoundary>
-    );
+    return <ToolComponent toolId={toolId} query={query} setQuery={setQuery} />;
 }

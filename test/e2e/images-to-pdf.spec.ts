@@ -72,7 +72,7 @@ test("Images to PDF: initial SEO/guide and automatic registry discovery", async 
     await page.goto("/"); await expect(page.getByRole("region", { name: "All other tools" }).locator('a[href="/tool/images-to-pdf"]')).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("images to pdf"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
     await page.goto("/category/document"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG"]);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(27); expect(xml.split("<loc>https://iworkhere.space/tool/images-to-pdf</loc>")).toHaveLength(2);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(28); expect(xml.split("<loc>https://iworkhere.space/tool/images-to-pdf</loc>")).toHaveLength(2);
 });
 test("Images to PDF: unsupported content rejects an entire batch locally", async ({ page }) => {
     await page.goto("/tool/images-to-pdf"); const input = page.getByLabel("Choose JPEG or PNG images", { exact: true }); await input.setInputFiles(fixture("resizer-source.jpg"));

@@ -16,6 +16,42 @@ const documentPrivacy = "PDF processing happens locally in the browser; your PDF
 const documentFidelity = "The supported boundary is static pages: page order, dimensions, rotation, visible content and extractable text. Preservation of metadata, bookmarks, attachments, complex interactive forms, accessibility structure and digital signatures or their cryptographic validity is not guaranteed.";
 
 const guideById: Partial<Record<ToolId, ToolGuide>> = {
+    "slugify": {
+        instruction: ["Enter text in the Text input.", "Read the generated slug below the input; it updates as you type.", "Edit the input if the result needs different wording."],
+        section: [
+            { heading: "Turn a title into a slug", text: "A slug is a short text identifier often used in a URL path. Uppercase English letters become lowercase. Runs of spaces, punctuation and other characters outside a–z and 0–9 become one hyphen; leading and trailing hyphens are removed. Hello World! becomes hello-world, and Ready... Set / Go! becomes ready-set-go." },
+            { heading: "ASCII handling and empty results", text: "This tool does not transliterate accented or non-Latin characters into Latin equivalents. For example, Café 東京 becomes caf. Empty input or unsupported-only input such as 東京 or !!! produces an empty slug. Edit the input to use the English spelling you want when necessary." },
+            { heading: "Check the destination", text: "The result is a text suggestion, not a uniqueness check. Different titles can produce the same slug; check existing names and the destination's URL rules before using it." },
+        ],
+        relatedToolId: ["html-text-extractor", "word-character-counter"],
+    },
+    "length-converter": {
+        instruction: ["Enter a number in Value.", "Choose the input unit in From and the desired output unit in To.", "Read Result with its destination-unit abbreviation; changing the value or either unit updates it immediately."],
+        section: [
+            { heading: "Convert a length", text: "Use this tool to express the same length in another unit. From describes the value you entered; To describes the result. For example, Value 1 with From Meters (m) and To Feet (ft) displays 3.28084 ft. Switching To to Centimeters (cm) displays 100 cm." },
+            { heading: "Supported length units", text: "Choose meters (m), kilometers (km), centimeters (cm), millimeters (mm), inches (inch), feet (ft), yards (yd) or miles (mile). Conversion goes through meters; an inch is 0.0254 meters and a mile is 1609.344 meters. Other length units and area or volume conversions are not available." },
+            { heading: "Rounding and numeric input", text: "Results are rounded to at most six decimal places, with trailing zeros removed. Very small results can round to zero. The calculation uses ordinary JavaScript numbers, not arbitrary-precision arithmetic; displayed decimals do not guarantee measurement accuracy. A blank value or a value that cannot be parsed as a number displays Invalid input. Enter a finite numeric value and check the selected units." },
+        ],
+        relatedToolId: ["weight-converter", "calculator"],
+    },
+    "weight-converter": {
+        instruction: ["Enter a number in Value.", "Choose the input unit in From and the desired output unit in To.", "Read Result with its destination-unit abbreviation; it updates when the value or either unit changes."],
+        section: [
+            { heading: "Convert a mass", text: "Although named Weight Converter, this tool converts mass units rather than physical force. From is the unit of the value you enter; To is the unit of the result. Value 1 with From Kilograms (kg) and To Pounds (lb) displays 2.204623 lb. Switching To to Grams (g) displays 1000 g." },
+            { heading: "Supported mass units", text: "Choose grams (g), kilograms (kg), pounds (lb) or ounces (oz). Conversion goes through grams, using 453.59237 grams per pound and 28.349523125 grams per ounce. These are ordinary avoirdupois pounds and ounces, not troy units or fluid ounces. No other units or force conversions are offered." },
+            { heading: "Rounding and numeric input", text: "Results are rounded to at most six decimal places and trailing zeros are removed. Very small results can round to zero. Ordinary JavaScript numbers have finite precision; this display does not provide arbitrary precision or establish the accuracy of a measurement. A blank value or a value that cannot be parsed as a number displays Invalid input. Enter a finite numeric value and check the selected units." },
+        ],
+        relatedToolId: ["length-converter", "calculator"],
+    },
+    "html-text-extractor": {
+        instruction: ["Paste HTML into HTML Input.", "Select Convert to extract text.", "Review Extracted Text; after editing the HTML, select Convert again to update it.", "Select Copy to copy a non-empty result. If clipboard access fails, select and copy the text manually."],
+        section: [
+            { heading: "Extract text from HTML", text: "The tool parses supplied HTML with DOMParser and collects text nodes from the resulting body. For example, <p>Hello <strong>world</strong><br>Next line</p><script>ignored()</script> produces Hello world followed by a line break and Next line. Script and style subtrees are excluded." },
+            { heading: "Line breaks and whitespace", text: "A br element inserts a line break. Selected structural elements, including paragraphs, headings, list items and table cells, add a break after their contents. Runs of spaces and tabs within text nodes are reduced to one space, trailing whitespace on each line is removed, three or more consecutive line breaks become two, and the final result is trimmed. Empty HTML produces empty text." },
+            { heading: "Extraction limits", text: "This is DOM-based extraction, not full browser visual-text rendering. CSS computed visibility is not checked, so text hidden with CSS may still appear. Browser layout, generated CSS content and image descriptions are not reproduced. This is not an HTML sanitizer and does not make markup safe for subsequent HTML rendering. Review the extracted text before reusing it." },
+        ],
+        relatedToolId: ["word-character-counter", "slugify"],
+    },
     "compress-pdf": {
         instruction: ["Choose one PDF.", "Select Compress PDF.", "Wait for local lossless structural optimization and independent verification.", "If the verified result is smaller, download it.", "If no smaller output is produced, keep the original."],
         section: [
