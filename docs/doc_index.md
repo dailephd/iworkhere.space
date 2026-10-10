@@ -211,8 +211,8 @@ new modules or changing layer boundaries.
 ### DESIGN.md
 **Summary:** The canonical product design and styling contract, including
 visual identity, themes, layout, scrolling, accessibility, performance, and
-current implementation boundaries. Separates the current implemented shell
-from the proposed workspace-first pilot awaiting visual approval.
+current implementation boundaries. Separates the current implemented shell from the completed, user-approved
+Delivery 1 workspace pilot and the deployed Delivery 2 rollout.
 **When to read:** Before changing product visual design, styling, interaction
 presentation, responsive behavior, or visual accessibility rules.
 **Relations:** Works with `architecture.md`, agent guidance, and
