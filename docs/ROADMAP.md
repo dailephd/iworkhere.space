@@ -911,9 +911,10 @@ approval, Search Console recrawl, or Bing submission as v0.5.0 feature scope.
 
 Delivery 1 is implemented and user-approved. Delivery 2 is implemented,
 validated, merged, and publicly deployed. Delivery 3 technical launch is
-complete. Remaining operational follow-up is owner-authenticated Google Search
-Console and Bing Webmaster sitemap/priority-URL work, followed by the planned
-28-day measurement review. These steps do not imply ranking or traffic
+complete. Google Search Console sitemap submission and 2026-10-07
+re-submission are recorded as complete; canonical recrawl/indexing observation
+and Bing Webmaster submission remain operational follow-up, followed by the
+planned 28-day measurement review. These steps do not imply ranking or traffic
 improvement. Current repository/release state is recorded in project-status.md; exact
 latest deployment identity requires separate Vercel verification.
 
