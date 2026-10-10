@@ -11,6 +11,7 @@ test("disabled mode emits no advertising on tools, navigation pages or errors", 
         ["/", 200],
         ["/discover", 200],
         ["/category/developer", 200],
+        ["/privacy", 200],
         ["/tool/__f02-missing-tool", 404],
         ["/category/__f02-missing-category", 404],
         ["/__f02-missing-route", 404],
@@ -30,6 +31,25 @@ test("disabled mode emits no advertising on tools, navigation pages or errors", 
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
     await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
+
+    const privacyResponse = await request.get("/privacy");
+    expect(privacyResponse.status()).toBe(200);
+    const privacyHtml = await privacyResponse.text();
+    expect(privacyHtml).toContain(">Privacy Policy</h1>");
+    expect(privacyHtml).toContain("Tool inputs and local processing");
+    expect(privacyHtml).not.toContain("adsbygoogle.js");
+    expect(privacyHtml).not.toContain('id="google-adsense"');
+    expect(privacyHtml).not.toContain("Advertisement");
+
+    await page.goto("/privacy");
+    await expect(page.getByRole("heading", { name: "Privacy Policy", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tool inputs and local processing" })).toBeVisible();
+    await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
+    await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
+    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.locator('aside[aria-label*="advertising area"]')).toHaveCount(0);
+    await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
     expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
 });
 
@@ -67,6 +87,7 @@ test("enabled mode limits manual ads to registered tool pages across client navi
         ["/", 200],
         ["/discover", 200],
         ["/category/developer", 200],
+        ["/privacy", 200],
         ["/tool/__f02-missing-tool", 404],
         ["/category/__f02-missing-category", 404],
         ["/__f02-missing-route", 404],
@@ -94,6 +115,15 @@ test("enabled mode limits manual ads to registered tool pages across client navi
     expect(eligibleHtml).toContain('data-ad-slot="2496999884"');
     expect(eligibleHtml.match(/Advertisement/g)).toHaveLength(2);
 
+    const privacyResponse = await request.get("/privacy");
+    expect(privacyResponse.status()).toBe(200);
+    const privacyHtml = await privacyResponse.text();
+    expect(privacyHtml).toContain(">Privacy Policy</h1>");
+    expect(privacyHtml).toContain("Tool inputs and local processing");
+    expect(privacyHtml).not.toContain("adsbygoogle.js");
+    expect(privacyHtml).not.toContain('id="google-adsense"');
+    expect(privacyHtml).not.toContain("Advertisement");
+
     await page.goto("/tool/json-formatter");
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(2);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
@@ -106,6 +136,27 @@ test("enabled mode limits manual ads to registered tool pages across client navi
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     await expect.poll(() => page.evaluate(() => window.__adScriptLoadCount ?? 0)).toBe(1);
     expect(interceptedAdRequests).toHaveLength(1);
+
+    const toolInitializationCount = await page.evaluate(() => window.__adInitializationCount);
+    await expect.poll(() => page.evaluate(() => Boolean((window as unknown as { next?: { router?: unknown } }).next?.router))).toBe(true);
+    await page.evaluate(() => {
+        const next = (window as unknown as { next: { router: { push: (url: string) => void } } }).next;
+        next.router.push("/privacy");
+    });
+    await expect(page).toHaveURL(/\/privacy$/);
+    await expect(page.getByRole("heading", { name: "Privacy Policy", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tool inputs and local processing" })).toBeVisible();
+    await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
+    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.locator('aside[aria-label*="advertising area"]')).toHaveCount(0);
+    await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
+    await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
+    expect(await page.evaluate(() => window.__adInitializationCount)).toBe(toolInitializationCount);
+    expect(await page.evaluate(() => window.__adScriptLoadCount)).toBe(1);
+    expect(await page.evaluate(() => window.adsbygoogle)).toBeDefined();
+    expect(interceptedAdRequests).toHaveLength(1);
+    expect(blockedAdRequests).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 
     const initialInitializationCount = await page.evaluate(() => window.__adInitializationCount);
     await page.locator('nav[aria-label="Primary navigation"] a[href="/category/developer"]').click();
