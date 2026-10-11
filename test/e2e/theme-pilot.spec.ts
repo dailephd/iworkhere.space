@@ -41,9 +41,10 @@ for (const context of contexts) {
             }
             if (route === "/") {
                 const islands = page.locator('[data-surface="section-island"]');
-                await expect(islands).toHaveCount(2);
-                await expect(page.getByRole("region", { name: "Image tools", exact: true })).toBeVisible();
-                await expect(page.getByRole("region", { name: "All other tools", exact: true })).toBeVisible();
+                await expect(islands).toHaveCount(7);
+                for (const name of ["Document", "Text", "Math", "Everyday", "Time", "Image", "Developer"]) {
+                    await expect(page.getByRole("region", { name: `${name} tools`, exact: true })).toBeVisible();
+                }
                 const islandBoxes = await islands.evaluateAll(elements => elements.map(element => {
                     const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
                     return { top: rect.top, bottom: rect.bottom, padding: style.padding, radius: style.borderRadius, border: style.borderColor, shadow: style.boxShadow };
