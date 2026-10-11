@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/component/common/ThemeToggle";
+import { PaletteToggle } from "@/component/common/PaletteToggle";
 import { VerticalNav } from "./VerticalNav";
 import type { NavItem } from "./type";
 import { LeMark } from "@/component/brand/LeMark";
@@ -20,6 +21,7 @@ export function Header({ navItem }: { navItem: NavItem[] }) {
                 </Link>
                 <div className="flex items-center gap-2">
                     <ThemeToggle />
+                    <PaletteToggle />
                 </div>
             </div>
         </div>
