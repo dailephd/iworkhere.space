@@ -1,0 +1,360 @@
+/* Six source palettes adapted from dailephd/my-website-2026.
+ * These are an optional palette dimension. Default utility colors and the
+ * fixed One Dark developer mode remain governed by theme.css.
+ */
+
+:root[data-palette="mineral"]:not([data-theme="onedark"]) {
+  --palette-background: #f2f0e7;
+  --palette-surface: #e3e3d8;
+  --palette-card: #f9f8f3;
+  --palette-elevated: #fcfcfa;
+  --palette-text-primary: #1c2926;
+  --palette-text-secondary: #404b47;
+  --palette-text-muted: #5a635e;
+  --palette-border: #cbccc4;
+  --palette-border-strong: #787f79;
+  --palette-accent-primary: #0f716a;
+  --palette-accent-secondary: #b8683f;
+  --palette-accent-secondary-text: #8c5638;
+  --palette-focus-ring: #0f716a;
+  --palette-on-accent: #f2f0e7;
+}
+:root[data-palette="mineral"][data-theme="dark"] {
+  --palette-background: #141e1c;
+  --palette-surface: #22302c;
+  --palette-card: #22302c;
+  --palette-elevated: #2f3c39;
+  --palette-text-primary: #ecede5;
+  --palette-text-secondary: #c9ccc5;
+  --palette-text-muted: #a3a7a1;
+  --palette-border: #3b4340;
+  --palette-border-strong: #828883;
+  --palette-accent-primary: #68c9ba;
+  --palette-accent-secondary: #e1a17c;
+  --palette-accent-secondary-text: #e1a17c;
+  --palette-focus-ring: #68c9ba;
+  --palette-on-accent: #141e1c;
+}
+
+:root[data-palette="oxblood"]:not([data-theme="onedark"]) {
+  --palette-background: #f6f1ec;
+  --palette-surface: #e7dcd6;
+  --palette-card: #fbf8f6;
+  --palette-elevated: #fdfcfb;
+  --palette-text-primary: #302128;
+  --palette-text-secondary: #504247;
+  --palette-text-muted: #675b5f;
+  --palette-border: #d2ccc9;
+  --palette-border-strong: #83787a;
+  --palette-accent-primary: #812c49;
+  --palette-accent-secondary: #2d7168;
+  --palette-accent-secondary-text: #2d6c64;
+  --palette-focus-ring: #812c49;
+  --palette-on-accent: #f6f1ec;
+}
+:root[data-palette="oxblood"][data-theme="dark"] {
+  --palette-background: #21171c;
+  --palette-surface: #34252c;
+  --palette-card: #34252c;
+  --palette-elevated: #403239;
+  --palette-text-primary: #f5ebe6;
+  --palette-text-secondary: #cdc3c0;
+  --palette-text-muted: #aba19f;
+  --palette-border: #473d40;
+  --palette-border-strong: #897f7f;
+  --palette-accent-primary: #e09db2;
+  --palette-accent-secondary: #79c4aa;
+  --palette-accent-secondary-text: #79c4aa;
+  --palette-focus-ring: #e09db2;
+  --palette-on-accent: #21171c;
+}
+
+:root[data-palette="signal"]:not([data-theme="onedark"]) {
+  --palette-background: #eff1e8;
+  --palette-surface: #dce2d1;
+  --palette-card: #f7f8f4;
+  --palette-elevated: #fbfcfa;
+  --palette-text-primary: #18211a;
+  --palette-text-secondary: #414941;
+  --palette-text-muted: #5b615a;
+  --palette-border: #c8ccc3;
+  --palette-border-strong: #777d75;
+  --palette-accent-primary: #3e6d46;
+  --palette-accent-secondary: #a66f40;
+  --palette-accent-secondary-text: #815b36;
+  --palette-focus-ring: #3e6d46;
+  --palette-on-accent: #eff1e8;
+}
+:root[data-palette="signal"][data-theme="dark"] {
+  --palette-background: #111815;
+  --palette-surface: #1d2920;
+  --palette-card: #1d2920;
+  --palette-elevated: #2b362d;
+  --palette-text-primary: #ebf2e5;
+  --palette-text-secondary: #bdc4b9;
+  --palette-text-muted: #9aa198;
+  --palette-border: #383f3a;
+  --palette-border-strong: #7a8179;
+  --palette-accent-primary: #acea74;
+  --palette-accent-secondary: #d59a68;
+  --palette-accent-secondary-text: #d59a68;
+  --palette-focus-ring: #acea74;
+  --palette-on-accent: #111815;
+}
+
+:root[data-palette="cobalt"]:not([data-theme="onedark"]) {
+  --palette-background: #f5f0e8;
+  --palette-surface: #e6e0d8;
+  --palette-card: #faf8f4;
+  --palette-elevated: #fdfcfa;
+  --palette-text-primary: #172744;
+  --palette-text-secondary: #3b475e;
+  --palette-text-muted: #576174;
+  --palette-border: #cdccca;
+  --palette-border-strong: #767d8b;
+  --palette-accent-primary: #2751ac;
+  --palette-accent-secondary: #c25b37;
+  --palette-accent-secondary-text: #994f3a;
+  --palette-focus-ring: #2751ac;
+  --palette-on-accent: #f5f0e8;
+}
+:root[data-palette="cobalt"][data-theme="dark"] {
+  --palette-background: #111a29;
+  --palette-surface: #1d2a3d;
+  --palette-card: #1d2a3d;
+  --palette-elevated: #2b3749;
+  --palette-text-primary: #eff1f5;
+  --palette-text-secondary: #c3c6cc;
+  --palette-text-muted: #9fa4ac;
+  --palette-border: #39414e;
+  --palette-border-strong: #7e838d;
+  --palette-accent-primary: #8babff;
+  --palette-accent-secondary: #ea956d;
+  --palette-accent-secondary-text: #ea956d;
+  --palette-focus-ring: #8babff;
+  --palette-on-accent: #111a29;
+}
+
+:root[data-palette="amber"]:not([data-theme="onedark"]) {
+  --palette-background: #f5f0e3;
+  --palette-surface: #e7decc;
+  --palette-card: #faf8f1;
+  --palette-elevated: #fdfcf9;
+  --palette-text-primary: #252621;
+  --palette-text-secondary: #464640;
+  --palette-text-muted: #5f5f57;
+  --palette-border: #d0ccc0;
+  --palette-border-strong: #7c7b72;
+  --palette-accent-primary: #86592a;
+  --palette-accent-secondary: #256a64;
+  --palette-accent-secondary-text: #256a64;
+  --palette-focus-ring: #86592a;
+  --palette-on-accent: #f5f0e3;
+}
+:root[data-palette="amber"][data-theme="dark"] {
+  --palette-background: #1b201e;
+  --palette-surface: #29312d;
+  --palette-card: #29312d;
+  --palette-elevated: #363d3a;
+  --palette-text-primary: #f5eedc;
+  --palette-text-secondary: #d2cdbe;
+  --palette-text-muted: #adaa9d;
+  --palette-border: #424540;
+  --palette-border-strong: #8a897f;
+  --palette-accent-primary: #eac078;
+  --palette-accent-secondary: #7fc3b8;
+  --palette-accent-secondary-text: #7fc3b8;
+  --palette-focus-ring: #eac078;
+  --palette-on-accent: #1b201e;
+}
+
+:root[data-palette="original"]:not([data-theme="onedark"]) {
+  --palette-background: #edeff3;
+  --palette-surface: #f2f4f8;
+  --palette-card: #f6f7fa;
+  --palette-elevated: #fbfbfd;
+  --palette-text-primary: #151924;
+  --palette-text-secondary: #4a5262;
+  --palette-text-muted: #616c7f;
+  --palette-border: #cbd1dc;
+  --palette-border-strong: #6e7b91;
+  --palette-accent-primary: #087b91;
+  --palette-accent-secondary: #6d3ee8;
+  --palette-accent-secondary-text: #6d3ee8;
+  --palette-focus-ring: #087b91;
+  --palette-on-accent: #f7f8fb;
+}
+:root[data-palette="original"][data-theme="dark"] {
+  --palette-background: #1a1d23;
+  --palette-surface: #1d222b;
+  --palette-card: #232935;
+  --palette-elevated: #2a3140;
+  --palette-text-primary: #f1f3f7;
+  --palette-text-secondary: #c5ccda;
+  --palette-text-muted: #929db0;
+  --palette-border: #384151;
+  --palette-border-strong: #71819a;
+  --palette-accent-primary: #42cbe3;
+  --palette-accent-secondary: #a98cf8;
+  --palette-accent-secondary-text: #a98cf8;
+  --palette-focus-ring: #42cbe3;
+  --palette-on-accent: #171a21;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="mineral"]:not([data-theme]) {
+    --palette-background: #141e1c;
+    --palette-surface: #22302c;
+    --palette-card: #22302c;
+    --palette-elevated: #2f3c39;
+    --palette-text-primary: #ecede5;
+    --palette-text-secondary: #c9ccc5;
+    --palette-text-muted: #a3a7a1;
+    --palette-border: #3b4340;
+    --palette-border-strong: #828883;
+    --palette-accent-primary: #68c9ba;
+    --palette-accent-secondary: #e1a17c;
+    --palette-accent-secondary-text: #e1a17c;
+    --palette-focus-ring: #68c9ba;
+    --palette-on-accent: #141e1c;
+  }
+  :root[data-palette="oxblood"]:not([data-theme]) {
+    --palette-background: #21171c;
+    --palette-surface: #34252c;
+    --palette-card: #34252c;
+    --palette-elevated: #403239;
+    --palette-text-primary: #f5ebe6;
+    --palette-text-secondary: #cdc3c0;
+    --palette-text-muted: #aba19f;
+    --palette-border: #473d40;
+    --palette-border-strong: #897f7f;
+    --palette-accent-primary: #e09db2;
+    --palette-accent-secondary: #79c4aa;
+    --palette-accent-secondary-text: #79c4aa;
+    --palette-focus-ring: #e09db2;
+    --palette-on-accent: #21171c;
+  }
+  :root[data-palette="signal"]:not([data-theme]) {
+    --palette-background: #111815;
+    --palette-surface: #1d2920;
+    --palette-card: #1d2920;
+    --palette-elevated: #2b362d;
+    --palette-text-primary: #ebf2e5;
+    --palette-text-secondary: #bdc4b9;
+    --palette-text-muted: #9aa198;
+    --palette-border: #383f3a;
+    --palette-border-strong: #7a8179;
+    --palette-accent-primary: #acea74;
+    --palette-accent-secondary: #d59a68;
+    --palette-accent-secondary-text: #d59a68;
+    --palette-focus-ring: #acea74;
+    --palette-on-accent: #111815;
+  }
+  :root[data-palette="cobalt"]:not([data-theme]) {
+    --palette-background: #111a29;
+    --palette-surface: #1d2a3d;
+    --palette-card: #1d2a3d;
+    --palette-elevated: #2b3749;
+    --palette-text-primary: #eff1f5;
+    --palette-text-secondary: #c3c6cc;
+    --palette-text-muted: #9fa4ac;
+    --palette-border: #39414e;
+    --palette-border-strong: #7e838d;
+    --palette-accent-primary: #8babff;
+    --palette-accent-secondary: #ea956d;
+    --palette-accent-secondary-text: #ea956d;
+    --palette-focus-ring: #8babff;
+    --palette-on-accent: #111a29;
+  }
+  :root[data-palette="amber"]:not([data-theme]) {
+    --palette-background: #1b201e;
+    --palette-surface: #29312d;
+    --palette-card: #29312d;
+    --palette-elevated: #363d3a;
+    --palette-text-primary: #f5eedc;
+    --palette-text-secondary: #d2cdbe;
+    --palette-text-muted: #adaa9d;
+    --palette-border: #424540;
+    --palette-border-strong: #8a897f;
+    --palette-accent-primary: #eac078;
+    --palette-accent-secondary: #7fc3b8;
+    --palette-accent-secondary-text: #7fc3b8;
+    --palette-focus-ring: #eac078;
+    --palette-on-accent: #1b201e;
+  }
+  :root[data-palette="original"]:not([data-theme]) {
+    --palette-background: #1a1d23;
+    --palette-surface: #1d222b;
+    --palette-card: #232935;
+    --palette-elevated: #2a3140;
+    --palette-text-primary: #f1f3f7;
+    --palette-text-secondary: #c5ccda;
+    --palette-text-muted: #929db0;
+    --palette-border: #384151;
+    --palette-border-strong: #71819a;
+    --palette-accent-primary: #42cbe3;
+    --palette-accent-secondary: #a98cf8;
+    --palette-accent-secondary-text: #a98cf8;
+    --palette-focus-ring: #42cbe3;
+    --palette-on-accent: #171a21;
+  }
+}
+
+/* Map source color roles into the utility app's existing semantic tokens.
+ * Tool/category color identity and all spacing/layout behavior stay unchanged.
+ */
+:root[data-palette]:not([data-theme="onedark"]) {
+  --background: var(--palette-background);
+  --surface: var(--palette-card);
+  --surface-alt: var(--palette-surface);
+  --border: var(--palette-border);
+  --text: var(--palette-text-primary);
+  --text-muted: var(--palette-text-muted);
+  --accent: var(--palette-accent-primary);
+  --accent-hover: color-mix(in srgb, var(--palette-accent-primary) 90%, black);
+  --contrast: var(--palette-on-accent);
+  --focus-ring: var(--palette-focus-ring);
+  --accent-secondary: var(--palette-accent-secondary-text);
+  --accent-warm: var(--palette-accent-secondary-text);
+  --accent-cool: var(--palette-accent-primary);
+  --accent-soft: var(--palette-surface);
+  --header-bg: var(--palette-text-primary);
+  --header-text: var(--palette-background);
+  --header-muted: var(--palette-surface);
+  --nav-hover-bg: var(--palette-text-secondary);
+  --search-bg: var(--palette-elevated);
+  --search-border: var(--palette-border-strong);
+  --card-bg: var(--palette-card);
+  --card-border: var(--palette-border);
+  --card-hover-bg: var(--palette-elevated);
+  --panel-bg: var(--palette-surface);
+  --panel-border: var(--palette-border-strong);
+  --preview-bg: var(--palette-surface);
+  --preview-border: var(--palette-border-strong);
+  --result-bg: var(--palette-elevated);
+  --result-border: var(--palette-border-strong);
+  --secondary-action-bg: var(--palette-surface);
+  --secondary-action-border: var(--palette-border-strong);
+  --footer-bg: var(--palette-surface);
+  --input-bg: var(--palette-card);
+  --input-border: var(--palette-border-strong);
+  --island-bg: var(--palette-surface);
+  --island-border: var(--palette-border);
+}
+
+:root[data-palette][data-theme="dark"] {
+  --header-bg: var(--palette-background);
+  --header-text: var(--palette-text-primary);
+  --header-muted: var(--palette-text-secondary);
+  --nav-hover-bg: var(--palette-surface);
+  --accent-hover: color-mix(in srgb, var(--palette-accent-primary) 90%, white);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette]:not([data-theme]) {
+    --header-bg: var(--palette-background);
+    --header-text: var(--palette-text-primary);
+    --header-muted: var(--palette-text-secondary);
+    --nav-hover-bg: var(--palette-surface);
+    --accent-hover: color-mix(in srgb, var(--palette-accent-primary) 90%, white);
+  }
+}
