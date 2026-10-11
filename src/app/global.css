@@ -61,13 +61,13 @@
   --color-category-text: var(--category-text);
   --color-category-math: var(--category-math);
   --color-category-time: var(--category-time);
-  --color-category-everyday: var(--category-everyday);
+  --color-category-converter: var(--category-converter);
   --color-category-document: var(--category-document);
   --color-category-image-soft: var(--category-image-soft);
   --color-category-text-soft: var(--category-text-soft);
   --color-category-math-soft: var(--category-math-soft);
   --color-category-time-soft: var(--category-time-soft);
-  --color-category-everyday-soft: var(--category-everyday-soft);
+  --color-category-converter-soft: var(--category-converter-soft);
   --color-category-document-soft: var(--category-document-soft);
   --color-nav-active-bg: var(--nav-active-bg);
   --color-nav-active-text: var(--nav-active-text);

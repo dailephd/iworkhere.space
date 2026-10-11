@@ -86,7 +86,7 @@ test("PDF to image: initial SSR guide, metadata, registry discovery and sitemap"
     for (const text of ["PDF to JPG / PNG", "Convert selected PDF pages", "How to use", "Page selection", "PNG vs JPG", "Resolution and limits", "4096-pixel", "16 MP", "lower DPI", "PDF source limits", "Related document tools", "PDF processing happens locally", 'href="/category/document"']) expect(html).toContain(text);
     for (const slug of ["merge-pdf", "split-pdf", "images-to-pdf"]) expect(html).toContain(`href="/tool/${slug}"`);
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/pdf-to-image"'); expect(html).toContain('property="og:url" content="https://iworkhere.space/tool/pdf-to-image"');
-    await page.goto("/"); await expect(page.getByRole("region", { name: "All other tools" }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(1);
+    await page.goto("/"); await expect(page.getByRole("region", { name: "Document tools" }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(1);
     await expect(page.getByRole("region", { name: "Image tools", exact: true }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(0);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("pdf to"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
     await page.goto("/category/document"); const links = page.getByRole("main").locator('a[href^="/tool/"]'); await expect(links).toHaveCount(5); await expect(links).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);

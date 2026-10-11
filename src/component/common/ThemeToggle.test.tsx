@@ -1,73 +1,73 @@
 /** @vitest-environment jsdom */
-import React, { act, createElement } from "react";
+import React, { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { listThemes } from "@/module/theme/themeRegistry";
+import { listPalettes } from "@/module/theme/themeRegistry";
 import { ThemeToggle } from "./ThemeToggle";
 import { ThemeProvider } from "./ThemeProvider";
 
 let host: HTMLDivElement;
 let root: Root;
+async function render() { await act(async () => root.render(<ThemeProvider><ThemeToggle /></ThemeProvider>)); }
+async function open() { await act(async () => host.querySelector("button")!.click()); }
+async function choose(value: string) { await act(async () => host.querySelector<HTMLInputElement>(`input[value="${value}"]`)!.click()); }
 
 describe("ThemeToggle", () => {
     beforeEach(async () => {
         vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
         localStorage.clear();
         document.documentElement.removeAttribute("data-theme");
-        host = document.createElement("div");
-        document.body.append(host);
-        root = createRoot(host);
-        await act(async () => root.render(createElement(ThemeToggle)));
+        host = document.createElement("div"); document.body.append(host);
+        root = createRoot(host); await render();
     });
-
     afterEach(async () => {
-        await act(async () => root.unmount());
-        host.remove();
-        localStorage.clear();
-        document.documentElement.removeAttribute("data-theme");
-        vi.restoreAllMocks();
+        await act(async () => root.unmount()); host.remove(); localStorage.clear();
+        for (const name of ["data-theme", "data-palette", "data-theme-preference"]) document.documentElement.removeAttribute(name);
+        document.documentElement.classList.remove("dark"); vi.restoreAllMocks();
     });
-
-    it("uses the compact Themes trigger and presents every canonical choice", async () => {
-        const trigger = host.querySelector("button")!;
-        expect(trigger.textContent?.trim()).toBe("Themes");
-        expect(trigger.querySelector("svg")).toBeNull();
-        await act(async () => trigger.click());
-        const options = [...host.querySelectorAll('[role="option"]')];
-        expect(options).toHaveLength(4);
-        expect(options.every(option => option.tagName === "BUTTON")).toBe(true);
-        expect(options.filter(option => option.getAttribute("aria-selected") === "true")).toHaveLength(1);
-        expect(options.map((option) => option.textContent?.trim())).toEqual(
-            listThemes().map((theme) => theme.label),
-        );
+    it("keeps the compact trigger and exposes seven palettes and three native modes", async () => {
+        expect(host.querySelector("button")!.textContent?.trim()).toBe("Themes");
+        await open();
+        expect(host.querySelector('[role="dialog"]')?.getAttribute("aria-label")).toBe("Appearance settings");
+        expect([...host.querySelectorAll("fieldset")].map(field => field.querySelector("legend")?.textContent)).toEqual(["Palette", "Color mode"]);
+        expect([...host.querySelectorAll("fieldset:first-of-type label")].map(label => label.textContent)).toEqual(listPalettes().map(palette => palette.label));
+        expect(host.querySelectorAll('input[type="radio"]')).toHaveLength(10);
+        expect(host.querySelectorAll("input:checked")).toHaveLength(2);
+        expect(host.querySelector<HTMLInputElement>('input[value="original"]')!.checked).toBe(true);
+        expect(host.querySelector<HTMLInputElement>('input[value="system"]')!.checked).toBe(true);
     });
-
-    it("provider clears retired storage and stale DOM while selecting System", async () => {
+    it("clears retired storage while preserving an independently valid palette", async () => {
         await act(async () => root.unmount());
-        localStorage.setItem("theme", JSON.stringify("dracula"));
-        document.documentElement.setAttribute("data-theme", "dracula");
-        root = createRoot(host);
-        await act(async () => root.render(<ThemeProvider><ThemeToggle /></ThemeProvider>));
+        localStorage.setItem("theme", JSON.stringify("dracula")); localStorage.setItem("palette", JSON.stringify("cobalt"));
+        root = createRoot(host); await render(); await open();
         expect(localStorage.getItem("theme")).toBeNull();
-        expect(document.documentElement.getAttribute("data-theme")).toBeNull();
-        await act(async () => host.querySelector("button")!.click());
-        const selected = host.querySelector('[aria-selected="true"]');
-        expect(selected?.textContent?.trim()).toBe("System");
+        expect(document.documentElement.dataset.palette).toBe("cobalt");
+        expect(host.querySelector<HTMLInputElement>('input[value="system"]')!.checked).toBe(true);
     });
-
-    it("applies and persists every registry theme through the existing runtime", async () => {
-        const trigger = host.querySelector("button")!;
-        for (const theme of listThemes()) {
-            await act(async () => trigger.click());
-            const option = [...host.querySelectorAll('[role="option"]')].find(
-                (candidate) => candidate.textContent?.trim() === theme.label,
-            );
-            expect(option).toBeDefined();
-            await act(async () => (option as HTMLButtonElement).click());
-            expect(localStorage.getItem("theme")).toBe(JSON.stringify(theme.id));
-            expect(document.documentElement.getAttribute("data-theme")).toBe(
-                theme.id === "system" ? null : theme.id,
-            );
+    it("applies and persists all palettes without closing the controls", async () => {
+        await open(); await choose("cobalt");
+        for (const palette of listPalettes()) {
+            await choose(palette.id);
+            expect(localStorage.getItem("palette")).toBe(JSON.stringify(palette.id));
+            expect(document.documentElement.dataset.palette).toBe(palette.id);
+            expect(host.querySelector('[role="dialog"]')).not.toBeNull();
         }
+        expect(host.querySelector<HTMLInputElement>('input[value="light"]')!.matches(":disabled")).toBe(true);
+        expect(host.querySelector<HTMLFieldSetElement>("fieldset:last-of-type")!.disabled).toBe(true);
+        await choose("mineral"); await choose("light");
+        expect(localStorage.getItem("theme")).toBe(JSON.stringify("light"));
+        expect(document.documentElement.dataset.theme).toBe("light");
+    });
+    it("still changes appearance when persistence is blocked", async () => {
+        vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new DOMException("Denied", "SecurityError"); });
+        await open(); await choose("amber"); await choose("dark");
+        expect(document.documentElement.dataset.palette).toBe("amber");
+        expect(document.documentElement.dataset.theme).toBe("dark");
+        expect(host.querySelector<HTMLInputElement>('input[value="amber"]')!.checked).toBe(true);
+    });
+    it("focuses the selected palette and returns focus after Escape", async () => {
+        await open(); expect(document.activeElement).toBe(host.querySelector('input[value="original"]'));
+        await act(async () => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
+        expect(host.querySelector('[role="dialog"]')).toBeNull(); expect(document.activeElement).toBe(host.querySelector("button"));
     });
 });

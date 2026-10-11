@@ -50,6 +50,15 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
+Current post-v0.4 source has 18 tools, seven populated categories and 28
+registry-derived sitemap URLs. The proposed v0.4.1 maintenance candidate
+contains homepage category sections, Calculator keyboard equals, the integrated
+six-palette appearance system and the converter category migration. These
+changes are unreleased; see `CHANGELOG.md`, `project-status.md` and
+`ROADMAP.md`. Current category ownership is described in `modules/Category.md`;
+homepage membership in `components/HomeClient.md`; and appearance behavior in
+`modules/ThemeRegistry.md`, `modules/ThemeRuntime.md` and `modules/ThemeStorage.md`.
+
 Current v0.3.1 Vercel Web Analytics lifecycle references:
 
 - `plans/v0.3.1-implementation-plan.md`: frozen implementation authority and
@@ -62,7 +71,8 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current lifecycle state. v0.3.1 is
-  released and publicly deployed; v0.4.0 is the next numbered version.
+  released and publicly deployed; v0.4.0 was released on 2026-10-08 and
+  v0.5.0 is the next planned version (plan not yet frozen).
 
 Current persistent-observability references:
 
@@ -115,7 +125,7 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
-their respective reports. v0.3.1 is complete and v0.4.0 is the next numbered
+their respective reports. v0.3.1 and v0.4.0 are released; v0.5.0 is the next numbered
 planning target.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
@@ -153,17 +163,18 @@ analytics, or proposing any Vercel custom event.
 **Relations:** ROADMAP.md, project-status.md, OBSERVABILITY.md, architecture.md
 and DEPLOYMENT.md. v0.3.1 does not replace the existing analytics facade/Neon
 observability and does not authorize Speed Insights or custom events. v0.4.0
-catalog scope remains separate and future.
+catalog scope remained separate and is now released.
 
 ### plans/v0.4.0-implementation-plan.md
 
-**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation, documentation reconciliation, and exact-candidate pre-release readiness are complete).
+**Summary:** Frozen v0.4.0 planning authority captured before implementation; its internal "implementation not started" state is historical and intentionally unchanged (v0.4 implementation, documentation reconciliation, exact-candidate readiness, and the 2026-10-08
+GitHub release are complete).
 Defines the canonical `developer` category owner, category assignments, the
 frozen JSON Formatter / Validator, Word / Character Counter and QR Code
 Generator contracts, the QR dependency decision, the three-batch structure,
 affected specification owners, test responsibilities and stop conditions.
-**When to read:** Before preparing or running any v0.4.0 implementation batch or
-changing the category model.
+**When to read:** When auditing v0.4.0 implementation history or changing the
+category model in a later release.
 **Relations:** ROADMAP.md, project-status.md, architecture.md, DESIGN.md and
 reports/PRE_V0_4_INDEXING_CHECKPOINT_2026-10-07.md. v0.5.0 and v0.6.0 scope are
 unchanged.
@@ -209,8 +220,8 @@ new modules or changing layer boundaries.
 ### DESIGN.md
 **Summary:** The canonical product design and styling contract, including
 visual identity, themes, layout, scrolling, accessibility, performance, and
-current implementation boundaries. Separates the current implemented shell
-from the proposed workspace-first pilot awaiting visual approval.
+current implementation boundaries. Separates the current implemented shell from the completed, user-approved
+Delivery 1 workspace pilot and the deployed Delivery 2 rollout.
 **When to read:** Before changing product visual design, styling, interaction
 presentation, responsive behavior, or visual accessibility rules.
 **Relations:** Works with `architecture.md`, agent guidance, and

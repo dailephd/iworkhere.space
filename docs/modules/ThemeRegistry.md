@@ -12,7 +12,7 @@
 This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
 
 <!-- section-id: contract -->
-## Contract (added 2026-08-07 reconciliation)
+## Historical API baseline (2026-08-07; superseded by current contract below)
 
 The single source of truth for which themes exist — analogous in spirit to
 `src/module/tool/registry.ts` for tools, but for `ThemeId` values.
@@ -61,3 +61,7 @@ This logical unit was identified by the following merge signals:
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+## Current appearance contract (2026-10-09)
+
+The existing registry owns both modes and palettes. `ThemeId` and `listThemes()` retain System/Light/Dark/One Dark for stored-value compatibility. `ColorMode` excludes One Dark. `PaletteId`, `listPalettes()` and `isPaletteId()` define Mineral Research, Oxblood Atelier, Signal Green, Cobalt & Terracotta, Amber & Graphite, Violet & Graphite (default with System mode) and the legacy One Dark choice. `listColorModes()` exposes System/Light/Dark. Unknown IDs are rejected. Exact tokens and contrast tests live in theme.css and paletteToken.test.ts.

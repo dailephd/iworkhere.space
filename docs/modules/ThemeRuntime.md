@@ -12,7 +12,7 @@
 This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
 
 <!-- section-id: contract -->
-## Contract (added 2026-08-07 reconciliation)
+## Historical API baseline (2026-08-07; superseded by current contract below)
 
 ```typescript
 function setTheme(themeId: ThemeId): void
@@ -60,7 +60,6 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
+## Current appearance contract (2026-10-09)
 
-### Four-theme migration contract
-
-Valid IDs are system/light/dark/onedark. Retired vscode-modern, dracula, amethyst-haze, mercury-fog, civic-light and spectrum resolve to System: invalid persisted values are removed, and stale DOM attributes are cleared. Root pre-paint initialization accepts only light/dark/onedark. System is absence of data-theme and CSS Light/Dark preference.
+`applyAppearance(preference, prefersDark)` sets `data-palette`, effective `data-theme`, `data-theme-preference` and the matching `.dark` class. System resolves the supplied OS preference; explicit Light/Dark ignore it. One Dark keeps `data-theme="onedark"` and is always dark. `setTheme()` and `getThemeFromDom()` retain the legacy API with the new effective-mode semantics. DOM functions are browser-only; `THEME_INIT_SCRIPT` is a server-safe string composed by layout.tsx. It validates each JSON preference independently before paint, mirroring the storage adapter as the existing pre-hydration exception. Invalid values fall back independently to Violet & Graphite/System.

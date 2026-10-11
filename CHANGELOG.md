@@ -1,10 +1,35 @@
 # Changelog
 
-## v0.4.0 — Core Text, Data & Sharing Utilities
+## Unreleased — post-v0.4 UI and category updates
+
+- PR #28 added the privacy page, eligibility-gated AdSense placements, tool
+  guides, Slugify accessibility improvements and Le branding after the v0.4.0
+  release. Advertising remains subject to external activation requirements.
+- Added the public `/privacy` route after v0.4.0, bringing the current
+  registry-derived sitemap from 27 to 28 canonical URLs.
+- Grouped the homepage into populated registry categories, retaining one card
+  for each of the 18 tools and a direct All tools link.
+- Made Calculator keyboard `=` run the expression, matching Enter and the
+  on-screen equals button.
+- Added six palettes to the existing appearance system while retaining Light,
+  Dark, System, fixed-dark One Dark, and Violet & Graphite / System as default.
+- Replaced public Everyday with `converter`, titled Converters. Length and
+  Weight remain there; QR Code Generator moves to Developer.
+- Preserved all tool URLs and added a permanent redirect from
+  `/category/everyday` to `/category/converter`.
+- Migrated category color tokens while preserving values across all palettes.
+- Recorded converter expansion as proposed v0.7.0/v0.8.0 planning only, pending
+  planner approval; frozen v0.5.0/v0.6.0 scope is unchanged.
+
+The historical v0.4 decision below is preserved. This entry is unreleased and
+does not assign a release version to the migration.
+
+## v0.4.0 — Core Text, Data & Sharing Utilities — 2026-10-08
 
 This release completes the canonical developer category and adds three
 browser-local utilities. The registry contains 18 tools across seven populated
-categories and produces 27 canonical sitemap URLs.
+categories and produced 27 canonical sitemap URLs at release. The privacy route
+and converter-category migration are post-release changes.
 
 ### Catalog and categories
 - Added the canonical `developer` category with a single runtime category-definition owner; canonical order is document, text, math, everyday, time, image, developer.

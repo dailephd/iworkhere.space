@@ -35,11 +35,53 @@ Plain Light/Dark (including System) use solid restrained materials. Only express
 
 ## Color and themes
 
-Themes define palette; components consume shared semantic visual roles. Category colors provide catalog identity. The supported IDs are exactly `system`, `light`, `dark`, and `onedark`. System selects Light or Dark only through CSS `prefers-color-scheme`, without `data-theme`. All retired/unknown stored IDs are removed and fall back to System before paint and after hydration. Civic Light and Spectrum were rejected; their historical evidence remains historical.
+### Six-palette appearance extension (2026-10-09)
+
+The public app separates palette identity from color mode through the existing
+theme module and header control. Violet & Graphite (`original`, default with
+System mode), Mineral Research (`mineral`), Oxblood Atelier (`oxblood`), Signal
+Green (`signal`), Cobalt & Terracotta (`cobalt`), and Amber & Graphite (`amber`)
+each support Light, Dark, and System. The reference is
+The palette values are maintained by the existing theme registry and CSS.
+at source commit `0c713001369bbfc76c416126877811a8888df07b`.
+
+The header keeps the approved Le mark and wordmark; its L is navy in Light and
+white in Dark and One Dark so the mark stays distinct on each header surface.
+
+One Dark remains an additional legacy palette with its original fixed dark
+colors and expressive materials. It is not one of the twelve documented schemes.
+Selecting it disables color-mode controls; selecting another palette restores
+ordinary mode selection. Existing stored `theme: "onedark"` values retain that
+appearance. Other existing mode choices keep their preference and default to
+Violet & Graphite when no palette has been saved. Invalid settings fall back independently.
+
+Exact reference color values and aliases are declared as `--palette-*` in the
+existing theme stylesheet to avoid collisions with Tailwind's `--color-*` wiring.
+One shared mapping connects them to existing header, navigation, card, panel,
+preview, result, action, input and focus roles. Functional cyan supplies readable
+Violet & Graphite text and primary-action fill; brand cyan remains the focus role.
+The reference typography, radii, large shadows and decorative card treatments
+are not applied to app geometry. Existing system typography, restrained shadows,
+category identity, tool behavior and layout remain authoritative. All six new
+palettes use solid materials; no effects preference is introduced.
+
+The Themes button opens a named nonmodal appearance dialog with native palette
+and color-mode radio groups. Escape/Close return focus; outside press or focus
+leaving dismisses it. The panel is bounded to the mobile viewport and can scroll.
+The storage adapter retains JSON-serialized `theme` and adds JSON-serialized
+`palette`. The existing pre-paint initializer mirrors those reads before hydration.
+For documented palettes, `data-theme` is effective light/dark, `.dark` agrees,
+and `data-theme-preference` stores the mode. Legacy One Dark retains its existing
+`data-theme="onedark"` hook. System follows later OS changes through the provider.
+
+The previous four-choice rules below describe the retained pre-extension baseline;
+this extension supersedes their exact-choice and System-attribute restrictions.
+
+Themes define palette; components consume shared semantic visual roles. Category colors provide catalog identity. The retained mode IDs are exactly `system`, `light`, `dark`, and `onedark`. System selects Light or Dark through CSS `prefers-color-scheme`. Invalid modes fall back to System and invalid palettes fall back to Violet & Graphite before paint and after hydration. Civic Light and Spectrum were rejected; their historical evidence remains historical.
 
 Light uses a dark navy header, clean white category-marked cards, a cool search surface, slate settings and preview, and mint completed output. Dark uses a deeper shell, cool slate panels, inset preview and restrained dark green results. One Dark uses its purple, blue, cyan, yellow, green and red families. Geometry, typography, spacing, navigation and processing remain theme-independent.
 
-Shared visual-role tokens are header-bg/text/muted; nav-hover-bg/active-bg/active-text; search-bg/border; card-bg/border/hover-bg; panel-bg/border; preview-bg/border; result-bg/border; secondary-action-bg/border; footer-bg. Inputs and danger-soft have shared role tokens. Category image/text/math/time/everyday/document/developer colors and soft tints live in the canonical theme CSS, with no independent palette registry. Small category chips and card edges carry identity; broad saturated tiles are forbidden. Primary actions use accent/contrast, secondary actions use their own surface/border, and result/error states also retain headings, metrics and actionable messages.
+Shared visual-role tokens are header-bg/text/muted; nav-hover-bg/active-bg/active-text; search-bg/border; card-bg/border/hover-bg; panel-bg/border; preview-bg/border; result-bg/border; secondary-action-bg/border; footer-bg. Inputs and danger-soft have shared role tokens. Category image/text/math/time/converter/document/developer colors and soft tints live in the canonical theme CSS, with no independent palette registry. Small category chips and card edges carry identity; broad saturated tiles are forbidden. Primary actions use accent/contrast, secondary actions use their own surface/border, and result/error states also retain headings, metrics and actionable messages.
 
 Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `global.css`. All text combinations target AA; focus retains its ring and contrast support. This component-color candidate remains approved for Delivery 1 by the user on 2026-10-03.
 
@@ -80,7 +122,7 @@ Destructive button styling uses the danger token only for destructive actions. I
 
 Home remains a utility-first entry point. Discover remains a utility catalog. Category pages remain concise work and navigation pages. Tool pages keep the tool workspace dominant. Do not replace existing product content with invented promotional copy, metrics, or testimonials.
 
-The theme trigger label is exactly `Themes`, remains a compact secondary control, and has no palette icon in the trigger. Preserve the picker, all four choices, theme persistence, and existing runtime mechanism. Footer identity text is exactly:
+The theme trigger label is exactly `Themes`, remains a compact secondary control, and has no palette icon in the trigger. Preserve all six documented palettes, Light/Dark/System modes, fixed-dark One Dark compatibility, persistence and the existing runtime mechanism. Footer identity text is exactly:
 
 > © 2026 iworkhere.space created by dailephd LLC
 
@@ -94,19 +136,19 @@ Assume mobile devices and slow networks. Prefer the system font stack and minima
 
 All analytics go through the existing `track()` abstraction and declared event names. Persistent state continues through the existing storage abstraction. Treat inputs as untrusted, prefer current client-side processing, and do not add dynamic execution. These implementation boundaries are governed by the architecture and retrieval-first instructions; design work does not authorize changes to them.
 
-## Planned workspace-first pilot
+## Accepted workspace-first pilot (historical rollout specification)
 
 Status: Delivery 1 is implemented and user-approved. Delivery 2 is implemented, validated, merged, and publicly deployed. The Delivery 1 approved visual baseline remains unchanged. The planner-authored [UI/discovery plan](plans/ui-discovery-growth-plan.md) owns scope, research, rollout, and search requirements.
 
-The candidate changes the working composition: compact top navigation in place of the permanent left navigation rail; a functional search entry point rather than the inactive header search field; and compact image settings beside a larger preview/result stage. Mobile uses a logical stacked workspace and compact wrapping navigation, not a new drawer or modal system. Existing route identities and AppShell ownership remain.
+The accepted implementation changed the working composition: compact top navigation in place of the permanent left navigation rail; a functional search entry point rather than the inactive header search field; and compact image settings beside a larger preview/result stage. Mobile uses a logical stacked workspace and compact wrapping navigation, not a new drawer or modal system. Existing route identities and AppShell ownership remain.
 
-The homepage becomes a compact launcher with one working search surface, populated categories, real linked tool cards, and a curated image-tool group. It must not become a full-screen promotional hero. Do not describe curated tools as popular without usage evidence.
+The homepage is a compact launcher with one working search surface, populated categories, real linked tool cards, and a curated image-tool group. It must not become a full-screen promotional hero. Do not describe curated tools as popular without usage evidence.
 
-Pilot values are approximately 280–320px for the desktop settings column and 28–32px for tool titles, with a flexible preview stage, the existing near-1280px content maximum, and existing semantic tokens. These are accepted local workspace targets, not new global CSS requirements. Preserve all four themes, accessible focus, error quality, actual image aspect ratios, truthful result metrics, and natural document scrolling.
+Pilot values are approximately 280–320px for the desktop settings column and 28–32px for tool titles, with a flexible preview stage, the existing near-1280px content maximum, and existing semantic tokens. These are accepted local workspace targets, not new global CSS requirements. Preserve the appearance system, accessible focus, error quality, actual image aspect ratios, truthful result metrics, and natural document scrolling.
 
 Production integration supersedes placeholder restrictions: root supplies real top/right AdSense slots only when explicitly enabled. No fake footer or right banner is visible; left remains absent.
 
-Review the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before rolling the pattern to the other image tools. Functional or Observer evidence is not a substitute for visual approval. The current-layout and affected component contracts describe the pilot implementation with the Delivery 1 visual direction approved.
+The completed Delivery 1 visual review covered the homepage and Image Resizer at 1440×900 and 390×844, light and dark, including empty, selected, successful-result, and error states before the Delivery 2 image-family rollout. Functional or Observer evidence is not a substitute for visual approval. The current-layout and affected component contracts describe the pilot implementation with the Delivery 1 visual direction approved.
 
 ## Change and documentation rules
 
@@ -136,11 +178,11 @@ Before changing a design or styling contract, update this document and then appl
 
 ## Component-color review contract
 
-Five visual contexts cover four choices: system-light, system-dark, light, dark, onedark. Review the focused 17-image homepage/success/error matrix. Category mapping is image cyan, text indigo/One Dark blue, math violet/purple, time amber/yellow, everyday green, document rose/red, developer orange. Developer tokens: Light `--category-developer: #c2410c` / soft `#fff0e8`; Dark (system-dark and explicit) `#fb923c` / `#3b2418`; One Dark `#d19a66` / `#3a3027`, mapped through `[data-category="developer"]` like the other categories. Contrast references: Light ~5.18:1 on white and ~4.66:1 on its soft tint; Dark ~8.53:1 and ~6.39:1; One Dark ~6.25:1 and ~5.22:1. Secondary accents do not replace status meaning. Functional evidence does not grant visual approval.
+The historical component-color review covered five visual contexts: system-light, system-dark, light, dark, and One Dark. Its category mapping used the former `everyday` category; current category tokens use `converter` with the same preserved values. Developer tokens: Light `--category-developer: #c2410c` / soft `#fff0e8`; Dark (system-dark and explicit) `#fb923c` / `#3b2418`; One Dark `#d19a66` / `#3a3027`, mapped through `[data-category="developer"]` like the other categories. Contrast references: Light ~5.18:1 on white and ~4.66:1 on its soft tint; Dark ~8.53:1 and ~6.39:1; One Dark ~6.25:1 and ~5.22:1. Secondary accents do not replace status meaning. Functional evidence does not grant visual approval.
 
 ## Peer islands and expressive material pilot
 
-Homepage Image tools and All other tools are peer SectionIsland regions: identical radius, padding, heading spacing, border and elevation. This narrow presentation-only component accepts heading, optional description and children; it owns no tool/category/search/routing logic. Existing grids and metadata remain in HomeClient. The shared island padding is the only intended homepage geometry refinement, identical across themes.
+The homepage has one SectionIsland for each populated registry category, in canonical category order, with the shared styling used across all sections. SectionIsland remains presentation-only: it accepts a heading, optional description and children and owns no tool, category, search or routing logic. HomeClient renders registry-derived membership, exactly one card per tool, and the direct All tools link. Section and card geometry is validated at desktop and mobile sizes.
 
 Light/Dark use opaque lightly tinted islands, solid child cards and restrained elevation, no glass blur or neomorphic shadow pair. One Dark uses purple/slate structural glass on islands, preview/result and theme popover, with 12px blur/120% saturation and high-opacity backgrounds. Cards, settings and secondary actions use restrained paired directional shadows; primary actions remain solid with visible hover/pressed treatment. Search stays solid and bordered. Header/footer/banner remain solid and quiet.
 
@@ -149,3 +191,18 @@ Material tokens: island-bg/border/shadow, card-shadow/hover-shadow, raised-shado
 ## Production advertising placement
 
 Explicit production AdSense opt-in supplies only top and right AppShell slots. Disabled ads supply no placeholder. Top reserves 100px mobile / 90px desktop without clipping or maximum height. Right track is stable 176px at xl (1280px), hidden below. Quiet Advertisement labels and neutral surfaces distinguish Google content from controls; no glass/category tint. Footer slot capability remains, with no fake root footer banner. This supersedes earlier placeholder/112px restrictions.
+
+## Isolated reconciliation (2026-10-11)
+
+Violet & Graphite / System is intentionally the utility default. The existing theme owners remain the only appearance system. Homepage sections follow populated category registry order and preserve every tool card and the All tools route. Native radio controls retain keyboard selection, focus return and Escape. Preview swatches and a separate pre-palette option are deferred to keep this integration bounded.
+
+## Post-release converter category migration — 2026-10-11
+
+The public `everyday` category becomes `converter`, titled **Converters**.
+Its category foreground/soft tokens are renamed without changing any value,
+across the six palette Light/Dark modes, System and fixed-dark One Dark.
+Existing semantic roles, geometry and appearance provider remain unchanged.
+QR Code Generator uses the existing developer identity. Homepage sections,
+navigation and breadcrumbs resolve the converter label from category.ts;
+related-tool headings continue to describe their related entries.
+The v0.4 release decision is historical and remains intact.

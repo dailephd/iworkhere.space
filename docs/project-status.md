@@ -1,8 +1,47 @@
 # PROJECT STATUS
 
-## AdSense remediation and Le branding integration candidate - 2026-10-09
+## Current repository and next planning step — 2026-10-11
 
-The accepted changes from PRs #24–27 are integrated on `integration/adsense-remediation-and-le-logo`: F-01 privacy policy, F-02 advertising eligibility, F-03/A-01 utility guides and Slugify accessibility, and Le branding/icons. Local verification and desktop/mobile browser acceptance pass; route-specific Observer acceptance remains REVIEW_REQUIRED. The candidate has 18 registered tools and 28 public sitemap URLs. It is an unmerged integration candidate, is not deployed, and does not enable advertising. AdSense approval and publisher/legal review remain external and unverified. See [local validation report](reports/adsense-f03-a01-local-validation.md) for feature-specific evidence.
+DEFAULT_BRANCH: `master`
+
+LATEST_VERIFIED_MASTER_SHA: `2f1f3ab71ac9483a661b1c061302ccb7b604dc93`
+
+CURRENT_ROOT_PACKAGE_VERSION: `0.4.0` (independent dashboard: `0.1.0`)
+
+LATEST_NUMBERED_GITHUB_RELEASE: `v0.4.0` — published 2026-10-08.
+
+CURRENT_SOURCE_CATALOG: 18 registered tools, seven populated categories, and
+28 registry-derived sitemap URLs, including `/privacy`. The tagged v0.4.0
+release contained 27 URLs. The later category migration and UI changes remain
+unreleased; the proposed v0.4.1 target does not change package metadata.
+
+PROPOSED_MAINTENANCE_RELEASE_TARGET: `v0.4.1` (unreleased; planning only).
+
+NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
+Its implementation plan is not frozen. Planner-owned specification and a
+version plan must precede implementation. The frozen v0.6.0 scope remains as
+recorded in ROADMAP.md.
+
+## Post-v0.4 UI and category integration candidate — 2026-10-11
+
+The candidate carries PR #30's populated-category homepage and Calculator
+keyboard `=` behavior, adds six palettes to the existing appearance owners,
+and migrates `everyday` to `converter` (public label **Converters**). Length
+and Weight remain converters; QR Code Generator moves to Developer. Existing
+tool URLs remain, and `/category/everyday` permanently redirects to
+`/category/converter`. The integration remains unmerged, unreleased and
+undeployed. PR #29's v0.4.0 status corrections were reconciled with these later
+source facts.
+
+## AdSense remediation and Le branding source integration — 2026-10-10
+
+PR #28 merged the accepted changes from PRs #24–27: F-01 privacy policy,
+F-02 advertising eligibility, F-03/A-01 utility guides and Slugify
+accessibility, and Le branding/icons. Prior local verification and browser
+acceptance remain evidence for that implementation; route-specific Observer
+acceptance remained REVIEW_REQUIRED. The merge does not establish current
+Vercel deployment or enable advertising. AdSense approval and publisher/legal
+review remain external and unverified. See [local validation report](reports/adsense-f03-a01-local-validation.md).
 
 ## v0.3.1 released and publicly deployed — 2026-10-06
 
@@ -161,7 +200,7 @@ PRODUCTION_CONTINUOUS_DEPLOYMENT: ACTIVE — the public Vercel project `iworkher
 
 PRE_RELEASE_PRODUCTION_SOURCE_SHA (verified 2026-10-07): `34272e42a0bac1fc27860e1e60a8696f7a15044f` (GitHub Production deployment record `6923149452`); later `master` merges redeploy automatically
 
-LIVE_CATALOG (verified 2026-10-08): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
+V0_4_RELEASE_DAY_CATALOG (verified 2026-10-08): 27 sitemap URLs; `/tool/json-formatter`, `/tool/word-character-counter` and `/tool/qr-code-generator` return 200
 
 Implementation lineage on `master`: Batch 1 (canonical `developer` category +
 JSON Formatter / Validator) merged at `59318b5f7b142a8154fead3153674a6c35eca4f2`
@@ -171,8 +210,9 @@ merged at `519bedf072be17593c371bfd7242713bdae93b95` (PR #17); a bounded
 related-tool-heading correction found by the completeness audit merged at
 `6601e119b67715f0ec5e34b86298136b7429572a` (PR #18).
 
-Release-content catalog: 18 tools, 7 populated categories, 27 registry-derived
-sitemap URLs. The package version is 0.4.0. Continuous production deployment
+Release-content catalog: 18 tools, 7 populated categories, and 27
+registry-derived sitemap URLs at v0.4.0 release. The package version is 0.4.0.
+Current source adds `/privacy`, for 28 URLs. Continuous production deployment
 source and formal release integration are separate lifecycle facts; the
 v0.3.1 launch record (23 URLs) below is historical.
 
@@ -183,7 +223,9 @@ Reports:
 [related-tool label correction](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md),
 [completeness and reconciliation](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md).
 
-Release integration, GitHub Release identity, and final production acceptance are evidenced through the corresponding GitHub records and release launch report. Those event identities are recorded only after verification.
+V0_4_GITHUB_RELEASE: `v0.4.0` — PUBLISHED 2026-10-08. PR #21 merged
+at `b619920048239e1b60ea20c4db5a4d0f01bdcd39`. This release record is
+separate from later source changes and deployments.
 
 ## Historical v0.4.0 planning freeze — 2026-10-07
 
@@ -270,7 +312,10 @@ merge/CI history, production evidence, and remaining webmaster actions.
 
 Delivery 2 is implemented and validated on its dedicated feature branch. The earlier `BLOCKED_OBSERVER_ACCEPTANCE_CONFIG` was a configuration gap, resolved through planner-authorized semantic relationship contracts and supplementary scroll lanes without production corrections. Focused tests, 264 production E2E tests, corrected Observer lanes, final impact review, aggregate verification and container validation passed. See [the implementation report](reports/UI_DISCOVERY_DELIVERY_2_IMPLEMENTATION_REPORT.md) for preserved blocked history and final evidence. At this 2026-10-03 readiness-report timestamp, no merge or Delivery 2 deployment had yet occurred; PR #6 and the public launch followed on 2026-10-04.
 
-Delivery 1 visual pilot is APPROVED_BY_USER: homepage, compact navigation, Image Resizer workspace, and current four-theme/material behavior. Delivery 2 (image-family rollout and search foundation) is implemented and validated. This later decision supersedes the pending visual-review wording in historical candidate notes below. Root version remains 0.2.0; the v0.3–v0.6 sequence is unchanged.
+At this historical checkpoint, Delivery 1 was user-approved for the homepage,
+compact navigation, Image Resizer workspace and four-theme/material behavior.
+Delivery 2 later completed the image-family rollout and search foundation. The
+current six-palette appearance system is recorded above and in DESIGN.md.
 
 ## Implementation state snapshot — 2026-10-02
 
@@ -312,7 +357,7 @@ These are historical snapshots, not results of the current reconciliation run.
 Existing five lint warnings and the previously recorded pinned-dependency audit
 warnings were not changed here.
 
-## Current architecture and validation
+## Historical architecture and validation snapshot
 
 The accepted v0.1.1 development-validation baseline and design reconciliation
 remain in place. Next.js Server pages compose registry-driven client tools.
@@ -369,9 +414,9 @@ runtime validation does not resolve the separate HEIC license or release gate.
 - Reusable UI components (Button, Input, StatusPanel, ToolSearch, ThemeToggle)
 - Navigation data (`src/app/navData.ts`) wired to real routes via Link
 - CSS custom property theming (`src/app/global.css`, `src/style/theme.css`)
-- Multi-theme registry (`src/module/theme/`): `ThemeId` union of four themes
-  (system, light, dark, onedark), storage persistence, and system preference fallback for
-  `"system"`
+- Multi-theme registry (`src/module/theme/`): four retained mode IDs (`system`,
+  `light`, `dark`, `onedark`), six palette identities, storage persistence and
+  system preference handling
 - Recently used tool tracking module (`src/module/tool/recentlyUsed.ts`)
 - Navigation items wired to routes (Home, Discover) via VerticalNav with
   `usePathname()`
@@ -396,10 +441,10 @@ runtime validation does not resolve the separate HEIC license or release gate.
 - Project documentation updated (architecture, canonical design, code generation
   guidelines)
 
-### Tools implemented
+### Historical tools implemented at the v0.4.0 release
 
-Current feature-branch inventory includes the following five unreleased
-document tools in addition to the ten existing tools below:
+The v0.3.0 release added the following five document tools to the ten-tool
+catalog that preceded v0.4.0:
 
 - **Merge PDF** (`/tool/merge-pdf`) — ordered browser-local PDF page copying.
 - **Split PDF** (`/tool/split-pdf`) — ordered page groups and individual PDFs.
@@ -444,7 +489,7 @@ The dated review/task notes below preserve state and decisions at those
 checkpoints. The current implementation, deployment, release and next-workflow
 summary at the top of this file is authoritative for the present candidate.
 
-## UI and discovery planning — 2026-10-01
+## Historical UI and discovery planning — 2026-10-01
 
 Source review at `4dcdcd2c64bfbbcacbb37c069090fce8921f310e` confirms that the
 header and left banners are removed and their optional slot support remains.
@@ -475,7 +520,7 @@ implemented in the working tree and is `PILOT_IMPLEMENTED_PENDING_VISUAL_APPROVA
 Its visual artifacts and final technical validation remain part of the review
 package. No broader image-tool rollout or release status change is implied.
 
-## External production integration status
+## Historical external production integration status
 
 - Visual approval of the homepage/Image Resizer pilot before image-family rollout.
 - Any removal of the currently retained right/footer banners requires explicit approval.
@@ -487,7 +532,7 @@ package. No broader image-tool rollout or release status change is implied.
   enrichment, About content and RustLogProvider activation. The new plan defines
   only the bounded near-term discovery subset, not these entire workstreams.
 
-## Next action
+## Historical next action
 
 After this documentation reconciliation passes, return its exact candidate SHA
 to the planner for separate pre-release readiness. The
@@ -497,17 +542,17 @@ have not run; no version bump, PR, merge or v0.3 deployment is performed here.
 External launch follow-up remains separately tracked in the Delivery 2 launch
 record and [deployment documentation](DEPLOYMENT.md).
 
-## Theme refresh pilot
+## Historical theme refresh pilot
 
 Four selectable themes: System (Light/Dark only), Light, Dark, One Dark (developer syntax palette). Component-color correction extends the uncommitted UI pilot and remains pending human visual review. No rollout, commit or deployment is authorized by passing functional checks.
 
 
-## Component-color correction candidate
+## Historical component-color correction candidate
 
 Civic Light and Spectrum are visually rejected and retired. Four selectable themes remain: System, Light, Dark, One Dark. Themes define palette; components consume semantic visual roles; categories provide catalog identity. The existing uncommitted layout pilot is preserved. This correction awaits focused human visual review; no rollout, commit or delivery is authorized.
 
 
-### Island/material candidate
+### Historical island/material candidate
 
 Peer section-island and One Dark glass/neomorphic material candidate is pending human visual approval. Four themes remain. Current uncommitted layout/color work is preserved; no rollout or delivery is authorized.
 
@@ -521,3 +566,13 @@ Integration validation: `READY_PRODUCTION_OBSERVABILITY_ADSENSE_FOR_REVIEW`. Typ
 ## Production diagnostic hotfix (cross-version infrastructure)
 
 Isolated baseline 11219ceaa930b4a96971e2bf32809da100e6cc22 is production-equivalent apart from documentation consolidation/container smoke doc-path update. Diagnostic hotfix code c700407c5a92061d9d5a03caf88bd1e32199e5cc is deployed after additive migration/grants and full local validation. Replacement smoke (explicitly authorized) proves actual error/stack/cause/component/runtime/deployment data in Vercel logs, Neon and the protected dashboard. dashboard.iworkhere.space is ACTIVE. Architecture forward-ported and pushed to Delivery 2 as 0d0839b2542e5afed26b07b6ab5aa64746ba1a50; root/DB/dashboard/browser validation passed. At this 2026-10-03 hotfix-report snapshot, Delivery 2 was not yet deployed; feature scope was unchanged. The later public launch is recorded in [the Delivery 2 launch report](reports/UI_DISCOVERY_DELIVERY_2_LAUNCH_REPORT.md). See docs/reports/PRODUCTION_DIAGNOSTIC_OBSERVABILITY_HOTFIX.md.
+
+## Post-release category migration — 2026-10-11
+
+The integration candidate carries the migration from `everyday` to `converter`
+(Converters), with QR Code Generator in Developer and the historic route
+permanently redirected. All 18 tool URLs and seven populated categories remain.
+The candidate passed category/layout validation and desktop/mobile Observer
+acceptance; the original canonical Observer baseline remains preserved. Proposed
+v0.7/v0.8 converter expansion remains subject to planner approval. This
+integration is unreleased and does not change package metadata.

@@ -33,7 +33,7 @@ export const storage: StorageAdapter
 - `get`/`set` handle `JSON.parse`/`JSON.stringify` internally; a parse failure
   or write failure (e.g. quota exceeded) is swallowed and `get` returns
   `null` rather than throwing.
-- Known consumers and their keys: `"theme"` (`src/module/theme/themeStorage.ts`),
+- Known consumers and their keys: `"theme"` and `"palette"` (`src/module/theme/themeStorage.ts`),
   `"recent-tool"` (`src/module/tool/recentlyUsed.ts`), `"analytic_event_count"`
   (`src/module/analytics/provider.ts`). See `docs/SCHEMA.md` §5 for the full
   key table.

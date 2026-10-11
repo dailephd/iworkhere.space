@@ -1,24 +1,43 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test } from "vitest";
-import { setTheme, getThemeFromDom } from "./themeRuntime.client";
-import { listThemes } from "./themeRegistry";
+import { applyAppearance, setTheme, getThemeFromDom } from "./themeRuntime.client";
+import { listThemes, listPalettes, type ColorMode } from "./themeRegistry";
 
-beforeEach(() => document.documentElement.removeAttribute("data-theme"));
+beforeEach(() => {
+    for (const name of ["data-theme", "data-palette", "data-theme-preference"]) document.documentElement.removeAttribute(name);
+    document.documentElement.classList.remove("dark");
+});
 describe("theme runtime", () => {
-    test.each(listThemes())("applies and reads $id", ({ id }) => {
+    test.each(listThemes())("applies and reads legacy mode $id", ({ id }) => {
         setTheme(id);
-        expect(document.documentElement.getAttribute("data-theme")).toBe(id === "system" ? null : id);
+        expect(document.documentElement.dataset.theme).toBe(id === "system" ? "light" : id);
         expect(getThemeFromDom()).toBe(id);
     });
-    test("System clears an explicit theme", () => {
-        setTheme("onedark");
-        setTheme("system");
-        expect(document.documentElement.hasAttribute("data-theme")).toBe(false);
-    });
-    test.each(["vscode-modern", "dracula", "amethyst-haze", "mercury-fog", "civic-light", "spectrum", "unknown", "system"])("clears invalid explicit DOM value %s", id => {
-        document.documentElement.setAttribute("data-theme", id);
+    for (const palette of listPalettes().filter(p => p.id !== "onedark")) {
+        test.each(["light", "dark"] as ColorMode[])(`${palette.id} supports %s independent of OS`, mode => {
+            applyAppearance({ palette: palette.id, mode }, mode === "light");
+            expect(document.documentElement.dataset.theme).toBe(mode);
+            expect(document.documentElement.dataset.palette).toBe(palette.id);
+            expect(document.documentElement.classList.contains("dark")).toBe(mode === "dark");
+        });
+    }
+    test.each([false, true])("System resolves OS dark=%s without changing preference", prefersDark => {
+        applyAppearance({ palette: "cobalt", mode: "system" }, prefersDark);
+        expect(document.documentElement.dataset.theme).toBe(prefersDark ? "dark" : "light");
         expect(getThemeFromDom()).toBe("system");
-        expect(document.documentElement.hasAttribute("data-theme")).toBe(false);
     });
-    test("absent DOM theme is System", () => expect(getThemeFromDom()).toBe("system"));
+    test("One Dark remains dark and System leaves legacy mode", () => {
+        applyAppearance({ palette: "onedark", mode: "light" }, false);
+        expect(document.documentElement.dataset.theme).toBe("onedark");
+        expect(document.documentElement.classList.contains("dark")).toBe(true);
+        setTheme("system"); expect(document.documentElement.dataset.palette).toBe("original");
+        expect(getThemeFromDom()).toBe("system");
+    });
+    test.each(["vscode-modern", "dracula", "amethyst-haze", "mercury-fog", "civic-light", "spectrum", "unknown", "system"])("sanitizes invalid effective value %s", id => {
+        document.documentElement.dataset.theme = id;
+        expect(getThemeFromDom()).toBe("system");
+        expect(document.documentElement.dataset.theme).toBe("light");
+        expect(document.documentElement.dataset.palette).toBe("original");
+    });
+    test("absent DOM theme resolves default System", () => expect(getThemeFromDom()).toBe("system"));
 });

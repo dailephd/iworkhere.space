@@ -15,7 +15,7 @@ const pdf = (name: string) => path.resolve(`test/fixtures/pdf/${name}.pdf`);
 
 test("document family: complete discovery, search, canonical SSR and related navigation", async ({ page, request }) => {
     await page.goto("/");
-    const other = page.getByRole("region", { name: "All other tools" });
+    const other = page.getByRole("region", { name: "Document tools" });
     for (const tool of documents) await expect(other.locator(`a[href="/tool/${tool.slug}"]`)).toHaveCount(1);
     await other.locator('a[href="/tool/merge-pdf"]').click();
     await expect(page.getByRole("heading", { level: 1, name: "Merge PDF", exact: true })).toBeVisible();

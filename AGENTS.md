@@ -130,7 +130,7 @@ setQuery?: (next: Record<string, string>) => void;
 }
 
 Tool categories:
-document, image, text, math, time, everyday, developer
+document, image, text, math, time, converter, developer
 
 Tool capabilities:
 client-only, offline, requires-network

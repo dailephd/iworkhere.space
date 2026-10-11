@@ -3,7 +3,7 @@ import { test, expect } from "./support/fixture";
 test("non-system theme persists through reload", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Themes", exact: true }).click();
-    await page.getByRole("option", { name: "One Dark", exact: true }).click();
+    await page.getByRole("radio", { name: "One Dark", exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "onedark");
     await page.reload();
     await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
@@ -26,7 +26,7 @@ for (const stored of ["vscode-modern", "dracula", "amethyst-haze", "mercury-fog"
         });
         await page.goto("/", { waitUntil: "domcontentloaded" });
         const explicit = ["light", "dark", "onedark"].includes(stored);
-        expect(await page.locator("html").getAttribute("data-theme")).toBe(explicit ? stored : null);
+        expect(await page.locator("html").getAttribute("data-theme")).toBe(explicit ? stored : (await page.evaluate(() => matchMedia("(prefers-color-scheme: dark)").matches)) ? "dark" : "light");
         expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(explicit || stored === "system" ? JSON.stringify(stored) : null);
     });
 }
@@ -35,8 +35,9 @@ for (const retired of ["vscode-modern", "dracula", "amethyst-haze", "mercury-fog
         await page.addInitScript(value => localStorage.setItem("theme", JSON.stringify(value)), retired);
         await page.goto("/");
         await page.getByRole("button", { name: "Themes", exact: true }).click();
-        await expect(page.getByRole("option", { name: "System", exact: true })).toHaveAttribute("aria-selected", "true");
-        expect(await page.locator("html").getAttribute("data-theme")).toBeNull();
+        await expect(page.getByRole("radio", { name: "System", exact: true })).toBeChecked();
+        await expect(page.locator("html")).toHaveAttribute("data-theme-preference", "system");
+        await expect(page.locator("html")).toHaveAttribute("data-palette", "original");
         expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
     });
 }

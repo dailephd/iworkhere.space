@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test } from "vitest";
-import { loadTheme, storeTheme } from "./themeStorage";
-import { listThemes } from "./themeRegistry";
+import { loadTheme, storeTheme, loadAppearance, storeAppearance } from "./themeStorage";
+import { listThemes, listPalettes } from "./themeRegistry";
 import { storage } from "@/lib/storage";
 
 beforeEach(() => localStorage.clear());
@@ -22,4 +22,25 @@ describe("theme storage", () => {
         expect(localStorage.getItem("theme")).toBeNull();
     });
     test("absent storage allows System fallback", () => expect(loadTheme()).toBeNull());
+});
+
+describe("appearance storage", () => {
+    test.each(listPalettes())("persists palette $id through the adapter", ({ id }) => {
+        storeAppearance({ palette: id, mode: "dark" });
+        expect(loadAppearance()).toEqual({ palette: id, mode: "dark" });
+        expect(localStorage.getItem("palette")).toBe(JSON.stringify(id));
+    });
+    test("defaults to Violet & Graphite and System", () => expect(loadAppearance()).toEqual({ palette: "original", mode: "system" }));
+    test("preserves the existing One Dark preference", () => {
+        storeTheme("onedark"); expect(loadAppearance()).toEqual({ palette: "onedark", mode: "dark" });
+    });
+    test("invalid palette does not discard a valid mode", () => {
+        storage.set("palette", "unknown"); storeTheme("dark");
+        expect(loadAppearance()).toEqual({ palette: "original", mode: "dark" });
+        expect(localStorage.getItem("palette")).toBeNull();
+    });
+    test("invalid mode does not discard a valid palette", () => {
+        storage.set("theme", 42); storage.set("palette", "oxblood");
+        expect(loadAppearance()).toEqual({ palette: "oxblood", mode: "system" });
+    });
 });

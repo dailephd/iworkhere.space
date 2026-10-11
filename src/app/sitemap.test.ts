@@ -32,3 +32,12 @@ describe("public sitemap", () => {
         finally { tools.pop(); }
     });
 });
+
+it("replaces the historical canonical category URL without changing converter or QR tool URLs", () => {
+    const urls = sitemap().map(entry => entry.url);
+    expect(urls.filter(url => url === "https://iworkhere.space/category/converter")).toHaveLength(1);
+    expect(urls).not.toContain("https://iworkhere.space/category/everyday");
+    for (const slug of ["length-converter", "weight-converter", "qr-code-generator"]) {
+        expect(urls.filter(url => url === `https://iworkhere.space/tool/${slug}`)).toHaveLength(1);
+    }
+});

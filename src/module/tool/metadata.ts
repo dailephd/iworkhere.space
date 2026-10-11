@@ -1,6 +1,6 @@
 import { tool_definition_list } from "./registry"
 import type { ToolDefinition, ToolCategory, ToolSeo, ToolId } from "./type"
-import { tool_category_definition_list } from "./category"
+import { getToolCategoryLabel, tool_category_definition_list } from "./category"
 
 export interface ToolBreadcrumb {
     label: string
@@ -19,7 +19,7 @@ export function getToolByIdList(id: ToolId[]): ToolDefinition[] {
 export function getToolBreadcrumb(tool: ToolDefinition): ToolBreadcrumb[] {
     return [
         { label: "Home", href: "/" },
-        { label: tool.category[0].toUpperCase() + tool.category.slice(1), href: `/category/${tool.category}` },
+        { label: getToolCategoryLabel(tool.category), href: `/category/${tool.category}` },
         { label: tool.name },
     ]
 }

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
-import { getToolCategoryDefinition, isToolCategory, tool_category_definition_list } from "./category"
+import { getToolCategoryDefinition, getToolCategoryLabel, isToolCategory, tool_category_definition_list } from "./category"
 import { getAvailableCategory } from "./metadata"
 import { tool_definition_list } from "./registry"
 
@@ -9,7 +9,7 @@ const categoryId = tool_category_definition_list.map((definition) => definition.
 
 describe("canonical category definitions", () => {
     it("pins the canonical order with developer last", () => {
-        expect(categoryId).toEqual(["document", "text", "math", "everyday", "time", "image", "developer"])
+        expect(categoryId).toEqual(["document", "text", "math", "converter", "time", "image", "developer"])
     })
 
     it("has unique ids and non-empty titles and descriptions", () => {
@@ -20,14 +20,13 @@ describe("canonical category definitions", () => {
         }
     })
 
-    it("keeps the exact public titles and descriptions of the six pre-v0.4 categories", () => {
+    it("keeps the exact public titles and descriptions of the five unchanged pre-v0.4 categories", () => {
         const legacy = {
             document: ["Document Tool", "Tool for working with PDFs and documents."],
             image: ["Image & Media Tool", "Convert, resize, and optimize image."],
             text: ["Text & Code Tool", "Format, transform, and analyze text and code."],
             math: ["Math & Calculator Tool", "Calculator and numerical utility."],
             time: ["Time & Date Tool", "Timezone, date, and calendar tool."],
-            everyday: ["Everyday Utility", "Simple utility for daily task."],
         } as const
         for (const [id, [title, description]] of Object.entries(legacy)) {
             expect(getToolCategoryDefinition(id as keyof typeof legacy)).toEqual({ id, title, description })
@@ -45,7 +44,7 @@ describe("canonical category definitions", () => {
     it("validates only canonical ids", () => {
         expect(isToolCategory("developer")).toBe(true)
         for (const id of categoryId) expect(isToolCategory(id)).toBe(true)
-        for (const value of ["", "Developer", "unknown", "toString", "__proto__", "document "]) {
+        for (const value of ["", "everyday", "Converter", "Developer", "unknown", "toString", "__proto__", "document "]) {
             expect(isToolCategory(value)).toBe(false)
         }
     })
@@ -57,17 +56,18 @@ describe("category population stays registry-derived", () => {
     })
 
     it("returns populated categories in canonical order", () => {
-        expect(getAvailableCategory()).toEqual(["document", "text", "math", "everyday", "time", "image", "developer"])
+        expect(getAvailableCategory()).toEqual(["document", "text", "math", "converter", "time", "image", "developer"])
     })
 
     it("omits a canonical category that has no registered tool", () => {
-        const index = tool_definition_list.findIndex((tool) => tool.category === "developer")
-        const [removed] = tool_definition_list.splice(index, 1)
+        const original = [...tool_definition_list]
+        const remaining = original.filter(tool => tool.category !== "developer")
+        tool_definition_list.splice(0, tool_definition_list.length, ...remaining)
         try {
-            expect(getAvailableCategory()).toEqual(["document", "text", "math", "everyday", "time", "image"])
+            expect(getAvailableCategory()).toEqual(["document", "text", "math", "converter", "time", "image"])
             expect(getAvailableCategory()).not.toContain("developer")
         } finally {
-            tool_definition_list.splice(index, 0, removed)
+            tool_definition_list.splice(0, tool_definition_list.length, ...original)
         }
         expect(getAvailableCategory()).toContain("developer")
     })
@@ -96,3 +96,10 @@ describe("single category identity owner", () => {
         expect(text).toContain('from "./category"')
     })
 })
+
+it("migrates the public converter title and labels without accepting the historical id", () => {
+    expect(getToolCategoryDefinition("converter")).toEqual({ id: "converter", title: "Converters", description: "Convert length and weight between units." });
+    expect(getToolCategoryLabel("converter")).toBe("Converters");
+    expect(getToolCategoryLabel("developer")).toBe("Developer");
+    expect(isToolCategory("everyday")).toBe(false);
+});

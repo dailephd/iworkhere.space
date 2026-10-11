@@ -72,3 +72,10 @@ Manual review and updates are encouraged to add implementation details.
 ## Delivery 2 derived-query contract
 
 `getToolByIdList(id: ToolId[])` resolves ordered canonical IDs, omits unknown IDs and duplicate IDs, and returns registry definitions. Guide prose is not imported here. `getToolBreadcrumb(tool)` derives Home → populated Category → current Tool display items from the registered tool. The registry remains the sole identity source.
+
+## Post-release converter migration
+
+`getToolBreadcrumb` resolves short labels through category.ts, including the
+public title Converters. It retains registry-derived category destinations:
+Length/Weight use /category/converter, QR uses /category/developer. Canonical
+population order and all individual tool slugs remain unchanged.

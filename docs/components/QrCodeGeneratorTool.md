@@ -3,7 +3,8 @@
 ## Contract
 
 `src/module/tool/everyday/QrCodeGeneratorTool.tsx` is the client component for
-the `qr-code-generator` tool (category `everyday`). It implements
+the `qr-code-generator` tool (current category `developer`; it belonged to
+`everyday` at the v0.4.0 release). It implements
 `ToolComponentProp`, owns UI state plus the browser canvas, PNG Blob and
 object-URL lifecycle, and delegates all QR behavior to `qrCode.ts` (see
 [QrCode](../modules/QrCode.md)).

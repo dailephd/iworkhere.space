@@ -43,9 +43,16 @@ The approved Delivery 1 launcher is compact, not a marketing landing page.
 
 ### Component-color correction (Delivery 1 visually approved 2026-10-03)
 
-Category links consume category hue/soft roles. Tool cards consume card roles with a thin category edge and category hover tint. Image group uses image-soft. Existing metadata owns category identity; no duplicate catalog or palette.
+Category links consume category hue/soft roles. Tool cards consume card roles
+with a thin category edge and category hover tint. Existing metadata owns
+category identity; no duplicate catalog or palette.
 
 
-### Island/material candidate
+### Current category sections
 
-Image tools and All other tools now compose the same presentation-only SectionIsland. Metadata selection and ToolGrid remain local. Common padding/radius/heading/border/elevation establish peer hierarchy.
+HomeClient renders one presentation-only SectionIsland for each populated
+registry category in canonical order. Tool membership is registry-derived, and
+all 18 tools appear exactly once. The direct All tools link navigates to
+Discover. Metadata selection and ToolGrid remain local; SectionIsland owns no
+category, tool, search or routing behavior. Shared section styling is consistent
+across categories and appearance palettes.
