@@ -1,35 +1,49 @@
 # PROJECT STATUS
 
-## Current source and planning — 2026-10-11
+## Current release and next planning step — 2026-10-11
 
 DEFAULT_BRANCH: `master`
 
-MASTER_BASE_AT_V0.4.1_SOURCE_INTEGRATION: `2f1f3ab71ac9483a661b1c061302ccb7b604dc93`
+LATEST_VERIFIED_MASTER_SHA: `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`
 
-CURRENT_SOURCE_VERSION: `0.4.1` (independent dashboard: `0.1.0`)
+CURRENT_ROOT_PACKAGE_VERSION: `0.4.1` (independent dashboard: `0.1.0`)
 
-PREVIOUS_NUMBERED_GITHUB_RELEASE: `v0.4.0` — published 2026-10-08.
+LATEST_NUMBERED_GITHUB_RELEASE: `v0.4.1` — published 2026-10-11.
 
-CURRENT_SOURCE_CATALOG: 18 registered tools, seven populated categories, and
-28 registry-derived sitemap URLs, including `/privacy`. The v0.4.0 release
-contained 27 URLs. Current source includes populated-category homepage
-sections, Calculator keyboard equals, six integrated palettes and the
-converter-category migration.
+V0_4_1_RELEASE_PR: #32 — MERGED 2026-10-11.
+
+V0_4_1_ANNOTATED_TAG_TARGET: `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (matches `master` at verification).
+
+EXACT_MASTER_SHA_CI: PASS — Build, Lint, Test, Typecheck, E2E, Container,
+Dashboard and Observability database all succeeded on the tagged commit.
+
+LATEST_PRODUCTION_DEPLOYMENT_IDENTITY: NOT INDEPENDENTLY VERIFIED. The public
+Vercel project is configured for automatic deployment from `master`, but
+GitHub release publication and passing source checks do not establish a
+particular production deployment's identity or live health.
+
+CURRENT_RELEASE_CATALOG: 18 registered tools, seven populated categories,
+28 registry-derived sitemap URLs including `/privacy`. The historical v0.4.0
+release had 27 URLs; v0.4.1 retains all tool URLs and adds the Converters
+category with the permanent `/category/everyday` redirect.
 
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
-Its implementation plan is not frozen. Planner-owned specification and a
-version plan must precede implementation. The frozen v0.6.0 scope remains as
-recorded in ROADMAP.md.
+Its implementation plan is not frozen. Planner-owned specifications and a
+version plan must precede implementation. The frozen v0.6.0 scope remains
+as recorded in ROADMAP.md.
 
-## v0.4.1 source changes — 2026-10-11
+## v0.4.1 released UI and category changes — 2026-10-11
 
-The candidate carries PR #30's populated-category homepage and Calculator
-keyboard `=` behavior, adds six palettes to the existing appearance owners,
-and migrates `everyday` to `converter` (public label **Converters**). Length
-and Weight remain converters; QR Code Generator moves to Developer. Existing
-tool URLs remain, and `/category/everyday` permanently redirects to
-`/category/converter`. PR #29's v0.4.0 status corrections were reconciled
-with these source facts.
+The release incorporates the populated-category homepage and Calculator
+keyboard `=` behavior from superseded PR #30, adds six palettes to the
+existing appearance owners, and migrates `everyday` to `converter` (public
+label **Converters**). Length and Weight remain converters; QR Code Generator
+moves to Developer. Existing tool URLs are unchanged, and
+`/category/everyday` permanently redirects to `/category/converter`.
+PR #29's v0.4.0 status corrections were reconciled into the release. PR #31's
+integrated source and PR #32's release preparation were merged as the
+v0.4.1 release lineage; historical reports and frozen source acceptance
+remain separate from current release status.
 
 ## AdSense remediation and Le branding source integration — 2026-10-10
 
@@ -485,7 +499,7 @@ learning remain snapshots; they are not current-state authorities or new Batch 6
 
 The dated review/task notes below preserve state and decisions at those
 checkpoints. The current implementation, deployment, release and next-workflow
-summary at the top of this file is authoritative for the present candidate.
+summary at the top of this file is authoritative for the latest verified release.
 
 ## Historical UI and discovery planning — 2026-10-01
 
@@ -567,7 +581,7 @@ Isolated baseline 11219ceaa930b4a96971e2bf32809da100e6cc22 is production-equival
 
 ## Post-release category migration — 2026-10-11
 
-The current source carries the migration from `everyday` to `converter`
+The released v0.4.1 source carries the migration from `everyday` to `converter`
 (Converters), with QR Code Generator in Developer and the historic route
 permanently redirected. All 18 tool URLs and seven populated categories remain.
 The candidate passed category/layout validation and desktop/mobile Observer
