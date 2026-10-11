@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { loadTheme } from "@/module/theme/themeStorage";
 import { setTheme } from "@/module/theme/themeRuntime.client";
+import { loadPalette } from "@/module/theme/paletteStorage";
+import { setPalette } from "@/module/theme/paletteRuntime.client";
 
 interface ThemeProviderProps {
     children: ReactNode;
@@ -20,6 +22,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     useEffect(() => {
         const stored = loadTheme();
         setTheme(stored ?? "system");
+        setPalette(loadPalette() ?? "utility");
     }, []);
 
     return <>{children}</>;
