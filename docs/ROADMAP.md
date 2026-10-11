@@ -4,9 +4,9 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The root application package version is `0.4.0`; the independent dashboard
-retains its own package version. Source release status and live production
-deployment status are tracked separately.
+The current root application source version is `0.4.1`; the independent
+dashboard retains its own package version. Source, GitHub release and live
+production deployment identities are distinct.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -28,13 +28,11 @@ and hosting/deployment identity remain separate records; this planning update
 does not invent an unverified Vercel deployment ID.
 
 v0.4.0 was formally released on 2026-10-08 (PR #21 and GitHub Release
-`v0.4.0`), completing Priority A at 18 registered tools. PR #28 later added
-the public privacy route, bringing the current source sitemap to 28 URLs; the
-release contained 27. The later homepage, Calculator, appearance and category
-changes are unreleased maintenance and do not change the original v0.4.0 plan.
-A v0.4.1 maintenance release is a proposed target only; package metadata stays
-at 0.4.0 until separate release preparation. The v0.5.0 and v0.6.0 scopes are
-unchanged.
+`v0.4.0`), completing Priority A at 18 registered tools. The v0.4.1 source
+includes the privacy route and 28-URL sitemap, populated-category homepage,
+Calculator keyboard equals, integrated six-palette appearance system, and
+converter-category migration. Its scope does not alter the original v0.4.0
+plan. The frozen v0.5.0 and v0.6.0 scopes remain unchanged.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 

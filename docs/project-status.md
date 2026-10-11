@@ -1,37 +1,35 @@
 # PROJECT STATUS
 
-## Current repository and next planning step — 2026-10-11
+## Current source and planning — 2026-10-11
 
 DEFAULT_BRANCH: `master`
 
-LATEST_VERIFIED_MASTER_SHA: `2f1f3ab71ac9483a661b1c061302ccb7b604dc93`
+MASTER_BASE_AT_V0.4.1_SOURCE_INTEGRATION: `2f1f3ab71ac9483a661b1c061302ccb7b604dc93`
 
-CURRENT_ROOT_PACKAGE_VERSION: `0.4.0` (independent dashboard: `0.1.0`)
+CURRENT_SOURCE_VERSION: `0.4.1` (independent dashboard: `0.1.0`)
 
-LATEST_NUMBERED_GITHUB_RELEASE: `v0.4.0` — published 2026-10-08.
+PREVIOUS_NUMBERED_GITHUB_RELEASE: `v0.4.0` — published 2026-10-08.
 
 CURRENT_SOURCE_CATALOG: 18 registered tools, seven populated categories, and
-28 registry-derived sitemap URLs, including `/privacy`. The tagged v0.4.0
-release contained 27 URLs. The later category migration and UI changes remain
-unreleased; the proposed v0.4.1 target does not change package metadata.
-
-PROPOSED_MAINTENANCE_RELEASE_TARGET: `v0.4.1` (unreleased; planning only).
+28 registry-derived sitemap URLs, including `/privacy`. The v0.4.0 release
+contained 27 URLs. Current source includes populated-category homepage
+sections, Calculator keyboard equals, six integrated palettes and the
+converter-category migration.
 
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
 Its implementation plan is not frozen. Planner-owned specification and a
 version plan must precede implementation. The frozen v0.6.0 scope remains as
 recorded in ROADMAP.md.
 
-## Post-v0.4 UI and category integration candidate — 2026-10-11
+## v0.4.1 source changes — 2026-10-11
 
 The candidate carries PR #30's populated-category homepage and Calculator
 keyboard `=` behavior, adds six palettes to the existing appearance owners,
 and migrates `everyday` to `converter` (public label **Converters**). Length
 and Weight remain converters; QR Code Generator moves to Developer. Existing
 tool URLs remain, and `/category/everyday` permanently redirects to
-`/category/converter`. The integration remains unmerged, unreleased and
-undeployed. PR #29's v0.4.0 status corrections were reconciled with these later
-source facts.
+`/category/converter`. PR #29's v0.4.0 status corrections were reconciled
+with these source facts.
 
 ## AdSense remediation and Le branding source integration — 2026-10-10
 
@@ -569,10 +567,10 @@ Isolated baseline 11219ceaa930b4a96971e2bf32809da100e6cc22 is production-equival
 
 ## Post-release category migration — 2026-10-11
 
-The integration candidate carries the migration from `everyday` to `converter`
+The current source carries the migration from `everyday` to `converter`
 (Converters), with QR Code Generator in Developer and the historic route
 permanently redirected. All 18 tool URLs and seven populated categories remain.
 The candidate passed category/layout validation and desktop/mobile Observer
 acceptance; the original canonical Observer baseline remains preserved. Proposed
-v0.7/v0.8 converter expansion remains subject to planner approval. This
-integration is unreleased and does not change package metadata.
+v0.7/v0.8 converter expansion remains subject to planner approval. The v0.4.0
+category decision remains a historical record.

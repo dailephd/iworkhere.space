@@ -164,7 +164,7 @@ settings/action and guide regions remain independently navigable landmarks;
 document Observer acceptance checks their order, containment and natural scrolling
 at 1440×900 and 390×844 without changing homepage or image baselines.
 
-The complete five-tool document family is implemented and unreleased. Merge
+The complete five-tool document family shipped with v0.3.0. Merge
 and Images to PDF keep ordered source lists; Split keeps independently edited
 page groups; PDF to JPG / PNG has page/format/DPI and conditional JPEG settings;
 Compress PDF retains its single structural action and truthful no-reduction

@@ -50,11 +50,10 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-Current post-v0.4 source has 18 tools, seven populated categories and 28
-registry-derived sitemap URLs. The proposed v0.4.1 maintenance candidate
-contains homepage category sections, Calculator keyboard equals, the integrated
-six-palette appearance system and the converter category migration. These
-changes are unreleased; see `CHANGELOG.md`, `project-status.md` and
+Current v0.4.1 source has 18 tools, seven populated categories and 28
+registry-derived sitemap URLs. It includes homepage category sections,
+Calculator keyboard equals, the integrated six-palette appearance system and
+the converter category migration. See `CHANGELOG.md`, `project-status.md` and
 `ROADMAP.md`. Current category ownership is described in `modules/Category.md`;
 homepage membership in `components/HomeClient.md`; and appearance behavior in
 `modules/ThemeRegistry.md`, `modules/ThemeRuntime.md` and `modules/ThemeStorage.md`.
@@ -70,9 +69,10 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
 - `reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md`: final release
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
-- `project-status.md` and `ROADMAP.md`: current lifecycle state. v0.3.1 is
-  released and publicly deployed; v0.4.0 was released on 2026-10-08 and
-  v0.5.0 is the next planned version (plan not yet frozen).
+- `project-status.md` and `ROADMAP.md`: current source and version-level plan.
+  v0.4.1 source contains the accepted maintenance updates; v0.5.0 is the next
+  planned version and its plan is not yet frozen. Historical release and
+  deployment records remain date-scoped.
 
 Current persistent-observability references:
 
@@ -92,7 +92,8 @@ Current integration and deployment authority:
   extensions. `project-status.md` owns current implementation/deployment/release
   state and the next workflow.
 - `DESIGN.md` is the canonical visual authority, including the current
-  workspace-first layout, four supported themes and scoped material pilot.
+  workspace-first layout, six palettes, Light/Dark/System modes, fixed-dark
+  One Dark and scoped material pilot.
 - `DEPLOYMENT.md` owns root runtime, safe environment templates and the variable
   matrix. `ADVERTISING.md` owns AdSense code/configuration and external activation
   gates. `OBSERVABILITY.md` owns telemetry/privacy/persistence contracts.

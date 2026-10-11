@@ -473,6 +473,14 @@ version-specific results and evidence boundaries.
 
 Focused tests verify registry-derived sitemap membership, environment robots/noindex boundary, apex-stable canonical/social metadata, server guide content and canonical related IDs. Production E2E extends current image flows and checks breadcrumbs, initial HTML, metadata, Light/Dark responsive workspace allocation, downloads/reset/focus, and protected routes. Observer geometry uses the approved Resizer precedent at 1440×900 and 390×844 through semantic containment/allocation/order contracts. Child targets precede containers for the current directional fit API; intentional guide/document-height changes are not protected absolute Y coordinates. Frozen supplementary scroll lanes establish document scrolling and viewport reachability; its current capture API cannot apply selected-file/theme state, so Playwright owns those runtime states. Generated evidence remains under test-report/ or ignored project workflow roots.
 
+## v0.4.1 catalog and layout regression validation
+
+The accepted desktop and mobile geometry suite checks all 153 card-to-card
+pairs and 21 section-to-section pairs at each viewport, including overlap,
+containment, heading and overflow invariants. Palette, Calculator keyboard,
+category ownership, permanent redirect, canonical metadata and sitemap
+regressions are covered alongside the populated-category homepage behavior.
+
 ## Document family validation
 
 Adjacent document-domain Vitest tests cover frozen source/collection/render

@@ -324,11 +324,10 @@ category migration. The v0.3.1 launch catalog historically had 15 tools, six
 populated categories and 23 URLs. Production deploys `master` continuously;
 deployment identity is separate from source and release identity.
 
-The post-release category migration retains all 18 tools and seven populated
-categories, replaces `everyday` with `converter` (Converters), and moves QR to
-`developer`. The current sitemap includes `/privacy` and has 28 canonical
-URLs. The preceding v0.4.0 statement remains the historical release record;
-these later changes remain unreleased.
+Current v0.4.1 source retains all 18 tools and seven populated categories,
+replaces `everyday` with `converter` (Converters), and moves QR to `developer`.
+The current sitemap includes `/privacy` and has 28 canonical URLs. The
+preceding v0.4.0 statement remains the historical release record.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
 - **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs
@@ -489,10 +488,12 @@ the superseded four-choice baseline below.
 
 ### Historical four-choice baseline (superseded by the extension above)
 
-The prior theme system was a multi-theme registry, not a binary light/dark switch.
-`ThemeId` (`themeRegistry.ts`) declares four selectable themes: `system`,
-`light`, `dark`, and `onedark`. `docs/DESIGN.md` is the canonical visual authority and documents all four
-canonical themes alongside the current theme registry and runtime ownership.
+The prior theme system was a multi-theme registry, not a binary light/dark
+switch. Its four choices were `system`, `light`, `dark`, and fixed-dark
+`onedark`. The current registry has six selectable palettes, each supporting
+Light, Dark and System modes, while retaining fixed-dark One Dark.
+`docs/DESIGN.md` is the canonical visual authority and documents the current
+registry and runtime ownership.
 
 ### Structure
 - `themeRegistry.ts` — declares `ThemeId`, the `theme_definition_list`

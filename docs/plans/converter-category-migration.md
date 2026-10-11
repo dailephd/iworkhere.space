@@ -1,4 +1,7 @@
-# Post-release converter category migration plan
+# Post-v0.4.0 converter category migration plan
+
+This migration is implemented in the current v0.4.1 source; this document
+preserves its bounded implementation plan and historical category decision.
 
 This is a new migration after v0.4.0, not a rewrite of its category decision.
 No new tool is implemented. v0.5.0 and v0.6.0 scopes remain frozen.

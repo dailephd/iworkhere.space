@@ -3,24 +3,22 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**v0.4.0 — Core Text, Data & Sharing Utilities.** This release adds the
-canonical `developer` category, JSON Formatter / Validator, Word / Character
-Counter, and QR Code Generator. The registry contains 18 tools across seven
-populated categories and produces 28 sitemap URLs on current `master` (27 in
-the tagged v0.4.0 release, plus `/privacy` added afterward). Post-release
-source updates group the homepage by populated category, support Calculator
-keyboard `=`, add six palettes to the existing appearance system, and migrate
-Everyday to Converters. JSON formatting and counter
-input remain browser-local; QR generation and PNG download are browser-local.
-The private dashboard remains an independent application at version `0.1.0`.
-The public Vercel project continuously deploys `master`; deployed application
-source and formal numbered releases are distinct. v0.4.0 was released
-on 2026-10-08; subsequent source changes are post-release updates. The proposed
-v0.4.1 target remains unreleased, and package metadata remains `0.4.0` during
-readiness. Vercel Web Analytics measures automatic page views only in
+**Current source version: v0.4.1.** The registry contains 18 tools across
+seven populated categories and produces 28 sitemap URLs, including `/privacy`.
+The homepage groups every tool under its populated category; Calculator accepts
+keyboard `=`; the existing appearance system includes six named palettes with
+Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
+Length and Weight while QR Code Generator belongs to Developer. The historical
+v0.4.0 release added the canonical `developer` category, JSON Formatter /
+Validator, Word / Character Counter, and QR Code Generator. JSON formatting
+and counter input remain browser-local; QR generation and PNG download are
+browser-local. The private dashboard remains an independent application at
+version `0.1.0`. The public Vercel project continuously deploys `master`;
+deployed application source and numbered GitHub releases are distinct. Vercel
+Web Analytics measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
-and the [v0.4.0 release notes](CHANGELOG.md).
+and [the changelog](CHANGELOG.md).
 
 ## Getting Started
 
