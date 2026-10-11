@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.1 — UI and Converter updates
+## v0.4.1 — UI and Converter updates — 2026-10-11
 
 - Included the post-v0.4.0 privacy page, eligibility-gated AdSense placements,
   tool guides, Slugify accessibility improvements and Le branding. Advertising
