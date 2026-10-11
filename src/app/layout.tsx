@@ -23,6 +23,10 @@ export const metadata: Metadata = {
 // "system" (or no stored value) means no data-theme attribute — CSS handles it via prefers-color-scheme.
 const THEME_INIT_SCRIPT = `(function(){var h=document.documentElement;h.removeAttribute("data-theme");try{var t=JSON.parse(localStorage.getItem("theme"));var v=["light","dark","onedark"];if(v.indexOf(t)!==-1)h.setAttribute("data-theme",t);else if(t!=="system")localStorage.removeItem("theme")}catch(e){try{localStorage.removeItem("theme")}catch(e){}}})()`;
 
+
+// Initialize the independent palette before first paint, preserving existing theme values.
+const PALETTE_INIT_SCRIPT = `(function(){var h=document.documentElement;h.removeAttribute("data-palette");try{var p=JSON.parse(localStorage.getItem("palette"));var allowed=["mineral","oxblood","signal","cobalt","amber","original"];if(allowed.indexOf(p)!==-1)h.setAttribute("data-palette",p);else if(p!=="utility"&&p!==null)localStorage.removeItem("palette")}catch(e){try{localStorage.removeItem("palette")}catch(e){}}})()`;
+
 export default function RootLayout({
                                        children,
                                    }: {
@@ -40,6 +44,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
         <head>
             <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+            <script dangerouslySetInnerHTML={{ __html: PALETTE_INIT_SCRIPT }} />
         </head>
         <body className="antialiased">
         <ThemeProvider>
