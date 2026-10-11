@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../style/theme.css";
+@import "../style/palettes.css";
 
 /* ----------------------------------------
    Tailwind v4 token wiring
