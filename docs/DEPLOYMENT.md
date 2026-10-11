@@ -132,8 +132,9 @@ v0.3.1 was formally released and publicly deployed on 2026-10-06. Vercel Web
 Analytics is enabled for the public Production deployment, with URL query/hash
 redaction and no Vercel custom events. The public Vercel project continuously
 deploys `master`; this deployment behavior is independent of numbered release
-integration. v0.4.0 was subsequently released on 2026-10-08; the later
-PR #28 source merge is not itself proof of a Vercel production deployment. See the verified
+integration. v0.4.0 was subsequently released on 2026-10-08 and v0.4.1 on
+2026-10-11; neither the later PR #28 source merge nor a numbered GitHub
+release is by itself proof of a specific Vercel production deployment. See the verified
 [v0.3.1 launch report](reports/V0_3_1_VERCEL_WEB_ANALYTICS_LAUNCH_REPORT.md).
 
 The public build-time flag is `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` for
@@ -192,20 +193,26 @@ fixture. They are not deployment variables and must not contain credentials.
 
 ## Exact-SHA diagnostic hotfix deployment
 
-For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. The 2026-10-03 diagnostic hotfix report records the deployment state before Delivery 2 integration. Current public
-production state is recorded below.
+For CLI production uploads, supply the tested commit as both runtime/build VERCEL_GIT_COMMIT_SHA; deployment metadata alone did not populate it. Keep this value per deployment, not pinned at project scope. Apply additive observability migrations and read-only grants before deploying protected dashboard then public app. See dashboard/DEPLOYMENT.md and the durable production diagnostic hotfix report. The 2026-10-03 diagnostic hotfix report records the deployment state before Delivery 2 integration. Verified historical
+production evidence is recorded below; the latest production deployment
+identity is not established by that historical launch record.
+
+## Current GitHub release and deployment distinction — 2026-10-11
+
+The latest numbered GitHub Release is `v0.4.1` — UI and Converter updates,
+published 2026-10-11. Its annotated tag targets `master` commit
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (merged PR #32). All eight
+required GitHub Actions checks completed successfully on that SHA. This verifies
+the release source, not an exact deployed Vercel instance. The current
+production deployment ID, deployed SHA and live smoke outcome were not
+independently verified in this source-documentation review; consult Vercel
+production deployment records before asserting them.
 
 ## Verified historical v0.3.1 production launch — 2026-10-06
 
 The public Vercel project is `iworkhere-space`, linked to this GitHub repository
-with automatic production deployment from `master`.
-
-Latest numbered GitHub Release (verified 2026-10-10):
-
-`v0.4.0` — Core Text, Data & Sharing Utilities, published 2026-10-08.
-The exact newest Vercel deployment for subsequent `master` commits was not
-verified by this documentation update. The following SHA and deployment ID
-belong to the historical v0.3.1 launch, not to the latest release.
+with automatic production deployment from `master`. The following SHA and
+deployment ID identify the historical v0.3.1 launch, not the latest release.
 
 v0.3.1 release merge / launch source:
 

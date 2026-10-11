@@ -2,6 +2,11 @@
 
 ## v0.4.1 — UI and Converter updates — 2026-10-11
 
+Published as the numbered GitHub Release on 2026-10-11. PR #32 merged to
+`master` at `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`, which is the
+annotated `v0.4.1` tag target. Release publication does not establish the
+identity or health of the latest Vercel production deployment.
+
 - Included the post-v0.4.0 privacy page, eligibility-gated AdSense placements,
   tool guides, Slugify accessibility improvements and Le branding. Advertising
   remains subject to external activation requirements.

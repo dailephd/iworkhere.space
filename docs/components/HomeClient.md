@@ -31,14 +31,15 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
-### Homepage launcher contract
+### Historical homepage launcher contract (superseded by v0.4.1)
 
-The homepage client composes one `ToolSearch` surface, category links derived
-from populated metadata, all four registered image tools under “Image tools”,
-and a linked compact list of the remaining tools. Tool identity and descriptions
-come from the registry through the server page. Search filtering remains in the
-shared `ToolSearch` owner. Every category and tool destination is a normal link.
-The approved Delivery 1 launcher is compact, not a marketing landing page.
+The original Delivery 2 homepage composed one `ToolSearch` surface, populated
+category links, four image tools under “Image tools”, and a linked list of the
+remaining tools. That historical two-group layout was replaced in released
+v0.4.1 by the registry-derived per-category sections documented below.
+The existing shared ToolSearch owner still handles search; category and tool
+destinations remain ordinary links. The original launcher was compact rather
+than a marketing landing page.
 
 
 ### Component-color correction (Delivery 1 visually approved 2026-10-03)

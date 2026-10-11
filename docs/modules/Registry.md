@@ -21,7 +21,7 @@ tools: `slugify`, `calculator`, `length-converter`, `html-text-extractor`,
 There are four image tools. The dedicated HEIC worker contract and separate release-license gate are specified in `HeicConverter.md`.
 
 The preceding ten-tool count records the historical image Batch 5 baseline.
-Current v0.3 feature-branch implementation adds `merge-pdf`, `split-pdf`,
+The historical v0.3.0 document release added `merge-pdf`, `split-pdf`,
 `images-to-pdf`, `pdf-to-image` and `compress-pdf`, all in `document`, bringing
 the registry to 15 tools and six populated categories. The v0.4.0 release
 added `json-formatter` in the canonical `developer` category, `word-character-
@@ -29,7 +29,8 @@ counter` in `text` and `qr-code-generator` in `everyday`, for 18 tools and
 seven populated categories; the registry remains the authority on population
 while `category.ts` owns category definitions. Each has explicit
 component, SEO metadata, client-only/offline capability, no persistent state
-and no shareable query. Implementation does not imply release or deployment.
+and no shareable query. These statements describe historical release-day
+membership; the current v0.4.1 category migration is recorded below.
 
 ```typescript
 function getToolBySlug(slug: string): ToolDefinition | undefined
@@ -78,7 +79,7 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
-## New post-release migration — 2026-10-11
+## v0.4.1 released category migration — 2026-10-11
 
 The v0.4 assignment above remains a historical record. The new migration uses
 converter for Length/Weight and developer for QR Code Generator. Eighteen tools,

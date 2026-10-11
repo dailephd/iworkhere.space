@@ -3,7 +3,7 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Current source version: v0.4.1.** The registry contains 18 tools across
+**Latest numbered GitHub release: v0.4.1 (2026-10-11).** The registry contains 18 tools across
 seven populated categories and produces 28 sitemap URLs, including `/privacy`.
 The homepage groups every tool under its populated category; Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
@@ -14,8 +14,11 @@ Validator, Word / Character Counter, and QR Code Generator. JSON formatting
 and counter input remain browser-local; QR generation and PNG download are
 browser-local. The private dashboard remains an independent application at
 version `0.1.0`. The public Vercel project continuously deploys `master`;
-deployed application source and numbered GitHub releases are distinct. Vercel
-Web Analytics measures automatic page views only in
+deployed application source and numbered GitHub releases are distinct. The
+annotated `v0.4.1` tag points to `master` commit
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (PR #32). The exact latest
+production deployment identity was not independently verified in this
+source-documentation review. Vercel Web Analytics measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
 and [the changelog](CHANGELOG.md).
