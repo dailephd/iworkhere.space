@@ -10,7 +10,7 @@
 This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
 
 <!-- section-id: contract -->
-## Contract (added 2026-08-07 reconciliation)
+## Historical API baseline (2026-08-07; superseded by current contract below)
 
 ```typescript
 function storeTheme(themeId: ThemeId): void
@@ -47,7 +47,6 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
+## Current appearance contract (2026-10-09)
 
-### Four-theme migration contract
-
-Valid IDs are system/light/dark/onedark. Retired vscode-modern, dracula, amethyst-haze, mercury-fog, civic-light and spectrum resolve to System: invalid persisted values are removed, and stale DOM attributes are cleared. Root pre-paint initialization accepts only light/dark/onedark. System is absence of data-theme and CSS Light/Dark preference.
+`loadAppearance()` and `storeAppearance()` use the SSR-safe storage adapter for JSON keys `theme` (mode or legacy onedark) and `palette` (PaletteId). Missing/invalid values independently fall back to Violet & Graphite/System and invalid keys are removed. Existing `theme: "onedark"` migrates to the preserved fixed-dark palette. `loadTheme()`/`storeTheme()` remain compatible. Failed reads/writes do not throw; the provider keeps interactive state when persistence is blocked.

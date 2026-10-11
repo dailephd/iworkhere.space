@@ -8,7 +8,8 @@ export function Header({ navItem }: { navItem: NavItem[] }) {
     return (
         <div className="mx-auto flex min-h-16 max-w-[1440px] flex-wrap items-center gap-x-6 gap-y-2 px-5 py-3 sm:px-6 lg:flex-nowrap lg:px-8">
             <Link href="/" className="inline-flex shrink-0 items-center gap-2 text-base font-semibold tracking-tight text-header-text hover:text-header-muted">
-                <LeMark size={34} variant="dark" aria-hidden="true" focusable="false" />
+                <LeMark size={34} variant="light" className="brand-mark-light" aria-hidden="true" focusable="false" />
+                <LeMark size={34} variant="dark" className="brand-mark-dark" aria-hidden="true" focusable="false" />
                 <span>iworkhere.space</span>
             </Link>
             <div className="order-3 w-full lg:order-2 lg:min-w-0 lg:flex-1">

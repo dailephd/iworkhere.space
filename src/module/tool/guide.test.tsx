@@ -35,7 +35,7 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).not.toContain("Related image tools");
                 return;
             }
-            if (tool.category === "developer") {
+            if (tool.id === "json-formatter") {
                 expect(tool.id).toBe("json-formatter");
                 expect(guide).toBeDefined();
                 for (const text of ["Strict JSON", "RFC 8259", "Token-preserving formatting", "1 MiB", "not uploaded for formatting or validation"]) expect(html).toContain(text);
@@ -56,13 +56,13 @@ describe("server guide and breadcrumb composition", () => {
                 return;
             }
             if (tool.id === "qr-code-generator") {
-                expect(tool.category).toBe("everyday");
+                expect(tool.category).toBe("developer");
                 expect(guide).toBeDefined();
                 for (const text of ["Text and URLs", "encoded exactly as you enter it", "does not fetch, open or check URLs", "Fixed QR settings", "error correction level M", "512 × 512", "quiet zone", "Payload limit", "2048 UTF-8 bytes", "denser QR symbols", "Not every camera or scanner", "Local processing", "not uploaded for QR generation"]) expect(html).toContain(text);
                 expect(related.map(item => item.id)).toEqual(["length-converter", "weight-converter"]);
-                expect(related.every(item => item.category === "everyday")).toBe(true);
+                expect(related.every(item => item.category === "converter")).toBe(true);
                 for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
-                expect(html).toContain("Related everyday tools");
+                expect(html).toContain("Related converter tools");
                 return;
             }
             if (["slugify", "length-converter", "weight-converter", "html-text-extractor"].includes(tool.id)) {
@@ -149,7 +149,7 @@ describe("related-tools heading truthfulness", () => {
 
     it("keeps the existing correct headings", () => {
         expect(renderGuided("word-character-counter").heading).toBe("Related text tools");
-        expect(renderGuided("qr-code-generator").heading).toBe("Related everyday tools");
+        expect(renderGuided("qr-code-generator").heading).toBe("Related converter tools");
         for (const id of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) expect(renderGuided(id).heading, id).toBe("Related image tools");
         for (const id of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image", "compress-pdf"]) expect(renderGuided(id).heading, id).toBe("Related document tools");
     });

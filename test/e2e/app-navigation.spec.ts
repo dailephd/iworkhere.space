@@ -8,7 +8,14 @@ test("home loads with one main landmark", async ({ page }) => {
     await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
     await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
     await expect(page.getByLabel("Search", { exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Image tools", exact: true })).toBeVisible();
+    const categories = ["Document", "Text", "Math", "Converters", "Time", "Image", "Developer"];
+    const islands = page.locator('[data-surface="section-island"]');
+    await expect(islands).toHaveCount(categories.length);
+    for (const category of categories) {
+        await expect(page.getByRole("region", { name: category === "Converters" ? category : `${category} tools`, exact: true })).toBeVisible();
+        await expect(page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: category, exact: true })).toBeVisible();
+    }
+    await expect(page.getByRole("main").getByRole("link", { name: "All tools", exact: true })).toHaveAttribute("href", "/discover");
     const imageSection = page.getByRole("main").locator("section").filter({ has: page.getByRole("heading", { name: "Image tools", exact: true }) });
     for (const slug of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) {
         await expect(imageSection.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
@@ -64,6 +71,18 @@ test("calculator evaluates a deterministic expression", async ({ page }) => {
     await expect(page).toHaveURL(/expr=/);
     await page.getByLabel("Expression", { exact: true }).press("Enter");
     await expect(page.locator("output")).toHaveText("20");
+
+    const expression = page.getByLabel("Expression", { exact: true });
+    await expression.fill("2 + 3 * 4");
+    await expression.press("=");
+    await expect(page.locator("output")).toHaveText("14");
+    await expect(expression).toHaveValue("2 + 3 * 4");
+    await page.getByRole("button", { name: "=", exact: true }).click();
+    await expect(page.locator("output")).toHaveText("14");
+    await expression.fill("2+");
+    await expression.press("=");
+    await expect(page.locator("output")).toHaveCount(0);
+    await expect(page.getByText("Invalid expression.", { exact: true })).toBeVisible();
 });
 
 test("time arithmetic carries minutes in a deterministic example", async ({ page }) => {

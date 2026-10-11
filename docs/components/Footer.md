@@ -34,7 +34,8 @@ Manual review and updates are encouraged to add implementation details.
 
 ### Current identity contract
 
-Footer displays exactly `© 2026 iworkhere.space created by dailephd LLC`. It remains in normal document flow after the workspace. AppShell retains the optional footer advertising slot, but active root composition supplies no fake footer banner. See `docs/DESIGN.md`.
+Footer displays exactly `© 2026 iworkhere.space created by dailephd LLC`
+and adds a visible, keyboard-focusable `/privacy` link. It remains in normal document flow after the workspace. AppShell retains the optional footer advertising slot, but active root composition supplies no fake footer banner. See `docs/DESIGN.md`.
 
 
 ### Component-color correction (Delivery 1 visually approved 2026-10-03)

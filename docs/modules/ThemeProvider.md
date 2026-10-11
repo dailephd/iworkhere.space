@@ -30,4 +30,6 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
-The provider always applies `loadTheme() ?? "system"`, removing stale explicit DOM attributes when stored values are retired, unknown or absent. It renders stable children without theme-dependent markup. The root inline script validates the same three explicit IDs before paint and removes invalid storage.
+## Current appearance contract (2026-10-09)
+
+The provider owns the single appearance context consumed by ThemeToggle. It hydrates `loadAppearance()` in a layout effect, applies the runtime attributes and then enables the trigger. System listens for OS color-scheme changes; explicit modes and One Dark ignore them. Selection applies immediately, persists through themeStorage and retains in-memory state even if writes fail. Server/initial markup is stable; layout's initializer applies saved colors before paint.

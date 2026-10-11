@@ -21,12 +21,16 @@ test("browser favicon uses the Le SVG and supplied ICO at required display sizes
 
     const iconLinks = await page.locator('link[rel="icon"]').evaluateAll(elements => elements.map(element => {
         const link = element as HTMLLinkElement;
-        return { path: new URL(link.href).pathname, type: link.type };
+        const url = new URL(link.href);
+        return { path: url.pathname, search: url.search, type: link.type };
     }));
-    expect(iconLinks.some(link => link.path === "/icon.svg")).toBe(true);
-    expect(iconLinks.some(link => link.path === "/favicon.ico")).toBe(true);
-
     const svgLink = iconLinks.find(link => link.path === "/icon.svg");
+    const faviconLink = iconLinks.find(link => link.path === "/favicon.ico");
+    expect(svgLink).toBeDefined();
+    expect(faviconLink).toBeDefined();
+    expect(svgLink!.search).not.toBe("");
+    expect(faviconLink!.search).not.toBe("");
+
     const svgResponse = await request.get(svgLink!.path);
     expect(svgResponse.status()).toBe(200);
     expect(await svgResponse.text()).toContain("Le — transform utility mark");
@@ -160,9 +164,20 @@ for (const theme of ["light", "dark", "onedark"] as const) {
 
         const header = page.getByRole("banner");
         const brand = header.getByRole("link", { name: "iworkhere.space", exact: true });
-        const mark = brand.locator("svg");
+        const marks = brand.locator("svg");
+        const lightMark = marks.nth(0);
+        const darkMark = marks.nth(1);
+        const mark = theme === "light" ? lightMark : darkMark;
         const navigation = header.getByRole("navigation", { name: "Primary navigation", exact: true });
         await expect(brand).toBeVisible();
+        await expect(marks).toHaveCount(2);
+        if (theme === "light") {
+            await expect(lightMark).toBeVisible();
+            await expect(darkMark).toBeHidden();
+        } else {
+            await expect(lightMark).toBeHidden();
+            await expect(darkMark).toBeVisible();
+        }
         await expect(mark).toHaveAttribute("viewBox", "0 0 365 435");
         await expect(mark).toHaveAttribute("aria-hidden", "true");
         await expect(mark.locator("path[data-logo-part]")).toHaveCount(4);
@@ -173,25 +188,26 @@ for (const theme of ["light", "dark", "onedark"] as const) {
         const geometry = await page.evaluate(() => {
             const headerElement = document.querySelector("header")!;
             const link = headerElement.querySelector('a[href="/"]')!;
-            const svg = link.querySelector("svg")!;
+            const svg = [...link.querySelectorAll("svg")].find(mark => getComputedStyle(mark).display !== "none")!;
             const headerStyle = getComputedStyle(headerElement);
             const background = headerStyle.backgroundColor.match(/[\d.]+/g)!.slice(0, 3).map(Number);
-            const ratio = (background: number[]) => {
-                const luminance = background.map(value => value / 255).map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
-                const l = luminance[0] * 0.2126 + luminance[1] * 0.7152 + luminance[2] * 0.0722;
-                return 1.05 / (l + 0.05);
-            };
+            const path = svg.querySelector('[data-logo-part="original-l"]')!;
+            const foreground = getComputedStyle(path).fill.match(/[\d.]+/g)!.slice(0, 3).map(Number);
+            const luminance = (rgb: number[]) => rgb.map(value => value / 255).map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+                .reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+            const [lighter, darker] = [luminance(background), luminance(foreground)].sort((a, b) => b - a);
+            const ratio = (lighter + 0.05) / (darker + 0.05);
             const box = svg.getBoundingClientRect();
             return {
                 headerBackground: headerStyle.backgroundColor,
-                whiteMarkContrast: ratio(background),
+                logoContrast: ratio,
                 markLeft: box.left,
                 markRight: box.right,
                 viewportWidth: window.innerWidth,
                 horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
             };
         });
-        expect(geometry.whiteMarkContrast).toBeGreaterThanOrEqual(3);
+        expect(geometry.logoContrast).toBeGreaterThanOrEqual(3);
         expect(geometry.markLeft).toBeGreaterThanOrEqual(0);
         expect(geometry.markRight).toBeLessThanOrEqual(geometry.viewportWidth);
         expect(geometry.horizontalOverflow).toBe(false);

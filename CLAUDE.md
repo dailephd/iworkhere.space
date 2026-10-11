@@ -134,7 +134,7 @@ setQuery?: (next: Record<string, string>) => void;
 }
 
 Tool categories:
-document, image, text, math, time, everyday, developer
+document, image, text, math, time, converter, developer
 
 Category definitions (ids, canonical order, page title/description, validation)
 are owned by src/module/tool/category.ts. ToolCategory derives from it. Do not

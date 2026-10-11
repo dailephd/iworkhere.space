@@ -2,13 +2,17 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test, expect } from "./support/fixture";
 
-const contexts = [
+const baselineContexts = [
     { name: "system-light", id: "system", scheme: "light" },
     { name: "system-dark", id: "system", scheme: "dark" },
     { name: "light", id: "light", scheme: "dark" },
     { name: "dark", id: "dark", scheme: "light" },
     { name: "onedark", id: "onedark", scheme: "light" },
 ] as const;
+const paletteContexts = ["mineral", "oxblood", "signal", "cobalt", "amber", "original"].flatMap(palette =>
+    (["light", "dark"] as const).map(mode => ({ name: `${palette}-${mode}`, id: mode, scheme: mode === "light" ? "dark" as const : "light" as const, palette })),
+);
+const contexts = [...baselineContexts.map(context => ({ ...context, palette: context.id === "onedark" ? "onedark" : "mineral" })), ...paletteContexts];
 const runId = process.env.ISLAND_MATERIAL_RUN_ID ?? process.env.E2E_RUN_ID!;
 const directory = path.resolve("test-report/island-material-pilot", runId);
 
@@ -18,7 +22,9 @@ for (const context of contexts) {
         const viewport = mobile ? { width: 390, height: 844 } : { width: 1440, height: 900 };
         await page.setViewportSize(viewport);
         await page.emulateMedia({ colorScheme: context.scheme });
-        await page.addInitScript(id => localStorage.setItem("theme", JSON.stringify(id)), context.id);
+        await page.addInitScript(({ id, palette }) => {
+            localStorage.setItem("theme", JSON.stringify(id)); localStorage.setItem("palette", JSON.stringify(palette));
+        }, context);
         await mkdir(directory, { recursive: true });
         const entries = [];
         for (const route of ["/", "/tool/image-resizer"]) {
@@ -29,7 +35,7 @@ for (const context of contexts) {
                 await expect(page).toHaveURL(/\/tool\/image-resizer$/);
             }
             await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
-            expect(await page.locator("html").getAttribute("data-theme")).toBe(context.id === "system" ? null : context.id);
+            expect(await page.locator("html").getAttribute("data-theme")).toBe(context.id === "system" ? context.scheme : context.id);
             if (route !== "/") {
                 await page.getByLabel("Choose image", { exact: true }).setInputFiles(path.resolve("test/fixtures/images/resizer-source.jpg"));
                 await expect(page.getByLabel("Width", { exact: true })).toHaveValue("80");
@@ -41,9 +47,10 @@ for (const context of contexts) {
             }
             if (route === "/") {
                 const islands = page.locator('[data-surface="section-island"]');
-                await expect(islands).toHaveCount(2);
-                await expect(page.getByRole("region", { name: "Image tools", exact: true })).toBeVisible();
-                await expect(page.getByRole("region", { name: "All other tools", exact: true })).toBeVisible();
+                await expect(islands).toHaveCount(7);
+                for (const name of ["Document", "Text", "Math", "Converters", "Time", "Image", "Developer"]) {
+                    await expect(page.getByRole("region", { name: name === "Converters" ? name : `${name} tools`, exact: true })).toBeVisible();
+                }
                 const islandBoxes = await islands.evaluateAll(elements => elements.map(element => {
                     const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
                     return { top: rect.top, bottom: rect.bottom, padding: style.padding, radius: style.borderRadius, border: style.borderColor, shadow: style.boxShadow };
@@ -85,7 +92,7 @@ for (const context of contexts) {
                 for (const text of ["header-text", "header-muted"]) {
                     for (const surface of ["header-bg", "nav-hover-bg"]) contrast.push({ text, surface, ratio: ratio(text, surface) });
                 }
-                for (const category of ["image", "text", "math", "time", "everyday", "document"]) {
+                for (const category of ["image", "text", "math", "time", "converter", "document"]) {
                     contrast.push({ text: `category-${category}`, surface: `category-${category}-soft`, ratio: ratio(`category-${category}`, `category-${category}-soft`) });
                     for (const text of ["text", "text-muted"]) contrast.push({ text, surface: `category-${category}-soft`, ratio: ratio(text, `category-${category}-soft`) });
                 }
@@ -147,8 +154,8 @@ for (const context of contexts) {
             for (const pair of observations.renderedContrast) expect(pair.ratio, `rendered ${pair.text}`).toBeGreaterThanOrEqual(4.5);
             for (const pair of observations.boundaries) expect(pair.ratio, `boundary ${pair.role}`).toBeGreaterThanOrEqual(3);
             for (const pair of observations.focusContrast) expect(pair.ratio, `focus on ${pair.surface}`).toBeGreaterThanOrEqual(3);
-            if (context.name === "system-light") expect(observations.background).toBe("#f5f7fb");
-            if (context.name === "system-dark") expect(observations.background).toBe("#0b1020");
+            if (context.name === "system-light") expect(observations.background).toBe("#f2f0e7");
+            if (context.name === "system-dark") expect(observations.background).toBe("#141e1c");
             const headerBackground = await page.getByRole("banner").evaluate(element => getComputedStyle(element).backgroundColor);
             const bodyBackground = await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor);
             expect(headerBackground).not.toBe(bodyBackground);
@@ -203,10 +210,10 @@ for (const context of contexts) {
             await session.detach();
         }
         await page.getByRole("button", { name: "Themes", exact: true }).click();
-        await expect(page.getByRole("option")).toHaveCount(4);
-        await expect(page.getByRole("option", { selected: true })).toHaveCount(1);
-        await page.getByRole("option", { name: "One Dark", exact: true }).focus();
-        await page.keyboard.press("Enter");
+        await expect(page.getByRole("radio")).toHaveCount(10);
+        await expect(page.getByRole("dialog", { name: "Appearance settings" }).locator("input:checked")).toHaveCount(2);
+        await page.getByRole("radio", { name: "One Dark", exact: true }).focus();
+        await page.keyboard.press("Space");
         await expect(page.locator("html")).toHaveAttribute("data-theme", "onedark");
         await writeFile(path.join(directory, `${mobile ? "mobile" : "desktop"}-${context.name}.json`), JSON.stringify(entries, null, 2));
     });
@@ -215,10 +222,12 @@ for (const context of contexts) {
 for (const context of contexts) {
     test(`direct Resizer hydration ${context.name}`, async ({ page }) => {
         await page.emulateMedia({ colorScheme: context.scheme });
-        await page.addInitScript(id => localStorage.setItem("theme", JSON.stringify(id)), context.id);
+        await page.addInitScript(({ id, palette }) => {
+            localStorage.setItem("theme", JSON.stringify(id)); localStorage.setItem("palette", JSON.stringify(palette));
+        }, context);
         await page.goto("/tool/image-resizer");
         await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
-        expect(await page.locator("html").getAttribute("data-theme")).toBe(context.id === "system" ? null : context.id);
+        expect(await page.locator("html").getAttribute("data-theme")).toBe(context.id === "system" ? context.scheme : context.id);
         await page.getByLabel("Choose image", { exact: true }).setInputFiles(path.resolve("test/fixtures/images/resizer-source.jpg"));
         await expect(page.getByLabel("Width", { exact: true })).toHaveValue("80");
         await page.getByLabel("Width", { exact: true }).fill("40");

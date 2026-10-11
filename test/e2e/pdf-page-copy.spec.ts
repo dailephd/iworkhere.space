@@ -115,7 +115,7 @@ test("document registry discovery, search, initial SEO/guides and 28 canonical s
     await page.goto("/category/document", { waitUntil: "networkidle" }); const category = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(category).toHaveCount(5); await expect(category).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);
     await page.goto("/", { waitUntil: "networkidle" });
-    const other = page.getByRole("region", { name: "All other tools" });
+    const other = page.getByRole("region", { name: "Document tools" });
     for (const slug of ["merge-pdf", "split-pdf"]) await expect(other.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     await page.goto("/discover", { waitUntil: "networkidle" }); await page.getByLabel("Search", { exact: true }).fill("pdf");
     await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(5);

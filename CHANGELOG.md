@@ -1,10 +1,38 @@
 # Changelog
 
-## v0.4.0 — Core Text, Data & Sharing Utilities
+## v0.4.1 — UI and Converter updates — 2026-10-11
+
+- Included the post-v0.4.0 privacy page, eligibility-gated AdSense placements,
+  tool guides, Slugify accessibility improvements and Le branding. Advertising
+  remains subject to external activation requirements.
+- The public `/privacy` route brings the registry-derived sitemap from the 27
+  URLs in v0.4.0 to 28 canonical URLs.
+- Grouped the homepage into accessible, responsive populated registry
+  categories, retaining one card for each of the 18 tools and a direct All
+  tools link. Geometry regression coverage checks 153 card pairs and 21
+  section pairs at desktop and mobile sizes.
+- Made Calculator keyboard `=` run the expression, matching Enter and the
+  on-screen equals button.
+- Added Mineral Research, Oxblood Atelier, Signal Green, Cobalt & Terracotta,
+  Amber & Graphite, and Violet & Graphite to the existing appearance system.
+  All six support Light, Dark and System modes; fixed-dark One Dark remains,
+  and Violet & Graphite / System is the default.
+- Replaced public Everyday with `converter`, titled Converters. Length and
+  Weight remain there; QR Code Generator moves to Developer.
+- Preserved all tool URLs and added a permanent redirect from
+  `/category/everyday` to `/category/converter`.
+- Migrated category color tokens while preserving values across all palettes.
+- Converter expansion remains an unapproved v0.7.0/v0.8.0 proposal; frozen
+  v0.5.0/v0.6.0 scope is unchanged.
+
+The historical v0.4.0 decision below is preserved.
+
+## v0.4.0 — Core Text, Data & Sharing Utilities — 2026-10-08
 
 This release completes the canonical developer category and adds three
 browser-local utilities. The registry contains 18 tools across seven populated
-categories and produces 27 canonical sitemap URLs.
+categories and produced 27 canonical sitemap URLs at release. The privacy route
+and converter-category migration were introduced afterward in v0.4.1 source.
 
 ### Catalog and categories
 - Added the canonical `developer` category with a single runtime category-definition owner; canonical order is document, text, math, everyday, time, image, developer.

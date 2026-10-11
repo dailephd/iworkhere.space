@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getToolByCategory } from "@/module/tool/registry";
 import { buildCategoryMetadata } from "@/lib/seo";
 import { getToolCategoryDefinition, isToolCategory } from "@/module/tool/category";
@@ -11,6 +11,7 @@ interface CategoryPageProp {
 
 export async function generateMetadata({ params }: CategoryPageProp): Promise<Metadata> {
     const { category } = await params;
+    if (category === "everyday") permanentRedirect("/category/converter");
     if (!isToolCategory(category)) return {};
     const definition = getToolCategoryDefinition(category);
     return buildCategoryMetadata(category, definition.title, definition.description);
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: CategoryPageProp): Promise<Me
 
 export default async function CategoryPage({ params }: CategoryPageProp) {
     const { category } = await params;
+    if (category === "everyday") permanentRedirect("/category/converter");
 
     if (!isToolCategory(category)) {
         return notFound();

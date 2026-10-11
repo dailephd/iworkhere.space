@@ -77,8 +77,8 @@ test("developer category, discovery search, home chip and sitemap include JSON F
     expect((await page.goto("/category/developer"))?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1, name: "Developer Tool", exact: true })).toBeVisible();
     const tools = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(tools).toHaveCount(1);
-    await expect(tools).toContainText("JSON Formatter / Validator");
+    await expect(tools).toHaveCount(2);
+    await expect(tools).toContainText(["JSON Formatter / Validator", "QR Code Generator"]);
 
     await page.goto("/discover", { waitUntil: "networkidle" });
     await page.getByLabel("Search", { exact: true }).fill("json");

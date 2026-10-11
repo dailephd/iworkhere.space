@@ -125,7 +125,7 @@ describe("registry invariants", () => {
             statePolicy: { persist: "none", shareableQuery: false },
         })
         expect(tool?.popularity).toBeUndefined()
-        expect(getToolByCategory("developer").map(entry => entry.id)).toEqual(["json-formatter"])
+        expect(getToolByCategory("developer").map(entry => entry.id)).toEqual(["json-formatter", "qr-code-generator"])
     })
 
     it("registers Word / Character Counter with its exact local offline text contract", () => {
@@ -141,17 +141,18 @@ describe("registry invariants", () => {
         expect(getToolByCategory("text").map(entry => entry.id)).toEqual(["slugify", "html-text-extractor", "word-character-counter"])
     })
 
-    it("registers QR Code Generator with its exact local offline everyday contract", () => {
+    it("registers QR Code Generator with its exact local offline developer contract", () => {
         const tool = getToolBySlug("qr-code-generator")
         expect(tool).toMatchObject({
-            id: "qr-code-generator", slug: "qr-code-generator", name: "QR Code Generator", category: "everyday",
+            id: "qr-code-generator", slug: "qr-code-generator", name: "QR Code Generator", category: "developer",
             description: "Generate a QR code from text or a URL locally in your browser.",
             seo: { title: "QR Code Generator", description: "Generate a QR code from text or a URL locally in your browser and download it as a PNG.", canonicalPath: "/tool/qr-code-generator" },
-            capability: ["client-only", "offline"], tag: ["qr", "code", "generator", "url", "everyday", "utility"],
+            capability: ["client-only", "offline"], tag: ["qr", "code", "generator", "url", "developer", "utility"],
             statePolicy: { persist: "none", shareableQuery: false },
         })
         expect(tool?.popularity).toBeUndefined()
-        expect(getToolByCategory("everyday").map(entry => entry.id)).toEqual(["length-converter", "weight-converter", "qr-code-generator"])
+        expect(getToolByCategory("converter").map(entry => entry.id)).toEqual(["length-converter", "weight-converter"])
+        expect(getToolByCategory("developer").map(entry => entry.id)).toEqual(["json-formatter", "qr-code-generator"])
     })
 
     it("returns undefined for an unknown slug", () => {

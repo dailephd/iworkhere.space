@@ -2,13 +2,14 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import AppShell from "./AppShell";
+import { ThemeProvider } from "@/component/common/ThemeProvider";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 
 describe("AppShell", () => {
     it("omits absent banner regions and preserves the main landmark and skip target", () => {
         const html = renderToStaticMarkup(
-            createElement(AppShell, null, createElement("h1", null, "Workspace")),
+            createElement(ThemeProvider, null, createElement(AppShell, null, createElement("h1", null, "Workspace"))),
         );
         expect(html.match(/<main\b/g)).toHaveLength(1);
         expect(html).not.toContain("Header banner");
@@ -29,14 +30,14 @@ describe("AppShell", () => {
 
     it("renders supplied banner regions and adapts the desktop grid", () => {
         const html = renderToStaticMarkup(
-            <AppShell
+            <ThemeProvider><AppShell
                 headerBannerSlot={<span>Header slot content</span>}
                 leftBannerSlot={<span>Left slot content</span>}
                 rightBannerSlot={<span>Right slot content</span>}
                 navItem={[{ id: "discover", label: "All tools", href: "/discover" }]}
             >
                 <h1>Workspace</h1>
-            </AppShell>,
+            </AppShell></ThemeProvider>,
         );
 
         expect(html).toContain("Header slot content");

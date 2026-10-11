@@ -54,13 +54,13 @@ test("QR Code Generator route, SEO, breadcrumb, guide and related links are serv
     expect(html).toContain("QR Code Generator");
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/qr-code-generator"');
     expect(html).toContain('aria-label="Breadcrumb"');
-    expect(html).toContain('href="/category/everyday"');
-    for (const text of ["How to use", "Text and URLs", "Fixed QR settings", "Payload limit", "Local processing", "2048 UTF-8 bytes", "error correction level M", "Related everyday tools"]) expect(html).toContain(text);
+    expect(html).toContain('href="/category/developer"');
+    for (const text of ["How to use", "Text and URLs", "Fixed QR settings", "Payload limit", "Local processing", "2048 UTF-8 bytes", "error correction level M", "Related converter tools"]) expect(html).toContain(text);
     for (const href of ["/tool/length-converter", "/tool/weight-converter"]) expect(html).toContain(`href="${href}"`);
 
     await page.goto("/tool/qr-code-generator", { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { level: 1, name: "QR Code Generator", exact: true })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Everyday" })).toHaveAttribute("href", "/category/everyday");
+    await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Developer" })).toHaveAttribute("href", "/category/developer");
     for (const href of ["/tool/length-converter", "/tool/weight-converter"]) {
         await expect(page.getByRole("main").locator(`a[href="${href}"]`).first()).toBeVisible();
         expect((await request.get(href)).status()).toBe(200);
@@ -199,12 +199,12 @@ test("generation stays local: no payload leaves the browser, no query or storage
     expect(await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }))).not.toContain(SECRET);
 });
 
-test("everyday category, Discover search and sitemap include the QR Code Generator", async ({ page, request }) => {
-    expect((await page.goto("/category/everyday"))?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1, name: "Everyday Utility", exact: true })).toBeVisible();
+test("developer category, Discover search and sitemap include the QR Code Generator", async ({ page, request }) => {
+    expect((await page.goto("/category/developer"))?.status()).toBe(200);
+    await expect(page.getByRole("heading", { level: 1, name: "Developer Tool", exact: true })).toBeVisible();
     const tools = page.getByRole("main").locator('a[href^="/tool/"]');
-    await expect(tools).toHaveCount(3);
-    await expect(tools).toContainText(["Length Converter", "Weight Converter", "QR Code Generator"]);
+    await expect(tools).toHaveCount(2);
+    await expect(tools).toContainText(["JSON Formatter / Validator", "QR Code Generator"]);
 
     await page.goto("/discover", { waitUntil: "networkidle" });
     await page.getByLabel("Search", { exact: true }).fill("qr");
@@ -215,6 +215,6 @@ test("everyday category, Discover search and sitemap include the QR Code Generat
     const xml = await (await request.get("/sitemap.xml")).text();
     expect(xml.match(/<loc>/g)).toHaveLength(28);
     expect(xml.split("<loc>https://iworkhere.space/tool/qr-code-generator</loc>")).toHaveLength(2);
-    expect(xml.split("<loc>https://iworkhere.space/category/everyday</loc>")).toHaveLength(2);
+    expect(xml.split("<loc>https://iworkhere.space/category/developer</loc>")).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);
 });

@@ -51,7 +51,7 @@ tools (`slugify`, `length-converter`, `html-text-extractor`,
 
 ### Allowed Category Values
 
-`document` | `image` | `text` | `math` | `time` | `everyday`
+`document` | `image` | `text` | `math` | `time` | `converter`
 
 New categories must be added to the `ToolCategory` type and to this document
 before use.

@@ -30,6 +30,6 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
-### Current interaction contract
+## Current appearance contract (2026-10-09)
 
-The trigger label is exactly `Themes` and has no palette icon. The existing picker continues to expose all four registry choices and persists selection through the current theme storage/runtime. Theme selection changes colors only. See `docs/DESIGN.md`.
+The trigger remains exactly `Themes`, without an icon. It opens a named nonmodal Appearance settings dialog containing native Palette (seven choices) and Color mode (three choices) radio groups. One Dark disables the mode group. Selection keeps the panel open; native arrows/Space work, Escape and Close restore trigger focus, outside click/focus departure dismiss it. The panel scrolls within mobile bounds. No effects preference is exposed. Persistence/state come only from ThemeProvider; colors do not alter layout.

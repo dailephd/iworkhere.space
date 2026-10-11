@@ -193,9 +193,9 @@ npm run test:e2e
 `npm run start -- --hostname 127.0.0.1 --port 3100`. Existing servers are never
 reused. The suite runs headless Chromium only, one worker, zero retries, with
 `desktop-chromium` (1280 × 720) and `mobile-chromium` (390 × 844) projects.
-Install Chromium through the pinned local Playwright CLI; keep local browser
-binaries under `.my-dev-kit-workflow/playwright-browsers` and set
-`PLAYWRIGHT_BROWSERS_PATH` accordingly.
+Install Chromium through the pinned local Playwright CLI and keep browser
+binaries in a project-contained cache configured through
+`PLAYWRIGHT_BROWSERS_PATH`.
 
 Each invocation generates a timestamp/random RUN_ID shared by its workers.
 Reports live under `test-report/e2e/<RUN_ID>/`: `results.json`, `results.xml`,
@@ -473,15 +473,24 @@ version-specific results and evidence boundaries.
 
 Focused tests verify registry-derived sitemap membership, environment robots/noindex boundary, apex-stable canonical/social metadata, server guide content and canonical related IDs. Production E2E extends current image flows and checks breadcrumbs, initial HTML, metadata, Light/Dark responsive workspace allocation, downloads/reset/focus, and protected routes. Observer geometry uses the approved Resizer precedent at 1440×900 and 390×844 through semantic containment/allocation/order contracts. Child targets precede containers for the current directional fit API; intentional guide/document-height changes are not protected absolute Y coordinates. Frozen supplementary scroll lanes establish document scrolling and viewport reachability; its current capture API cannot apply selected-file/theme state, so Playwright owns those runtime states. Generated evidence remains under test-report/ or ignored project workflow roots.
 
+## v0.4.1 catalog and layout regression validation
+
+The accepted desktop and mobile geometry suite checks all 153 card-to-card
+pairs and 21 section-to-section pairs at each viewport, including overlap,
+containment, heading and overflow invariants. Palette, Calculator keyboard,
+category ownership, permanent redirect, canonical metadata and sitemap
+regressions are covered alongside the populated-category homepage behavior.
+
 ## Document family validation
 
 Adjacent document-domain Vitest tests cover frozen source/collection/render
 limits, page-selection order and deduplication, atomic additions, worker
 protocol/termination, independent verification, cancellation/stale generations,
 local errors, focus and URL cleanup. Registry/metadata/guide/sitemap tests
-protect five document tools; the current v0.4 candidate registry has 18 total
-tools, seven populated categories and 27 canonical sitemap URLs (v0.3.1 had 15,
-six and 23). Operation-specific browser specs are
+protect five document tools; post-release `master` contains 18 total
+tools, seven populated categories and 28 canonical sitemap URLs including
+`/privacy` (the v0.4.0 release had 27; v0.3.1 had 15 tools, six categories
+and 23 URLs). Operation-specific browser specs are
 `pdf-page-copy.spec.ts`, `images-to-pdf.spec.ts`, `pdf-to-image.spec.ts` and
 `compress-pdf.spec.ts`; `document-family.spec.ts` covers discovery/search,
 SSR/canonicals/related links, accessible landmarks, keyboard Reset, bounded

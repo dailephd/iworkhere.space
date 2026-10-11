@@ -86,5 +86,6 @@ test("text category, discovery search, home and sitemap include the counter and 
     expect(xml.split("<loc>https://iworkhere.space/category/developer</loc>")).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);
     expect((await page.goto("/category/developer"))?.status()).toBe(200);
-    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(2);
+    await expect(page.getByRole("main").locator('a[href="/tool/qr-code-generator"]')).toHaveCount(1);
 });

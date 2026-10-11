@@ -29,6 +29,7 @@ it("composes exactly one Vercel Analytics wrapper", () => {
 
 it("always exposes the exact verification metadata", () => {
     expect(metadata.other).toEqual({ "google-adsense-account": "ca-pub-7976885058339852" });
+    expect(metadata.manifest).toBe("/manifest.webmanifest");
 });
 it("disabled root supplies no advertisement or footer placeholder", () => {
     vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");

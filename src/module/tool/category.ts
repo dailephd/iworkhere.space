@@ -26,9 +26,9 @@ export const tool_category_definition_list = [
         description: "Calculator and numerical utility.",
     },
     {
-        id: "everyday",
-        title: "Everyday Utility",
-        description: "Simple utility for daily task.",
+        id: "converter",
+        title: "Converters",
+        description: "Convert length and weight between units.",
     },
     {
         id: "time",
@@ -59,4 +59,9 @@ export function getToolCategoryDefinition(category: ToolCategory): ToolCategoryD
         throw new Error(`Unknown tool category: ${category}`);
     }
     return definition;
+}
+
+export function getToolCategoryLabel(category: ToolCategory): string {
+    const definition = getToolCategoryDefinition(category);
+    return category === "converter" ? definition.title : category[0].toUpperCase() + category.slice(1);
 }

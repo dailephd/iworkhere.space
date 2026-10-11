@@ -62,7 +62,7 @@ test("Compress PDF: SSR guide, discovery, category and exact sitemap", async ({ 
     const html = await (await request.get("/tool/compress-pdf")).text();
     for (const text of ["Compress PDF", "Compress PDF structure locally", "How to use", "What this compression does", "No reduction is normal", "Supported PDFs and limits", "Fidelity boundary", "Local processing", "Related document tools", 'href="/category/document"']) expect(html).toContain(text);
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/compress-pdf"'); for (const name of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image"]) expect(html).toContain(`href="/tool/${name}"`);
-    await page.goto("/"); await expect(page.getByRole("region", { name: "All other tools" }).locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
+    await page.goto("/"); await expect(page.getByRole("region", { name: "Document tools" }).locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("compress pdf"); await expect(page.getByRole("main").locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
     await page.goto("/category/document"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(5);
     const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(28); expect(xml.match(/<loc>https:\/\/iworkhere.space\/tool\/compress-pdf<\/loc>/g)).toHaveLength(1);

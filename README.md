@@ -3,18 +3,22 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**v0.4.0 — Core Text, Data & Sharing Utilities.** This release adds the
-canonical `developer` category, JSON Formatter / Validator, Word / Character
-Counter, and QR Code Generator. The registry contains 18 tools across seven
-populated categories and produces 27 sitemap URLs. JSON formatting and counter
-input remain browser-local; QR generation and PNG download are browser-local.
-The private dashboard remains an independent application at version `0.1.0`.
-The public Vercel project continuously deploys `master`; deployed application
-source and formal numbered releases are distinct. v0.3.1 remains historical
-release context. Vercel Web Analytics measures automatic page views only in
+**Current source version: v0.4.1.** The registry contains 18 tools across
+seven populated categories and produces 28 sitemap URLs, including `/privacy`.
+The homepage groups every tool under its populated category; Calculator accepts
+keyboard `=`; the existing appearance system includes six named palettes with
+Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
+Length and Weight while QR Code Generator belongs to Developer. The historical
+v0.4.0 release added the canonical `developer` category, JSON Formatter /
+Validator, Word / Character Counter, and QR Code Generator. JSON formatting
+and counter input remain browser-local; QR generation and PNG download are
+browser-local. The private dashboard remains an independent application at
+version `0.1.0`. The public Vercel project continuously deploys `master`;
+deployed application source and numbered GitHub releases are distinct. Vercel
+Web Analytics measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
-and the [v0.4.0 release notes](CHANGELOG.md).
+and [the changelog](CHANGELOG.md).
 
 ## Getting Started
 
@@ -132,4 +136,6 @@ does not prewrite those batches.
 
 ## Production telemetry and advertising
 
-Both network integrations are disabled by default. See [observability](docs/OBSERVABILITY.md) and [advertising](docs/ADVERTISING.md) for explicit build-time flags, privacy contracts and activation gates. Verification meta and /ads.txt are available without enabling ads. Repository validation does not prove AdSense account readiness, CMP configuration, real serving or revenue.
+Application observability and advertising have separate explicit build-time
+activation gates; Vercel Web Analytics is independently enabled in public
+Production. See [observability](docs/OBSERVABILITY.md) and [advertising](docs/ADVERTISING.md) for explicit build-time flags, privacy contracts and activation gates. Verification meta and /ads.txt are available without enabling ads. Repository validation does not prove AdSense account readiness, CMP configuration, real serving or revenue.

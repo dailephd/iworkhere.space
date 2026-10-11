@@ -285,14 +285,17 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
   lookup). Static `as const` list; no reflection or dynamic registration.
 - `ToolCategory` is derived from this list and re-exported by
   `src/module/tool/type.ts`; there is no second hand-maintained union.
-- Canonical order: `document, text, math, everyday, time, image, developer`.
+- Canonical order: `document, text, math, converter, time, image, developer`.
 - The registry remains the authority for registered tools and therefore for
   which categories are populated. `getAvailableCategory()` (metadata.ts)
   returns the populated categories in canonical order.
 - The category route (`app/category/[category]/page.tsx`) validates and
   describes categories through this module; it keeps no category list or
-  title/description switch of its own. Nav, home chips and breadcrumbs keep
-  deriving short labels from the id.
+  title/description switch of its own. Nav, home chips and breadcrumbs use
+  `getToolCategoryLabel` from the category owner, including Converters.
+- The post-release migration keeps Length/Weight in converter and moves QR to
+  developer without changing tool URLs. The route permanently redirects the
+  historical /category/everyday URL to /category/converter.
 - Category color identity is theme tokens in `src/style/theme.css`
   (`[data-category]`); see DESIGN.md.
 
@@ -313,12 +316,18 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
 ### Current tools
 
-The `master` registry (v0.4.0 release content) contains 18 tools across
-seven populated categories in canonical order document, text, math, everyday,
-time, image, developer; the public sitemap derives 27 URLs. The released and
-v0.3.1 launch catalog historically had 15 tools, six populated categories
-and 23 URLs. This list describes repository source; production deploys `master`
-continuously.
+The current registry contains 18 tools across seven populated categories in
+canonical order document, text, math, converter, time, image, developer; the
+public sitemap derives 28 URLs, including `/privacy`. The tagged v0.4.0
+release had 27 URLs before the privacy route and before the post-release
+category migration. The v0.3.1 launch catalog historically had 15 tools, six
+populated categories and 23 URLs. Production deploys `master` continuously;
+deployment identity is separate from source and release identity.
+
+Current v0.4.1 source retains all 18 tools and seven populated categories,
+replaces `everyday` with `converter` (Converters), and moves QR to `developer`.
+The current sitemap includes `/privacy` and has 28 canonical URLs. The
+preceding v0.4.0 statement remains the historical release record.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
 - **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs
@@ -336,7 +345,8 @@ continuously.
   Unicode word, grapheme-cluster character, non-whitespace and line counts
   (`text/textMetric.ts` holds the pure measurement rules; no per-keystroke
   telemetry)
-- **QR Code Generator** (`everyday/QrCodeGeneratorTool.tsx`) — local QR
+- **QR Code Generator** (`everyday/QrCodeGeneratorTool.tsx`, current category
+  `developer`) — local QR
   generation to a fixed 512 × 512 PNG (`everyday/qrCode.ts` holds the pure
   payload validation, ECC-M matrix generation and RGBA raster; the component owns
   the canvas, PNG Blob and object-URL lifecycle)
@@ -461,10 +471,29 @@ Server-side endpoint for client log events sent by `RustLogProvider`.
 
 ## Theme module (`src/module/theme/`)
 
-The theme system is a multi-theme registry, not a binary light/dark switch.
-`ThemeId` (`themeRegistry.ts`) declares four selectable themes: `system`,
-`light`, `dark`, and `onedark`. `docs/DESIGN.md` is the canonical visual authority and documents all four
-canonical themes alongside the current theme registry and runtime ownership.
+### Palette and mode extension
+
+The existing registry also owns six documented palette identities plus the
+retained One Dark legacy choice. `themeStorage.ts` stores palette separately
+through the same storage adapter; the existing `theme` key stays compatible.
+ThemeProvider is the single interactive appearance state owner. ThemeToggle
+consumes its palette/mode state and renders native radio groups. Runtime helpers
+apply effective mode and palette attributes without owning a second store.
+The existing inline pre-paint initializer is composed from the theme runtime
+module by the server layout. Its bounded JSON storage reads are the pre-hydration
+exception already used by the app; ordinary persistence uses `lib/storage` only.
+System resolves to explicit light/dark attributes and tracks OS changes.
+Legacy One Dark keeps its fixed dark CSS hook. See DESIGN.md for mappings and
+the superseded four-choice baseline below.
+
+### Historical four-choice baseline (superseded by the extension above)
+
+The prior theme system was a multi-theme registry, not a binary light/dark
+switch. Its four choices were `system`, `light`, `dark`, and fixed-dark
+`onedark`. The current registry has six selectable palettes, each supporting
+Light, Dark and System modes, while retaining fixed-dark One Dark.
+`docs/DESIGN.md` is the canonical visual authority and documents the current
+registry and runtime ownership.
 
 ### Structure
 - `themeRegistry.ts` — declares `ThemeId`, the `theme_definition_list`

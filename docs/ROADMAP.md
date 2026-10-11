@@ -4,9 +4,9 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The root application package version is `0.4.0`; the independent dashboard
-retains its own package version. Source release status and live production
-deployment status are tracked separately.
+The current root application source version is `0.4.1`; the independent
+dashboard retains its own package version. Source, GitHub release and live
+production deployment identities are distinct.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -20,12 +20,19 @@ The original v0.1.0 product baseline provides six registered utilities:
 The v0.2 image family brings the catalog to ten tools. Package version and
 implementation scope are tracked separately.
 
-The v0.3 document family brings the live catalog to fifteen tools. v0.3.0 was
+The v0.3 document family brought the catalog to fifteen tools. v0.3.0 was
 integrated through PR #9, merged to `master` at
 `008458651bc8786b46fcc4b27ef119147e1e2579`, published as GitHub release
 `v0.3.0` on 2026-10-06, and is now publicly deployed. Source-release identity
 and hosting/deployment identity remain separate records; this planning update
 does not invent an unverified Vercel deployment ID.
+
+v0.4.0 was formally released on 2026-10-08 (PR #21 and GitHub Release
+`v0.4.0`), completing Priority A at 18 registered tools. The v0.4.1 source
+includes the privacy route and 28-URL sitemap, populated-category homepage,
+Calculator keyboard equals, integrated six-palette appearance system, and
+converter-category migration. Its scope does not alter the original v0.4.0
+plan. The frozen v0.5.0 and v0.6.0 scopes remain unchanged.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -415,7 +422,10 @@ This release does not alter the planned v0.4.0–v0.6.0 catalog sequence.
 
 ## Version 0.4.0 — Core Text, Data & Sharing Utilities
 
-Status: v0.4.0 release content is complete; implementation, documentation reconciliation, and exact-candidate pre-release readiness passed. The implementation plan was frozen 2026-10-07.
+Status: RELEASED — 2026-10-08. PR #21 merged the release content; the GitHub
+Release and tag are published. The frozen implementation plan remains the
+historical authority for the original scope. Later privacy and post-v0.4
+updates are not part of that release.
 
 Frozen plan: [v0.4.0 implementation plan](plans/v0.4.0-implementation-plan.md).
 
@@ -475,8 +485,9 @@ v0.4.0 is complete when:
 - `developer` becomes a canonical `ToolCategory`, with one canonical runtime
   category-definition owner (no duplicated category lists);
 - JSON Formatter / Validator belongs to `developer`;
-- Word / Character Counter belongs to `text`; QR Code Generator belongs to
-  `everyday`; no existing tool moves.
+- Word / Character Counter belongs to `text`; QR Code Generator belonged to
+  `everyday` at v0.4.0 release. The post-release migration moves it to
+  `developer` without changing the original v0.4.0 decision.
 
 The three-tool v0.4.0 scope and the exclusions above are unchanged. Detailed
 contracts, dependency decision, batch structure and test responsibilities live
@@ -904,3 +915,19 @@ Historical process debt: the referenced
 `docs/plans/v0.2.0-implementation-plan.md` is absent from the repository and its
 available history. No retroactive version plan was created. Future versions
 should freeze their implementation plan before coding prompts are issued.
+
+## Post-release category migration and converter expansion proposal — 2026-10-11
+
+The new category migration replaces public Everyday with Converters (converter),
+keeps Length/Weight and all tool URLs, moves QR to Developer, and permanently
+redirects /category/everyday. This records a later decision; the historical v0.4
+decision is unchanged. Migration release assignment remains TBD.
+
+Planner approval is requested for a separate v0.7.0 converter wave:
+Temperature, Volume, Area, Speed and Data Storage. A second wave is proposed for
+v0.8.0: Pressure, Energy, Power, Angle and Fuel Economy. These are proposals,
+not frozen implementation scope or release promises. v0.5.0 and v0.6.0 are
+unchanged. Units, accuracy, feasibility, user value, tests and a possible shared
+interface are recorded in [the catalog proposal](plans/converter-catalog-expansion.md).
+Currency remains deferred until its data/freshness/cache/failure/disclosure
+contract is designed and approved. No converter expansion is implemented here.
