@@ -129,8 +129,9 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
-their respective reports. v0.3.1, v0.4.0 and v0.4.1 are released; v0.5.0 is the next numbered
-planning target.
+their respective reports. v0.3.1, v0.4.0 and v0.4.1 are released; the immediate planned patch is
+v0.4.2 for user reporting and adaptive site chrome. v0.5.0 remains the next
+catalog expansion release.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
@@ -143,6 +144,22 @@ handoff into documentation reconciliation/readiness.
 yet, do not invent batches from the roadmap; prepare the plan first.
 **Relations:** Subordinate to the roadmap's version-level scope. It is planning
 authority, not evidence that a batch or version was implemented.
+
+### plans/v0.4.2-implementation-plan.md
+
+**Summary:** Planned immediate patch after v0.4.1. Defines a complete,
+privacy-preserving anonymous reporting and private triage vertical slice; dedicated
+support persistence/least-privilege grants, durable outbox, Resend notification,
+private issue tracking and abuse controls; the original-header-out-of-view top
+navigation control; and fixed retractable footer with preserved reporting access.
+Records exact intended owners, cross-layer test obligations, production activation
+gates and exclusions. The proposal is NOT proof of implementation or deployment.
+**When to read:** Before v0.4.2 implementation, support provider/Neon changes,
+report-dialog implementation, or layout/header/footer modifications.
+**Relations:** [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md),
+ROADMAP.md, DESIGN.md, OBSERVABILITY.md, architecture.md, API.md, SCHEMA.md,
+project-status.md, dashboard/README.md and independent private-dashboard grants.
+v0.5.0 and v0.6.0 catalog scopes are unchanged.
 
 ### plans/v0.3.0-implementation-plan.md
 
