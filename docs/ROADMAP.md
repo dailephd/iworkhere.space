@@ -519,6 +519,45 @@ exact-commit hosted CI, and the separate publication workflow completed for
 v0.4.1. External AdSense activation and exact live deployment identity are not
 inferred from the GitHub Release. The v0.5.0 and v0.6.0 catalogs are unaffected.
 
+## Version 0.4.2 — User Feedback & Retractable Site Chrome
+
+Status: Planned immediate patch after the published v0.4.1 release. This is a planning decision dated 2026-10-14; no implementation, production migration, provider activation, or deployment is claimed.
+
+### Goal
+
+Give every visitor a trustworthy way to report functional defects, incorrect outputs, access/layout problems, privacy/security concerns and improvement ideas, while keeping header navigation and the footer available through compact, retractable viewport controls. Treat reporting as a durable support/triage capability, not merely an email form or another technical-telemetry event.
+
+### Scope
+
+- One accessible, site-wide "Report a problem or suggestion" flow with explicit categories: incorrect result, tool failure, unusable/corrupt output, interface/accessibility, performance/compatibility, incorrect content/link, privacy/security, suggestion, other.
+- Tool/route context from existing registry and pathname, plus category-dependent expected/observed details, optional contact email and affirmative follow-up consent; no automatic user-input/file/output capture, screenshots, attachments or session replay.
+- Validated same-origin server intake, a separate least-privilege Neon support schema, durable idempotent report receipts and transactional delivery outbox. Private triage through an operator-controlled private issue tracker, operator email notifications through Resend, bounded retries and visible delivery failure states. No public issue mirroring.
+- Private, read-only support-report viewing through the existing independently deployed protected dashboard, using separate support SELECT-only credentials. Preserve the existing observability role and telemetry data model.
+- A top "Show navigation" control only after the normal-flow header leaves the viewport; expand the same header into a temporary fixed top overlay without jumping the scroll position or duplicating the navigation landmark.
+- A compact fixed-bottom footer, expanded by default for first-time visitors, collapsible to a small bottom control that retains direct reporting access; expanded/collapsed preference survives navigation/reload through existing storage. The regular footer advertising slot stays in document flow.
+- Updated privacy disclosure, abuse defenses, accessibility, operator/runbook requirements, mobile/desktop browser acceptance, and complete independent failure/retry testing.
+
+### Dependencies and architecture boundaries
+
+Requires the released v0.4.1 application and reconciled release documentation; existing AppShell/Header/Footer and design system; existing registry and storage abstraction; preserved Next.js server/client split; separate Neon observability/dashboard projects and strict data-collection boundaries. Support data is NOT observability telemetry. User reports must not be sent to /api/metric or /api/log, and the existing dashboard observability credential must never gain write privileges.
+
+Owner-selected external integrations for this patch: Resend for transactional mail, a PRIVATE GitHub issue repository for triage state, and Cloudflare Turnstile for anonymous abuse protection, plus proven server-side rate limiting. Provisioned credentials and safe provider configuration are separate production gates, not assumptions made by code. New persistence/security contracts must receive a full architecture-context gate before implementation. Full report submission, persistence, private triage delivery and browser feedback must be verified as one integrated vertical slice.
+
+### Acceptance
+
+- A valid anonymous report persists once, returns a real opaque receipt, is privately visible to the operator, and is retried through independent notification/tracker outbox jobs. DB failure never returns success; mail/tracker failure never discards a saved report or duplicates it.
+- All report types, validation/error/abuse conditions, input/file/privacy exclusions, contact consent, operator-only viewing, private triage and deployment dependencies have explicit test evidence. No public raw report exposure.
+- Header stays in normal flow at the top, exposes a compact top control only when out of view, and expands/collapses accessibly without duplicate navigation, page jump or broken skip link.
+- Footer remains anchored to the browser viewport, retracts/restores without navigation jumps, keeps report access in both states, respects viewport/safe-area/keyboard conditions and permits all tool content, focused controls and bottom-of-page actions to scroll into view.
+- Browser and integration tests cover desktop/mobile, short/long pages, overlays, themes, keyboard/assistive semantics, existing ads slots, image/document download flows, privacy, and performance/CLS. Existing eight GitHub CI jobs remain mandatory; added support/DB gates must also pass.
+- Documentation/specifications, private-provider setup, support retention and production security controls pass independent review before release. Exact deployed source and end-to-end real (synthetic) report delivery are verified after separately authorized deployment.
+
+### Exclusions
+
+No new registered utility, user account, public report status page, file uploads, screenshots, Sentry installation, automatic error-report conversion, analytics-provider replacement, second tool registry, footer-ad relocation, new independent main scrollbar, or changes to the frozen v0.5.0/v0.6.0 catalog feature lists.
+
+The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) owns the field/API/data and layout contracts, named owners/paths, execution batches, test matrix and external production gates. It is planning authority only; implementation must follow a fresh repository my-dev-kit context review and is not authorized by this roadmap entry alone.
+
 ## Version 0.5.0 — Developer & Text Utility Suite
 
 Status: Planned
@@ -841,6 +880,8 @@ v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         ↓
 v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
+v0.4.2  User Feedback & Retractable Site Chrome (planned patch)
+        ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
 v0.6.0  Time & Everyday Calculators
@@ -924,6 +965,10 @@ This roadmap does not authorize a coding agent to:
 Where a version has unresolved planning decisions, resolve them before its implementation plan is frozen.
 
 ## Next planning action
+
+Immediate priority (2026-10-14): prepare and implement planned v0.4.2 User Feedback & Retractable Site Chrome after v0.4.1 post-release documentation PR #33 is integrated. Freeze current-repository my-dev-kit architectural evidence and affected specifications, then implement the complete durable reporting vertical slice and bounded header/footer viewport interactions according to the [patch plan](plans/v0.4.2-implementation-plan.md). v0.5.0 remains the next CATALOG expansion release, with its nine-tool scope unchanged. No v0.4.2 implementation or publication is yet claimed.
+
+The following v0.3.1 release-preparation handoff text is historical and superseded by the completed 2026-10-06 release; it is retained for planning traceability:
 
 v0.3.1 implementation, documentation reconciliation, readiness and release
 preparation are complete. The next workflow is release integration and
