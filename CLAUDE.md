@@ -2,6 +2,89 @@
 
 This file provides guidance to Claude Code when working with code in this repository.
 
+## Mandatory repository structure manifest
+
+Before planning, retrieving source for, editing, testing, or moving any repository file,
+read this file AND the root `manifest.txt` AND the other tracked agent entrypoint
+(`AGENTS.md` or `CLAUDE.md`) together. The actual tracked names use `.md`,
+not `agents.txt` or `claude.txt`. If supplementary local `.txt` agent
+instructions exist, read those too without treating them as a replacement for
+the tracked contracts.
+
+Use `manifest.txt` to select the existing directory owner and avoid scattering
+new code, tests, reports, worktrees, scripts or generated artifacts. Current
+Git/source and the relevant architecture/specification documents govern
+implementation facts; the manifest is an evidence-backed directory map, not
+permission to restructure the project. If a proposed new directory or file
+location conflicts with the manifest, stop and obtain a planner-owned ownership
+decision before editing. Every authorized directory creation, move or removal
+must update the manifest in the same change. Do not run large cleanup, remove
+tracked files or merge distinct source roots just because they look similar.
+
+**Mandatory pre-write gate:** BEFORE generating or writing any application code,
+test, script, configuration or new directory, confirm in the task record that
+`manifest.txt` was read at the current branch/ref; name the verified existing
+directory/behavior owner and affected paths; retrieve the relevant current
+source/contract/closest test with my-dev-kit; and confirm the planned paths obey
+the naming rules below. If `manifest.txt` is absent on the target branch
+(e.g., governance changes are still in an open PR), retrieve its exact proposed
+revision read-only and explicitly note that it is not yet merged authority.
+Never silently bypass the gate because a prior agent or chat read the manifest.
+
+## File and directory naming conventions (mandatory)
+
+Follow the established **singular-name preference** for every newly created
+identifier, folder and file where the framework does not require another name.
+Prefer one descriptive, narrowly owned unit over new plural catch-all folders
+(e.g., choose an existing `src/module/tool/developer/` owner instead of
+inventing `src/modules/`, `src/tools/` or `src/helpers/`). Never rename a
+pre-existing directory just to make it singular; existing `docs/`, `scripts/`,
+`test/fixtures/`, `.github/workflows/` and other fixed paths stay as they are.
+The names of established packages, APIs and external contracts are not changed
+by this policy.
+
+- **Directories:** Use the existing directory hierarchy and its naming form
+  first. For a genuinely approved new non-framework folder, choose a concise,
+  descriptive singular noun in lowercase; use `kebab-case` only when a
+  multiword folder is necessary and no local convention overrides it.
+- **React components and component files:** `PascalCase`, with the
+  `.tsx` extension (e.g., `JsonFormatterTool.tsx`,
+  `ToolClientFrame.tsx`). Named React components/types/interfaces follow
+  `PascalCase`. Keep operation-specific UI under the established
+  `src/module/tool/<category>/` folder, not in an invented common tool folder.
+- **Plain TypeScript modules and functions:** `camelCase` source filenames,
+  functions and variables (e.g., `jsonFormat.ts`, `textMetric.ts`,
+  `getToolBySlug`). Preserve explicitly established API/export names such as
+  `tool_definition_list`; do not rename existing names to enforce aesthetics.
+- **Tests:** Use the exact related source stem with `.test.ts` or
+  `.test.tsx` next to the relevant source. Browser specifications follow the
+  existing `test/e2e/<kebab-case-tool-slug>.spec.ts` pattern. Do not create a
+  parallel `tests/` root or move existing fixture/test owners.
+- **Browser-only and worker modules:** Follow the owning subsystem's existing
+  suffixes, such as `.client.ts`, `.server.ts`, and `.worker.ts`, only
+  when the runtime boundary really requires them; preserve the existing
+  casing/stem pattern.
+- **Tool ids, slugs and URLs:** Use lowercase `kebab-case` for user-facing
+  tool ids/slugs and `/tool/<slug>` URLs (e.g., `json-formatter`).
+  Next.js reserved route filenames and dynamic segment folders
+  (`page.tsx`, `layout.tsx`, `route.ts`, `[slug]`, `[category]`)
+  must retain their framework-defined spellings.
+- **Documentation and scripts:** Follow the existing owner's convention:
+  `docs/modules/JsonFormat.md`, `docs/components/JsonFormatterTool.md`,
+  `docs/plans/vX.Y.Z-implementation-plan.md`, `script/verify.ts` and
+  `scripts/Start-Dev.ps1` are distinct established patterns. Do not force
+  one casing rule onto all file types.
+- **No duplicate or speculative name:** Before creating any file or folder,
+  search for a current equivalent and inspect the closest precedent. Do not
+  append `New`, `V2`, `Manager`, `Service`, `Utils`, `Helpers`, or a
+  version directory without a proven requirement and planner authorization.
+
+The manifest decides **where** a change belongs; existing source and specs
+decide **what** it is named and how it integrates. If an established local
+pattern differs from an example above, preserve that pattern and document the
+reason. A new directory requires explicit approval and a matching
+`manifest.txt` update in the same change.
+
 ## Build & Development Commands
 
 npm run dev          # Start dev server (localhost:3000)
