@@ -32,6 +32,22 @@ Its implementation plan is not frozen. Planner-owned specifications and a
 version plan must precede implementation. The frozen v0.6.0 scope remains
 as recorded in ROADMAP.md.
 
+## v0.4.2 planning — 2026-10-14
+
+PLANNED_IMMEDIATE_PATCH: v0.4.2 — User Feedback & Retractable Site Chrome.
+The [patch plan](plans/v0.4.2-implementation-plan.md) and corresponding
+[roadmap scope](ROADMAP.md) specify durable anonymous issue/suggestion intake,
+private triage and notifications, a retractable out-of-view header and a
+viewport-fixed retractable footer. This is a PLANNING change only. No patch
+implementation, support schema migration, provider activation, CI evidence,
+GitHub Release or public deployment is claimed.
+
+The patch's current planning branch follows the still-open v0.4.1 post-release
+documentation-reconciliation PR #33. Merge/reconcile that prerequisite first,
+then run current my-dev-kit retrieval and affected specification preflight before
+Batch A. The next catalog expansion remains frozen v0.5.0, not replaced by this
+patch. The historical v0.4.1 release status above remains unchanged.
+
 ## v0.4.1 released UI and category changes — 2026-10-11
 
 The release incorporates the populated-category homepage and Calculator
