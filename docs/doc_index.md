@@ -130,8 +130,9 @@ in the current release.
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
 their respective reports. v0.3.1, v0.4.0 and v0.4.1 are released; the immediate planned patch is
-v0.4.2 for user reporting and adaptive site chrome. v0.5.0 remains the next
-catalog expansion release.
+v0.4.2 for user reporting and adaptive site chrome, followed by planned
+v0.4.3 for original utility value, publisher transparency and distinctive
+content. v0.5.0 remains the next catalog expansion release.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
@@ -160,6 +161,24 @@ report-dialog implementation, or layout/header/footer modifications.
 ROADMAP.md, DESIGN.md, OBSERVABILITY.md, architecture.md, API.md, SCHEMA.md,
 project-status.md, dashboard/README.md and independent private-dashboard grants.
 v0.5.0 and v0.6.0 catalog scopes are unchanged.
+
+### plans/v0.4.3-implementation-plan.md
+
+**Summary:** Product-value patch planned after a publisher-reported AdSense
+Low value content rejection. Defines five original, reproducible PDF/image
+examples; task-first homepage; distinct seven-category guidance; an operator-
+verified About/Contact pathway; safe content/asset ownership and a real-use
+curation follow-up. Includes exact architecture owners, five context-sharing
+implementation batches, per-tool evidence standards, route/SEO/accessibility/
+privacy/ad-regression tests, explicit external decisions and release boundaries.
+This plan is NOT evidence of implemented or deployed behavior.
+**When to read:** Before any v0.4.3 example assets, tool demonstration UI,
+homepage/category copy, publisher About/Contact routes or value-oriented
+AdSense resubmission improvement work.
+**Relations:** [v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md),
+ROADMAP.md, project-status.md, DESIGN.md, ADVERTISING.md, existing tool
+guides, the accepted v0.4.2 reporting/chrome plan and current registry.
+The planned v0.5.0/v0.6.0 catalog scopes remain unchanged.
 
 ### plans/v0.3.0-implementation-plan.md
 

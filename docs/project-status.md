@@ -48,6 +48,14 @@ then run current my-dev-kit retrieval and affected specification preflight befor
 Batch A. The next catalog expansion remains frozen v0.5.0, not replaced by this
 patch. The historical v0.4.1 release status above remains unchanged.
 
+## v0.4.3 product-value planning — 2026-10-18
+
+PLANNED: Utility Value, Trust & Discoverability; no source implementation, GitHub Release, production deployment, AdSense approval or re-review is claimed. The publisher reported a specific AdSense **Low value content** rejection after the earlier technical/privacy remediation. That report is an external review outcome, not evidence that a particular file or tool violates Google's policy.
+
+The [v0.4.3 roadmap section](ROADMAP.md) and [detailed version plan](plans/v0.4.3-implementation-plan.md) add original verified PDF/image tool demonstrations for five existing utilities; task-first homepage guidance; useful distinct category pages; authentic publisher About/Contact; and follow-up evidence from real user reports/Search Console where available. This does not change the 18-tool catalog, v0.4.2 feedback/chrome scope, frozen v0.5/v0.6 utilities, or the proposed converter waves.
+
+The site already has tool guides and functioning utilities; the new work targets differentiation and credibility rather than another compliance infrastructure loop. The version plan is stacked after PR #34 and PR #33; it must not be described as merged or currently live. Operator approval of contact details, original sample provenance, and release sequencing remain before implementation/launch. A live review request to Google remains a separate owner action after the content is deployed and verified.
+
 ## v0.4.1 released UI and category changes — 2026-10-11
 
 The release incorporates the populated-category homepage and Calculator
