@@ -558,6 +558,38 @@ No new registered utility, user account, public report status page, file uploads
 
 The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) owns the field/API/data and layout contracts, named owners/paths, execution batches, test matrix and external production gates. It is planning authority only; implementation must follow a fresh repository my-dev-kit context review and is not authorized by this roadmap entry alone.
 
+## Version 0.4.3 — Utility Value, Trust & Discoverability
+
+Status: PLANNED PRODUCT-VALUE PATCH — 2026-10-18. Scope is newly proposed after a publisher-reported AdSense "Low value content" rejection; not implemented, released, deployed or approved by Google. Planning order places it after the separately planned v0.4.2 patch, before the unchanged v0.5.0 catalog. A different publication order requires a separate explicit version decision; AdSense resubmission must not be made dependent on launching v0.4.2's support backend.
+
+### Goal
+
+Demonstrate substantial original visitor value in the existing 18-tool product through real before/after utility evidence, task-centered guidance, distinct category pages and transparent publisher/contact information. Treat genuine search demand and user feedback as measured post-launch facts, not features or approval guarantees.
+
+### Scope
+
+- Original, reproducible example content for Compress PDF, PDF to Image, Images to PDF, Image Resizer and Image Converter, with verified actual outcomes, source attribution and clearly stated limits.
+- Clear task-first homepage with five truthful featured use cases, preserving all registered utilities, search and seven category entry points.
+- Helpful task/selection guidance on all seven populated category pages; special scrutiny for low-density category pages rather than invented filler or blanket redirects.
+- A publisher About page and a verified Contact/report pathway. Reuse the v0.4.2 reporting workflow if deployed; otherwise require an explicitly approved public contact method. No new report backend.
+- Source-backed curation, accurate examples, public maintenance provenance and a bounded post-release Search Console/real-feedback review. No invented engagement claims.
+
+### Dependencies and architectural constraints
+
+Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, AppShell, storage and design system. Preserve F-01/F-02 advertising eligibility, privacy disclosure, existing browser-local file processing and the v0.4.2 header/footer when present. New example data belongs under src/module/tool/valueExamples.ts, presentation under src/component/tool/ToolExamplePanel.tsx, original approved assets under public/examples/v0.4.3/, and operator-verified public identity under src/module/content/siteInformation.ts. Routes /about and /contact use src/app and existing metadata helpers; they require verified publisher copy and contact decisions before public deployment. Do not create a parallel tool registry or new analytics/CMS/backend.
+
+### Acceptance
+
+- Five original demonstrations have independently measured, reproducible source/output facts; no fabricated compression percentages, testimonials, sample provenance or capabilities.
+- Visitors can find, use and understand the real tools and all seven categories on desktop/mobile; informative copy is distinct, accurate and server-visible where relevant.
+- About/Contact are truthful, reachable, accessible, indexable only when appropriate and correctly reflected in route inventory/sitemap; no unauthorized personal contact data.
+- Existing 18 tools, guide/accessibility contracts, privacy/ad exclusions, branding and prior version scopes are preserved, with full browser/CI regression proof.
+- Post-launch curation and indexing/user-interest evidence is recorded only from real sources. Passing tests never claims AdSense approval or an automatic traffic threshold.
+
+### Exclusions and handoff
+
+No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns batch A–E, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation has not begun.
+
 ## Version 0.5.0 — Developer & Text Utility Suite
 
 Status: Planned
@@ -794,7 +826,7 @@ No standalone catalog version is assigned solely to theme documentation debt.
 
 The following planned items remain preserved but are not assigned to the concrete Priority A+B version sequence.
 
-They must not be silently folded into a catalog version without an explicit planning decision.
+They must not be silently folded into a catalog version without an explicit planning decision. The previously unassigned About page is explicitly planned in v0.4.3; its publisher copy and public contact details still require operator approval.
 
 ### HTTP security-header hardening
 
@@ -819,10 +851,6 @@ The near-term UI/discovery plan defines only functional search entry, real desti
 ### RustLogProvider startup activation
 
 The provider and `/api/log` endpoint exist. Startup owner, environment behavior, network/privacy expectations, fallback behavior, and validation remain unresolved.
-
-### About page
-
-An About page remains a valid product/content candidate, but its content, route placement, navigation role, and SEO contract are not yet defined.
 
 ### Analytics provider swap
 
@@ -881,6 +909,8 @@ v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
 v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.4.2  User Feedback & Retractable Site Chrome (planned patch)
+        ↓
+v0.4.3  Utility Value, Trust & Discoverability (planned product patch)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
@@ -966,7 +996,9 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-Immediate priority (2026-10-14): prepare and implement planned v0.4.2 User Feedback & Retractable Site Chrome after v0.4.1 post-release documentation PR #33 is integrated. Freeze current-repository my-dev-kit architectural evidence and affected specifications, then implement the complete durable reporting vertical slice and bounded header/footer viewport interactions according to the [patch plan](plans/v0.4.2-implementation-plan.md). v0.5.0 remains the next CATALOG expansion release, with its nine-tool scope unchanged. No v0.4.2 implementation or publication is yet claimed.
+Product-value planning update (2026-10-18): keep v0.4.2 reporting/chrome as its own planned release and add v0.4.3 as the bounded site-value response to the publisher-reported AdSense Low value content rejection. The new [v0.4.3 plan](plans/v0.4.3-implementation-plan.md) defines truthful original file-processing demonstrations, homepage/category differentiation, operator-confirmed About/Contact, and real follow-up evidence. Do not treat the Google rejection as a technical CI defect or promise approval. Website improvements can be designed independently of v0.4.2's support backend; any numeric release-order change requires explicit approval, not an implicit new dependency.
+
+Previously recorded priority (2026-10-14): prepare and implement planned v0.4.2 User Feedback & Retractable Site Chrome after v0.4.1 post-release documentation PR #33 is integrated. Freeze current-repository my-dev-kit architectural evidence and affected specifications, then implement the complete durable reporting vertical slice and bounded header/footer viewport interactions according to the [patch plan](plans/v0.4.2-implementation-plan.md). v0.5.0 remains the next CATALOG expansion release, with its nine-tool scope unchanged. No v0.4.2 implementation or publication is yet claimed.
 
 The following v0.3.1 release-preparation handoff text is historical and superseded by the completed 2026-10-06 release; it is retained for planning traceability:
 
