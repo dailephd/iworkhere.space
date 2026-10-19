@@ -30,9 +30,26 @@ jobs:
         run: docker version && docker compose version
 
       - name: Container validation
-        run: npm run test:container
+        # GitHub-hosted runners have Docker Hub public-image pull exemptions.
+        # The ECR Public mirror is a fallback for registry 429 only; both
+        # references resolve to the same immutable Docker Official Image digest.
+        shell: bash
         env:
-          CONTAINER_NODE_IMAGE: public.ecr.aws/docker/library/node@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
+          CONTAINER_NODE_IMAGE: node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
+          ECR_NODE_FALLBACK_IMAGE: public.ecr.aws/docker/library/node@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
+        run: |
+          set +e
+          npm run test:container
+          primary_status=$?
+          set -e
+          if [ "$primary_status" -eq 0 ]; then
+            exit 0
+          fi
+          if ! grep -Eiq '429 Too Many Requests|toomanyrequests|pull rate limit|Data limit exceeded' test-report/container/*/docker-build.log; then
+            exit "$primary_status"
+          fi
+          echo "::warning::Registry throttled the pinned Node image; retrying once from ECR Public with the identical digest"
+          CONTAINER_NODE_IMAGE="$ECR_NODE_FALLBACK_IMAGE" npm run test:container
 
       - name: Upload container report
         if: always()
