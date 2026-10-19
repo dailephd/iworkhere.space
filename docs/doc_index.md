@@ -51,7 +51,10 @@ production-license release gate. The generated positive fixture is within the fr
 ## 1. Overview
 
 Latest GitHub Release `v0.4.1` was published 2026-10-11; the annotated tag
-points to verified `master` commit `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`.
+points to the release-time `master` commit
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent v0.4.3 planning PR #35 merge commit is
+`d48e5fcf3d9015db5677d0a7410236a70979db58`; newer documentation commits
+may advance `master` without changing the numbered release tag.
 The released source contains 18 tools, seven populated categories and 28
 registry-derived sitemap URLs. It includes homepage category sections,
 Calculator keyboard equals, the integrated six-palette appearance system and
@@ -72,8 +75,10 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
-  v0.4.1 is formally released with the accepted maintenance updates; v0.5.0
-  is the next planned version and its plan is not yet frozen. The current
+  v0.4.1 is formally released with accepted maintenance updates; v0.4.2 is
+  the next planned product patch (anonymous reports and retractable chrome),
+  followed by v0.4.3 (original utility value and publisher trust). v0.5.0 is
+  the next catalog expansion, and its implementation plan is not frozen. The current
   Vercel production deployment identity remains unverified in this source
   audit; historical deployment records remain date-scoped.
 

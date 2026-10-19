@@ -1,10 +1,10 @@
 # PROJECT STATUS
 
-## Current release and next planning step — 2026-10-11
+## Current release and next implementation preflight — 2026-10-19
 
 DEFAULT_BRANCH: `master`
 
-LATEST_VERIFIED_MASTER_SHA: `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`
+SOURCE_BASELINE_FOR_THIS_RECONCILIATION: `d48e5fcf3d9015db5677d0a7410236a70979db58` (2026-10-19; PR #35 merge, following PRs #33 and #34). This is a historical review base, not a promise about the moving `master` HEAD.
 
 CURRENT_ROOT_PACKAGE_VERSION: `0.4.1` (independent dashboard: `0.1.0`)
 
@@ -12,10 +12,11 @@ LATEST_NUMBERED_GITHUB_RELEASE: `v0.4.1` — published 2026-10-11.
 
 V0_4_1_RELEASE_PR: #32 — MERGED 2026-10-11.
 
-V0_4_1_ANNOTATED_TAG_TARGET: `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (matches `master` at verification).
+V0_4_1_ANNOTATED_TAG_TARGET: `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (matched `master` at release verification; current `master` has newer documentation commits).
 
-EXACT_MASTER_SHA_CI: PASS — Build, Lint, Test, Typecheck, E2E, Container,
-Dashboard and Observability database all succeeded on the tagged commit.
+V0_4_1_TAGGED_SHA_CI: PASS — Build, Lint, Test, Typecheck, E2E, Container,
+Dashboard and Observability database succeeded on the historical tagged commit.
+This is not a claim that all eight workflows passed on the current `master` SHA.
 
 LATEST_PRODUCTION_DEPLOYMENT_IDENTITY: NOT INDEPENDENTLY VERIFIED. The public
 Vercel project is configured for automatic deployment from `master`, but
@@ -27,6 +28,8 @@ CURRENT_RELEASE_CATALOG: 18 registered tools, seven populated categories,
 release had 27 URLs; v0.4.1 retains all tool URLs and adds the Converters
 category with the permanent `/category/everyday` redirect.
 
+NEXT_PLANNED_PRODUCT_VERSION: `v0.4.2 — User Feedback & Retractable Site Chrome`.
+FOLLOWING_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
 Its implementation plan is not frozen. Planner-owned specifications and a
 version plan must precede implementation. The frozen v0.6.0 scope remains
@@ -42,10 +45,12 @@ viewport-fixed retractable footer. This is a PLANNING change only. No patch
 implementation, support schema migration, provider activation, CI evidence,
 GitHub Release or public deployment is claimed.
 
-The patch's current planning branch follows the still-open v0.4.1 post-release
-documentation-reconciliation PR #33. Merge/reconcile that prerequisite first,
-then run current my-dev-kit retrieval and affected specification preflight before
-Batch A. The next catalog expansion remains frozen v0.5.0, not replaced by this
+Planning prerequisites are now integrated: documentation PR #33 was merged to
+`master` in `a2ba480df167a1b3437727b45451aba8f6011c0e`, and the v0.4.2
+planning PR #34 was merged in `5711a21a8d5d09b8a88ea784326def336e1ace1a`.
+The next action is current-repository my-dev-kit retrieval, affected specification
+preflight and the bounded Batch A reporting-vertical-slice implementation prompt.
+These merged planning documents do not prove the product patch was implemented. The next catalog expansion remains frozen v0.5.0, not replaced by this
 patch. The historical v0.4.1 release status above remains unchanged.
 
 ## v0.4.3 product-value planning — 2026-10-18
@@ -54,7 +59,10 @@ PLANNED: Utility Value, Trust & Discoverability; no source implementation, GitHu
 
 The [v0.4.3 roadmap section](ROADMAP.md) and [detailed version plan](plans/v0.4.3-implementation-plan.md) add original verified PDF/image tool demonstrations for five existing utilities; task-first homepage guidance; useful distinct category pages; authentic publisher About/Contact; and follow-up evidence from real user reports/Search Console where available. This does not change the 18-tool catalog, v0.4.2 feedback/chrome scope, frozen v0.5/v0.6 utilities, or the proposed converter waves.
 
-The site already has tool guides and functioning utilities; the new work targets differentiation and credibility rather than another compliance infrastructure loop. The version plan is stacked after PR #34 and PR #33; it must not be described as merged or currently live. Operator approval of contact details, original sample provenance, and release sequencing remain before implementation/launch. A live review request to Google remains a separate owner action after the content is deployed and verified.
+The site already has tool guides and functioning utilities; the new work targets differentiation and credibility rather than another compliance infrastructure loop. The v0.4.3 planning document was merged through PR #35 at
+`d48e5fcf3d9015db5677d0a7410236a70979db58`, following merged PRs #33
+and #34. Only the plan is merged; v0.4.3 product behavior is not implemented
+or currently live. Operator approval of contact details, original sample provenance, and release sequencing remain before implementation/launch. A live review request to Google remains a separate owner action after the content is deployed and verified.
 
 ## v0.4.1 released UI and category changes — 2026-10-11
 

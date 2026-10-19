@@ -996,6 +996,12 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
+Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
+record, PR #34 integrated the v0.4.2 plan, and PR #35 integrated the v0.4.3
+plan into `master`. Both patches remain planned, not implemented or published.
+Proceed with v0.4.2 first through the existing frozen plan and preflight;
+v0.4.3 follows without moving its product-value scope into v0.4.2.
+
 Product-value planning update (2026-10-18): keep v0.4.2 reporting/chrome as its own planned release and add v0.4.3 as the bounded site-value response to the publisher-reported AdSense Low value content rejection. The new [v0.4.3 plan](plans/v0.4.3-implementation-plan.md) defines truthful original file-processing demonstrations, homepage/category differentiation, operator-confirmed About/Contact, and real follow-up evidence. Do not treat the Google rejection as a technical CI defect or promise approval. Website improvements can be designed independently of v0.4.2's support backend; any numeric release-order change requires explicit approval, not an implicit new dependency.
 
 Previously recorded priority (2026-10-14): prepare and implement planned v0.4.2 User Feedback & Retractable Site Chrome after v0.4.1 post-release documentation PR #33 is integrated. Freeze current-repository my-dev-kit architectural evidence and affected specifications, then implement the complete durable reporting vertical slice and bounded header/footer viewport interactions according to the [patch plan](plans/v0.4.2-implementation-plan.md). v0.5.0 remains the next CATALOG expansion release, with its nine-tool scope unchanged. No v0.4.2 implementation or publication is yet claimed.
