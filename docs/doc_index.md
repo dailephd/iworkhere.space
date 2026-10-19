@@ -52,8 +52,9 @@ production-license release gate. The generated positive fixture is within the fr
 
 Latest GitHub Release `v0.4.1` was published 2026-10-11; the annotated tag
 points to the release-time `master` commit
-`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent 2026-10-19
-`master` planning/docs head is `d48e5fcf3d9015db5677d0a7410236a70979db58`.
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent v0.4.3 planning PR #35 merge commit is
+`d48e5fcf3d9015db5677d0a7410236a70979db58`; newer documentation commits
+may advance `master` without changing the numbered release tag.
 The released source contains 18 tools, seven populated categories and 28
 registry-derived sitemap URLs. It includes homepage category sections,
 Calculator keyboard equals, the integrated six-palette appearance system and
