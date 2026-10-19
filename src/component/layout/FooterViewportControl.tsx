@@ -83,6 +83,8 @@ export function FooterViewportControl({ children }: FooterViewportControlProp) {
         function keepFieldAboveFooter() {
             const field = document.activeElement;
             if (!(field instanceof HTMLElement) || footer!.contains(field) || !field.matches(EDITABLE_SELECTOR)) return;
+            // A modal dialog is fixed to the viewport and the page behind it is inert: scrolling the page cannot move the field, only the page.
+            if (field.closest("dialog")) return;
             const fieldBox = field.getBoundingClientRect();
             const overlap = fieldBox.bottom - footer!.getBoundingClientRect().top;
             const room = fieldBox.top - viewport!.offsetTop;

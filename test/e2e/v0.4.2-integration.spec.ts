@@ -170,3 +170,30 @@ for (const footerState of ["expanded", "collapsed"] as const) {
         await expect(page.locator("dialog")).toHaveCount(0);
     });
 }
+
+test("tabbing through the report dialog never scrolls the page behind it, even where its fields sit over the footer", async ({ page }) => {
+    // On a shorter screen the dialog's lower fields overlap the footer; the footer's keyboard avoidance must not move the inert page for them.
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.goto("/tool/merge-pdf");
+    await waitForHydration(page);
+    if (!supportEnabled) {
+        await expect(reportButton(page)).toHaveCount(0);
+        return;
+    }
+    await page.evaluate(() => {
+        const spacer = document.createElement("div");
+        spacer.style.height = "3000px";
+        document.querySelector("main")!.append(spacer);
+    });
+    await page.evaluate(() => window.scrollTo(0, 900));
+    const before = await scrollY(page);
+    await reportButton(page).click();
+    await expect(page.getByRole("dialog", { name: reportName })).toBeVisible();
+    for (let step = 0; step < 16; step += 1) {
+        await page.keyboard.press("Tab");
+        expect(await scrollY(page), `Tab ${step + 1} leaves the page where it was`).toBe(before);
+    }
+    await page.keyboard.press("Escape");
+    await expect(reportButton(page)).toBeFocused();
+    expect(await scrollY(page)).toBe(before);
+});

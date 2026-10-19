@@ -388,6 +388,18 @@ describe("FooterViewportControl", () => {
             expect(window.scrollBy).toHaveBeenCalledWith({ top: 20, behavior: "instant" });
         });
 
+        it("leaves the page alone when the overlapped field is inside a dialog", async () => {
+            await render();
+            const dialog = document.createElement("dialog");
+            const field = document.createElement("input");
+            dialog.append(field);
+            host.append(dialog);
+            footer().getBoundingClientRect = () => ({ top: 450 }) as DOMRect;
+            field.getBoundingClientRect = () => ({ top: 400, bottom: 480 }) as DOMRect;
+            await act(async () => field.focus());
+            expect(window.scrollBy).not.toHaveBeenCalled();
+        });
+
         it("removes its listeners and the offset on unmount", async () => {
             await render();
             await act(async () => changeViewport({ height: 500 }));
