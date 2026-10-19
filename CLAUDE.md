@@ -168,7 +168,7 @@ ToolClientFrame in src/component/tool/ToolClientFrame.tsx syncs tool state with 
 
 ### Theming
 
-Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The theme registry supports system, light, dark, and onedark; theme selection changes color tokens without changing layout.
+Base CSS custom properties live in src/app/global.css, while registry-defined theme overrides live in src/style/theme.css. The legacy `ThemeId` contract retains System, Light, Dark, and One Dark for compatibility. The current appearance system separately supports six named palettes (`original`, `mineral`, `oxblood`, `signal`, `cobalt`, `amber`) with System/Light/Dark modes, plus fixed-dark legacy One Dark. Palette and mode preferences use the existing theme registry/storage/runtime; selecting an appearance changes visual tokens, not layout.
 
 ## Analytics and Observability Policy
 
