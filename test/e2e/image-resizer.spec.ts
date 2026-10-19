@@ -1,9 +1,41 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
 
 const fixturePath = (extension: string) => path.resolve(`test/fixtures/images/resizer-source.${extension}`);
+
+/** The footer is fixed to the viewport. In both states it must stay anchored, never hide an action, and leave natural document scrolling and the processed result intact. */
+async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locator[]) {
+    const footer = page.getByRole("contentinfo");
+    const hrefs = async () => Promise.all(actions.map(action => action.getAttribute("href")));
+    const before = await hrefs();
+    expect(before.every(href => !!href)).toBe(true);
+    for (const state of ["expanded", "collapsed"] as const) {
+        if (state === "collapsed") await footer.getByRole("button", { name: "Hide footer", exact: true }).click();
+        const layout = await page.evaluate(() => {
+            const element = document.querySelector("footer")!, main = document.querySelector("main")!;
+            return { position: getComputedStyle(element).position, anchored: Math.abs(innerHeight - element.getBoundingClientRect().bottom) <= 1,
+                scrollOwner: document.scrollingElement?.tagName, mainOverflow: getComputedStyle(main).overflowY, horizontalOverflow: document.documentElement.scrollWidth > innerWidth };
+        });
+        expect(layout, `${state} footer layout`).toEqual({ position: "fixed", anchored: true, scrollOwner: "HTML", mainOverflow: "visible", horizontalOverflow: false });
+        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        const end = await page.evaluate(() => ({ mainBottom: document.querySelector("main")!.getBoundingClientRect().bottom, footerTop: document.querySelector("footer")!.getBoundingClientRect().top }));
+        expect(end.mainBottom, `${state}: the last content can be brought above the footer`).toBeLessThanOrEqual(end.footerTop + 1);
+        for (const action of actions) {
+            await action.evaluate(element => element.scrollIntoView({ block: "nearest" }));
+            await expect(action).toBeInViewport();
+            const reachable = await action.evaluate(element => {
+                const box = element.getBoundingClientRect(), footerBox = document.querySelector("footer")!.getBoundingClientRect();
+                const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+                return { notBeneathFooter: box.bottom <= footerBox.top + 1, receivesPointer: !!hit && element.contains(hit) };
+            });
+            expect(reachable, `${state}: the action is not obstructed by the footer`).toEqual({ notBeneathFooter: true, receivesPointer: true });
+        }
+    }
+    await footer.getByRole("button", { name: "Show footer", exact: true }).click();
+    expect(await hrefs(), "Changing the footer state leaves the processed result untouched").toEqual(before);
+}
 
 async function selectSource(page: Page, extension = "jpg") {
     await page.getByLabel("Choose image", { exact: true }).setInputFiles(fixturePath(extension));
@@ -118,14 +150,13 @@ test("unlocked dimensions change the aspect ratio and fit the responsive workspa
     expect(await inspectResult(page)).toMatchObject({ width: 35, height: 20 });
     const layout = await page.evaluate(() => {
         const main = document.querySelector("main")!;
-        const footer = document.querySelector("footer")!;
         return { horizontalOverflow: document.documentElement.scrollWidth > innerWidth,
             scrollOwner: document.scrollingElement?.tagName, mainOverflow: getComputedStyle(main).overflowY,
-            footerFollows: footer.getBoundingClientRect().top >= main.getBoundingClientRect().bottom,
             previewsFit: [...document.querySelectorAll("main img")].every(image => image.getBoundingClientRect().width <= main.clientWidth),
         };
     });
-    expect(layout).toEqual({ horizontalOverflow: false, scrollOwner: "HTML", mainOverflow: "visible", footerFollows: true, previewsFit: true });
+    expect(layout).toEqual({ horizontalOverflow: false, scrollOwner: "HTML", mainOverflow: "visible", previewsFit: true });
+    await expectFixedFooterKeepsActionsReachable(page, [page.getByRole("link", { name: "Download resized image" })]);
     await page.getByRole("link", { name: "Download resized image" }).scrollIntoViewIfNeeded();
     await expect(page.getByRole("link", { name: "Download resized image" })).toBeInViewport();
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));

@@ -357,3 +357,11 @@ changes and independent dashboard verify for dashboard changes. See their README
 See docs/OBSERVABILITY.md and docs/ADVERTISING.md. Existing observability facade/providers own telemetry; production transport uses explicit NEXT_PUBLIC_OBSERVABILITY_ENABLED=true and same-origin validated endpoints. Do not send user/file/input/output/full URL/query/hash/identity data. Public ad configuration belongs to module/ad; slots compose through AppShell. NEXT_PUBLIC_ADSENSE_ENABLED=true additionally requires production and external AdSense/CMP readiness. Defaults and automated/container validation never load live ads; never click ads. Root has no fake footer/right banner. Runtime/API/public asset changes require the container gate. No new vendor SDK is authorized.
 
 Diagnostic hotfix: module/observability owns canonical diagnostic.ts serialization, diagnosticText.ts redaction and diagnostic.server.ts structured server sink. /api/log and src/instrumentation.ts persist only into error_diagnostic; metrics stay separate. Explicit additive 002 migration; detailed retention 30 days; independent SELECT-only dashboard. Never dump arbitrary metadata, user input/files, headers/bodies, environment or storage.
+
+Support reporting (v0.4.2 Batch 1): `src/module/support/` owns the anonymous report contract, validation, route context, client
+coordinator, server intake, delivery worker and provider adapters; `src/component/support/` is presentation only; `database/support/` owns the
+separate `support` schema and roles; `/api/support/report` and `/api/support/deliver` are thin adapters; the dashboard adds
+`/support` pages with a SELECT-only `SUPPORT_DASHBOARD_DATABASE_URL`. The sentence above that `/api/metric` alone writes the durable
+metrics database refers to the observability database only; support data is a separate domain and never enters observability,
+analytics, logging, advertising, browser storage or service-worker caches. The entry is gated by `NEXT_PUBLIC_SUPPORT_ENABLED`
+(default off). See docs/architecture.md, database/support/README.md and docs/DEPLOYMENT.md.

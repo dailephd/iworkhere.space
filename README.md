@@ -3,7 +3,9 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Latest numbered GitHub release: v0.4.1 (2026-10-11).** The registry contains 18 tools across
+**Latest numbered GitHub release: v0.4.1 (2026-10-11).** User reporting, a retractable header and a fixed collapsible footer (v0.4.2)
+are implemented in an uncommitted feature worktree and are unreleased; the report entry stays off unless
+`NEXT_PUBLIC_SUPPORT_ENABLED=true`, and external support services are not provisioned. The registry contains 18 tools across
 seven populated categories and produces 28 sitemap URLs, including `/privacy`.
 The homepage groups every tool under its populated category; Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
@@ -43,6 +45,9 @@ npm run lint              # ESLint
 npm run typecheck         # TypeScript type checking
 npm run test              # Vitest tests
 npm run verify            # Aggregate local validation with shared reports
+npm run support:migrate   # Apply database/support migrations (operator credential required)
+npm run test:support-db   # Support database tests (disposable PostgreSQL)
+npm run test:support-e2e  # Support-enabled browser journey (disposable PostgreSQL, provider doubles)
 ```
 
 `npm run dev` checks the local development environment and starts the normal

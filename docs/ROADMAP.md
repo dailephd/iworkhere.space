@@ -521,7 +521,7 @@ inferred from the GitHub Release. The v0.5.0 and v0.6.0 catalogs are unaffected.
 
 ## Version 0.4.2 — User Feedback & Retractable Site Chrome
 
-Status: Planned immediate patch after the published v0.4.1 release. This is a planning decision dated 2026-10-14; no implementation, production migration, provider activation, or deployment is claimed.
+Status: Planned immediate patch after the published v0.4.1 release (planning decision dated 2026-10-14). Implemented locally through Batch 4 in an uncommitted feature worktree; unreleased. Not merged, tagged or published, and no production migration, provider activation, or deployment is claimed. See [project status](project-status.md).
 
 ### Goal
 
@@ -908,7 +908,7 @@ v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         ↓
 v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
-v0.4.2  User Feedback & Retractable Site Chrome (planned patch)
+v0.4.2  User Feedback & Retractable Site Chrome (planned patch; implemented in feature worktree, unreleased)
         ↓
 v0.4.3  Utility Value, Trust & Discoverability (planned product patch)
         ↓
@@ -998,8 +998,10 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
 record, PR #34 integrated the v0.4.2 plan, and PR #35 integrated the v0.4.3
-plan into `master`. Both patches remain planned, not implemented or published.
-Proceed with v0.4.2 first through the existing frozen plan and preflight;
+plan into `master`. Both patches were planned and unpublished at that point. Update
+(2026-10-19): v0.4.2 is now implemented locally in an uncommitted feature worktree and
+remains unreleased; v0.4.3 remains planned, not implemented or published.
+v0.4.2 followed the existing frozen plan and preflight;
 v0.4.3 follows without moving its product-value scope into v0.4.2.
 
 Product-value planning update (2026-10-18): keep v0.4.2 reporting/chrome as its own planned release and add v0.4.3 as the bounded site-value response to the publisher-reported AdSense Low value content rejection. The new [v0.4.3 plan](plans/v0.4.3-implementation-plan.md) defines truthful original file-processing demonstrations, homepage/category differentiation, operator-confirmed About/Contact, and real follow-up evidence. Do not treat the Google rejection as a technical CI defect or promise approval. Website improvements can be designed independently of v0.4.2's support backend; any numeric release-order change requires explicit approval, not an implicit new dependency.

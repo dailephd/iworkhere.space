@@ -112,7 +112,9 @@ test("all twelve palettes retain keyboard focus and geometry under reduced motio
     await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/");
     expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
     const card = page.locator(".catalog-card").first();
-    const baseline = await card.boundingBox();
+    // Document coordinates: focusing the card may legitimately scroll it clear of the fixed footer, which must not read as a geometry change.
+    const documentBox = () => card.evaluate(element => { const box = element.getBoundingClientRect(); return { x: box.x + scrollX, y: box.y + scrollY, width: box.width, height: box.height }; });
+    const baseline = await documentBox();
     for (const [id, label] of palettes) {
         for (const mode of ["Light", "Dark"]) {
             await page.getByRole("button", { name: "Themes", exact: true }).click();
@@ -120,7 +122,7 @@ test("all twelve palettes retain keyboard focus and geometry under reduced motio
             await page.getByRole("radio", { name: mode, exact: true }).check();
             await page.keyboard.press("Escape"); await card.focus();
             await expect(card).toBeFocused();
-            expect(await card.boundingBox(), `${id} ${mode} geometry`).toEqual(baseline);
+            expect(await documentBox(), `${id} ${mode} geometry`).toEqual(baseline);
             const styles = await card.evaluate(element => {
                 const style = getComputedStyle(element);
                 return { animation: style.animationName, transform: style.transform, outline: style.outlineStyle,

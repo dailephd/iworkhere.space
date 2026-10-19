@@ -1,6 +1,8 @@
 import { type ReactNode } from "react"
 import { Footer } from "./Footer"
+import { FooterViewportControl } from "./FooterViewportControl"
 import { Header } from "./Header"
+import { HeaderViewportControl } from "./HeaderViewportControl"
 import type { NavItem } from "./type"
 
 export interface AppShellProps {
@@ -10,6 +12,8 @@ export interface AppShellProps {
     footerBannerSlot?: ReactNode
     leftBannerSlot?: ReactNode
     rightBannerSlot?: ReactNode
+    /** Presentation slot rendered inside the footer; AppShell does not interpret it. */
+    footerActionSlot?: ReactNode
 }
 
 export default function AppShell({
@@ -19,6 +23,7 @@ export default function AppShell({
     footerBannerSlot,
     leftBannerSlot,
     rightBannerSlot,
+    footerActionSlot,
 }: AppShellProps) {
     const desktopGridColumns = leftBannerSlot
         ? rightBannerSlot
@@ -36,9 +41,9 @@ export default function AppShell({
             >
                 Skip to main content
             </a>
-            <header className="border-b border-header-bg bg-header-bg text-header-text">
+            <HeaderViewportControl>
                 <Header navItem={navItem ?? []} />
-            </header>
+            </HeaderViewportControl>
 
             {headerBannerSlot ? (
                 <div className="border-b border-border bg-surface-alt px-5 py-2 sm:px-6">
@@ -67,9 +72,9 @@ export default function AppShell({
                     {footerBannerSlot}
                 </div>
             ) : null}
-            <footer className="border-t border-border bg-footer-bg py-4">
-                <Footer />
-            </footer>
+            <FooterViewportControl>
+                <Footer action={footerActionSlot} />
+            </FooterViewportControl>
         </div>
     )
 }

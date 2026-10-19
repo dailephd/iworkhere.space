@@ -545,3 +545,35 @@ decoding or describing its own output) is not accepted as correctness proof.
 A Playwright bundle-isolation test additionally proves, from emitted production
 scripts and fresh browser contexts, that the `uqr` chunk is delivered only on the
 QR route.
+
+### Support reporting (v0.4.2 Batch 1)
+
+Commands: `npm run test` (domain, API, provider, worker, client component, shell and privacy tests); `npm run test:support-db`
+(disposable PostgreSQL: migrations twice, idempotency, atomic rollback, concurrency, claiming and recovery, backoff and dead letter,
+retention, constraints, role privileges with real `SET ROLE`, and the dashboard's actual query plans); `npm run test:support-e2e`
+(support-enabled production build, disposable PostgreSQL behind a loopback Neon-HTTP shim and least-privilege roles, isolated
+Turnstile/GitHub/Resend substitutes, the Playwright journey in `test/e2e/support-report.spec.ts` on desktop and mobile, then the
+dashboard's real query layer as the SELECT-only role); dashboard `npm run verify` (query read-only checks, escaped rendering, no route
+handlers, credential separation).
+
+`support-report.spec.ts` is excluded from the default `npm run test:e2e` because it needs a support-enabled build, disposable
+storage and provider substitutes; `E2E_SUPPORT_RUN=true` (set by `test:support-e2e`) includes it. Provider substitutes validate the
+contract and record payloads (asserting no narrative or address leaves) but are not evidence of live GitHub, Resend or Turnstile
+delivery, and a disposable database is not evidence of production schema or role provisioning.
+
+Test layers are distinct evidence and must not be conflated: public-mode browser tests (`npm run test:e2e`, reporting disabled; the
+header, footer and `v0.4.2-integration` specs there assert that no report entry or dialog exists); support-enabled browser tests
+(`npm run test:support-e2e` runs only `support-report.spec.ts`; the header, footer and integration specs switch to real-`SupportDialog`
+scenarios when run with `E2E_SUPPORT_RUN=true` against a support-enabled build, which that command does not package);
+disposable-PostgreSQL integration (`npm run test:support-db`); provider test doubles; dashboard tests (dashboard `npm run verify`);
+container tests (`npm run test:container`); and actual external-provider acceptance and production deployment verification, neither
+of which has been performed.
+
+Recorded v0.4.2 evidence is historical by stage. Batch 1 reported 1,508 unit tests, 85 support-database assertions, 24 dedicated
+support browser checks and passing dashboard and container validation. The Batch 4 public-mode Playwright run reported 594 passed,
+0 failed and 2 skipped; the two skips are existing advertising-enabled scenarios unavailable in the public configuration and are not
+counted as passes. Neither is a count for a later source state. Footer and header behavior is verified in desktop and mobile headless
+Chromium, including simulated `visualViewport` changes, fixed positioning, clearance, preference persistence and keyboard focus.
+Physical iOS and Android software-keyboard and safe-area behavior is not independently verified. Container runs have shown
+intermittent `ERR_NO_BUFFER_SPACE` failures that passed on later runs; this is retained as known flake evidence and has not been
+shown to be permanently fixed.

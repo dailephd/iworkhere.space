@@ -37,11 +37,11 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
 
         const geometry = await page.evaluate(() => {
             const main = document.querySelector("main")!;
-            const footer = document.querySelector("footer")!;
             const grid = main.parentElement!;
             const navigation = document.querySelector('nav[aria-label="Primary navigation"]')!;
             const header = document.querySelector("header")!;
-            const shell = document.querySelector("body > div:has(>header)")!;
+            // The header sits inside its viewport-control footprint, so the shell is the body child that contains the main region.
+            const shell = main.closest("body > div")!;
             const style = getComputedStyle(main);
             const gridStyle = getComputedStyle(grid);
             const shellStyle = getComputedStyle(shell);
@@ -52,7 +52,6 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
                 mainClientHeight: main.clientHeight,
                 mainScrollHeight: main.scrollHeight,
                 horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
-                footerFollowsMain: footer.getBoundingClientRect().top >= main.getBoundingClientRect().bottom,
                 desktopGridTrackCount: gridStyle.gridTemplateColumns.split(" ").length,
                 navigationInsideHeader: header.contains(navigation),
             };
@@ -62,13 +61,19 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         expect(geometry.shellOverflowY).toBe("visible");
         expect(geometry.mainScrollHeight).toBeLessThanOrEqual(geometry.mainClientHeight);
         expect(geometry.horizontalOverflow).toBe(false);
-        expect(geometry.footerFollowsMain).toBe(true);
         if (desktop) {
             expect(geometry.desktopGridTrackCount).toBe(1);
             expect(geometry.navigationInsideHeader).toBe(true);
         }
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         await expect(page.getByRole("contentinfo")).toBeInViewport();
+        // The footer is fixed to the viewport bottom, and at the end of the document the main region ends above it.
+        const fixedFooter = await page.evaluate(() => {
+            const footer = document.querySelector("footer")!.getBoundingClientRect();
+            return { position: getComputedStyle(document.querySelector("footer")!).position, anchored: Math.abs(window.innerHeight - footer.bottom) <= 1,
+                mainEndsAboveFooter: document.querySelector("main")!.getBoundingClientRect().bottom <= footer.top + 1 };
+        });
+        expect(fixedFooter).toEqual({ position: "fixed", anchored: true, mainEndsAboveFooter: true });
         const scroll = await page.evaluate(() => ({ y: window.scrollY, maximum: document.documentElement.scrollHeight - window.innerHeight }));
         expect(scroll.y).toBeGreaterThanOrEqual(Math.max(0, scroll.maximum - 1));
         await navigation.getByRole("link", { name: "All tools", exact: true }).click();

@@ -13,7 +13,7 @@ export default function PrivacyPage() {
         <article className="max-w-3xl space-y-8 text-text [&_p]:leading-7">
             <header className="space-y-2">
                 <h1 className="text-2xl font-semibold">Privacy Policy</h1>
-                <p className="text-sm text-text-muted">Last updated: October 8, 2026</p>
+                <p className="text-sm text-text-muted">Last updated: October 19, 2026</p>
                 <p>This policy explains information processing on iworkhere.space, including its browser tools and the services used to operate and improve the website.</p>
             </header>
 
@@ -35,6 +35,13 @@ export default function PrivacyPage() {
                 <p>Technical logs sent to /api/log and server error reports help diagnose failures. They can include timestamps, page paths, tool identifiers, bounded error messages and stack traces, error grouping identifiers, browser user-agent, viewport dimensions, pixel ratio, online and visibility status, and technical runtime or deployment context. Messages and stack locations are bounded and redacted to reduce exposure of secrets; arbitrary input and file data are excluded.</p>
                 <p>Accepted measurements and logs are processed by our hosting service, Vercel. When database persistence is enabled, selected measurement fields and diagnostic records are stored in Neon. Application telemetry excludes IP addresses, cookies, authentication data, entered content, files, generated output and full page URLs with query strings or fragments. Network and hosting providers still process connection information, including IP addresses, to deliver and protect the service.</p>
                 <p>Our database maintenance removes raw measurement records older than 90 days after their daily aggregation is complete; unaggregated records are retained until processed. Daily aggregate history is retained indefinitely. Detailed database diagnostics are removed after 30 days. These database rules do not set the retention of hosting logs or Vercel Analytics, which are governed by the respective service’s configuration and policies.</p>
+            </section>
+
+            <section className="space-y-3">
+                <h2 className="text-xl font-semibold">Problem reports and suggestions</h2>
+                <p>When the report form is available, you can send a voluntary report or suggestion from any page. It asks for a category, the affected tool or area and a description, and can include optional expected-behavior or example text. An email address is stored only if you enter one and tick the box that allows us to contact you. We attach the page path without query strings or fragments. We do not ask for files, screenshots, tool inputs or results, and the form asks you not to include passwords, secrets or private records.</p>
+                <p>Reports are sent to a dedicated endpoint, not to the measurement and diagnostic services described above, and are stored separately in our Neon database. We open a private tracker entry in GitHub and send an operator notification through Resend; both contain only the report reference, category, tool or page and a secure triage link. Your report text and email address are not copied into GitHub or into the operator notification. If you provide an address and consent, we send a receipt through Resend. Cloudflare Turnstile checks that a submission is not automated; we verify its token and do not store it with your report.</p>
+                <p>Our retention targets are to remove report text 180 days after it is received and to remove contact addresses no later than 90 days after our last correspondence with you. These targets are not yet a completed deletion practice; we activate removal separately and will update this page when it is in effect. Read <a className={linkStyle} href="https://www.cloudflare.com/privacypolicy/">Cloudflare’s Privacy Policy</a>, <a className={linkStyle} href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s Privacy Statement</a> and <a className={linkStyle} href="https://resend.com/legal/privacy-policy">Resend’s Privacy Policy</a> for information about these providers.</p>
             </section>
 
             <section className="space-y-3">

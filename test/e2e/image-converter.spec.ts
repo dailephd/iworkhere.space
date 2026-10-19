@@ -1,7 +1,39 @@
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
+
+/** The footer is fixed to the viewport. In both states it must stay anchored, never hide an action, and leave natural document scrolling and the processed result intact. */
+async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locator[]) {
+    const footer = page.getByRole("contentinfo");
+    const hrefs = async () => Promise.all(actions.map(action => action.getAttribute("href")));
+    const before = await hrefs();
+    expect(before.every(href => !!href)).toBe(true);
+    for (const state of ["expanded", "collapsed"] as const) {
+        if (state === "collapsed") await footer.getByRole("button", { name: "Hide footer", exact: true }).click();
+        const layout = await page.evaluate(() => {
+            const element = document.querySelector("footer")!, main = document.querySelector("main")!;
+            return { position: getComputedStyle(element).position, anchored: Math.abs(innerHeight - element.getBoundingClientRect().bottom) <= 1,
+                scrollOwner: document.scrollingElement?.tagName, mainOverflow: getComputedStyle(main).overflowY, horizontalOverflow: document.documentElement.scrollWidth > innerWidth };
+        });
+        expect(layout, `${state} footer layout`).toEqual({ position: "fixed", anchored: true, scrollOwner: "HTML", mainOverflow: "visible", horizontalOverflow: false });
+        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        const end = await page.evaluate(() => ({ mainBottom: document.querySelector("main")!.getBoundingClientRect().bottom, footerTop: document.querySelector("footer")!.getBoundingClientRect().top }));
+        expect(end.mainBottom, `${state}: the last content can be brought above the footer`).toBeLessThanOrEqual(end.footerTop + 1);
+        for (const action of actions) {
+            await action.evaluate(element => element.scrollIntoView({ block: "nearest" }));
+            await expect(action).toBeInViewport();
+            const reachable = await action.evaluate(element => {
+                const box = element.getBoundingClientRect(), footerBox = document.querySelector("footer")!.getBoundingClientRect();
+                const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+                return { notBeneathFooter: box.bottom <= footerBox.top + 1, receivesPointer: !!hit && element.contains(hit) };
+            });
+            expect(reachable, `${state}: the action is not obstructed by the footer`).toEqual({ notBeneathFooter: true, receivesPointer: true });
+        }
+    }
+    await footer.getByRole("button", { name: "Show footer", exact: true }).click();
+    expect(await hrefs(), "Changing the footer state leaves the processed result untouched").toEqual(before);
+}
 
 const fixturePath = (extension: string) => path.resolve(extension === "alpha-webp"
     ? "test/fixtures/images/converter-transparent.webp" : `test/fixtures/images/compressor-source.${extension}`);
@@ -180,7 +212,7 @@ for (const failure of ["context", "encoding", "mime"] as const) {
     });
 }
 
-test("completed workflow preserves document flow, footer reachability and contained previews", async ({ page }, testInfo) => {
+test("completed workflow preserves document flow, a fixed footer that hides no action, and contained previews", async ({ page }, testInfo) => {
     await page.goto("/tool/image-converter"); await selectSource(page, "png");
     await page.getByLabel("Quality", { exact: true }).focus();
     await page.getByLabel("Quality", { exact: true }).press("ArrowLeft");
@@ -188,15 +220,15 @@ test("completed workflow preserves document flow, footer reachability and contai
     await convert(page);
     await expect(page.getByRole("img", { name: "Converted image preview" })).toBeVisible();
     const layout = await page.getByRole("region", { name: "Source image" }).evaluate(source => {
-        const root = source.parentElement!, main = source.closest("main")!, footer = document.querySelector("footer")!;
+        const root = source.parentElement!, main = source.closest("main")!;
         return { height: document.documentElement.scrollHeight, viewport: innerHeight, width: document.documentElement.scrollWidth, viewportWidth: innerWidth,
             documentOwner: document.scrollingElement === document.documentElement,
             mainOverflow: getComputedStyle(main).overflowY, workspaceOverflow: getComputedStyle(root).overflowY,
-            footerFollows: footer.getBoundingClientRect().top >= root.getBoundingClientRect().bottom,
             previewsFit: [...root.querySelectorAll("img")].every(image => image.getBoundingClientRect().width <= root.clientWidth) };
     });
     expect(layout.width).toBeLessThanOrEqual(layout.viewportWidth);
-    expect(layout.documentOwner).toBe(true); expect(layout.footerFollows).toBe(true); expect(layout.previewsFit).toBe(true);
+    expect(layout.documentOwner).toBe(true); expect(layout.previewsFit).toBe(true);
+    await expectFixedFooterKeepsActionsReachable(page, [page.getByRole("link", { name: "Download converted image" })]);
     expect(["auto", "scroll", "hidden"]).not.toContain(layout.mainOverflow);
     expect(["auto", "scroll", "hidden"]).not.toContain(layout.workspaceOverflow);
     if (testInfo.project.name === "mobile-chromium") expect(layout.height, "Actual completed mobile state must naturally overflow").toBeGreaterThan(layout.viewport);

@@ -28,7 +28,9 @@ CURRENT_RELEASE_CATALOG: 18 registered tools, seven populated categories,
 release had 27 URLs; v0.4.1 retains all tool URLs and adds the Converters
 category with the permanent `/category/everyday` redirect.
 
-NEXT_PLANNED_PRODUCT_VERSION: `v0.4.2 — User Feedback & Retractable Site Chrome`.
+NEXT_PLANNED_PRODUCT_VERSION: `v0.4.2 — User Feedback & Retractable Site Chrome`
+(implemented locally in an uncommitted feature worktree and unreleased; see
+"v0.4.2 implementation status — 2026-10-19" below).
 FOLLOWING_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
 Its implementation plan is not frozen. Planner-owned specifications and a
@@ -52,6 +54,31 @@ The next action is current-repository my-dev-kit retrieval, affected specificati
 preflight and the bounded Batch A reporting-vertical-slice implementation prompt.
 These merged planning documents do not prove the product patch was implemented. The next catalog expansion remains frozen v0.5.0, not replaced by this
 patch. The historical v0.4.1 release status above remains unchanged.
+
+## v0.4.2 implementation status — 2026-10-19
+
+PUBLISHED_BASELINE: v0.4.1 (GitHub Release 2026-10-11); root `package.json` version is still `0.4.1`.
+CURRENT_UNRELEASED_IMPLEMENTATION: v0.4.2 Batches 1-4 exist as uncommitted tracked and untracked files in the feature worktree
+(branch `feature/v0.4.2-user-reporting`, HEAD `fa2ca322864b220b41a2016570b85b17cc8763ae`, which does not contain them). They are not
+committed, merged to `master`, tagged, published as a GitHub Release or verified as deployed production behavior.
+
+Implemented locally: the anonymous report vertical slice (global entry, accessible dialog, nine categories, strict API with a 16 KiB
+cap, origin and Turnstile checks, durable idempotent `support` schema, independent outbox jobs with leasing, retry and dead-letter,
+private GitHub issue and Resend adapters, protected dashboard `/support` views, dedicated database roles, retention and deletion
+functions); the retractable header; and the fixed, collapsible footer. Contracts live in [API](API.md), [SCHEMA](SCHEMA.md),
+[architecture](architecture.md), [DESIGN](DESIGN.md) and [database/support/README.md](../database/support/README.md).
+
+Validation recorded locally (evidence by stage, not a combined count for the final source): Batch 1 reported 1,508 unit tests,
+85 support-database assertions, 24 dedicated support browser checks and passing dashboard and container validation. The Batch 4
+public-mode Playwright run reported 594 passed, 0 failed and 2 skipped; the skips are existing advertising-enabled scenarios that
+the public test configuration cannot exercise. Earlier container runs showed intermittent `ERR_NO_BUFFER_SPACE` failures before later
+passing; the cause is not shown to be fixed. See [TESTING](TESTING.md).
+
+PENDING_OPERATIONAL_ACTIVATION (none verified): Neon support schema and role provisioning; private GitHub support repository and token;
+verified Resend sender; production Turnstile keys; Vercel Firewall rules for `/api/support/report`; a 15-minute delivery schedule
+(`vercel.json` still schedules only daily observability maintenance); dashboard support credential and Vercel Authentication check;
+legal approval of `/privacy` copy and retention (`SUPPORT_RETENTION_ENABLED` defaults off); a synthetic end-to-end report; and
+physical iOS/Android keyboard and safe-area checks. The public report entry stays off unless `NEXT_PUBLIC_SUPPORT_ENABLED=true`.
 
 ## v0.4.3 product-value planning — 2026-10-18
 

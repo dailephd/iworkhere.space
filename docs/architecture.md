@@ -76,6 +76,52 @@ protected dashboard project without separate authorization.
 This document defines the architectural boundaries of the project.
 Any generated code MUST follow this structure.
 
+## Anonymous user reporting (v0.4.2 Batch 1)
+
+Status: implemented in the uncommitted v0.4.2 feature worktree; not released, deployed or live-verified. The public entry is gated by the build-time flag
+`NEXT_PUBLIC_SUPPORT_ENABLED=true` (default off) and needs the external provisioning listed in [Deployment](DEPLOYMENT.md).
+
+Support is a domain independent of observability. Report text and contact details never enter `/api/log`, `/api/metric`, Vercel
+Web Analytics, the analytics/logging facades, advertising, browser storage or service-worker caches. `/api/metric` remains the only
+route that writes the observability database; `/api/support/report` writes only the separate `support` schema.
+
+Public write path: `RootLayout` (Server Component) builds a serializable `{ id, slug, name }` projection of the registry and passes
+the client `SupportCoordinator` through `AppShell.footerActionSlot` to `Footer.action`. AppShell and Footer receive only a `ReactNode`
+and know nothing about tools, routes or reporting. The coordinator (`src/module/support/`) reads the pathname with `usePathname`,
+derives the default tool from the projection (Site-wide for general or unknown routes, never an invented tool), owns submission
+state, and renders the presentational `SupportDialog` (`src/component/support/`) in a portal using a native modal `<dialog>`.
+`POST /api/support/report` is a thin adapter over `submission.server.ts`, which checks origin, reads at most 16 KiB, validates the
+exact versioned contract with the registry (tool id and allowlisted pathname are re-validated on the server), verifies the Turnstile
+token, then calls `persistence.server.ts`, which invokes the single atomic `support.submit_report()` function.
+
+Private delivery path: `GET|POST /api/support/deliver` (Bearer `CRON_SECRET`, timing-safe) -> `delivery.server.ts` -> lease-based
+outbox -> `github.server.ts` (private issue, reconcile-before-create) and `resend.server.ts` (operator email and optional consented
+receipt). Provider calls never run inside a database transaction and a provider failure never removes an accepted report.
+
+Viewport chrome (v0.4.2 Batches 2-4): `AppShell` (a Server Component) wraps the single server-rendered header in the client
+`HeaderViewportControl` and the single `Footer` in the client `FooterViewportControl` (both in `src/component/layout/`; the footer
+preference helper is `footerPreference.ts`, applied pre-paint from `RootLayout`). The header is an in-flow element that becomes a fixed
+overlay on demand; the footer is one semantic fixed region with a persisted expanded/collapsed preference, and the footer advertising
+slot stays in normal flow outside it. Neither wrapper knows tools, routes or reporting; details and verification limits are in
+[DESIGN.md](DESIGN.md).
+
+Protected read path: the existing independent `dashboard/` adds `/support` and `/support/[id]` using `SUPPORT_DASHBOARD_DATABASE_URL`
+(SELECT-only on three views). It adds no route handlers or write privileges, and the observability pages keep their own credential.
+
+| Concern | Owner |
+| --- | --- |
+| Request/receipt contract, taxonomy, validation, context | `src/module/support/{contract,taxonomy,validation,context}.ts` (isomorphic, pure) |
+| Tool identity | `src/module/tool/registry.ts` only; `projection.ts` exposes `id`, `slug`, `name` |
+| Client state | `SupportCoordinator.tsx`, `submission.client.ts`, `TurnstileChallenge.tsx` |
+| Dialog presentation | `src/component/support/SupportDialog.tsx` |
+| Server intake | `submission.server.ts`, `persistence.server.ts`, `turnstile.server.ts`, `neon.server.ts` |
+| Delivery | `delivery.server.ts`, `github.server.ts`, `resend.server.ts`, `provider.server.ts` |
+| Storage | `database/support/` (owner, roles, README) |
+| Dashboard | `dashboard/src/{lib/support*.ts,component/SupportView.tsx,app/support}` |
+
+`neon.server.ts` is the only constructor of support connections. A loopback-only `SUPPORT_DATABASE_HTTP_ENDPOINT` override exists
+so a disposable local database can stand behind the Neon HTTP driver in tests; any non-loopback value is ignored.
+
 ## Deployment Runtime Boundary
 
 Production packaging follows `Next.js standalone server → Docker runtime →

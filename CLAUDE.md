@@ -322,3 +322,11 @@ public and all public automated validation persistence-disabled. Run isolated
 test:observability-db and dashboard verify for their respective changes.
 
 See docs/OBSERVABILITY.md and docs/ADVERTISING.md. Existing facade/providers own telemetry; explicit public enable flags default off. No user/file/input/output/full URL/query/hash/identity telemetry. Central module/ad configuration supplies top/right conditional slots through AppShell, no fake footer/right banner. Live ad activation requires production and external AdSense/CMP readiness. Automated tests never request/click live ads; runtime/API/public asset changes require the container gate.
+
+Support reporting (v0.4.2 Batch 1): `src/module/support/` owns the anonymous report contract, validation, route context, client
+coordinator, server intake, delivery worker and provider adapters; `src/component/support/` is presentation only; `database/support/` owns the
+separate `support` schema and roles; `/api/support/report` and `/api/support/deliver` are thin adapters; the dashboard adds
+`/support` pages with a SELECT-only `SUPPORT_DASHBOARD_DATABASE_URL`. The sentence above that `/api/metric` alone writes the durable
+metrics database refers to the observability database only; support data is a separate domain and never enters observability,
+analytics, logging, advertising, browser storage or service-worker caches. The entry is gated by `NEXT_PUBLIC_SUPPORT_ENABLED`
+(default off). See docs/architecture.md, database/support/README.md and docs/DEPLOYMENT.md.

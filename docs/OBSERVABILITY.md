@@ -160,3 +160,11 @@ Private dashboard adds a fifth read-only snapshot query for latest 25 diagnostic
 `vercelWebAnalytics.client.ts` accepts only page views, reconstructs HTTP(S) or root-relative URLs, removes search/hash, and returns only type and URL. Malformed inputs, credential-bearing URLs, non-HTTP schemes and custom events return null. No public private-route denylist is needed: the protected dashboard is a separate application. No tool/file/input/output fields are attached.
 
 Focused unit tests own this policy and the invisible wrapper. `npx tsx script/vercelAnalyticsSmoke.ts` creates a separate copied production build with the flag true, runs the actual SDK and official vendor runtime in fresh desktop/mobile contexts with service workers blocked, and fulfills intake locally. It checks initial/client-navigation page views, query/hash and filename privacy, and browser diagnostics. The runtime ignores automation by default; this proof overrides webdriver detection only in its isolated test context. It records runtime source/hash and requests in a unique report. It proves local behavior, not live Vercel receipt.
+
+## Support reports are outside observability (v0.4.2 Batch 1)
+
+User reports (`/api/support/*`, `src/module/support`, `database/support`) are a separate domain. Report text, contact details and
+challenge tokens are never sent through `/api/log`, `/api/metric`, the analytics or logging facades, Vercel Web Analytics or the
+observability database, and the observability writer and dashboard roles hold no support privilege. Support code logs only fixed
+`support-operation` objects (`operation`, `code`). The observability dashboard pages keep `OBSERVABILITY_DASHBOARD_DATABASE_URL`;
+the `/support` pages use `SUPPORT_DASHBOARD_DATABASE_URL`. See [database/support/README.md](../database/support/README.md).

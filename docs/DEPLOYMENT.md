@@ -259,3 +259,43 @@ Playwright server and PDF foundation validation also force false. Changing
 runtime environment alone cannot activate an already-built browser bundle.
 
 `npx tsx script/vercelAnalyticsSmoke.ts` builds an isolated copied project under `.my-dev-kit-workflow/` and writes unique evidence under `test-report/`. It does not overwrite the normal `.next` build or contact live intake. Image/document processing remains browser-local while explicitly enabled aggregate page views may use the network.
+
+## Support reporting (v0.4.2 Batch 1) — provisioning and activation
+
+Status: code implemented in the uncommitted v0.4.2 feature worktree (unreleased, not merged or deployed). **Nothing below is provisioned, deployed or verified against a live provider.**
+Automated evidence uses a disposable PostgreSQL and isolated provider substitutes only.
+
+| Name | Owner / visibility | Required when | Off / fail-closed behavior | Secret? |
+| --- | --- | --- | --- | --- |
+| `NEXT_PUBLIC_SUPPORT_ENABLED` | Root / public build-time | The report entry is intentionally shown | Unset/false renders no entry, coordinator or registry projection | No |
+| `NEXT_PUBLIC_SUPPORT_TURNSTILE_SITE_KEY` | Root / public build-time | Entry enabled | Absent key disables submission with a visible notice | No |
+| `SUPPORT_TURNSTILE_SECRET` | Root / server-only | Intake | Missing secret answers `503`; no bypass exists | Yes |
+| `SUPPORT_DATABASE_URL` | Root / server-only | Intake | Missing answers `503`, no receipt | Yes |
+| `SUPPORT_WORKER_DATABASE_URL` | Root / server-only | Delivery worker | Missing answers `503` | Yes |
+| `SUPPORT_GITHUB_TOKEN`, `SUPPORT_GITHUB_REPOSITORY` | Root / server-only | Private issue creation | Jobs fail `misconfigured` and retry; a public repository or `dailephd/iworkhere.space` is refused | Token: yes |
+| `SUPPORT_RESEND_API_KEY`, `SUPPORT_EMAIL_FROM`, `SUPPORT_OPERATOR_EMAIL` | Root / server-only | Email | Jobs fail `misconfigured` and retry | Key: yes |
+| `SUPPORT_DASHBOARD_BASE_URL` | Root / server-only | Triage links | Notifications say the link is not configured; must be `https` | No |
+| `SUPPORT_GLOBAL_LIMIT` | Root / server-only | Optional | Default 120 reports per 10 minutes | No |
+| `SUPPORT_RETENTION_ENABLED` | Root / server-only | Only after retention approval | Anything but `true` performs no purge | No |
+| `CRON_SECRET` | Root / server-only | Worker invocation | Missing means every worker call is `401` | Yes |
+| `SUPPORT_DASHBOARD_DATABASE_URL` | Dashboard / server-only | `/support` pages | Missing shows the unavailable state | Yes |
+| `SUPPORT_MIGRATION_DATABASE_URL` | Operator shell | `npm run support:migrate` | Not an application setting | Yes |
+| `SUPPORT_TURNSTILE_VERIFY_URL`, `SUPPORT_GITHUB_API_URL`, `SUPPORT_RESEND_API_URL`, `SUPPORT_DATABASE_HTTP_ENDPOINT` | Test / isolated environments only | Never in production | Provider URLs default to Cloudflare, GitHub and Resend; the database override is honoured only for an `http` loopback address | No |
+
+Provisioning checklist (operator, external, not done by this change): a Neon support schema applied with `npm run support:migrate` plus
+`database/support/roles.sql` and per-role credentials; a separately provisioned **private** GitHub support repository and a restricted
+token; a verified Resend sender/domain and token; Cloudflare Turnstile site and secret keys; Vercel Firewall rate and bot rules for
+`/api/support/report` (the application stores no IP address and offers only a global ceiling); `CRON_SECRET`; Vercel Authentication on
+the dashboard project; and a reviewed `/privacy` disclosure and retention decision. The `/privacy` page in the feature worktree carries
+draft "Problem reports and suggestions" copy, but it has not received legal approval and its stated retention targets are not an
+active deletion practice (`SUPPORT_RETENTION_ENABLED` defaults off); that approval is a separate unresolved activation requirement.
+Do not set `NEXT_PUBLIC_SUPPORT_ENABLED=true` in production before these exist.
+
+**Scheduling blocker.** `vercel.json` schedules only the daily observability maintenance (`15 2 * * *`). The plan targets support
+delivery within 15 minutes in normal service. This change deliberately adds no schedule: sub-daily cron availability depends on the
+Vercel plan, which is not verifiable from the repository. The hosting or queue decision (a plan that allows a 5-minute cron, or an
+external scheduler calling `GET /api/support/deliver` with the bearer secret) must be made and verified before launch. With only a
+daily schedule, delivery is not within 15 minutes and the target must not be claimed.
+
+Production acceptance still required: one synthetic report traced from the public form -> receipt id -> support database row ->
+outbox -> private GitHub issue -> Resend notification -> protected dashboard, including one deliberate recoverable provider failure.
