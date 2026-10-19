@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { getConsoleFailure } from "./support/browserDiagnostic";
 import { test, expect } from "./support/fixture";
 
 // These scenarios exercise the real header, footer and SupportDialog together. They need a support-enabled build (see footer-retraction.spec.ts);
@@ -21,8 +22,13 @@ test.beforeEach(async ({ context }) => {
 
 const insideChrome = (page: Page) => page.evaluate(() => !!document.activeElement?.closest("header, footer"));
 
+// Adding content to the page before React has hydrated it reads as a hydration mismatch (React error #418), and a click before then has no handler.
+// Waiting for the hydrated tree lets the scenarios edit the page without hiding a real mismatch.
+const waitForHydration = (page: Page) => page.waitForFunction(() => ["main", "footer"].every(selector => Object.keys(document.querySelector(selector)!).some(key => key.startsWith("__reactFiber"))));
+
 async function openScrolledPage(page: Page) {
     await page.goto("/discover");
+    await waitForHydration(page);
     await page.evaluate(() => {
         const spacer = document.createElement("div");
         spacer.style.height = "4000px";
@@ -32,9 +38,35 @@ async function openScrolledPage(page: Page) {
     await expect(showNavigation(page)).toBeVisible();
 }
 
+// The shared fixture already fails any test that logs a page error or hydration diagnostic; these scenarios additionally assert the load itself is clean
+// for a fresh visitor and for each saved footer preference, and that nothing was duplicated by hydration.
+for (const saved of [undefined, "expanded", "collapsed"] as const) {
+    test(`hydrates without errors or duplicated chrome with ${saved ?? "no"} saved footer preference`, async ({ page }) => {
+        const diagnostics: string[] = [];
+        page.on("pageerror", error => diagnostics.push(`pageerror: ${error.message}`));
+        page.on("console", message => {
+            const failure = getConsoleFailure({ type: message.type(), text: message.text() });
+            if (failure) diagnostics.push(failure);
+        });
+        if (saved) await page.addInitScript(value => localStorage.setItem("footer-preference", JSON.stringify(value)), saved);
+        await page.goto("/discover");
+        await waitForHydration(page);
+
+        if (saved === "collapsed") await expect(page.locator("html")).toHaveAttribute("data-footer", "collapsed");
+        else await expect(page.locator("html")).not.toHaveAttribute("data-footer", "collapsed");
+        await expect(saved === "collapsed" ? showFooter(page) : hideFooter(page)).toBeVisible();
+        await expect(page.locator("header")).toHaveCount(1);
+        await expect(page.locator("footer")).toHaveCount(1);
+        await expect(page.locator("dialog")).toHaveCount(0);
+        await expect(reportButton(page)).toHaveCount(supportEnabled ? 1 : 0);
+        expect(diagnostics).toEqual([]);
+    });
+}
+
 for (const footerState of ["expanded", "collapsed"] as const) {
     test(`header, ${footerState} footer and the real report dialog work together`, async ({ page }) => {
         await page.goto("/discover");
+        await waitForHydration(page);
         if (footerState === "collapsed") {
             await hideFooter(page).click();
             await expect(showFooter(page)).toBeVisible();
@@ -104,6 +136,7 @@ for (const footerState of ["expanded", "collapsed"] as const) {
 
     test(`the ${footerState} footer controls cannot take focus while the report dialog is open, and the page does not move`, async ({ page }) => {
         await page.goto("/tool/merge-pdf");
+        await waitForHydration(page);
         if (!supportEnabled) {
             await expect(reportButton(page)).toHaveCount(0);
             return;

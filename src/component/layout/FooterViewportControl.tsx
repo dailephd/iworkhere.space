@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import {
     readFooterState,
     subscribeFooterState,
@@ -27,11 +27,26 @@ function readServerState(): FooterState {
     return "expanded";
 }
 
+/** Publishes the footer's occupied height as the shell clearance; `applied` holds the last published height, or -1 before the first. */
+function applyFooterClearance(footer: HTMLElement, applied: { current: number }) {
+    const root = document.documentElement;
+    const height = footer.getBoundingClientRect().height;
+    if (height === applied.current) return;
+    // The footer is fixed, so the document height has not changed yet: this reads where the reader was before the change.
+    const atEnd = root.scrollTop + window.innerHeight >= root.scrollHeight - END_TOLERANCE;
+    const adjusting = applied.current >= 0;
+    applied.current = height;
+    root.style.setProperty(CLEARANCE_PROPERTY, `${height}px`);
+    // A reader parked at the end of the page stays at the end instead of ending up beneath a taller footer.
+    if (adjusting && atEnd) window.scrollTo({ top: root.scrollHeight - window.innerHeight, behavior: "instant" });
+}
+
 export function FooterViewportControl({ children }: FooterViewportControlProp) {
     const contentId = useId();
     const footerRef = useRef<HTMLElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const toggleRef = useRef<HTMLButtonElement>(null);
+    const appliedClearance = useRef(-1);
     const state = useSyncExternalStore(subscribeFooterState, readFooterState, readServerState);
 
     // Adopts the saved preference when the pre-paint script did not run.
@@ -39,26 +54,23 @@ export function FooterViewportControl({ children }: FooterViewportControlProp) {
         syncFooterStateFromStorage();
     }, []);
 
+    // A toggle changes the footer's height in the same commit, so the clearance follows before the task ends. Waiting for the observer
+    // would leave the footer and the spacer disagreeing until the next rendering step, which a script or a slow frame can observe.
+    useLayoutEffect(() => {
+        const footer = footerRef.current;
+        if (footer) applyFooterClearance(footer, appliedClearance);
+    }, [state]);
+
     // The shell's one clearance value follows the footer's actual occupied height, in either state and at any width.
     useEffect(() => {
         const footer = footerRef.current;
         if (!footer || typeof ResizeObserver === "undefined") return;
         const root = document.documentElement;
-        let applied = -1;
-        const observer = new ResizeObserver(() => {
-            const height = footer.getBoundingClientRect().height;
-            if (height === applied) return;
-            // The footer is fixed, so the document height has not changed yet: this reads where the reader was before the change.
-            const atEnd = root.scrollTop + window.innerHeight >= root.scrollHeight - END_TOLERANCE;
-            const adjusting = applied >= 0;
-            applied = height;
-            root.style.setProperty(CLEARANCE_PROPERTY, `${height}px`);
-            // A reader parked at the end of the page stays at the end instead of ending up beneath a taller footer.
-            if (adjusting && atEnd) window.scrollTo({ top: root.scrollHeight - window.innerHeight, behavior: "instant" });
-        });
+        const observer = new ResizeObserver(() => applyFooterClearance(footer, appliedClearance));
         observer.observe(footer);
         return () => {
             observer.disconnect();
+            appliedClearance.current = -1;
             root.style.removeProperty(CLEARANCE_PROPERTY);
         };
     }, []);

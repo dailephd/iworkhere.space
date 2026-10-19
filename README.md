@@ -79,7 +79,7 @@ GitHub Actions keeps six validation jobs independent:
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
-- `e2e.yaml` — `npm run test:e2e` (production browser gate)
+- `e2e.yaml` — `npm run test:e2e` (production browser gate), plus a support-enabled job for the header, footer and report-dialog scenarios
 - `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
 Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the

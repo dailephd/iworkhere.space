@@ -39,6 +39,11 @@ describe("FooterViewportControl", () => {
         resizeCallback = undefined;
         resizeDisconnect = vi.fn<() => void>();
         footerHeight = 56;
+        // jsdom has no layout: the footer reports the scripted height from the moment it mounts, as a browser measures it.
+        const measure = HTMLElement.prototype.getBoundingClientRect;
+        vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+            return this.matches("footer") ? ({ height: footerHeight }) as DOMRect : measure.call(this);
+        });
         vi.stubGlobal("ResizeObserver", class {
             constructor(callback: () => void) { resizeCallback = callback; }
             observe() {}
@@ -215,6 +220,60 @@ describe("FooterViewportControl", () => {
         expect(documentRoot().style.getPropertyValue("--footer-clearance")).toBe("112px");
         await resize();
         expect(setProperty).toHaveBeenCalledTimes(2);
+    });
+
+    it("publishes the new clearance in the toggle's own commit, without waiting for the observer", async () => {
+        vi.stubGlobal("scrollTo", vi.fn());
+        await render();
+        footer().getBoundingClientRect = () => ({ height: footerHeight }) as DOMRect;
+        await resize();
+        expect(documentRoot().style.getPropertyValue("--footer-clearance")).toBe("56px");
+
+        // The collapsed tab is shorter; no observer callback is delivered between the click and the assertion.
+        footerHeight = 36;
+        await act(async () => toggle().click());
+        expect(documentRoot().getAttribute("data-footer")).toBe("collapsed");
+        expect(documentRoot().style.getPropertyValue("--footer-clearance")).toBe("36px");
+
+        footerHeight = 56;
+        await act(async () => toggle().click());
+        expect(documentRoot().style.getPropertyValue("--footer-clearance")).toBe("56px");
+
+        // The observer that follows finds nothing left to publish.
+        const setProperty = vi.spyOn(documentRoot().style, "setProperty");
+        await resize();
+        expect(setProperty).not.toHaveBeenCalled();
+    });
+
+    it("keeps a reader parked at the end at the end in the same commit as the toggle, and leaves a mid-page reader alone", async () => {
+        const scrollTo = vi.fn();
+        vi.stubGlobal("scrollTo", scrollTo);
+        Object.defineProperty(window, "innerHeight", { value: 700, configurable: true });
+        const metrics = { scrollTop: 1000 };
+        Object.defineProperty(documentRoot(), "scrollTop", { get: () => metrics.scrollTop, configurable: true });
+        // The document height is the content plus the published clearance, as with the real spacer.
+        Object.defineProperty(documentRoot(), "scrollHeight", { get: () => 1644 + (parseFloat(documentRoot().style.getPropertyValue("--footer-clearance")) || 0), configurable: true });
+        try {
+            await render();
+            footer().getBoundingClientRect = () => ({ height: footerHeight }) as DOMRect;
+            await resize();
+            expect(scrollTo).not.toHaveBeenCalled();
+
+            // At the end of the document (1000 + 700 = 1700 = 1644 + 56): a taller footer keeps the reader at the new end.
+            footerHeight = 112;
+            await act(async () => toggle().click());
+            expect(scrollTo).toHaveBeenCalledWith({ top: 1056, behavior: "instant" });
+
+            scrollTo.mockClear();
+            metrics.scrollTop = 400;
+            footerHeight = 56;
+            await act(async () => toggle().click());
+            expect(scrollTo).not.toHaveBeenCalled();
+        } finally {
+            delete (documentRoot() as unknown as Record<string, unknown>).scrollTop;
+            delete (documentRoot() as unknown as Record<string, unknown>).scrollHeight;
+            Object.defineProperty(window, "innerHeight", { value: 768, configurable: true });
+        }
     });
 
     it("disconnects the observer and removes the clearance on unmount", async () => {

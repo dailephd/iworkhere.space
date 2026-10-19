@@ -409,9 +409,13 @@ test("collapsing and expanding at the end of the page keep the bottom reachable 
         const root = document.documentElement;
         const last = document.getElementById("e2e-last")!.getBoundingClientRect();
         const footerBox = document.querySelector("footer")!.getBoundingClientRect();
-        return { scrollY: window.scrollY, maxScroll: root.scrollHeight - window.innerHeight, lastTop: last.top, lastBottom: last.bottom, footerTop: footerBox.top, footerHeight: footerBox.height, viewportHeight: window.innerHeight };
+        const spacer = document.querySelector("[data-footer-spacer]")!.getBoundingClientRect();
+        return { scrollY: window.scrollY, maxScroll: root.scrollHeight - window.innerHeight, lastTop: last.top, lastBottom: last.bottom, footerTop: footerBox.top, footerHeight: footerBox.height, spacerHeight: spacer.height, viewportHeight: window.innerHeight };
     });
+    // Settled means the shell has caught up with the footer: the in-flow spacer occupies the footer's height and the page rests at its new end.
+    const settled = (now: Awaited<ReturnType<typeof end>>) => Math.abs(now.spacerHeight - now.footerHeight) <= 1 && Math.abs(now.scrollY - now.maxScroll) <= 1;
     const expanded = await end();
+    expect(settled(expanded)).toBe(true);
     expect(Math.abs(expanded.scrollY - expanded.maxScroll)).toBeLessThanOrEqual(1);
     expect(expanded.lastBottom).toBeLessThanOrEqual(expanded.footerTop);
 
@@ -419,8 +423,9 @@ test("collapsing and expanding at the end of the page keep the bottom reachable 
     await hideFooter(page).focus();
     await page.keyboard.press("Enter");
     await expect(showFooter(page)).toBeFocused();
-    await expect.poll(async () => { const now = await end(); return Math.abs(now.scrollY - now.maxScroll) <= 1 && now.footerHeight < expanded.footerHeight; }).toBe(true);
+    await expect.poll(async () => { const now = await end(); return settled(now) && now.footerHeight < expanded.footerHeight; }).toBe(true);
     const collapsed = await end();
+    expect(settled(collapsed)).toBe(true);
     expect(collapsed.lastBottom).toBeLessThanOrEqual(collapsed.footerTop);
     // The shorter document can only move the content by the height the footer gave back: no jump to unrelated content.
     expect(Math.abs(collapsed.lastTop - expanded.lastTop)).toBeLessThanOrEqual(expanded.footerHeight - collapsed.footerHeight + 1);
@@ -434,10 +439,70 @@ test("collapsing and expanding at the end of the page keep the bottom reachable 
     // Expanding while parked at the end does not leave the last control beneath the taller footer.
     await page.keyboard.press("Enter");
     await expect(hideFooter(page)).toBeFocused();
-    await expect.poll(async () => { const now = await end(); return Math.abs(now.scrollY - now.maxScroll) <= 1 && now.footerHeight > collapsed.footerHeight; }).toBe(true);
+    await expect.poll(async () => { const now = await end(); return settled(now) && now.footerHeight > collapsed.footerHeight; }).toBe(true);
     const reopened = await end();
+    expect(settled(reopened)).toBe(true);
     expect(reopened.lastBottom).toBeLessThanOrEqual(reopened.footerTop);
     expect(Math.abs(reopened.lastTop - expanded.lastTop)).toBeLessThanOrEqual(1);
+
+    // Repeated transitions keep returning to the same two settled geometries, with the page resting at its end each time.
+    for (let cycle = 0; cycle < 3; cycle += 1) {
+        await page.keyboard.press("Enter");
+        await expect(showFooter(page)).toBeFocused();
+        await expect.poll(async () => { const now = await end(); return settled(now) && Math.abs(now.footerHeight - collapsed.footerHeight) <= 1; }).toBe(true);
+        const tucked = await end();
+        expect(tucked.lastBottom).toBeLessThanOrEqual(tucked.footerTop);
+        await page.keyboard.press("Enter");
+        await expect(hideFooter(page)).toBeFocused();
+        await expect.poll(async () => { const now = await end(); return settled(now) && Math.abs(now.footerHeight - expanded.footerHeight) <= 1; }).toBe(true);
+        const again = await end();
+        expect(again.lastBottom).toBeLessThanOrEqual(again.footerTop);
+        expect(Math.abs(again.lastTop - expanded.lastTop)).toBeLessThanOrEqual(1);
+    }
+});
+
+test("the shell clearance follows a toggle at the end of the page even when resize notifications arrive late", async ({ page }) => {
+    // A slow rendering step delays the resize observer. The toggle must not depend on it: the clearance and the page end are right as soon as the click is handled.
+    await page.addInitScript(() => {
+        const Native = window.ResizeObserver;
+        window.ResizeObserver = class {
+            private readonly observer: ResizeObserver;
+            constructor(callback: ResizeObserverCallback) { this.observer = new Native((entries, source) => { setTimeout(() => callback(entries, source), 1500); }); }
+            observe(target: Element) { this.observer.observe(target); }
+            unobserve(target: Element) { this.observer.unobserve(target); }
+            disconnect() { this.observer.disconnect(); }
+        } as unknown as typeof ResizeObserver;
+    });
+    await page.goto("/tool/merge-pdf");
+    await addTail(page);
+    await maxScroll(page);
+    const geometry = () => page.evaluate(() => {
+        const root = document.documentElement;
+        const footerBox = document.querySelector("footer")!.getBoundingClientRect();
+        const last = document.getElementById("e2e-last")!.getBoundingClientRect();
+        return {
+            footerHeight: footerBox.height, footerTop: footerBox.top, lastBottom: last.bottom,
+            spacerHeight: document.querySelector("[data-footer-spacer]")!.getBoundingClientRect().height,
+            fromEnd: Math.abs(window.scrollY - (root.scrollHeight - window.innerHeight)),
+        };
+    });
+    const expectSettled = (now: Awaited<ReturnType<typeof geometry>>) => {
+        expect(Math.abs(now.spacerHeight - now.footerHeight)).toBeLessThanOrEqual(1);
+        expect(now.fromEnd).toBeLessThanOrEqual(1);
+        expect(now.lastBottom).toBeLessThanOrEqual(now.footerTop);
+    };
+    const expanded = await geometry();
+    expectSettled(expanded);
+
+    await hideFooter(page).click();
+    const collapsed = await geometry();
+    expect(collapsed.footerHeight).toBeLessThan(expanded.footerHeight);
+    expectSettled(collapsed);
+
+    await showFooter(page).click();
+    const reopened = await geometry();
+    expect(reopened.footerHeight).toBeGreaterThan(collapsed.footerHeight);
+    expectSettled(reopened);
 });
 
 test("collapsing mid-page moves neither the scroll position nor the focus", async ({ page }) => {
