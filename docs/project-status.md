@@ -4,7 +4,7 @@
 
 DEFAULT_BRANCH: `master`
 
-LATEST_VERIFIED_MASTER_SHA: `d48e5fcf3d9015db5677d0a7410236a70979db58` (2026-10-19; includes merged documentation PRs #33, #34, and #35).
+SOURCE_BASELINE_FOR_THIS_RECONCILIATION: `d48e5fcf3d9015db5677d0a7410236a70979db58` (2026-10-19; PR #35 merge, following PRs #33 and #34). This is a historical review base, not a promise about the moving `master` HEAD.
 
 CURRENT_ROOT_PACKAGE_VERSION: `0.4.1` (independent dashboard: `0.1.0`)
 
