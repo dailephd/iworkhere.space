@@ -41,8 +41,8 @@ The public app separates palette identity from color mode through the existing
 theme module and header control. Violet & Graphite (`original`, default with
 System mode), Mineral Research (`mineral`), Oxblood Atelier (`oxblood`), Signal
 Green (`signal`), Cobalt & Terracotta (`cobalt`), and Amber & Graphite (`amber`)
-each support Light, Dark, and System. The reference is
-The palette values are maintained by the existing theme registry and CSS.
+each support Light, Dark, and System. Palette values are maintained in the
+existing theme registry and CSS. The recorded design reference was established
 at source commit `0c713001369bbfc76c416126877811a8888df07b`.
 
 The header keeps the approved Le mark and wordmark; its L is navy in Light and
