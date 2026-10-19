@@ -50,7 +50,9 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-Current v0.4.1 source has 18 tools, seven populated categories and 28
+Latest GitHub Release `v0.4.1` was published 2026-10-11; the annotated tag
+points to verified `master` commit `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`.
+The released source contains 18 tools, seven populated categories and 28
 registry-derived sitemap URLs. It includes homepage category sections,
 Calculator keyboard equals, the integrated six-palette appearance system and
 the converter category migration. See `CHANGELOG.md`, `project-status.md` and
@@ -70,9 +72,10 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
-  v0.4.1 source contains the accepted maintenance updates; v0.5.0 is the next
-  planned version and its plan is not yet frozen. Historical release and
-  deployment records remain date-scoped.
+  v0.4.1 is formally released with the accepted maintenance updates; v0.5.0
+  is the next planned version and its plan is not yet frozen. The current
+  Vercel production deployment identity remains unverified in this source
+  audit; historical deployment records remain date-scoped.
 
 Current persistent-observability references:
 
@@ -126,7 +129,7 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
-their respective reports. v0.3.1 and v0.4.0 are released; v0.5.0 is the next numbered
+their respective reports. v0.3.1, v0.4.0 and v0.4.1 are released; v0.5.0 is the next numbered
 planning target.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md

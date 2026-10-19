@@ -4,9 +4,11 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The current root application source version is `0.4.1`; the independent
-dashboard retains its own package version. Source, GitHub release and live
-production deployment identities are distinct.
+The latest numbered GitHub release is `v0.4.1`, published 2026-10-11;
+the root application package is `0.4.1` and the independent dashboard remains
+`0.1.0`. Source, GitHub release and live production deployment identities
+are distinct. The exact current Vercel production deployment was not
+independently verified during this documentation review.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -28,11 +30,13 @@ and hosting/deployment identity remain separate records; this planning update
 does not invent an unverified Vercel deployment ID.
 
 v0.4.0 was formally released on 2026-10-08 (PR #21 and GitHub Release
-`v0.4.0`), completing Priority A at 18 registered tools. The v0.4.1 source
-includes the privacy route and 28-URL sitemap, populated-category homepage,
-Calculator keyboard equals, integrated six-palette appearance system, and
-converter-category migration. Its scope does not alter the original v0.4.0
-plan. The frozen v0.5.0 and v0.6.0 scopes remain unchanged.
+`v0.4.0`), completing Priority A at 18 registered tools. v0.4.1 followed on
+2026-10-11 (PR #32; annotated tag at
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`). It adds the post-release
+privacy route and 28-URL sitemap, populated-category homepage, Calculator
+keyboard equals, integrated six-palette appearance system, and converter
+category migration. Its scope does not alter the original v0.4.0 plan. The
+frozen v0.5.0 and v0.6.0 scopes remain unchanged.
 
 The application already provides registry-driven routing and discovery, category pages, query-state support, theme persistence, analytics/logging/observability abstractions, browser storage, SEO helpers, PWA/service-worker behavior, automated tests, and independent CI validation jobs.
 
@@ -493,6 +497,28 @@ The three-tool v0.4.0 scope and the exclusions above are unchanged. Detailed
 contracts, dependency decision, batch structure and test responsibilities live
 in the [frozen implementation plan](plans/v0.4.0-implementation-plan.md).
 
+## Version 0.4.1 — UI and Converter updates
+
+Status: RELEASED — 2026-10-11. PR #32 merged to `master` at
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`; the `v0.4.1` annotated tag
+and GitHub Release are published. This is post-v0.4 maintenance and product UI
+improvement, not a new catalog expansion. The current Vercel production
+deployment identity is tracked separately and is not asserted here.
+
+Scope: retain the 18-tool catalog; add the privacy route and post-v0.4 AdSense
+eligibility, guide, accessibility and Le-branding improvements; present seven
+populated homepage category sections; support keyboard `=` in Calculator;
+add six palettes with Light/Dark/System and retained One Dark; rename public
+`everyday` to `converter` (Converters) with a permanent old-category redirect;
+move QR Code Generator to Developer while preserving its tool URL. The current
+sitemap contains 28 canonical URLs. The original v0.4.0 release-day catalog
+and category assignments remain historical facts.
+
+Acceptance: application validation, desktop/mobile layout and Observer checks,
+exact-commit hosted CI, and the separate publication workflow completed for
+v0.4.1. External AdSense activation and exact live deployment identity are not
+inferred from the GitHub Release. The v0.5.0 and v0.6.0 catalogs are unaffected.
+
 ## Version 0.5.0 — Developer & Text Utility Suite
 
 Status: Planned
@@ -555,6 +581,11 @@ v0.5.0 is complete when:
 ## Version 0.6.0 — Time & Everyday Calculators
 
 Status: Planned
+
+The version title retains the original roadmap wording. The public `everyday`
+category was replaced by `converter` in v0.4.1; this planned version's time
+and percentage tools still use the existing time/math architecture, not an
+`everyday` category.
 
 ### Goal
 
@@ -794,7 +825,7 @@ These are not canceled. They remain future candidates for a later catalog planni
 The current concrete product sequence is:
 
 ```text
-v0.1.0  Current product baseline
+v0.1.0  Original product baseline
 
 v0.1.1  Development Validation Hardening
         integrated / accepted validation baseline
@@ -803,10 +834,12 @@ v0.2.0  Image Utility Foundation
         ↓
 v0.3.0  PDF & Document Essentials
         ↓
-v0.3.1  Vercel Web Analytics (implementation complete; readiness passed; release prepared)
+v0.3.1  Vercel Web Analytics (released 2026-10-06)
         ↓
-v0.4.0  Core Text, Data & Sharing Utilities
+v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         Priority A complete
+        ↓
+v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
