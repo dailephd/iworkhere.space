@@ -206,3 +206,16 @@ QR Code Generator uses the existing developer identity. Homepage sections,
 navigation and breadcrumbs resolve the converter label from category.ts;
 related-tool headings continue to describe their related entries.
 The v0.4 release decision is historical and remains intact.
+
+
+## Planned v0.4.2 viewport chrome and reporting — 2026-10-14
+
+Status: PLANNED, NOT IMPLEMENTED. This section defines the approved future visual/interaction change. Until v0.4.2 is implemented, the existing preceding "footer follows the complete workspace in normal document flow" paragraph accurately describes current v0.4.1 behavior. v0.4.2 intentionally supersedes that single footer-placement rule, not the document-owned scroll model.
+
+Header: keep normal-flow Header and a single primary navigation landmark at the page top. When its original sentinel is entirely above/outside the viewport, display a small anchored top "Show navigation" control. On activation, expose the existing Header as a temporary top-fixed, dismissible overlay, never as a second mounted navigation tree and never by resetting page scroll. Hide the substitute control on return to the actual in-flow header. Close on Escape/navigation; restore meaningful focus. Preserve header layout space and avoid scroll anchoring/jump. Respect the header banner/ad slot as separate normal-flow content.
+
+Footer: change the semantic site Footer itself to a compact viewport-fixed bottom region with current copyright and privacy link, plus a site-wide reporting trigger. Default is expanded on the first visit. Provide an accessible "Hide footer" action and a minimal anchored collapsed state containing separate "Show footer" and "Report" actions. Use the existing storage adapter to remember explicit preference across navigation/reload without first-paint flash. Do not fix or hide the optional footer advertising banner slot; it stays in ordinary document flow. Ensure natural document scroll, visible focused input/actions, last-result/download reachability, bottom clearance, safe-area insets, virtual keyboard support and bounded mobile viewport occupation. The viewport can be smaller than the document; no nested main scrollpane.
+
+Reporting: provide one consistent dialog on every public route, including while footer is collapsed. Category and expected/observed fields adapt predictably; tool context is visible and user-correctable. Prevent duplicate requests, show clear pending, success receipt, field validation, retry and unavailable states. The content and contact field are voluntary and must not be automatically copied into analytics or diagnostics. Do not offer upload/screenshot controls in v0.4.2. Confirmation is granted only after durable server persistence.
+
+Layer order must preserve reachable skip-to-content, anchored top control, anchored footer and modal focus. Dialog is above fixed chrome; fixed chrome is above ordinary page content. Both chrome controls and report dialog work at keyboard-only and touch widths, within every existing theme/palette and reduced-motion settings. Never introduce large floating promotional surfaces, full-screen nav replacements, ad overlap or a new scroll-owner framework. Exact detailed contract and test responsibility: [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md).
