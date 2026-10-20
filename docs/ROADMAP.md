@@ -4,11 +4,10 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The latest numbered GitHub release is `v0.4.1`, published 2026-10-11;
-the root application package is `0.4.1` and the independent dashboard remains
-`0.1.0`. Source, GitHub release and live production deployment identities
-are distinct. The exact current Vercel production deployment was not
-independently verified during this documentation review.
+The latest numbered GitHub release is `v0.4.2`, published 2026-10-20;
+the root application package is `0.4.2` and the independent dashboard remains
+`0.1.0`. Source release identity and Vercel production deployment are distinct;
+production deployment status is tracked separately.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -521,7 +520,11 @@ inferred from the GitHub Release. The v0.5.0 and v0.6.0 catalogs are unaffected.
 
 ## Version 0.4.2 — User Feedback & Retractable Site Chrome
 
-Status: Planned immediate patch after the published v0.4.1 release. This is a planning decision dated 2026-10-14; no implementation, production migration, provider activation, or deployment is claimed.
+Status: RELEASED as GitHub Release `v0.4.2` on 2026-10-20. Implementation
+readiness passed at `16b04696d99a2f176f99b8f2606fb62800aed3aa`; release-PR and
+master CI validated their exact commits. Production deployment is tracked
+separately. No production migration or provider activation is claimed. See
+[project status](project-status.md).
 
 ### Goal
 
@@ -549,18 +552,18 @@ Owner-selected external integrations for this patch: Resend for transactional ma
 - All report types, validation/error/abuse conditions, input/file/privacy exclusions, contact consent, operator-only viewing, private triage and deployment dependencies have explicit test evidence. No public raw report exposure.
 - Header stays in normal flow at the top, exposes a compact top control only when out of view, and expands/collapses accessibly without duplicate navigation, page jump or broken skip link.
 - Footer remains anchored to the browser viewport, retracts/restores without navigation jumps, keeps report access in both states, respects viewport/safe-area/keyboard conditions and permits all tool content, focused controls and bottom-of-page actions to scroll into view.
-- Browser and integration tests cover desktop/mobile, short/long pages, overlays, themes, keyboard/assistive semantics, existing ads slots, image/document download flows, privacy, and performance/CLS. Existing eight GitHub CI jobs remain mandatory; added support/DB gates must also pass.
+- Browser and integration tests cover desktop/mobile, short/long pages, overlays, themes, keyboard/assistive semantics, existing ads slots, image/document download flows, privacy, and performance/CLS. The eight GitHub Actions workflow files currently define nine required jobs; public E2E, support-enabled E2E, support database, support full-stack E2E, Container, Dashboard and Observability database validation remain distinct gates.
 - Documentation/specifications, private-provider setup, support retention and production security controls pass independent review before release. Exact deployed source and end-to-end real (synthetic) report delivery are verified after separately authorized deployment.
 
 ### Exclusions
 
 No new registered utility, user account, public report status page, file uploads, screenshots, Sentry installation, automatic error-report conversion, analytics-provider replacement, second tool registry, footer-ad relocation, new independent main scrollbar, or changes to the frozen v0.5.0/v0.6.0 catalog feature lists.
 
-The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) owns the field/API/data and layout contracts, named owners/paths, execution batches, test matrix and external production gates. It is planning authority only; implementation must follow a fresh repository my-dev-kit context review and is not authorized by this roadmap entry alone.
+The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) preserves the field/API/data and layout contracts, named owners/paths, execution batches, test matrix and external production gates. Current implemented behavior is described by the owning specifications; this roadmap entry does not authorize production activation.
 
 ## Version 0.4.3 — Utility Value, Trust & Discoverability
 
-Status: PLANNED PRODUCT-VALUE PATCH — 2026-10-18. Scope is newly proposed after a publisher-reported AdSense "Low value content" rejection; not implemented, released, deployed or approved by Google. Planning order places it after the separately planned v0.4.2 patch, before the unchanged v0.5.0 catalog. A different publication order requires a separate explicit version decision; AdSense resubmission must not be made dependent on launching v0.4.2's support backend.
+Status: PLANNED PRODUCT-VALUE PATCH — 2026-10-18. Scope is newly proposed after a publisher-reported AdSense "Low value content" rejection; not implemented, released, deployed or approved by Google. Planning order places it after the v0.4.2 release, before the unchanged v0.5.0 catalog. A different publication order requires a separate explicit version decision; AdSense resubmission must not be made dependent on launching v0.4.2's support backend.
 
 ### Goal
 
@@ -908,7 +911,7 @@ v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         ↓
 v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
-v0.4.2  User Feedback & Retractable Site Chrome (planned patch)
+v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
 v0.4.3  Utility Value, Trust & Discoverability (planned product patch)
         ↓
@@ -998,13 +1001,17 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
 record, PR #34 integrated the v0.4.2 plan, and PR #35 integrated the v0.4.3
-plan into `master`. Both patches remain planned, not implemented or published.
-Proceed with v0.4.2 first through the existing frozen plan and preflight;
+plan into `master`. Both patches were planned and unpublished at that point. At the 2026-10-19 update checkpoint, v0.4.2 implementation was complete in the feature worktree and publication had not yet occurred; v0.4.3 remained planned.
+v0.4.2 followed the existing frozen plan and preflight;
 v0.4.3 follows without moving its product-value scope into v0.4.2.
 
 Product-value planning update (2026-10-18): keep v0.4.2 reporting/chrome as its own planned release and add v0.4.3 as the bounded site-value response to the publisher-reported AdSense Low value content rejection. The new [v0.4.3 plan](plans/v0.4.3-implementation-plan.md) defines truthful original file-processing demonstrations, homepage/category differentiation, operator-confirmed About/Contact, and real follow-up evidence. Do not treat the Google rejection as a technical CI defect or promise approval. Website improvements can be designed independently of v0.4.2's support backend; any numeric release-order change requires explicit approval, not an implicit new dependency.
 
-Previously recorded priority (2026-10-14): prepare and implement planned v0.4.2 User Feedback & Retractable Site Chrome after v0.4.1 post-release documentation PR #33 is integrated. Freeze current-repository my-dev-kit architectural evidence and affected specifications, then implement the complete durable reporting vertical slice and bounded header/footer viewport interactions according to the [patch plan](plans/v0.4.2-implementation-plan.md). v0.5.0 remains the next CATALOG expansion release, with its nine-tool scope unchanged. No v0.4.2 implementation or publication is yet claimed.
+Historical planning checkpoint (2026-10-14): this note recorded the priority to
+prepare and implement v0.4.2 after v0.4.1 post-release documentation PR #33,
+using the [patch plan](plans/v0.4.2-implementation-plan.md). That work is now
+complete; the frozen v0.5.0 catalog expansion and its nine-tool scope remain
+unchanged.
 
 The following v0.3.1 release-preparation handoff text is historical and superseded by the completed 2026-10-06 release; it is retained for planning traceability:
 

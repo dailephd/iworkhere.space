@@ -12,12 +12,15 @@ function assertNoAdRegions(props: AppShellProps) {
 
 vi.mock("@/module/tool/metadata", () => ({ getAvailableCategory: () => [] }));
 vi.mock("@/component/common/ThemeProvider", () => ({ ThemeProvider: ({ children }: { children: ReactNode }) => children }));
+const { coordinator } = vi.hoisted(() => ({ coordinator: vi.fn() }));
+vi.mock("@/module/support/SupportCoordinator", () => ({ SupportCoordinator: (props: unknown) => { coordinator(props); return <button type="button">Report a problem or suggestion</button>; } }));
+vi.mock("@/module/support/projection", () => ({ contextSource: () => ({ tool: [{ id: "merge-pdf", slug: "merge-pdf", name: "Merge PDF" }], category: ["document"] }) }));
 vi.mock("@/component/layout/ServiceWorkerRegister", () => ({ ServiceWorkerRegister: () => null }));
 vi.mock("@/component/common/WebVitals", () => ({ WebVitals: () => null }));
 vi.mock("@/component/observability/VercelWebAnalytics", () => ({ VercelWebAnalytics: () => <script data-test-vercel-wrapper="true" /> }));
 vi.mock("@/component/layout/AppShell", () => ({ default: (props: AppShellProps) => {
     appShell(props);
-    return <><header>{props.headerBannerSlot}</header><aside>{props.leftBannerSlot}</aside><main>{props.children}</main><aside>{props.rightBannerSlot}</aside><footer>{props.footerBannerSlot}</footer></>;
+    return <><header>{props.headerBannerSlot}</header><aside>{props.leftBannerSlot}</aside><main>{props.children}</main><aside>{props.rightBannerSlot}</aside><footer>{props.footerBannerSlot}{props.footerActionSlot}</footer></>;
 } }));
 vi.mock("next/script", () => ({ default: (props: { id: string; src: string }) => <script async id={props.id} src={props.src} /> }));
 afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
@@ -54,4 +57,24 @@ it("keeps root and navigation content ad-free even when the global flag is enabl
 it.each(adRegionProps)("the root regression assertion rejects an accidentally supplied %s", name => {
     const props: AppShellProps = { children: <h1>Workspace</h1>, [name]: <div>Accidental advertising region</div> };
     expect(() => assertNoAdRegions(props)).toThrow();
+});
+
+it("composes no reporting entry unless the public support flag is enabled", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPPORT_ENABLED", "false");
+    const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
+    expect(html).not.toContain("Report a problem or suggestion");
+    expect(coordinator).not.toHaveBeenCalled();
+    expect(appShell.mock.calls[0][0].footerActionSlot).toBeUndefined();
+});
+it("composes exactly one reporting entry in the footer slot with a serializable registry projection only", () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPPORT_ENABLED", "true");
+    vi.stubEnv("NEXT_PUBLIC_SUPPORT_TURNSTILE_SITE_KEY", "public-site-key");
+    const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
+    expect(html.match(/Report a problem or suggestion/g)).toHaveLength(1);
+    expect(coordinator).toHaveBeenCalledTimes(1);
+    const props = coordinator.mock.calls[0][0] as { source: { tool: unknown[]; category: string[] }; siteKey: string };
+    expect(props.siteKey).toBe("public-site-key");
+    expect(props.source.tool).toEqual([{ id: "merge-pdf", slug: "merge-pdf", name: "Merge PDF" }]);
+    expect(JSON.parse(JSON.stringify(props))).toEqual(props);
+    assertNoAdRegions(appShell.mock.calls[0][0]);
 });

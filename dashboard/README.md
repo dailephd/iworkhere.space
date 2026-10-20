@@ -89,3 +89,7 @@ are not access control.
 ## Diagnostic hotfix
 
 Recent diagnostics show latest 25 retained client/server errors in the selected range (30-day detailed retention), actual name/message, UUID/fingerprint, route/tool/boundary/category, deployment and expandable stack/cause/component/runtime fields. Normal React escaping; bounded code regions; no client framework. Metric rows do not pretend legacy detail exists. SELECT-only snapshot now includes diagnostic query.
+
+## User reports (v0.4.2 Batch 1)
+
+`/support` lists anonymous user reports with delivery health (undelivered, retrying, failing and dead-lettered counts and the oldest pending age) and `/support/<reference>` shows one report with its full text, contact details only where consent was given, delivery jobs and the private tracker link. It reads the support database through `SUPPORT_DASHBOARD_DATABASE_URL` (role `support_dashboard`, SELECT on three views only) in a read-only transaction; the observability pages keep `OBSERVABILITY_DASHBOARD_DATABASE_URL`. Report text renders as escaped text. The dashboard adds no route handlers and relies on the same external Vercel Authentication boundary; that protection is a deployment fact to verify, not something this code establishes. See `../database/support/README.md`.

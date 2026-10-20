@@ -10,7 +10,7 @@ describe("public privacy policy", () => {
         const html = renderToStaticMarkup(<PrivacyPage />);
         expect(html.match(/<h1\b/g)).toHaveLength(1);
         expect(html).toContain(">Privacy Policy</h1>");
-        expect(html.match(/<h2\b/g)).toHaveLength(6);
+        expect(html.match(/<h2\b/g)).toHaveLength(7);
         expect(html).not.toContain("<h3");
     });
 
@@ -26,5 +26,13 @@ describe("public privacy policy", () => {
         for (const text of ["/api/metric", "/api/log", "user-agent", "stack traces", "Neon", "90 days", "30 days", "indefinitely", "Vercel Web Analytics", "query strings and fragments", "including IP addresses", "recently used tool names", "calculator", "URL query parameters", "unaggregated records"]) expect(html).toContain(text);
         expect(html).not.toContain("No data is collected");
         expect(html).not.toContain("IP addresses are never processed");
+    });
+
+    it("discloses voluntary problem reports, their separation, providers and pending retention", () => {
+        const html = renderToStaticMarkup(<PrivacyPage />);
+        for (const text of ["Problem reports and suggestions", "voluntary report", "tick the box", "We do not ask for files, screenshots, tool inputs or results", "not to the measurement and diagnostic services", "stored separately in our Neon database", "private tracker entry in GitHub", "Resend", "Cloudflare Turnstile", "180 days", "90 days after our last correspondence", "not yet a completed deletion practice"]) expect(html).toContain(text);
+        expect(html).toContain('href="https://www.cloudflare.com/privacypolicy/"');
+        expect(html).toContain('href="https://resend.com/legal/privacy-policy"');
+        expect(html).toContain("October 19, 2026");
     });
 });

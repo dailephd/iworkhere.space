@@ -1,6 +1,6 @@
 {
   "name": "iworkhere.space",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "scripts": {
     "dev": "npm run dev:check && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Start-Dev.ps1",
@@ -18,7 +18,10 @@
     "test:container": "tsx script/containerSmoke.ts",
     "verify": "tsx script/verify.ts",
     "observability:migrate": "tsx script/observabilityMigrate.ts",
-    "test:observability-db": "tsx script/observabilityDbSmoke.ts"
+    "test:observability-db": "tsx script/observabilityDbSmoke.ts",
+    "support:migrate": "tsx script/supportMigrate.ts",
+    "test:support-db": "tsx script/supportDbSmoke.ts",
+    "test:support-e2e": "tsx script/supportE2e.ts"
   },
   "engines": {
     "node": "24.x"

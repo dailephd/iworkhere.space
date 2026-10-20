@@ -55,3 +55,4 @@ dd { margin: 4px 0; overflow-wrap: anywhere; }
 .notice { padding: 14px; border: 1px solid var(--border); border-radius: 6px; }
 @media (max-width: 900px) { .card-grid, .vital-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 600px) { main { padding: 16px; } .breakdown-grid, dl { grid-template-columns: 1fr; } .range { gap: 6px; } .range a { padding: 7px 11px; } .panel { padding: 14px; } .stat p { font-size: 21px; } }
+.narrative { margin: 0; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }

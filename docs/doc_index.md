@@ -50,7 +50,7 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-Latest GitHub Release `v0.4.1` was published 2026-10-11; the annotated tag
+The historical `v0.4.1` GitHub Release was published 2026-10-11; its annotated tag
 points to the release-time `master` commit
 `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent v0.4.3 planning PR #35 merge commit is
 `d48e5fcf3d9015db5677d0a7410236a70979db58`; newer documentation commits
@@ -75,12 +75,12 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
-  v0.4.1 is formally released with accepted maintenance updates; v0.4.2 is
-  the next planned product patch (anonymous reports and retractable chrome),
-  followed by v0.4.3 (original utility value and publisher trust). v0.5.0 is
-  the next catalog expansion, and its implementation plan is not frozen. The current
-  Vercel production deployment identity remains unverified in this source
-  audit; historical deployment records remain date-scoped.
+  v0.4.2 is the current numbered GitHub Release (2026-10-20), with its source
+  and package version aligned. Production deployment status is tracked separately.
+  v0.4.3 (original utility
+  value and publisher trust) is the next planned product version. v0.5.0 is
+  the next catalog expansion, and its implementation plan is not frozen. Vercel deployment identity and health must be verified from deployment
+  records; historical launch records remain date-scoped.
 
 Current persistent-observability references:
 
@@ -134,8 +134,9 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
-their respective reports. v0.3.1, v0.4.0 and v0.4.1 are released; the immediate planned patch is
-v0.4.2 for user reporting and adaptive site chrome, followed by planned
+their respective reports. v0.3.1, v0.4.0 and v0.4.1 remain historical GitHub
+Releases; v0.4.2 is the current numbered release (2026-10-20). Production
+activation and deployment state are tracked separately. Planned
 v0.4.3 for original utility value, publisher transparency and distinctive
 content. v0.5.0 remains the next catalog expansion release.
 
@@ -153,14 +154,15 @@ authority, not evidence that a batch or version was implemented.
 
 ### plans/v0.4.2-implementation-plan.md
 
-**Summary:** Planned immediate patch after v0.4.1. Defines a complete,
+**Summary:** Frozen v0.4.2 patch plan, implemented and released on 2026-10-20;
+production activation remains unverified. Defines a complete,
 privacy-preserving anonymous reporting and private triage vertical slice; dedicated
 support persistence/least-privilege grants, durable outbox, Resend notification,
 private issue tracking and abuse controls; the original-header-out-of-view top
 navigation control; and fixed retractable footer with preserved reporting access.
 Records exact intended owners, cross-layer test obligations, production activation
-gates and exclusions. The proposal is NOT proof of implementation or deployment.
-**When to read:** Before v0.4.2 implementation, support provider/Neon changes,
+gates and exclusions. The plan records scope and constraints; current behavior is documented in API.md, SCHEMA.md, architecture.md, DESIGN.md and database/support/README.md.
+**When to read:** When reviewing the v0.4.2 implementation, support provider/Neon changes,
 report-dialog implementation, or layout/header/footer modifications.
 **Relations:** [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md),
 ROADMAP.md, DESIGN.md, OBSERVABILITY.md, architecture.md, API.md, SCHEMA.md,
@@ -358,7 +360,7 @@ repository files that are already available to the coding environment.
 architecture, roadmap, and version plan.
 
 ### CI_CD.md
-**Summary:** Defines six public-application CI gates (typecheck, lint, test,
+**Summary:** Defines seven required public-application jobs across six primary workflow files (typecheck, lint, test,
 build, E2E and Container) plus independent dashboard and observability-database
 workflows. It documents `npm run verify` as the first four local checks, with
 separate browser/container commands, report discipline, and the prohibition on

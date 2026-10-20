@@ -11,6 +11,8 @@ process.stdout.write(`E2E_RUN_ID: ${runId}\nE2E report: ${reportDir}\n`);
 
 export default defineConfig({
     testDir: "./test/e2e",
+    // The reporting journey needs a support-enabled build, disposable storage and provider doubles; `npm run test:support-e2e` provisions them.
+    testIgnore: process.env.E2E_SUPPORT_RUN === "true" ? [] : ["**/support-report.spec.ts"],
     fullyParallel: false,
     workers: 1,
     retries: 0,

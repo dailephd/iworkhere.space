@@ -1,14 +1,14 @@
 # PROJECT STATUS
 
-## Current release and next implementation preflight — 2026-10-19
+## Current source, release identity and next planned work — 2026-10-20
 
 DEFAULT_BRANCH: `master`
 
 SOURCE_BASELINE_FOR_THIS_RECONCILIATION: `d48e5fcf3d9015db5677d0a7410236a70979db58` (2026-10-19; PR #35 merge, following PRs #33 and #34). This is a historical review base, not a promise about the moving `master` HEAD.
 
-CURRENT_ROOT_PACKAGE_VERSION: `0.4.1` (independent dashboard: `0.1.0`)
+CURRENT_ROOT_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`)
 
-LATEST_NUMBERED_GITHUB_RELEASE: `v0.4.1` — published 2026-10-11.
+CURRENT_NUMBERED_GITHUB_RELEASE: `v0.4.2` was published 2026-10-20. Production deployment status is tracked separately.
 
 V0_4_1_RELEASE_PR: #32 — MERGED 2026-10-11.
 
@@ -18,40 +18,76 @@ V0_4_1_TAGGED_SHA_CI: PASS — Build, Lint, Test, Typecheck, E2E, Container,
 Dashboard and Observability database succeeded on the historical tagged commit.
 This is not a claim that all eight workflows passed on the current `master` SHA.
 
-LATEST_PRODUCTION_DEPLOYMENT_IDENTITY: NOT INDEPENDENTLY VERIFIED. The public
-Vercel project is configured for automatic deployment from `master`, but
-GitHub release publication and passing source checks do not establish a
-particular production deployment's identity or live health.
+PRODUCTION_DEPLOYMENT_IDENTITY: Verify the public Vercel deployment source SHA
+and live health from Vercel records. GitHub release publication and passing
+source checks do not establish a particular production deployment's identity
+or health.
 
 CURRENT_RELEASE_CATALOG: 18 registered tools, seven populated categories,
 28 registry-derived sitemap URLs including `/privacy`. The historical v0.4.0
 release had 27 URLs; v0.4.1 retains all tool URLs and adds the Converters
 category with the permanent `/category/everyday` redirect.
 
-NEXT_PLANNED_PRODUCT_VERSION: `v0.4.2 — User Feedback & Retractable Site Chrome`.
-FOLLOWING_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
+CURRENT_RELEASE: `v0.4.2 — User Feedback & Retractable Site Chrome` is
+represented by the release commit on `master` and published as the numbered
+GitHub Release on 2026-10-20. Exact-SHA implementation readiness passed at
+`16b04696d99a2f176f99b8f2606fb62800aed3aa`; release-PR and master CI validated
+their respective exact commits. Production deployment status is tracked separately.
+NEXT_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
 Its implementation plan is not frozen. Planner-owned specifications and a
 version plan must precede implementation. The frozen v0.6.0 scope remains
 as recorded in ROADMAP.md.
 
-## v0.4.2 planning — 2026-10-14
+## v0.4.2 planning record — 2026-10-14
 
-PLANNED_IMMEDIATE_PATCH: v0.4.2 — User Feedback & Retractable Site Chrome.
+At this planning checkpoint, the immediate patch was recorded as: v0.4.2 — User Feedback & Retractable Site Chrome.
 The [patch plan](plans/v0.4.2-implementation-plan.md) and corresponding
 [roadmap scope](ROADMAP.md) specify durable anonymous issue/suggestion intake,
 private triage and notifications, a retractable out-of-view header and a
-viewport-fixed retractable footer. This is a PLANNING change only. No patch
-implementation, support schema migration, provider activation, CI evidence,
-GitHub Release or public deployment is claimed.
+viewport-fixed retractable footer. At the 2026-10-14 planning checkpoint, this was a planning change only; no
+patch implementation, support schema migration, provider activation, CI evidence,
+GitHub Release or public deployment had then been claimed.
 
 Planning prerequisites are now integrated: documentation PR #33 was merged to
 `master` in `a2ba480df167a1b3437727b45451aba8f6011c0e`, and the v0.4.2
 planning PR #34 was merged in `5711a21a8d5d09b8a88ea784326def336e1ace1a`.
-The next action is current-repository my-dev-kit retrieval, affected specification
-preflight and the bounded Batch A reporting-vertical-slice implementation prompt.
-These merged planning documents do not prove the product patch was implemented. The next catalog expansion remains frozen v0.5.0, not replaced by this
-patch. The historical v0.4.1 release status above remains unchanged.
+The planning documents defined scope and do not by themselves constitute implementation evidence. The next catalog expansion remains frozen v0.5.0; v0.4.2 does not replace that scope. The v0.4.1 publication facts above remain historical.
+
+## v0.4.2 release and production activation status — 2026-10-20
+
+APPLICATION_SOURCE_AND_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`).
+GITHUB_RELEASE: `v0.4.2`, published 2026-10-20 after the release PR and exact-SHA
+master validation passed. The v0.4.1 release facts above remain historical.
+PRODUCTION_DEPLOYMENT: tracked separately from GitHub release publication; see
+[deployment status](DEPLOYMENT.md).
+
+Implemented in the validated source: the anonymous report vertical slice (global entry, accessible dialog, nine categories, strict API with a 16 KiB
+cap, origin and Turnstile checks, durable idempotent `support` schema, independent outbox jobs with leasing, retry and dead-letter,
+private GitHub issue and Resend adapters, protected dashboard `/support` views, dedicated database roles, retention and deletion
+functions); the retractable header; and the fixed, collapsible footer. Contracts live in [API](API.md), [SCHEMA](SCHEMA.md),
+[architecture](architecture.md), [DESIGN](DESIGN.md) and [database/support/README.md](../database/support/README.md).
+
+Validation recorded locally (evidence by stage, not a combined count for the final source): Batch 1 reported 1,508 unit tests,
+85 support-database assertions, 24 dedicated support browser checks and passing dashboard and container validation. The Batch 4
+public-mode Playwright run reported 594 passed, 0 failed and 2 skipped; the skips are existing advertising-enabled scenarios that
+the public test configuration cannot exercise. Earlier container runs showed intermittent `ERR_NO_BUFFER_SPACE` failures before later
+passing; the cause is not shown to be fixed. See [TESTING](TESTING.md).
+
+PRODUCTION_ACTIVATION_REQUIREMENTS (not verified): Neon support schema and role provisioning; private GitHub support repository and token;
+verified Resend sender; production Turnstile keys; Vercel Firewall rules for `/api/support/report`; a 15-minute delivery schedule
+(`vercel.json` still schedules only daily observability maintenance); dashboard support credential and Vercel Authentication check;
+legal approval of `/privacy` copy and retention (`SUPPORT_RETENTION_ENABLED` defaults off); a synthetic end-to-end report; and
+physical iOS/Android keyboard and safe-area checks. The public report entry stays off unless `NEXT_PUBLIC_SUPPORT_ENABLED=true`.
+
+ACCEPTED_RESIDUAL_SECURITY_RISK: `source-map-js` 1.2.1, GHSA-68fv-2mgg-jv7q
+(HIGH). This transitive dependency is used by build-time tooling; the reviewed
+repository exposure analysis found no attacker-controlled source-map path and
+no copy in the examined standalone runtime artifact. Patched version 1.2.2 is
+available, but dependencies were not changed because the exact-SHA readiness
+audit accepted this pre-existing finding as nonblocking. No repository security
+policy requiring remediation was found. Reassess separately if the dependency
+path or deployment artifact changes.
 
 ## v0.4.3 product-value planning — 2026-10-18
 

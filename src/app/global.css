@@ -84,6 +84,38 @@ body {
   height: 100%;
 }
 
+/* Shell-level footer clearance: FooterViewportControl replaces the fallback with the footer's measured height.
+   The fallbacks approximate the expanded footer (taller when its content stacks) and the compact collapsed tab before JavaScript runs. */
+:root {
+  --footer-clearance: 3.25rem;
+  scroll-padding-bottom: var(--footer-clearance);
+  /* Keeps focus targets and anchors clear of the fixed Show navigation control at the top of the viewport. */
+  scroll-padding-top: 3rem;
+}
+@media (max-width: 639px) {
+  :root { --footer-clearance: 7.1rem; }
+}
+:root[data-footer="collapsed"] { --footer-clearance: 2.2rem; }
+/* The collapsed footer keeps the report action and the toggle; copyright and privacy return on expansion. */
+:root[data-footer="collapsed"] [data-footer-detail] { display: none; }
+:root[data-footer="collapsed"] [data-footer-when="expanded"] { display: none; }
+:root:not([data-footer="collapsed"]) [data-footer-when="collapsed"] { display: none; }
+/* Collapsed, the footer shrinks to a compact tab at the trailing edge, so it reclaims the workspace instead of keeping a full-width bar. */
+:root[data-footer="collapsed"] [data-site-footer] {
+  left: auto;
+  border-left-width: 1px;
+  border-top-left-radius: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: max(0.25rem, env(safe-area-inset-bottom));
+}
+:root[data-footer="collapsed"] [data-footer-content] { flex: 0 1 auto; }
+:root[data-footer="collapsed"] [data-footer-inset] { padding-inline: 0.75rem; }
+:root[data-footer="collapsed"] [data-footer-toggle] { margin-right: 0.75rem; padding-block: 0.125rem; }
+/* The reporting action keeps its full accessible name; only its visible text becomes short in the compact tab. */
+[data-support-label="compact"] { display: none; }
+:root[data-footer="collapsed"] [data-support-label="full"] { display: none; }
+:root[data-footer="collapsed"] [data-support-label="compact"] { display: inline; }
+
 body {
   background: var(--background);
   color: var(--text);

@@ -257,6 +257,35 @@ Vercel Cron maintenance route. It requires `Authorization: Bearer CRON_SECRET`
 and performs the schema-owned daily rollup and safe retention operation. See
 [Observability](OBSERVABILITY.md) and [database ownership](../database/observability/README.md).
 
+### POST /api/support/report
+
+Anonymous user reporting intake (v0.4.2 Batch 1). Node.js, dynamic, never cached; the service worker bypasses all `/api/` paths, so
+submissions are never cached or queued offline. The body must be `application/json`, at most 16 KiB, and use the exact versioned
+contract in [SCHEMA.md](SCHEMA.md); unknown top-level fields are rejected.
+
+| Status | Body | Meaning |
+| --- | --- | --- |
+| `201` | `{ schemaVersion: 1, reportId, receivedAt }` | Durably committed (or the original receipt for a repeated idempotency key). `reportId` is an opaque `SR-…` reference. Server receipt time is authoritative. |
+| `400` | `{ error: "invalid_request", fieldError? }` | Malformed JSON, wrong content type, unknown or invalid fields, unregistered tool, query/hash in the pathname. Field codes only; values are never echoed. |
+| `403` | `{ error: "forbidden_origin" }` | Cross-site `Sec-Fetch-Site` or foreign `Origin`. |
+| `409` | `{ error: "idempotency_conflict" }` | The idempotency key was already used with different content. |
+| `413` | `{ error: "payload_too_large" }` | Body exceeded 16 KiB (declared or streamed). |
+| `429` | `{ error: "challenge_failed" \| "rate_limited" }` | The Turnstile token was rejected, or the global intake ceiling was reached. |
+| `503` | `{ error: "unavailable" }` | Persistence, the challenge verifier or required configuration is unavailable. No report id is ever returned. |
+
+Same-origin header checks are not authentication or rate limiting. Independent controls are server-side Turnstile verification (a
+missing secret fails closed; the token is never stored or logged), the IP-free global ceiling, and the external Vercel Firewall rules
+documented in [Deployment](DEPLOYMENT.md). Repeating the request with the same `idempotencyKey` and content returns the original
+receipt and creates no second report or job.
+
+### GET|POST /api/support/deliver
+
+Support delivery worker. Requires `Authorization: Bearer CRON_SECRET` (timing-safe comparison); an unauthorized or unconfigured call
+returns `401` and performs no work. It claims up to five due outbox jobs, delivers the private GitHub issue, operator email and
+consented contact receipt, and answers `200` with counts only (`claimed`, `delivered`, `retried`, `dead`, `purged`) or an empty
+`503`. `purged` is true only when `SUPPORT_RETENTION_ENABLED=true`. Vercel Cron issues `GET`; `POST` allows manual invocation. No
+schedule is configured in `vercel.json` by this change; see [Deployment](DEPLOYMENT.md).
+
 ### GET /api/health
 
 Response:

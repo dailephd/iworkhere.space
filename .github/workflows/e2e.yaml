@@ -48,3 +48,53 @@ jobs:
           name: e2e-report-${{ github.run_id }}-${{ github.run_attempt }}
           path: test-report/e2e/
           retention-days: 30
+
+  # The reporting entry only exists in a support-enabled build, so the header, footer and real SupportDialog scenarios need their own build.
+  # A separate job gives that build its own workspace and .next output; the public build above is never reused or overwritten.
+  # No database, Turnstile or provider is involved: nothing is submitted, and the specs replace only the browser-side Turnstile widget script.
+  e2e-support:
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.my-dev-kit-workflow/playwright-browsers
+      npm_config_cache: ${{ github.workspace }}/.my-dev-kit-workflow/npm-cache
+      TEMP: ${{ github.workspace }}/.my-dev-kit-workflow/tmp
+      TMP: ${{ github.workspace }}/.my-dev-kit-workflow/tmp
+      TMPDIR: ${{ github.workspace }}/.my-dev-kit-workflow/tmp
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare project-local workflow storage
+        run: mkdir -p .my-dev-kit-workflow/{tools,tmp,npm-cache,playwright-browsers,worktrees}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx --no-install playwright install --with-deps chromium
+
+      - name: Build (support enabled)
+        env:
+          NEXT_PUBLIC_SUPPORT_ENABLED: "true"
+          NEXT_PUBLIC_SUPPORT_TURNSTILE_SITE_KEY: e2e-site-key
+          NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED: "false"
+          NEXT_PUBLIC_OBSERVABILITY_ENABLED: "false"
+        run: npm run build
+
+      - name: Support-enabled E2E
+        env:
+          E2E_SUPPORT_RUN: "true"
+        run: npm run test:e2e -- footer-retraction.spec.ts v0.4.2-integration.spec.ts
+
+      - name: Upload support-enabled E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-support-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-report/e2e/
+          retention-days: 30

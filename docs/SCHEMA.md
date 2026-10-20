@@ -295,6 +295,33 @@ When a schema changes:
 Schema integrity is foundational to reliability.
 
 
+## Support report schema (v0.4.2 Batch 1)
+
+`POST /api/support/report` request (`schemaVersion: 1`). Required: `schemaVersion`, `category`, `area`, `pathname`, `description`,
+`contactConsent`, `idempotencyKey`, `turnstileToken`. Optional: `toolId`, `expected`, `observed`, `email`. Any other key is rejected.
+
+| Field | Rule |
+| --- | --- |
+| `category` | `incorrect_result`, `tool_failure`, `invalid_output`, `interface_accessibility`, `performance_compatibility`, `content_link`, `privacy_security`, `suggestion`, `other`. An empty value is `required`. |
+| `area` / `toolId` | `tool`, `site-wide` or `other`. `toolId` is required for `tool`, must be a registered tool id, and is forbidden otherwise. |
+| `pathname` | Allowlist only: `/`, `/discover`, `/privacy`, `/category/<registered category>`, `/tool/<registered slug>`. No query, hash, `//` or other route. |
+| `description` | Required, 1–2,000 Unicode code points after trim and NFC normalization. |
+| `expected` | Required (1–1,000) for `incorrect_result`; optional otherwise. For `suggestion` it carries "What improvement would help?". |
+| `observed` | Optional, up to 1,000 code points. For `suggestion` it carries the suggested use case. |
+| `email` / `contactConsent` | Consent is an explicit boolean. The address (≤254, validated, lower-cased) is kept only with consent and is required then; without consent it is discarded and never validated or stored. |
+| `idempotencyKey` | Lowercase UUID v4 generated per draft; reused only for an unchanged retry. |
+| `turnstileToken` | 1–2,048 characters; verified server-side and never stored or logged. |
+
+Control characters (other than tab and newline), NUL and malformed surrogate pairs are rejected. Normalization is deterministic.
+The persisted shape is `NormalizedReport`; the stored `payload_digest` is a SHA-256 over its content and excludes the key and token.
+
+Persistent tables (`database/support/001-schema.sql`): `support.report` (opaque id, unique idempotency key, digest, category, area,
+tool id, pathname, narrative, optional consented email, server receipt time, private tracker issue reference, retention markers) and
+`support.outbox_job` (job id, report id, kind `github_issue|operator_email|contact_receipt`, status `pending|leased|delivered|dead`,
+attempt count, next attempt, lease, safe provider reference and failure code). `UNIQUE (report_id, kind)` guarantees one job per kind.
+See [database/support/README.md](../database/support/README.md).
+
+
 ## Diagnostic hotfix
 
 ErrorDiagnostic: UUID id; ISO reporter timestamp; 64-hex SHA-256 fingerprint; client/server origin; warn/error severity; canonical DiagnosticError; explicit DiagnosticContext; server-added DeploymentContext. /api/log accepts client origin only, rejects additional fields and browser deployment claims, limits payload to 64 KiB. error_diagnostic contains received/reported times, searchable name/message/stack/cause/component/path/tool/boundary/category/fingerprint and bounded contexts. See additive 002 SQL and OBSERVABILITY.md.
