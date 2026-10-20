@@ -574,7 +574,7 @@ Demonstrate substantial original visitor value in the existing 18-tool product t
 - Original, reproducible example content for Compress PDF, PDF to Image, Images to PDF, Image Resizer and Image Converter, with verified actual outcomes, source attribution and clearly stated limits.
 - Clear task-first homepage with five truthful featured use cases, preserving all registered utilities, search and seven category entry points.
 - Helpful task/selection guidance on all seven populated category pages; special scrutiny for low-density category pages rather than invented filler or blanket redirects.
-- A publisher About page and `/contact` with the owner-selected `my-website-2026` direct Resend email-form mechanism (required email/title/message, honeypot, server-side validation, verified sender and visitor Reply-To). Keep general inquiries independent of v0.4.2 issue reporting, which is offered separately only if operational; do not create another issue-report backend or database.
+- A publisher About page and `/contact` with the owner-selected `my-website-2026` direct Resend email-form mechanism (required email/title/message, honeypot, server-side validation, verified sender and visitor Reply-To). In the *expanded existing fixed footer*, show a compact top-to-bottom **Contact Us → Report Issues → Privacy Policy** link/action group, with the middle action using the existing conditional report trigger and no permanent underline on Privacy Policy. Preserve the collapsed Report/Show footer controls and keep general inquiries independent of the default-off issue-reporting backend; do not create another report backend or database.
 - Source-backed curation, accurate examples, public maintenance provenance and a bounded post-release Search Console/real-feedback review. No invented engagement claims.
 
 ### Dependencies and architectural constraints
@@ -585,7 +585,7 @@ Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, Ap
 
 - Five original demonstrations have independently measured, reproducible source/output facts; no fabricated compression percentages, testimonials, sample provenance or capabilities.
 - Visitors can find, use and understand the real tools and all seven categories on desktop/mobile; informative copy is distinct, accurate and server-visible where relevant.
-- About/Contact are truthful, reachable, accessible, indexable only when appropriate and correctly reflected in route inventory/sitemap; the standalone contact form's direct Resend delivery and sender/Reply-To behavior are verified without exposing an unauthorized personal address or changing issue-report data handling.
+- About/Contact are truthful, reachable, accessible, indexable only when appropriate and correctly reflected in route inventory/sitemap; the standalone contact form's direct Resend delivery and sender/Reply-To behavior are verified without exposing an unauthorized personal address or changing issue-report data handling. Desktop/mobile tests protect the expanded-footer vertical order, default-off report omission, non-underlined Privacy Policy focusable link, and unchanged compact collapsed footer behavior.
 - Existing 18 tools, guide/accessibility contracts, privacy/ad exclusions, branding and prior version scopes are preserved, with full browser/CI regression proof.
 - Post-launch curation and indexing/user-interest evidence is recorded only from real sources. Passing tests never claims AdSense approval or an automatic traffic threshold.
 
