@@ -370,7 +370,7 @@ category migration. The v0.3.1 launch catalog historically had 15 tools, six
 populated categories and 23 URLs. Production deploys `master` continuously;
 deployment identity is separate from source and release identity.
 
-Current v0.4.1 source retains all 18 tools and seven populated categories,
+Current v0.4.2 source retains all 18 tools and seven populated categories,
 replaces `everyday` with `converter` (Converters), and moves QR to `developer`.
 The current sitemap includes `/privacy` and has 28 canonical URLs. The
 preceding v0.4.0 statement remains the historical release record.
