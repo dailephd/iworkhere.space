@@ -50,11 +50,14 @@ and installs/builds without root `node_modules` or the root Tailwind plugin.
 Root jobs do not compile the dashboard application.
 `.github/workflows/observability-db.yaml` independently runs the isolated
 Postgres 17 schema/rollup/query/role smoke and uploads each complete run directory.
-Together these are two additional workflows beyond the six public-app gates
-below. The dashboard and database workflows each have one required job; eight
-workflow jobs run in total.
+Together these are two additional workflows beyond the six primary public-app
+workflows below. The public-app workflows define seven required jobs because
+`e2e.yaml` contains both `e2e` and `e2e-support`; the dashboard and database
+workflows each add one required job. The repository has eight workflow files
+and nine required jobs in total. All run on pull requests and pushes to the
+documented branches.
 
-Six jobs run on every push and pull request:
+The six primary public-app workflows run on every push and pull request:
 
 | Job | Command | Enforces |
 |-----|---------|----------|
@@ -66,7 +69,7 @@ Six jobs run on every push and pull request:
 | `e2e-support` (job in `e2e.yaml`) | `npm run test:e2e -- footer-retraction.spec.ts v0.4.2-integration.spec.ts` after a `NEXT_PUBLIC_SUPPORT_ENABLED=true` build, with `E2E_SUPPORT_RUN=true` | Header, footer and real `SupportDialog` scenarios in a support-enabled build; no database or provider |
 | `container` | `npm run test:container` | Built Docker runtime, health, image hygiene, and the same browser suite against the container without host `.next` dependencies |
 
-All six public-app jobs plus the dashboard and database jobs must pass.
+All seven public-app jobs plus the dashboard and database jobs must pass.
 If any job fails, merge is blocked.
 
 The Delivery 2 production launch on master SHA
@@ -80,8 +83,8 @@ was added.
 
 For local aggregate validation, run `npm run verify`. This command runs the
 same four checks sequentially with a shared `RUN_ID` and per-command logs; it
-does not include E2E or Container and does not replace the six public-app or two
-additional GitHub Actions jobs. `npm run test:container` is the
+does not include E2E or Container and does not replace the seven public-app or
+two additional GitHub Actions jobs. `npm run test:container` is the
 production-container gate.
 
 Each job runs in a separate GitHub Actions workflow file under `.github/workflows/`.
@@ -165,9 +168,10 @@ Violating test report uniqueness is a CI failure.
 
 ## 5. SSR and Hydration Safety Enforcement
 
-The public application has six independent gates: Typecheck, Lint, Test, Build,
-E2E and Container. The repository also runs separate Dashboard and Observability
-database workflows, for eight workflow jobs total. Active workflows use Node
+The public application has six primary gate types: Typecheck, Lint, Test, Build,
+E2E and Container; E2E defines two jobs, so the six primary public workflows
+cover seven required public-app jobs. The repository also runs separate Dashboard
+and Observability database workflows, for nine required jobs across eight workflow files. Active workflows use Node
 24.21.0 (the dashboard/database workflows specify Node 24). The E2E gate installs pinned Chromium,
 builds, and runs `npm run test:e2e`; the Container gate checks Docker, installs
 Chromium, and runs `npm run test:container`. All eight workflows trigger on

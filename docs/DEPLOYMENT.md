@@ -262,7 +262,9 @@ runtime environment alone cannot activate an already-built browser bundle.
 
 ## Support reporting (v0.4.2 Batch 1) — provisioning and activation
 
-Status: code implemented in the uncommitted v0.4.2 feature worktree (unreleased, not merged or deployed). **Nothing below is provisioned, deployed or verified against a live provider.**
+Status: v0.4.2 support code is implemented and readiness-approved. This is
+separate from GitHub Release publication and Vercel deployment. **Nothing below
+is provisioned, deployed or verified against a live provider.**
 Automated evidence uses a disposable PostgreSQL and isolated provider substitutes only.
 
 | Name | Owner / visibility | Required when | Off / fail-closed behavior | Secret? |
@@ -286,7 +288,7 @@ Provisioning checklist (operator, external, not done by this change): a Neon sup
 `database/support/roles.sql` and per-role credentials; a separately provisioned **private** GitHub support repository and a restricted
 token; a verified Resend sender/domain and token; Cloudflare Turnstile site and secret keys; Vercel Firewall rate and bot rules for
 `/api/support/report` (the application stores no IP address and offers only a global ceiling); `CRON_SECRET`; Vercel Authentication on
-the dashboard project; and a reviewed `/privacy` disclosure and retention decision. The `/privacy` page in the feature worktree carries
+the dashboard project; and a reviewed `/privacy` disclosure and retention decision. The `/privacy` page carries
 draft "Problem reports and suggestions" copy, but it has not received legal approval and its stated retention targets are not an
 active deletion practice (`SUPPORT_RETENTION_ENABLED` defaults off); that approval is a separate unresolved activation requirement.
 Do not set `NEXT_PUBLIC_SUPPORT_ENABLED=true` in production before these exist.

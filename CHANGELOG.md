@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.4.2 — User Reporting & Retractable Site Chrome
+
+- Added anonymous problem reports and suggestions through an accessible dialog,
+  with selectable report context and optional contact details with explicit
+  follow-up consent. The reporting interface is available only in builds with
+  `NEXT_PUBLIC_SUPPORT_ENABLED=true`, which remains disabled by default.
+- Added a dedicated support API with strict validation and abuse controls,
+  durable support database storage, and an idempotent transactional delivery
+  outbox with bounded retries, dead-letter handling and visible delivery
+  status.
+- Added private GitHub issue and Resend notification adapters, plus protected,
+  read-only support dashboard views. These integrations are code capabilities;
+  no external provider or production credential is claimed as provisioned.
+- Added a retractable header/navigation control and a fixed, retractable footer
+  with a persisted preference and report access in both states.
+- Improved content clearance, visual viewport and safe-area behavior, and
+  keyboard and assistive-technology access across the header, footer and dialog.
+- Added integrated browser, database, provider-adapter and regression coverage
+  while preserving the existing utility catalog and browser-local utility
+  functionality.
+
+
 ## v0.4.1 — UI and Converter updates — 2026-10-11
 
 Published as the numbered GitHub Release on 2026-10-11. PR #32 merged to

@@ -570,7 +570,9 @@ disposable-PostgreSQL integration (`npm run test:support-db`); provider test dou
 container tests (`npm run test:container`); and actual external-provider acceptance and production deployment verification, neither
 of which has been performed.
 
-Recorded v0.4.2 evidence is historical by stage. Batch 1 reported 1,508 unit tests, 85 support-database assertions, 24 dedicated
+The v0.4.2 exact-SHA readiness evidence is recorded by stage; these results
+belong to implementation SHA `16b04696d99a2f176f99b8f2606fb62800aed3aa`, not
+the later release-preparation metadata commit. Batch 1 reported 1,508 unit tests, 85 support-database assertions, 24 dedicated
 support browser checks and passing dashboard and container validation. The Batch 4 public-mode Playwright run reported 594 passed,
 0 failed and 2 skipped; the two skips are existing advertising-enabled scenarios unavailable in the public configuration and are not
 counted as passes. Neither is a count for a later source state. Footer and header behavior is verified in desktop and mobile headless

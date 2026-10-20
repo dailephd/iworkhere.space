@@ -1,6 +1,9 @@
 # Support database
 
-Status: implemented in the uncommitted v0.4.2 feature worktree (unreleased). Nothing here provisions resources, embeds credentials, runs automatically at
+Status: v0.4.2 support implementation is complete and readiness-approved.
+This documentation describes code and operator requirements; no release
+publication, provider provisioning or production migration is implied. Nothing
+here provisions resources, embeds credentials, runs automatically at
 application startup, or has been applied to any production database.
 
 `database/support/` owns the persistent store for anonymous user reports and their private delivery queue. It is independent of

@@ -3,9 +3,12 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Latest numbered GitHub release: v0.4.1 (2026-10-11).** User reporting, a retractable header and a fixed collapsible footer (v0.4.2)
-are implemented in an uncommitted feature worktree and are unreleased; the report entry stays off unless
-`NEXT_PUBLIC_SUPPORT_ENABLED=true`, and external support services are not provisioned. The registry contains 18 tools across
+**Application source/package version: 0.4.2.** The v0.4.2 implementation is
+committed and readiness-approved. GitHub Release publication and production
+deployment are verified separately from package metadata. Its anonymous
+reporting entry is disabled unless `NEXT_PUBLIC_SUPPORT_ENABLED=true`; external
+support providers and production activation are not claimed as provisioned. The
+registry contains 18 tools across
 seven populated categories and produces 28 sitemap URLs, including `/privacy`.
 The homepage groups every tool under its populated category; Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
@@ -17,7 +20,7 @@ and counter input remain browser-local; QR generation and PNG download are
 browser-local. The private dashboard remains an independent application at
 version `0.1.0`. The public Vercel project continuously deploys `master`;
 deployed application source and numbered GitHub releases are distinct. The
-annotated `v0.4.1` tag points to `master` commit
+historical `v0.4.1` release tag points to `master` commit
 `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (PR #32). The exact latest
 production deployment identity was not independently verified in this
 source-documentation review. Vercel Web Analytics measures automatic page views only in
@@ -73,18 +76,21 @@ or operator database; migrations never run on startup. Local SQL validation is
 `npm run test:observability-db` with disposable Docker Postgres 17. Dashboard
 CI/verify is independent and requires no production secret. Production services and deployment settings are configured separately; see [deployment documentation](docs/DEPLOYMENT.md) for their requirements.
 
-GitHub Actions keeps six validation jobs independent:
+The repository has eight GitHub Actions workflow files. Its public-app
+workflows define seven required jobs because `e2e.yaml` contains both `e2e` and
+`e2e-support`; the dashboard and observability database workflows add two more,
+for nine required jobs total:
 
 - `typecheck.yaml` — `npm run typecheck`
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
-- `e2e.yaml` — `npm run test:e2e` (production browser gate), plus a support-enabled job for the header, footer and report-dialog scenarios
+- `e2e.yaml` — `e2e` runs `npm run test:e2e` (public production browser gate); `e2e-support` runs header, footer and report-dialog scenarios in a support-enabled build
 - `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
 Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the
 private dashboard and disposable PostgreSQL schema/maintenance path. The
-repository therefore has eight independent workflow jobs in total; see
+repository therefore has eight workflow files and nine required jobs in total; see
 [CI/CD](docs/CI_CD.md) for artifact and trigger details.
 
 All eight workflows run on pull requests and pushes to `main`, `master`, and
@@ -98,7 +104,7 @@ readiness passed at the implementation SHA recorded in [CI/CD](docs/CI_CD.md).
 v0.3.0 local implementation validation is recorded in its
 [implementation report](docs/reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md).
 
-All eight workflow jobs must pass for a pull request. The local aggregate
+All nine required jobs must pass for a pull request. The local aggregate
 command does not replace them.
 
 Docker is optional for local development. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
