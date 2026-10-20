@@ -50,6 +50,8 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
+Current numbered GitHub Release: `v0.4.2` (2026-10-20); its annotated tag and the then-current `master` resolve to `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`. This source identity does not establish Vercel deployment or activation of the default-off reporting feature. The next product plan is [v0.4.3](plans/v0.4.3-implementation-plan.md), covering original verified demonstrations, task-first discovery, useful category content and operator-approved About/Contact; the later catalog plan remains unchanged.
+
 The historical `v0.4.1` GitHub Release was published 2026-10-11; its annotated tag
 points to the release-time `master` commit
 `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent v0.4.3 planning PR #35 merge commit is
