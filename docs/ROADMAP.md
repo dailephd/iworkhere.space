@@ -4,11 +4,10 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The latest numbered GitHub release is `v0.4.1`, published 2026-10-11;
-the root application package is `0.4.1` and the independent dashboard remains
-`0.1.0`. Source, GitHub release and live production deployment identities
-are distinct. The exact current Vercel production deployment was not
-independently verified during this documentation review.
+The latest numbered GitHub release is `v0.4.2`, published 2026-10-20;
+the root application package is `0.4.2` and the independent dashboard remains
+`0.1.0`. Source release identity and Vercel production deployment are distinct;
+production deployment status is tracked separately.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -521,11 +520,11 @@ inferred from the GitHub Release. The v0.5.0 and v0.6.0 catalogs are unaffected.
 
 ## Version 0.4.2 — User Feedback & Retractable Site Chrome
 
-Status: Implementation complete and readiness-approved at
-`16b04696d99a2f176f99b8f2606fb62800aed3aa`. GitHub Release publication and
-production deployment are verified separately from source/package metadata;
-no production migration or provider activation is claimed. See [project
-status](project-status.md).
+Status: RELEASED as GitHub Release `v0.4.2` on 2026-10-20. Implementation
+readiness passed at `16b04696d99a2f176f99b8f2606fb62800aed3aa`; release-PR and
+master CI validated their exact commits. Production deployment is tracked
+separately. No production migration or provider activation is claimed. See
+[project status](project-status.md).
 
 ### Goal
 
@@ -564,7 +563,7 @@ The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) preserves 
 
 ## Version 0.4.3 — Utility Value, Trust & Discoverability
 
-Status: PLANNED PRODUCT-VALUE PATCH — 2026-10-18. Scope is newly proposed after a publisher-reported AdSense "Low value content" rejection; not implemented, released, deployed or approved by Google. Planning order places it after the separately planned v0.4.2 patch, before the unchanged v0.5.0 catalog. A different publication order requires a separate explicit version decision; AdSense resubmission must not be made dependent on launching v0.4.2's support backend.
+Status: PLANNED PRODUCT-VALUE PATCH — 2026-10-18. Scope is newly proposed after a publisher-reported AdSense "Low value content" rejection; not implemented, released, deployed or approved by Google. Planning order places it after the v0.4.2 release, before the unchanged v0.5.0 catalog. A different publication order requires a separate explicit version decision; AdSense resubmission must not be made dependent on launching v0.4.2's support backend.
 
 ### Goal
 
@@ -912,7 +911,7 @@ v0.4.0  Core Text, Data & Sharing Utilities (released 2026-10-08)
         ↓
 v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
-v0.4.2  User Feedback & Retractable Site Chrome (implementation complete; release identity verified separately)
+v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
 v0.4.3  Utility Value, Trust & Discoverability (planned product patch)
         ↓

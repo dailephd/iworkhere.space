@@ -75,13 +75,12 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
-  v0.4.1 was published as a GitHub Release; application source/package
-  version 0.4.2 has a committed, readiness-approved implementation, with
-  publication and deployment verified separately. v0.4.3 (original utility
+  v0.4.2 is the current numbered GitHub Release (2026-10-20), with its source
+  and package version aligned. Production deployment status is tracked separately.
+  v0.4.3 (original utility
   value and publisher trust) is the next planned product version. v0.5.0 is
-  the next catalog expansion, and its implementation plan is not frozen. The current
-  Vercel production deployment identity remains unverified in this source
-  audit; historical deployment records remain date-scoped.
+  the next catalog expansion, and its implementation plan is not frozen. Vercel deployment identity and health must be verified from deployment
+  records; historical launch records remain date-scoped.
 
 Current persistent-observability references:
 
@@ -135,9 +134,9 @@ in the current release.
 **Relations:** Version-specific implementation plans derive from the roadmap but
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
-their respective reports. v0.3.1, v0.4.0 and v0.4.1 are verified GitHub Releases. The application
-source/package version is 0.4.2 with a committed, readiness-approved
-implementation; publication and deployment are verified separately. Planned
+their respective reports. v0.3.1, v0.4.0 and v0.4.1 remain historical GitHub
+Releases; v0.4.2 is the current numbered release (2026-10-20). Production
+activation and deployment state are tracked separately. Planned
 v0.4.3 for original utility value, publisher transparency and distinctive
 content. v0.5.0 remains the next catalog expansion release.
 
@@ -155,15 +154,14 @@ authority, not evidence that a batch or version was implemented.
 
 ### plans/v0.4.2-implementation-plan.md
 
-**Summary:** Frozen v0.4.2 patch plan; its implementation is complete and
-readiness-approved, while production activation remains unverified. Defines a complete,
+**Summary:** Frozen v0.4.2 patch plan, implemented and released on 2026-10-20;
+production activation remains unverified. Defines a complete,
 privacy-preserving anonymous reporting and private triage vertical slice; dedicated
 support persistence/least-privilege grants, durable outbox, Resend notification,
 private issue tracking and abuse controls; the original-header-out-of-view top
 navigation control; and fixed retractable footer with preserved reporting access.
 Records exact intended owners, cross-layer test obligations, production activation
-gates and exclusions. The plan itself is NOT proof of implementation or deployment;
-current behavior is documented in API.md, SCHEMA.md, architecture.md, DESIGN.md and database/support/README.md.
+gates and exclusions. The plan records scope and constraints; current behavior is documented in API.md, SCHEMA.md, architecture.md, DESIGN.md and database/support/README.md.
 **When to read:** When reviewing the v0.4.2 implementation, support provider/Neon changes,
 report-dialog implementation, or layout/header/footer modifications.
 **Relations:** [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md),

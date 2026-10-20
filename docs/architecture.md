@@ -78,7 +78,7 @@ Any generated code MUST follow this structure.
 
 ## Anonymous user reporting (v0.4.2 Batch 1)
 
-Status: implemented in the uncommitted v0.4.2 feature worktree; not released, deployed or live-verified. The public entry is gated by the build-time flag
+Status: implemented and included in the v0.4.2 GitHub Release. Production deployment and activation are verified separately. The public entry is gated by the build-time flag
 `NEXT_PUBLIC_SUPPORT_ENABLED=true` (default off) and needs the external provisioning listed in [Deployment](DEPLOYMENT.md).
 
 Support is a domain independent of observability. Report text and contact details never enter `/api/log`, `/api/metric`, Vercel

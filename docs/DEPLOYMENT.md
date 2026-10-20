@@ -197,10 +197,17 @@ For CLI production uploads, supply the tested commit as both runtime/build VERCE
 production evidence is recorded below; the latest production deployment
 identity is not established by that historical launch record.
 
-## Current GitHub release and deployment distinction — 2026-10-11
+## v0.4.2 GitHub release and deployment distinction — 2026-10-20
 
-The latest numbered GitHub Release is `v0.4.1` — UI and Converter updates,
-published 2026-10-11. Its annotated tag targets `master` commit
+The v0.4.2 GitHub Release was published on 2026-10-20 from the master release
+commit after its release PR and exact-SHA CI gates passed. This does not by itself
+identify or verify a Vercel production deployment. The deployment identity and
+health must be confirmed from Vercel deployment records.
+
+## Historical v0.4.1 GitHub release and deployment distinction — 2026-10-11
+
+The v0.4.1 GitHub Release — UI and Converter updates — was published
+2026-10-11. Its annotated tag targets `master` commit
 `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (merged PR #32). All eight
 required GitHub Actions checks completed successfully on that SHA. This verifies
 the release source, not an exact deployed Vercel instance. The current
@@ -262,8 +269,8 @@ runtime environment alone cannot activate an already-built browser bundle.
 
 ## Support reporting (v0.4.2 Batch 1) — provisioning and activation
 
-Status: v0.4.2 support code is implemented and readiness-approved. This is
-separate from GitHub Release publication and Vercel deployment. **Nothing below
+Status: v0.4.2 support code is implemented and included in the published
+GitHub Release. Production support activation remains separate. **Nothing below
 is provisioned, deployed or verified against a live provider.**
 Automated evidence uses a disposable PostgreSQL and isolated provider substitutes only.
 

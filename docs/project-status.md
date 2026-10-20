@@ -8,7 +8,7 @@ SOURCE_BASELINE_FOR_THIS_RECONCILIATION: `d48e5fcf3d9015db5677d0a7410236a70979db
 
 CURRENT_ROOT_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`)
 
-V0_4_1_GITHUB_RELEASE: `v0.4.1` was published 2026-10-11. Release publication is verified separately from package metadata.
+CURRENT_NUMBERED_GITHUB_RELEASE: `v0.4.2` was published 2026-10-20. Production deployment status is tracked separately.
 
 V0_4_1_RELEASE_PR: #32 — MERGED 2026-10-11.
 
@@ -18,20 +18,21 @@ V0_4_1_TAGGED_SHA_CI: PASS — Build, Lint, Test, Typecheck, E2E, Container,
 Dashboard and Observability database succeeded on the historical tagged commit.
 This is not a claim that all eight workflows passed on the current `master` SHA.
 
-LATEST_PRODUCTION_DEPLOYMENT_IDENTITY: NOT INDEPENDENTLY VERIFIED. The public
-Vercel project is configured for automatic deployment from `master`, but
-GitHub release publication and passing source checks do not establish a
-particular production deployment's identity or live health.
+PRODUCTION_DEPLOYMENT_IDENTITY: Verify the public Vercel deployment source SHA
+and live health from Vercel records. GitHub release publication and passing
+source checks do not establish a particular production deployment's identity
+or health.
 
 CURRENT_RELEASE_CATALOG: 18 registered tools, seven populated categories,
 28 registry-derived sitemap URLs including `/privacy`. The historical v0.4.0
 release had 27 URLs; v0.4.1 retains all tool URLs and adds the Converters
 category with the permanent `/category/everyday` redirect.
 
-CURRENT_IMPLEMENTATION: `v0.4.2 — User Feedback & Retractable Site Chrome` is
-committed and readiness-approved at implementation SHA
-`16b04696d99a2f176f99b8f2606fb62800aed3aa`. Release publication and production
-deployment are verified separately from source/package metadata.
+CURRENT_RELEASE: `v0.4.2 — User Feedback & Retractable Site Chrome` is
+represented by the release commit on `master` and published as the numbered
+GitHub Release on 2026-10-20. Exact-SHA implementation readiness passed at
+`16b04696d99a2f176f99b8f2606fb62800aed3aa`; release-PR and master CI validated
+their respective exact commits. Production deployment status is tracked separately.
 NEXT_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
 Its implementation plan is not frozen. Planner-owned specifications and a
@@ -53,15 +54,13 @@ Planning prerequisites are now integrated: documentation PR #33 was merged to
 planning PR #34 was merged in `5711a21a8d5d09b8a88ea784326def336e1ace1a`.
 The planning documents defined scope and do not by themselves constitute implementation evidence. The next catalog expansion remains frozen v0.5.0; v0.4.2 does not replace that scope. The v0.4.1 publication facts above remain historical.
 
-## v0.4.2 implementation and readiness status — 2026-10-20
+## v0.4.2 release and production activation status — 2026-10-20
 
 APPLICATION_SOURCE_AND_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`).
-VALIDATED_IMPLEMENTATION: complete and committed at readiness-approved SHA
-`16b04696d99a2f176f99b8f2606fb62800aed3aa`. Exact-SHA hosted readiness passed
-for that implementation candidate. The release-preparation metadata commit has
-its own SHA and does not inherit an assertion that those hosted checks ran on
-that later commit. GitHub Release publication and deployment are verified
-separately. The current v0.4.1 GitHub Release facts above remain historical.
+GITHUB_RELEASE: `v0.4.2`, published 2026-10-20 after the release PR and exact-SHA
+master validation passed. The v0.4.1 release facts above remain historical.
+PRODUCTION_DEPLOYMENT: tracked separately from GitHub release publication; see
+[deployment status](DEPLOYMENT.md).
 
 Implemented in the validated source: the anonymous report vertical slice (global entry, accessible dialog, nine categories, strict API with a 16 KiB
 cap, origin and Turnstile checks, durable idempotent `support` schema, independent outbox jobs with leasing, retry and dead-letter,

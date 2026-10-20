@@ -3,11 +3,12 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Application source/package version: 0.4.2.** The v0.4.2 implementation is
-committed and readiness-approved. GitHub Release publication and production
-deployment are verified separately from package metadata. Its anonymous
-reporting entry is disabled unless `NEXT_PUBLIC_SUPPORT_ENABLED=true`; external
-support providers and production activation are not claimed as provisioned. The
+**Latest numbered GitHub Release: v0.4.2 (2026-10-20).** The application
+source/package version is `0.4.2`; its implementation is committed and
+readiness-approved. Production deployment status is tracked separately from GitHub
+Release publication. The anonymous reporting entry is disabled unless
+`NEXT_PUBLIC_SUPPORT_ENABLED=true`; external support providers and production
+activation are not claimed as provisioned. The
 registry contains 18 tools across
 seven populated categories and produces 28 sitemap URLs, including `/privacy`.
 The homepage groups every tool under its populated category; Calculator accepts
@@ -21,9 +22,10 @@ browser-local. The private dashboard remains an independent application at
 version `0.1.0`. The public Vercel project continuously deploys `master`;
 deployed application source and numbered GitHub releases are distinct. The
 historical `v0.4.1` release tag points to `master` commit
-`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (PR #32). The exact latest
-production deployment identity was not independently verified in this
-source-documentation review. Vercel Web Analytics measures automatic page views only in
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (PR #32). Verify current
+production deployment identity and health from Vercel records separately from
+GitHub release publication. Vercel Web Analytics
+measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
 and [the changelog](CHANGELOG.md).

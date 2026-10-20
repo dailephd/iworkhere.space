@@ -1,6 +1,10 @@
 # Changelog
 
-## v0.4.2 — User Reporting & Retractable Site Chrome
+## v0.4.2 — User Reporting & Retractable Site Chrome — 2026-10-20
+
+Published as the numbered GitHub Release on 2026-10-20. GitHub release
+publication does not establish the identity or health of the Vercel production
+deployment.
 
 - Added anonymous problem reports and suggestions through an accessible dialog,
   with selectable report context and optional contact details with explicit
