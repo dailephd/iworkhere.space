@@ -591,7 +591,7 @@ Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, Ap
 
 ### Exclusions and handoff
 
-No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns batch A–E, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation has not begun.
+No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation has not begun.
 
 ## Version 0.5.0 — Developer & Text Utility Suite
 
