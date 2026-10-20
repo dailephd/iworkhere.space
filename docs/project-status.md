@@ -9,6 +9,8 @@ SOURCE_BASELINE_FOR_THIS_RECONCILIATION: `d48e5fcf3d9015db5677d0a7410236a70979db
 CURRENT_ROOT_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`)
 
 CURRENT_NUMBERED_GITHUB_RELEASE: `v0.4.2` was published 2026-10-20. Production deployment status is tracked separately.
+V0_4_2_RELEASE_PR: #37 — MERGED 2026-10-20.
+V0_4_2_TAG_AND_RELEASE_MERGE_SHA: `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87` (tag `v0.4.2` and `master` matched at the 2026-10-20 review checkpoint; this is not a moving-HEAD claim).
 
 V0_4_1_RELEASE_PR: #32 — MERGED 2026-10-11.
 
@@ -34,6 +36,7 @@ GitHub Release on 2026-10-20. Exact-SHA implementation readiness passed at
 `16b04696d99a2f176f99b8f2606fb62800aed3aa`; release-PR and master CI validated
 their respective exact commits. Production deployment status is tracked separately.
 NEXT_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
+NEXT_IMPLEMENTATION_HANDOFF (2026-10-20): use the existing [v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md), verify current source/owners, then begin Batch A with original demonstration fixtures and independent measurements before adding example UI, task-first discovery and seven-category guidance. Verify public publisher identity and the owner-selected direct-Resend contact channel (sender and inbox) before Batch D; that operational setup must not block Batches A–C. The owner additionally selected a compact vertically stacked expanded-footer action order Contact Us → Report Issues (existing conditional trigger) → Privacy Policy (without permanent underline), preserving the released fixed/collapsed footer and focus behavior. The plan's five batches remain one product release; no v0.4.3 feature is implemented yet. The v0.4.2 report backend is released but its production activation remains unverified.
 NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
 Its implementation plan is not frozen. Planner-owned specifications and a
 version plan must precede implementation. The frozen v0.6.0 scope remains

@@ -574,24 +574,24 @@ Demonstrate substantial original visitor value in the existing 18-tool product t
 - Original, reproducible example content for Compress PDF, PDF to Image, Images to PDF, Image Resizer and Image Converter, with verified actual outcomes, source attribution and clearly stated limits.
 - Clear task-first homepage with five truthful featured use cases, preserving all registered utilities, search and seven category entry points.
 - Helpful task/selection guidance on all seven populated category pages; special scrutiny for low-density category pages rather than invented filler or blanket redirects.
-- A publisher About page and a verified Contact/report pathway. Reuse the v0.4.2 reporting workflow if deployed; otherwise require an explicitly approved public contact method. No new report backend.
+- A publisher About page and `/contact` with the owner-selected `my-website-2026` direct Resend email-form mechanism (required email/title/message, honeypot, server-side validation, verified sender and visitor Reply-To). In the *expanded existing fixed footer*, show a compact top-to-bottom **Contact Us → Report Issues → Privacy Policy** link/action group, with the middle action using the existing conditional report trigger and no permanent underline on Privacy Policy. Preserve the collapsed Report/Show footer controls and keep general inquiries independent of the default-off issue-reporting backend; do not create another report backend or database.
 - Source-backed curation, accurate examples, public maintenance provenance and a bounded post-release Search Console/real-feedback review. No invented engagement claims.
 
 ### Dependencies and architectural constraints
 
-Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, AppShell, storage and design system. Preserve F-01/F-02 advertising eligibility, privacy disclosure, existing browser-local file processing and the v0.4.2 header/footer when present. New example data belongs under src/module/tool/valueExamples.ts, presentation under src/component/tool/ToolExamplePanel.tsx, original approved assets under public/examples/v0.4.3/, and operator-verified public identity under src/module/content/siteInformation.ts. Routes /about and /contact use src/app and existing metadata helpers; they require verified publisher copy and contact decisions before public deployment. Do not create a parallel tool registry or new analytics/CMS/backend.
+Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, AppShell, storage and design system. Preserve F-01/F-02 advertising eligibility, privacy disclosure, existing browser-local file processing and the v0.4.2 header/footer when present. New example data belongs under src/module/tool/valueExamples.ts, presentation under src/component/tool/ToolExamplePanel.tsx, original approved assets under public/examples/v0.4.3/, and operator-verified public identity under src/module/content/siteInformation.ts. Routes /about and /contact use src/app and existing metadata helpers; `/api/contact` and its server-only direct Resend sender use the exact owners in the detailed v0.4.3 plan. They require verified publisher copy, sender/inbox configuration and privacy disclosure before public contact activation. Do not create a parallel tool registry, new support-report backend, analytics/CMS or contact database.
 
 ### Acceptance
 
 - Five original demonstrations have independently measured, reproducible source/output facts; no fabricated compression percentages, testimonials, sample provenance or capabilities.
 - Visitors can find, use and understand the real tools and all seven categories on desktop/mobile; informative copy is distinct, accurate and server-visible where relevant.
-- About/Contact are truthful, reachable, accessible, indexable only when appropriate and correctly reflected in route inventory/sitemap; no unauthorized personal contact data.
+- About/Contact are truthful, reachable, accessible, indexable only when appropriate and correctly reflected in route inventory/sitemap; the standalone contact form's direct Resend delivery and sender/Reply-To behavior are verified without exposing an unauthorized personal address or changing issue-report data handling. Desktop/mobile tests protect the expanded-footer vertical order, default-off report omission, non-underlined Privacy Policy focusable link, and unchanged compact collapsed footer behavior.
 - Existing 18 tools, guide/accessibility contracts, privacy/ad exclusions, branding and prior version scopes are preserved, with full browser/CI regression proof.
 - Post-launch curation and indexing/user-interest evidence is recorded only from real sources. Passing tests never claims AdSense approval or an automatic traffic threshold.
 
 ### Exclusions and handoff
 
-No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns batch A–E, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation has not begun.
+No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation has not begun.
 
 ## Version 0.5.0 — Developer & Text Utility Suite
 
@@ -998,6 +998,8 @@ This roadmap does not authorize a coding agent to:
 Where a version has unresolved planning decisions, resolve them before its implementation plan is frozen.
 
 ## Next planning action
+
+Current handoff (2026-10-20): GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before Batch A, verify the latest source/owners and establish original fixture provenance and measurable facts; verify truthful public publisher identity and the selected direct-Resend contact sender/inbox before Batch D, without blocking earlier example and discovery work. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
 
 Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
 record, PR #34 integrated the v0.4.2 plan, and PR #35 integrated the v0.4.3
