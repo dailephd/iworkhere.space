@@ -175,9 +175,9 @@ v0.5.0 and v0.6.0 catalog scopes are unchanged.
 
 **Summary:** Product-value patch planned after a publisher-reported AdSense
 Low value content rejection. Defines five original, reproducible PDF/image
-examples; task-first homepage; distinct seven-category guidance; an operator-
-verified About/Contact pathway; safe content/asset ownership and a real-use
-curation follow-up. Includes exact architecture owners, five context-sharing
+examples; task-first homepage; distinct seven-category guidance; an operator-verified About page and independent direct-Resend Contact form
+reusing `my-website-2026`'s email/title/message, honeypot, From and Reply-To setup;
+safe content/asset ownership and a real-use curation follow-up. Includes exact architecture owners, five context-sharing
 implementation batches, per-tool evidence standards, route/SEO/accessibility/
 privacy/ad-regression tests, explicit external decisions and release boundaries.
 This plan is NOT evidence of implemented or deployed behavior.
