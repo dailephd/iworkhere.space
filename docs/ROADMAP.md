@@ -999,6 +999,8 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
+Current handoff (2026-10-20): GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before implementation, verify the latest source and affected owners, approve a truthful public publisher identity/contact channel, and establish original fixture provenance and measurable example facts. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
+
 Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
 record, PR #34 integrated the v0.4.2 plan, and PR #35 integrated the v0.4.3
 plan into `master`. Both patches were planned and unpublished at that point. At the 2026-10-19 update checkpoint, v0.4.2 implementation was complete in the feature worktree and publication had not yet occurred; v0.4.3 remained planned.
