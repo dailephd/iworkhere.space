@@ -249,7 +249,12 @@ trigger on close. Native controls only; no animation. The dialog sits above ordi
 
 ## v0.4.3 task-first discovery and evidence presentation — 2026-10-18
 
-Status: The v0.4.3 implementation is complete and committed on `feature/v0.4.3-utility-value`; its initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight required hosted workflows and nine jobs. Each later candidate SHA requires its own exact-SHA validation. v0.4.3 remains unreleased, and production deployment is tracked separately. This dated section records its approved design intent and preserves the existing viewport chrome and reporting controls.
+Status: The v0.4.3 implementation is complete and committed on `feature/v0.4.3-utility-value`; its initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight required hosted workflows and nine jobs. Each later candidate SHA requires its own exact-SHA validation. At that
+implementation checkpoint v0.4.3 had not yet been tagged; the subsequent
+`v0.4.3` tag resolves to `da1c6b48f2319ffa85f17b725d958980eabc7235`,
+while Production acceptance is recorded separately in
+[project status](project-status.md). This dated section records the approved
+design intent and preserves the existing viewport chrome and reporting controls.
 
 The homepage introduces practical tasks with honest, outcome-focused entry points to five *existing* file-processing utilities; it retains all registry-based category browsing, search and registered tool links. These are editorially chosen examples, never labeled as popularity or personalized recommendations without measured evidence. Category pages have genuinely different explanations grounded in present registered tools; minimal/one-tool categories do not receive repeated keyword filler.
 
