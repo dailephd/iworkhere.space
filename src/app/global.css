@@ -85,18 +85,20 @@ body {
 }
 
 /* Shell-level footer clearance: FooterViewportControl replaces the fallback with the footer's measured height.
-   The fallbacks approximate the expanded footer (taller when its content stacks) and the compact collapsed tab before JavaScript runs. */
+   The fallbacks approximate the expanded footer and the compact collapsed tab before JavaScript runs. The expanded footer stacks
+   Contact Us, the optional Report Issues action and Privacy Policy; the fallbacks match the three-row (reporting enabled) height
+   measured in Chromium (93px at 1280px, 137px at 390px), and a build without reporting simply replaces them with its smaller measurement. */
 :root {
-  --footer-clearance: 3.25rem;
+  --footer-clearance: 5.8rem;
   scroll-padding-bottom: var(--footer-clearance);
   /* Keeps focus targets and anchors clear of the fixed Show navigation control at the top of the viewport. */
   scroll-padding-top: 3rem;
 }
 @media (max-width: 639px) {
-  :root { --footer-clearance: 7.1rem; }
+  :root { --footer-clearance: 8.6rem; }
 }
 :root[data-footer="collapsed"] { --footer-clearance: 2.2rem; }
-/* The collapsed footer keeps the report action and the toggle; copyright and privacy return on expansion. */
+/* The collapsed footer keeps the report action and the toggle; copyright, Contact Us and Privacy Policy return on expansion. */
 :root[data-footer="collapsed"] [data-footer-detail] { display: none; }
 :root[data-footer="collapsed"] [data-footer-when="expanded"] { display: none; }
 :root:not([data-footer="collapsed"]) [data-footer-when="collapsed"] { display: none; }

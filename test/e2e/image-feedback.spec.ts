@@ -27,7 +27,7 @@ for (const slug of ["image-resizer", "image-compressor", "image-converter", "hei
         expect(await page.evaluate(() => (window as unknown as { feedbackDecodeCount: unknown }).feedbackDecodeCount)).toEqual({ workers: 0, bitmaps: 0 });
         expect(page.url()).not.toContain("PRIVATE_FEEDBACK");
         expect(JSON.stringify(requests)).not.toMatch(/PRIVATE_FEEDBACK|26 MiB|26214400/);
-        await expect(page.getByRole("main").getByRole("img")).toHaveCount(0);
+        await expect(page.getByRole("main").getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
     });
 }
 
@@ -46,7 +46,7 @@ for (const slug of ["image-resizer", "image-compressor", "image-converter"]) {
         });
         await input.setInputFiles(image);
         await expect(alert).toHaveText("This image is 8256 × 5504 px (45,441,024 pixels). The maximum is 30,000,000 pixels (30 MP). Choose a smaller image.");
-        await expect(page.getByRole("main").getByRole("img")).toHaveCount(0);
+        await expect(page.getByRole("main").getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
         await page.getByRole("button", { name: "Reset", exact: true }).click();
         await expect(alert).toHaveCount(0);
     });

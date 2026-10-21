@@ -5,6 +5,7 @@ import { buildToolMetadata } from "@/lib/seo";
 import { ToolPageTemplate } from "@/component/tool/ToolPageTemplate";
 import { ToolClientFrame } from "@/component/tool/ToolClientFrame";
 import { getToolGuide } from "@/module/tool/guide";
+import { getValueExample } from "@/module/tool/valueExamples";
 import { getToolBreadcrumb, getToolByIdList } from "@/module/tool/metadata";
 
 interface ToolPageProp {
@@ -28,6 +29,7 @@ export default async function ToolPage({ params }: ToolPageProp) {
         <ToolPageTemplate
             tool={tool}
             guide={guide}
+            example={getValueExample(tool.id)}
             breadcrumb={getToolBreadcrumb(tool)}
             relatedTool={getToolByIdList(guide?.relatedToolId ?? [])}
             toolUi={

@@ -166,10 +166,10 @@ describe("FooterViewportControl", () => {
         expect(host.querySelectorAll("button")).toHaveLength(2);
     });
 
-    it("hides only the copyright and the privacy link when collapsed, so privacy returns on expansion", async () => {
+    it("hides only the copyright, Contact Us and the privacy link when collapsed, so they return on expansion", async () => {
         await render();
         const detail = [...host.querySelectorAll("[data-footer-detail]")].map(element => element.textContent);
-        expect(detail).toEqual(["© 2026 iworkhere.space created by dailephd LLC", "Privacy Policy"]);
+        expect(detail).toEqual(["© 2026 iworkhere.space created by dailephd LLC", "Contact Us", "Privacy Policy"]);
         const css = readFileSync(path.resolve(__dirname, "../../app/global.css"), "utf8");
         expect(css).toContain(':root[data-footer="collapsed"] [data-footer-detail] { display: none; }');
         await act(async () => toggle().click());
@@ -189,6 +189,14 @@ describe("FooterViewportControl", () => {
         await render();
         host.querySelector<HTMLAnchorElement>('a[href="/privacy"]')!.focus();
         expect(document.activeElement?.textContent).toBe("Privacy Policy");
+        await act(async () => toggle().click());
+        expect(document.activeElement).toBe(toggle());
+    });
+
+    it("moves focus to the visible toggle when collapsing would hide the focused Contact Us link", async () => {
+        await render();
+        host.querySelector<HTMLAnchorElement>('a[href="/contact"]')!.focus();
+        expect(document.activeElement?.textContent).toBe("Contact Us");
         await act(async () => toggle().click());
         expect(document.activeElement).toBe(toggle());
     });

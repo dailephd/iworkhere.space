@@ -76,7 +76,7 @@ test("PDF to image: atomic high-DPI preflight creates no canvas, lower DPI succe
     await observe(page); await page.goto("/tool/pdf-to-image"); await page.getByLabel("Choose PDF", { exact: true }).setInputFiles(fixture("render-dpi-limit"));
     await page.getByLabel("Pages to convert").fill("1-2"); await page.getByLabel("Resolution (DPI)").selectOption("300"); const before = await resources(page);
     await page.getByRole("button", { name: "Convert pages", exact: true }).click(); const alert = page.getByRole("main").getByRole("alert"); await expect(alert).toContainText("Select a lower DPI"); await expect(alert).toBeFocused();
-    expect((await resources(page)).canvas).toBe(before.canvas); await expect(page.getByRole("main").locator("a[download]")).toHaveCount(0);
+    expect((await resources(page)).canvas).toBe(before.canvas); await expect(page.getByRole("main").locator("a[download]:not([data-example-asset])")).toHaveCount(0);
     await page.getByLabel("Resolution (DPI)").selectOption("150"); await page.getByRole("button", { name: "Convert pages", exact: true }).click(); await expect(page.getByRole("region", { name: "Page images ready" }).getByRole("link")).toHaveCount(2);
     await downloadImage(page, info, "render-dpi-limit", 2, 150, "png"); await noOverflow(page); await page.getByRole("button", { name: "Reset", exact: true }).click();
     const log = await resources(page); expect(log.revoked.slice().sort()).toEqual(log.created.slice().sort());
@@ -90,5 +90,5 @@ test("PDF to image: initial SSR guide, metadata, registry discovery and sitemap"
     await expect(page.getByRole("region", { name: "Image tools", exact: true }).locator('a[href="/tool/pdf-to-image"]')).toHaveCount(0);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("pdf to"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);
     await page.goto("/category/document"); const links = page.getByRole("main").locator('a[href^="/tool/"]'); await expect(links).toHaveCount(5); await expect(links).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(28); expect(xml.split("<loc>https://iworkhere.space/tool/pdf-to-image</loc>")).toHaveLength(2);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(30); expect(xml.split("<loc>https://iworkhere.space/tool/pdf-to-image</loc>")).toHaveLength(2);
 });

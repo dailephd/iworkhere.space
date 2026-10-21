@@ -4,10 +4,17 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The latest numbered GitHub release is `v0.4.2`, published 2026-10-20;
-the root application package is `0.4.2` and the independent dashboard remains
-`0.1.0`. Source release identity and Vercel production deployment are distinct;
-production deployment status is tracked separately.
+The preceding numbered GitHub release is `v0.4.2`, published 2026-10-20. The
+`release/v0.4.3` branch represents application package version `0.4.3`; the
+independent dashboard remains `0.1.0`. GitHub publication and Vercel production
+deployment are verified separately from source version.
+
+The approved v0.4.3 implementation passed readiness at source SHA
+`73a4998c93ccb8809ea9541516f278a36c4e905e`; the release branch prepares
+package version `0.4.3`. Its five-batch scope is complete and unchanged.
+Production deployment identity and Contact activation require separate
+verification. See [project status](project-status.md) for the readiness record
+and operational gates.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -563,7 +570,13 @@ The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) preserves 
 
 ## Version 0.4.3 — Utility Value, Trust & Discoverability
 
-Status: PLANNED PRODUCT-VALUE PATCH — 2026-10-18. Scope is newly proposed after a publisher-reported AdSense "Low value content" rejection; not implemented, released, deployed or approved by Google. Planning order places it after the v0.4.2 release, before the unchanged v0.5.0 catalog. A different publication order requires a separate explicit version decision; AdSense resubmission must not be made dependent on launching v0.4.2's support backend.
+Status: IMPLEMENTATION AND READINESS COMPLETE; release preparation is represented
+by `release/v0.4.3`. Readiness passed for source SHA
+`73a4998c93ccb8809ea9541516f278a36c4e905e`. Contact production activation,
+GitHub publication, Vercel deployment identity and Google approval are separate
+and are not claimed here. The version order remains after v0.4.2 and before the
+unchanged v0.5.0 catalog; AdSense resubmission remains a separate operational
+action.
 
 ### Goal
 
@@ -591,7 +604,7 @@ Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, Ap
 
 ### Exclusions and handoff
 
-No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation has not begun.
+No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation and documentation reconciliation are recorded in [project status](project-status.md); readiness and release remain separate stages.
 
 ## Version 0.5.0 — Developer & Text Utility Suite
 
@@ -913,7 +926,7 @@ v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
-v0.4.3  Utility Value, Trust & Discoverability (planned product patch)
+v0.4.3  Utility Value, Trust & Discoverability (release preparation)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
@@ -999,7 +1012,7 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-Current handoff (2026-10-20): GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before Batch A, verify the latest source/owners and establish original fixture provenance and measurable facts; verify truthful public publisher identity and the selected direct-Resend contact sender/inbox before Batch D, without blocking earlier example and discovery work. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
+Historical handoff at the 2026-10-20 planning checkpoint: GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before Batch A, verify the latest source/owners and establish original fixture provenance and measurable facts; verify truthful public publisher identity and the selected direct-Resend contact sender/inbox before Batch D, without blocking earlier example and discovery work. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
 
 Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
 record, PR #34 integrated the v0.4.2 plan, and PR #35 integrated the v0.4.3

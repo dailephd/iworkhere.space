@@ -62,7 +62,7 @@ function unique(label: string): string {
     sentinels.push(text);
     return text;
 }
-const entry = (page: Page) => page.getByRole("contentinfo").getByRole("button", { name: "Report a problem or suggestion" });
+const entry = (page: Page) => page.getByRole("contentinfo").getByRole("button", { name: "Report Issues — report a problem or suggestion", exact: true });
 const dialog = (page: Page) => page.getByRole("dialog", { name: "Report a problem or suggestion" });
 const send = (page: Page) => dialog(page).getByRole("button", { name: /^(Send report|Try again)$/ });
 async function open(page: Page, route: string) {

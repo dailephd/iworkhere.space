@@ -3,15 +3,21 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Latest numbered GitHub Release: v0.4.2 (2026-10-20).** The application
-source/package version is `0.4.2`; its implementation is committed and
-readiness-approved. Production deployment status is tracked separately from GitHub
-Release publication. The anonymous reporting entry is disabled unless
+The v0.4.3 application source is represented by `release/v0.4.3` and package
+version `0.4.3`. It includes 18 registered utilities across seven populated
+categories, five original verified worked examples, a task-first homepage,
+improved Discover navigation, distinct category guidance, publisher About and
+Contact Us pages, and 30 canonical public sitemap URLs. The existing fixed,
+retractable site chrome retains its conditional Report Issues action. The
+contact form uses the direct Resend integration; production delivery depends
+on verified sender and recipient configuration, authorized delivery testing, production rate
+limiting, and confirmed deployment identity. Those operational conditions are
+not established here. The v0.4.2 issue-reporting entry remains conditional on
 `NEXT_PUBLIC_SUPPORT_ENABLED=true`; external support providers and production
-activation are not claimed as provisioned. The
-registry contains 18 tools across
-seven populated categories and produces 28 sitemap URLs, including `/privacy`.
-The homepage groups every tool under its populated category; Calculator accepts
+activation are not claimed as provisioned. GitHub publication and Vercel
+deployment identity are verified separately from source version.
+The preceding v0.4.2 release introduced a homepage that grouped tools by
+category. The current application retains those utilities and Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
 Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
 Length and Weight while QR Code Generator belongs to Developer. The historical
@@ -87,7 +93,7 @@ for nine required jobs total:
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
-- `e2e.yaml` — `e2e` runs `npm run test:e2e` (public production browser gate); `e2e-support` runs header, footer and report-dialog scenarios in a support-enabled build
+- `e2e.yaml` — `e2e` runs `npm run test:e2e`; `e2e-support` selects `footer-retraction.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` in a support-enabled build
 - `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
 Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the
@@ -132,6 +138,7 @@ Each Vitest run writes JSON and JUnit output under a unique
 
 ## Documentation
 
+- `docs/plans/v0.4.3-implementation-plan.md` — frozen five-batch v0.4.3 scope and acceptance
 - `docs/ROADMAP.md` — canonical version-level goals, scope, dependencies,
   exclusions, acceptance, and deferred work
 - `docs/project-status.md` — actual current implementation and exact next action

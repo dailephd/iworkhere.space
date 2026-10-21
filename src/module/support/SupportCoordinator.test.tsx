@@ -23,6 +23,7 @@ const source: SupportContextSource = {
     category: ["document"],
 };
 const SENTINEL = "SENTINEL private narrative";
+const ACCESSIBLE_NAME = "Report Issues — report a problem or suggestion";
 let host: HTMLDivElement;
 let root: Root;
 let fetcher: ReturnType<typeof vi.fn>;
@@ -36,7 +37,7 @@ async function mount(siteKey: string | null = "site-key") {
     await act(async () => root.render(<SupportCoordinator source={source} siteKey={siteKey ?? undefined} />));
 }
 const dialog = () => document.querySelector<HTMLDialogElement>('[data-testid="support-dialog"]');
-const trigger = () => [...document.querySelectorAll("button")].find(button => button.getAttribute("aria-label") === "Report a problem or suggestion")!;
+const trigger = () => [...document.querySelectorAll("button")].find(button => button.getAttribute("aria-label") === ACCESSIBLE_NAME)!;
 const field = (label: RegExp) => [...document.querySelectorAll<HTMLElement>("select, textarea, input")].find(element => label.test(document.querySelector(`label[for="${element.id}"]`)?.textContent ?? element.closest("label")?.textContent ?? ""))!;
 async function open() { await act(async () => trigger().click()); }
 async function type(element: HTMLElement, value: string) {
@@ -85,8 +86,11 @@ describe("entry and defaults", () => {
     it("keeps the full accessible name while offering a compact visible label, and still owns the one dialog", async () => {
         await mount();
         const button = trigger();
-        expect(button.getAttribute("aria-label")).toBe("Report a problem or suggestion");
-        expect(button.querySelector('[data-support-label="full"]')!.textContent).toBe("Report a problem or suggestion");
+        expect(button.getAttribute("aria-label")).toBe(ACCESSIBLE_NAME);
+        expect(button.querySelector('[data-support-label="full"]')!.textContent).toBe("Report Issues");
+        // Label in name: the visible words are contained in the accessible name, which keeps the established meaning.
+        expect(button.getAttribute("aria-label")).toContain("Report Issues");
+        expect(button.getAttribute("aria-label")).toContain("report a problem or suggestion");
         const compact = button.querySelector('[data-support-label="compact"]')!;
         expect(compact.textContent).toBe("Report");
         expect(compact.getAttribute("aria-hidden")).toBe("true");

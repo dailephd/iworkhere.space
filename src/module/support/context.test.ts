@@ -15,6 +15,8 @@ describe("report context", () => {
     it("uses Site-wide for general pages", () => {
         expect(resolveReportContext("/", source)).toEqual({ toolId: null, pathname: "/" });
         expect(resolveReportContext("/discover", source)).toEqual({ toolId: null, pathname: "/discover" });
+        expect(resolveReportContext("/about", source)).toEqual({ toolId: null, pathname: "/about" });
+        expect(resolveReportContext("/contact", source)).toEqual({ toolId: null, pathname: "/contact" });
         expect(resolveReportContext("/category/document", source)).toEqual({ toolId: null, pathname: "/category/document" });
     });
     it("never invents a tool for unknown or malformed routes", () => {
@@ -26,6 +28,9 @@ describe("report context", () => {
         expect(isSafePathname("/tool/a_b-c")).toBe(true);
         expect(isSafePathname("/a?b")).toBe(false);
         expect(isAllowedPathname("/privacy", source)).toBe(true);
+        expect(isAllowedPathname("/about", source)).toBe(true);
+        expect(isAllowedPathname("/contact", source)).toBe(true);
+        for (const rejected of ["/about?x=1", "/contact#form", "/contact/", "/about/team", "/api/contact", "//contact"]) expect(isAllowedPathname(rejected, source), rejected).toBe(false);
         expect(isAllowedPathname("/tool/other", source)).toBe(false);
         expect(toolIdForPathname("/discover", source)).toBeNull();
     });

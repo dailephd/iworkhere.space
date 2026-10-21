@@ -4,8 +4,11 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ToolPageTemplate } from "./ToolPageTemplate";
 import { ToolClientFrame } from "./ToolClientFrame";
-import { getToolBySlug } from "@/module/tool/registry";
-import { captureError } from "@/module/observability";
+import ToolPage from "@/app/tool/[slug]/page";
+import { getToolGuide } from "@/module/tool/guide";
+import { getToolBySlug, tool_definition_list } from "@/module/tool/registry";
+import { getValueExample } from "@/module/tool/valueExamples";
+import { captureError, trackEvent } from "@/module/observability";
 import { reportClientErrorMetric } from "@/module/observability/errorMetric.client";
 
 vi.mock("next/navigation", () => ({
@@ -115,4 +118,73 @@ it("keeps both healthy and failed tools free of advertising when the global flag
     await act(async () => root.render(page()));
     expectAdFreeFallback();
     expect(initialize).not.toHaveBeenCalled();
+});
+
+const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
+function featuredPage(slug: string, withExample = true) {
+    const tool = getToolBySlug(slug)!;
+    return <ToolPageTemplate tool={tool} guide={getToolGuide(tool.id)} breadcrumb={[{ label: "Home", href: "/" }, { label: tool.name }]} relatedTool={[]}
+        example={withExample ? getValueExample(tool.id) : undefined}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />;
+}
+
+it("gives exactly the five featured tools an example and every other registered tool none", async () => {
+    for (const tool of tool_definition_list) {
+        const result = (await ToolPage({ params: Promise.resolve({ slug: tool.slug }) })) as React.ReactElement<{ example?: { toolId: string } }>;
+        expect(result.props.example?.toolId, tool.id).toBe(FEATURED.includes(tool.id) ? tool.id : undefined);
+    }
+    expect(tool_definition_list.filter(tool => FEATURED.includes(tool.id))).toHaveLength(FEATURED.length);
+});
+
+it.each(FEATURED)("renders the %s example after the working tool and before the guide, keeping page structure", async slug => {
+    await act(async () => root.render(featuredPage(slug)));
+    const tool = [...element.querySelectorAll("p")].find(value => value.textContent === "Working utility content")!;
+    expect(tool).toBeDefined();
+    const panel = element.querySelector('section[aria-labelledby$="-example-heading"]')!;
+    const guide = element.querySelector('section[aria-label="Tool guide"]')!;
+    expect(panel).not.toBeNull();
+    expect(guide).not.toBeNull();
+    expect(tool.compareDocumentPosition(panel) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(panel.compareDocumentPosition(guide) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(panel.parentElement).toBe(guide.parentElement);
+    expect(guide.contains(panel)).toBe(false);
+    expect(element.querySelectorAll("h1")).toHaveLength(1);
+    expect(element.querySelector('nav[aria-label="Breadcrumb"]')).not.toBeNull();
+    expect(guide.querySelector("h2")?.textContent).toBe("How to use");
+    expect(guide.querySelectorAll("h2").length).toBeGreaterThan(1);
+});
+
+it.each(FEATURED)("renders the %s page without any example section when no example is supplied", async slug => {
+    await act(async () => root.render(featuredPage(slug, false)));
+    expect(element.textContent).not.toContain("Worked example");
+    expect(element.querySelector('section[aria-labelledby$="-example-heading"]')).toBeNull();
+    expect(element.querySelector('section[aria-label="Tool guide"]')).not.toBeNull();
+});
+
+it("renders an unfeatured tool with no example section or placeholder", async () => {
+    await act(async () => root.render(featuredPage("json-formatter")));
+    expect(element.textContent).not.toContain("Worked example");
+    expect(element.querySelectorAll('a[href^="/examples/"], img[src^="/examples/"]')).toHaveLength(0);
+});
+
+it("adds no advertising slot, script or telemetry call when an example is shown", async () => {
+    vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
+    await act(async () => root.render(featuredPage("compress-pdf", false)));
+    const withoutExample = vi.mocked(trackEvent).mock.calls.map(call => JSON.stringify(call));
+    await act(async () => root.unmount());
+    vi.mocked(trackEvent).mockClear();
+    root = createRoot(element);
+    await act(async () => root.render(featuredPage("compress-pdf")));
+    expect(element.textContent).toContain("Worked example");
+    expect(element.querySelectorAll("ins.adsbygoogle, #google-adsense, aside, script")).toHaveLength(0);
+    expect(captureError).not.toHaveBeenCalled();
+    expect(reportClientErrorMetric).not.toHaveBeenCalled();
+    expect(vi.mocked(trackEvent).mock.calls.map(call => JSON.stringify(call))).toEqual(withoutExample);
+});
+
+it("replaces the whole page, example included, with the ad-free fallback when the tool fails", async () => {
+    shouldThrow = true;
+    await act(async () => root.render(featuredPage("compress-pdf")));
+    expectAdFreeFallback();
+    expect(element.textContent).not.toContain("Worked example");
 });

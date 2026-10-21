@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.4.3 — Utility Value, Trust & Discoverability
+
+- Added a task-first homepage, improved Discover navigation, and distinct task
+  guidance across the seven populated categories while retaining all 18
+  utilities and search.
+- Added five original, verified worked examples for existing PDF and image
+  tools, with measured source/output facts, reproduction steps and limitations.
+- Added publisher About and Contact Us pages, plus the direct Resend contact
+  integration. Production email delivery still requires external credentials,
+  a verified sending domain, authorized delivery testing and production rate
+  limiting.
+- Added Resend 6.16.0 for direct contact email.
+- Added the expanded footer action order Contact Us, conditional Report Issues,
+  and Privacy Policy, with privacy disclosure and accessibility improvements.
+- Added `/about` and `/contact` to the canonical public sitemap, bringing it to
+  30 URLs. Contact delivery, issue-report activation, AdSense acceptance and
+  production deployment are not established by this source release.
+- Added regression coverage for the new content, routes, contact behavior,
+  privacy, accessibility, and existing advertising and footer contracts.
+
 ## v0.4.2 — User Reporting & Retractable Site Chrome — 2026-10-20
 
 Published as the numbered GitHub Release on 2026-10-20. GitHub release

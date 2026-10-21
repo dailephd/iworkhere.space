@@ -26,7 +26,8 @@ test("homepage groups every discoverable tool exactly once and keyboard navigati
     const catalog = await page.getByRole("main").locator('a[href^="/tool/"]').evaluateAll(elements => elements.map(element => element.getAttribute("href")));
     await page.goto("/");
     const main = page.getByRole("main");
-    const links = main.locator('a[href^="/tool/"]');
+    // Registry cards only: the featured task links are separate entry points and are checked in v0.4.3-discovery.spec.ts.
+    const links = main.locator('a.catalog-card[href^="/tool/"]');
     const home = await links.evaluateAll(elements => elements.map(element => element.getAttribute("href")));
     expect(new Set(home).size).toBe(18);
     expect(home).toHaveLength(18);

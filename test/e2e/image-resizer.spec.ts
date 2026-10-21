@@ -170,7 +170,7 @@ test("unsupported and empty files produce recoverable validation feedback", asyn
     await expect(page.getByRole("main").getByRole("alert")).toContainText("not valid JPEG, PNG, or WebP image content");
     await page.getByLabel("Choose image").setInputFiles({ name: "empty.png", mimeType: "image/png", buffer: Buffer.alloc(0) });
     await expect(page.getByRole("main").getByRole("alert")).toContainText("non-empty");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(page.getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Reset", exact: true })).toBeVisible();
 });
 
@@ -178,7 +178,7 @@ test("supported signature with corrupt payload fails browser decode recoverably"
     await page.goto("/tool/image-resizer");
     await page.getByLabel("Choose image").setInputFiles({ name: "corrupt.jpg", mimeType: "image/jpeg", buffer: Buffer.from([0xff, 0xd8, 0xff, 0x00, 0x01]) });
     await expect(page.getByRole("main").getByRole("alert")).toContainText("could not be decoded");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(page.getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
     await selectSource(page);
     await resizeTo(page);
 });

@@ -20,8 +20,12 @@ test("home loads with one main landmark", async ({ page }) => {
     for (const slug of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) {
         await expect(imageSection.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     }
-    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(18);
-    await expect(page.getByRole("main").getByRole("link", { name: /Image Resizer/ })).toHaveAttribute("href", "/tool/image-resizer");
+    // The eighteen registry cards stay exactly once each; the five featured task links are additional entry points, not cards.
+    await expect(page.getByRole("main").locator('a.catalog-card[href^="/tool/"]')).toHaveCount(18);
+    await expect(page.getByRole("main").locator('a.catalog-card').filter({ hasText: /Image Resizer/ })).toHaveAttribute("href", "/tool/image-resizer");
+    await expect(page.getByRole("main").locator('[data-featured-task] a[href^="/tool/"]')).toHaveCount(5);
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(23);
+    await expect(page.getByRole("main").locator('[data-featured-task="image-resizer"]').getByRole("link", { name: "Image Resizer", exact: true })).toHaveAttribute("href", "/tool/image-resizer");
 });
 
 test("discover exposes all eighteen registered tools and reachable routes", async ({ page }) => {

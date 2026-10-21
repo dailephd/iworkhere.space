@@ -365,3 +365,8 @@ separate `support` schema and roles; `/api/support/report` and `/api/support/del
 metrics database refers to the observability database only; support data is a separate domain and never enters observability,
 analytics, logging, advertising, browser storage or service-worker caches. The entry is gated by `NEXT_PUBLIC_SUPPORT_ENABLED`
 (default off). See docs/architecture.md, database/support/README.md and docs/DEPLOYMENT.md.
+
+General contact and publisher content (v0.4.3): `src/module/content/` owns the typed publisher identity and authored trust-page content.
+`src/module/contact/` owns the public general-contact contract, validation, bounded body reader, origin checks and the server-only
+Resend email sender. General contact is separate from support reporting: the support-reporting backend remains the existing v0.4.2 owner
+(`src/module/support/`). Contact message content never enters observability, and no contact database is introduced.

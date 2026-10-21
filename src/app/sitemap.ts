@@ -7,6 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: canonicalUrl("/") },
         { url: canonicalUrl("/discover") },
         { url: canonicalUrl("/privacy") },
+        { url: canonicalUrl("/about") },
+        { url: canonicalUrl("/contact") },
         ...getAllTool().map(tool => ({ url: canonicalUrl(tool.seo.canonicalPath) })),
         ...getAvailableCategory().map(category => ({ url: canonicalUrl(`/category/${category}`) })),
     ];

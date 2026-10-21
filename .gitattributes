@@ -10,3 +10,10 @@ public/licenses/pdf-lib-1.17.1-LICENSE.md -text
 public/licenses/qpdf-12.4.2/* -text
 public/licenses/uqr-0.1.3-LICENSE.txt -text
 test/fixtures/pdf/*.pdf binary
+# v0.4.3 example assets are hashed in public/examples/v0.4.3/manifest.json; never convert their bytes.
+public/examples/v0.4.3/**/*.pdf binary
+public/examples/v0.4.3/**/*.png binary
+public/examples/v0.4.3/**/*.jpg binary
+public/examples/v0.4.3/**/*.webp binary
+# Byte-sensitive public test: always check out with LF.
+public/ads.txt text eol=lf

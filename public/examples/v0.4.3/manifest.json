@@ -1,0 +1,423 @@
+{
+  "schema": "iworkhere.space/value-examples/1",
+  "version": "0.4.3",
+  "operation": [
+    {
+      "id": "compress-pdf-processed",
+      "exampleId": "compress-pdf-example",
+      "toolId": "compress-pdf",
+      "summary": "Compress the source PDF with the default tool behavior.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose PDF",
+          "asset": [
+            "public/examples/v0.4.3/compress-pdf/source.pdf"
+          ]
+        },
+        {
+          "kind": "press-button",
+          "control": "Compress PDF",
+          "waitForHeading": "Smaller PDF ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download compressed PDF",
+          "filename": "source-compressed.pdf",
+          "saveAs": "public/examples/v0.4.3/compress-pdf/processed.pdf"
+        }
+      ]
+    },
+    {
+      "id": "pdf-to-image-png",
+      "exampleId": "pdf-to-image-example",
+      "toolId": "pdf-to-image",
+      "summary": "Convert page 1 to a PNG at 150 DPI.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose PDF",
+          "asset": [
+            "public/examples/v0.4.3/pdf-to-image/source.pdf"
+          ]
+        },
+        {
+          "kind": "set-text",
+          "control": "Pages to convert",
+          "value": "1"
+        },
+        {
+          "kind": "choose-option",
+          "control": "Output format",
+          "value": "png"
+        },
+        {
+          "kind": "choose-option",
+          "control": "Resolution (DPI)",
+          "value": "150"
+        },
+        {
+          "kind": "press-button",
+          "control": "Convert pages",
+          "waitForHeading": "Page images ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download page 1",
+          "filename": "source-page-001.png",
+          "saveAs": "public/examples/v0.4.3/pdf-to-image/page-001.png"
+        }
+      ]
+    },
+    {
+      "id": "pdf-to-image-jpg",
+      "exampleId": "pdf-to-image-example",
+      "toolId": "pdf-to-image",
+      "summary": "Convert page 2 to a JPG at 150 DPI and the default JPEG quality.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose PDF",
+          "asset": [
+            "public/examples/v0.4.3/pdf-to-image/source.pdf"
+          ]
+        },
+        {
+          "kind": "set-text",
+          "control": "Pages to convert",
+          "value": "2"
+        },
+        {
+          "kind": "choose-option",
+          "control": "Output format",
+          "value": "jpeg"
+        },
+        {
+          "kind": "choose-option",
+          "control": "Resolution (DPI)",
+          "value": "150"
+        },
+        {
+          "kind": "press-button",
+          "control": "Convert pages",
+          "waitForHeading": "Page images ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download page 2",
+          "filename": "source-page-002.jpg",
+          "saveAs": "public/examples/v0.4.3/pdf-to-image/page-002.jpg"
+        }
+      ]
+    },
+    {
+      "id": "images-to-pdf-result",
+      "exampleId": "images-to-pdf-example",
+      "toolId": "images-to-pdf",
+      "summary": "Combine the two images, in the listed order, into one PDF.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose JPEG or PNG images",
+          "asset": [
+            "public/examples/v0.4.3/images-to-pdf/source-001.png",
+            "public/examples/v0.4.3/images-to-pdf/source-002.jpg"
+          ]
+        },
+        {
+          "kind": "press-button",
+          "control": "Create PDF",
+          "waitForHeading": "PDF ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download PDF",
+          "filename": "images-to-pdf.pdf",
+          "saveAs": "public/examples/v0.4.3/images-to-pdf/result.pdf"
+        }
+      ]
+    },
+    {
+      "id": "image-resizer-resized",
+      "exampleId": "image-resizer-example",
+      "toolId": "image-resizer",
+      "summary": "Resize to 400 px wide with the aspect ratio preserved.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose image",
+          "asset": [
+            "public/examples/v0.4.3/image-resizer/source.png"
+          ]
+        },
+        {
+          "kind": "set-text",
+          "control": "Width",
+          "value": "400"
+        },
+        {
+          "kind": "press-button",
+          "control": "Resize image",
+          "waitForHeading": "Resized image ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download resized image",
+          "filename": "source-400x300.png",
+          "saveAs": "public/examples/v0.4.3/image-resizer/resized.png"
+        }
+      ]
+    },
+    {
+      "id": "image-converter-jpeg",
+      "exampleId": "image-converter-example",
+      "toolId": "image-converter",
+      "summary": "Convert the transparent PNG to JPEG at the default quality.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose image",
+          "asset": [
+            "public/examples/v0.4.3/image-converter/source.png"
+          ]
+        },
+        {
+          "kind": "choose-option",
+          "control": "Output format",
+          "value": "jpeg"
+        },
+        {
+          "kind": "press-button",
+          "control": "Convert image",
+          "waitForHeading": "Converted image ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download converted image",
+          "filename": "source-converted.jpg",
+          "saveAs": "public/examples/v0.4.3/image-converter/converted.jpg"
+        }
+      ]
+    },
+    {
+      "id": "image-converter-webp",
+      "exampleId": "image-converter-example",
+      "toolId": "image-converter",
+      "summary": "Convert the transparent PNG to WebP at the default quality.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose image",
+          "asset": [
+            "public/examples/v0.4.3/image-converter/source.png"
+          ]
+        },
+        {
+          "kind": "choose-option",
+          "control": "Output format",
+          "value": "webp"
+        },
+        {
+          "kind": "press-button",
+          "control": "Convert image",
+          "waitForHeading": "Converted image ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download converted image",
+          "filename": "source-converted.webp",
+          "saveAs": "public/examples/v0.4.3/image-converter/converted.webp"
+        }
+      ]
+    }
+  ],
+  "asset": [
+    {
+      "path": "public/examples/v0.4.3/compress-pdf/processed.pdf",
+      "exampleId": "compress-pdf-example",
+      "role": "output",
+      "operation": "compress-pdf-processed",
+      "mediaType": "application/pdf",
+      "bytes": 1878,
+      "sha256": "e71945310e388b1c25bb885d0f2611682fedb15a54885d65c41350668fdbf742",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.3/compress-pdf/source.pdf",
+      "exampleId": "compress-pdf-example",
+      "role": "source",
+      "operation": null,
+      "mediaType": "application/pdf",
+      "bytes": 2631,
+      "sha256": "ff5ac5a5c63b83011d79e05813d639beb959bfa875638cd871a025ab77f60533",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.3/image-converter/converted.jpg",
+      "exampleId": "image-converter-example",
+      "role": "output",
+      "operation": "image-converter-jpeg",
+      "mediaType": "image/jpeg",
+      "bytes": 11827,
+      "sha256": "8165cf436adfbc94ab21b49c68901a9e706c92ece595135f96b3c50341fc5807",
+      "width": 480,
+      "height": 320
+    },
+    {
+      "path": "public/examples/v0.4.3/image-converter/converted.webp",
+      "exampleId": "image-converter-example",
+      "role": "output",
+      "operation": "image-converter-webp",
+      "mediaType": "image/webp",
+      "bytes": 4212,
+      "sha256": "5925fc96fcdfe0f7ca6e9928d3aa709af1193005fc37171a52babce01bd1eca7",
+      "width": 480,
+      "height": 320
+    },
+    {
+      "path": "public/examples/v0.4.3/image-converter/source.png",
+      "exampleId": "image-converter-example",
+      "role": "source",
+      "operation": null,
+      "mediaType": "image/png",
+      "bytes": 2189,
+      "sha256": "1223cd8b516b9169d3bc7aa3650c186aa0228e5a6f8917eaafdb06c30ce2ee12",
+      "width": 480,
+      "height": 320
+    },
+    {
+      "path": "public/examples/v0.4.3/image-resizer/resized.png",
+      "exampleId": "image-resizer-example",
+      "role": "output",
+      "operation": "image-resizer-resized",
+      "mediaType": "image/png",
+      "bytes": 8256,
+      "sha256": "e4b713c14cd4fca603fab47fdeda7b125abaadb5473122327119db042edb5c59",
+      "width": 400,
+      "height": 300
+    },
+    {
+      "path": "public/examples/v0.4.3/image-resizer/source.png",
+      "exampleId": "image-resizer-example",
+      "role": "source",
+      "operation": null,
+      "mediaType": "image/png",
+      "bytes": 9288,
+      "sha256": "5618428647cb5fb829b90b8138022b08da867c3f075e9bcd2a805d468f8518e3",
+      "width": 800,
+      "height": 600
+    },
+    {
+      "path": "public/examples/v0.4.3/images-to-pdf/result.pdf",
+      "exampleId": "images-to-pdf-example",
+      "role": "output",
+      "operation": "images-to-pdf-result",
+      "mediaType": "application/pdf",
+      "bytes": 8327,
+      "sha256": "8bd076bddafe0738968f6fcba759fc5c7c10e39ac0c8b7e245b782d41b1ea5a8",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 400,
+          "height": 300,
+          "rotation": 0
+        },
+        {
+          "width": 320,
+          "height": 400,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.3/images-to-pdf/source-001.png",
+      "exampleId": "images-to-pdf-example",
+      "role": "source",
+      "operation": null,
+      "mediaType": "image/png",
+      "bytes": 1513,
+      "sha256": "17c2ec85a0c8d58bbe52790409838da61de1caf5dc9974f5d895fd3d90205434",
+      "width": 400,
+      "height": 300
+    },
+    {
+      "path": "public/examples/v0.4.3/images-to-pdf/source-002.jpg",
+      "exampleId": "images-to-pdf-example",
+      "role": "source",
+      "operation": null,
+      "mediaType": "image/jpeg",
+      "bytes": 3915,
+      "sha256": "3abf5fa8d997c09e7929f20a2c71c07fa9d369ad2299ccccf1101f217f7a31f3",
+      "width": 320,
+      "height": 400
+    },
+    {
+      "path": "public/examples/v0.4.3/pdf-to-image/page-001.png",
+      "exampleId": "pdf-to-image-example",
+      "role": "output",
+      "operation": "pdf-to-image-png",
+      "mediaType": "image/png",
+      "bytes": 14109,
+      "sha256": "62a05f886064cc8cb3d39a5bc26129d695f4acc2c397bcbf8c0d92ba176bb406",
+      "width": 625,
+      "height": 834
+    },
+    {
+      "path": "public/examples/v0.4.3/pdf-to-image/page-002.jpg",
+      "exampleId": "pdf-to-image-example",
+      "role": "output",
+      "operation": "pdf-to-image-jpg",
+      "mediaType": "image/jpeg",
+      "bytes": 14829,
+      "sha256": "b8e1a8e1b289bda7c0e58c23afe183549f4c1312141a056a1c8ad0d5d1423687",
+      "width": 834,
+      "height": 625
+    },
+    {
+      "path": "public/examples/v0.4.3/pdf-to-image/source.pdf",
+      "exampleId": "pdf-to-image-example",
+      "role": "source",
+      "operation": null,
+      "mediaType": "application/pdf",
+      "bytes": 1309,
+      "sha256": "3624ae51f0e59009b437b1d567447e55312ab9dca86a1a5e8c7ffb31f7dbac86",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 90
+        }
+      ]
+    }
+  ]
+}

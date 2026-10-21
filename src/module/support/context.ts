@@ -12,7 +12,7 @@ export interface ReportContext {
     pathname: string;
 }
 
-const STATIC_PATHNAME = ["/", "/discover", "/privacy"] as const;
+const STATIC_PATHNAME = ["/", "/discover", "/privacy", "/about", "/contact"] as const;
 const SAFE_PATHNAME = /^\/[a-zA-Z0-9/_-]*$/;
 
 export function isSafePathname(pathname: string): boolean {

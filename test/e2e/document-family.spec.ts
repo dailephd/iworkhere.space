@@ -49,7 +49,7 @@ test("document family: complete discovery, search, canonical SSR and related nav
     }
     expect(new Set(titles).size).toBe(5); expect(new Set(descriptions).size).toBe(5);
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(28);
+    expect(xml.match(/<loc>/g)).toHaveLength(30);
     for (const route of [...documents.map(tool => `/tool/${tool.slug}`), "/category/document"])
         expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/\/api\/|dashboard|vercel\.app|<loc>[^<]*[?#]/);
@@ -81,7 +81,7 @@ test("document family: PDF source failures preserve bounded accessible feedback"
             await page.getByLabel(tool.picker, { exact: true }).setInputFiles(pdf(name));
             const alert = page.getByRole("main").getByRole("alert");
             await expect(alert).toContainText(message); await expect(alert).toBeFocused();
-            await expect(page.locator("a[download]")).toHaveCount(0);
+            await expect(page.locator("a[download]:not([data-example-asset])")).toHaveCount(0);
             await expect(alert).not.toContainText(/\/input\.pdf|stderr|wasm|pointer|xref/i);
         }
     }

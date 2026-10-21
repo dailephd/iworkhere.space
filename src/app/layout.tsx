@@ -19,7 +19,7 @@ import { SupportCoordinator } from "@/module/support/SupportCoordinator";
 import { contextSource } from "@/module/support/projection";
 
 export const metadata: Metadata = {
-  ...buildPageMetadata({ title: "Utility Tool Platform", description: "Browser tools for images, text, math, time and everyday tasks.", canonicalPath: "/" }),
+  ...buildPageMetadata({ title: "Utility Tool Platform", description: "Browser tools for PDFs, images, text, unit conversion, calculation, time values and developer tasks.", canonicalPath: "/" }),
   manifest: "/manifest.webmanifest",
   metadataBase: new URL(SITE_URL),
   other: { "google-adsense-account": ADSENSE_CLIENT },

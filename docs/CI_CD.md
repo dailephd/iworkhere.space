@@ -66,7 +66,7 @@ The six primary public-app workflows run on every push and pull request:
 | `test` | `npm run test` | Unit, contract, and integration tests |
 | `build` | `npm run build` | Next.js production build, RSC correctness |
 | `e2e` | `npm run test:e2e` after build | Production desktop/mobile Chromium behavior and diagnostics |
-| `e2e-support` (job in `e2e.yaml`) | `npm run test:e2e -- footer-retraction.spec.ts v0.4.2-integration.spec.ts` after a `NEXT_PUBLIC_SUPPORT_ENABLED=true` build, with `E2E_SUPPORT_RUN=true` | Header, footer and real `SupportDialog` scenarios in a support-enabled build; no database or provider |
+| `e2e-support` (job in `e2e.yaml`) | `npm run test:e2e -- footer-retraction.spec.ts v0.4.2-integration.spec.ts v0.4.3-contact-footer.spec.ts` after a `NEXT_PUBLIC_SUPPORT_ENABLED=true` build, with `E2E_SUPPORT_RUN=true` | Header, footer and real `SupportDialog` scenarios, plus the v0.4.3 Contact/footer scenarios (Contact Us, Report Issues, Privacy Policy order and geometry), in a support-enabled build; no database or provider (the Contact endpoint is exercised unconfigured and fails closed) |
 | `container` | `npm run test:container` | Built Docker runtime, health, image hygiene, and the same browser suite against the container without host `.next` dependencies |
 
 All seven public-app jobs plus the dashboard and database jobs must pass.

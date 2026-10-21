@@ -163,7 +163,7 @@ test("format, quality, repetition, replacement, Reset and unmount revoke URLs", 
     await convert(page); await page.getByRole("button", { name: "Reset", exact: true }).click();
     const reset = await urls(page); expect(reset.revoked.slice().sort()).toEqual(reset.created.slice().sort());
     await expect(page.getByLabel("Choose image")).toHaveValue("");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(page.getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
     await selectSource(page); await convert(page);
     await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
@@ -183,7 +183,7 @@ test("unsupported, empty, corrupt and oversized inputs fail recoverably", async 
     await expect(alert).toContainText("could not be decoded");
     await input.setInputFiles({ name: "large.jpg", mimeType: "image/jpeg", buffer: Buffer.alloc(26_214_401) });
     await expect(alert).toContainText("maximum file size is 25 MiB");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(page.getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Convert image", exact: true })).toBeDisabled();
     await selectSource(page); await convert(page);
 });
