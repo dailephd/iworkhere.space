@@ -4,17 +4,14 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The preceding numbered GitHub release is `v0.4.2`, published 2026-10-20. The
-`release/v0.4.3` branch represents application package version `0.4.3`; the
-independent dashboard remains `0.1.0`. GitHub publication and Vercel production
-deployment are verified separately from source version.
-
-The approved v0.4.3 implementation passed readiness at source SHA
-`73a4998c93ccb8809ea9541516f278a36c4e905e`; the release branch prepares
-package version `0.4.3`. Its five-batch scope is complete and unchanged.
-Production deployment identity and Contact activation require separate
-verification. See [project status](project-status.md) for the readiness record
-and operational gates.
+The current application version is `v0.4.3`; the independent dashboard remains
+`0.1.0`. Version `v0.4.2` was the preceding published release when v0.4.3
+development began. The v0.4.3 scope is complete and merged to `master` by PR
+#39 at `854477488ca5dddad9a47cc4a5036b3fba1bbf37`. Production deployment and
+Contact operation were verified separately from source integration. GitHub
+Release publication remains a distinct publication record and is not inferred
+from a merge or deployment. See [project status](project-status.md) for current
+validation and deployment evidence.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -570,13 +567,13 @@ The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) preserves 
 
 ## Version 0.4.3 — Utility Value, Trust & Discoverability
 
-Status: IMPLEMENTATION AND READINESS COMPLETE; release preparation is represented
-by `release/v0.4.3`. Readiness passed for source SHA
-`73a4998c93ccb8809ea9541516f278a36c4e905e`. Contact production activation,
-GitHub publication, Vercel deployment identity and Google approval are separate
-and are not claimed here. The version order remains after v0.4.2 and before the
-unchanged v0.5.0 catalog; AdSense resubmission remains a separate operational
-action.
+Status: SCOPE COMPLETE and merged to `master` by PR #39 at
+`854477488ca5dddad9a47cc4a5036b3fba1bbf37`; readiness passed for implementation
+source `73a4998c93ccb8809ea9541516f278a36c4e905e`. Production deployment and
+Contact operation are recorded separately in [project status](project-status.md).
+GitHub tag and Release publication are distinct records and must be verified
+from GitHub. The version order remains after v0.4.2 and before the unchanged
+v0.5.0 catalog; AdSense resubmission remains a separate operational action.
 
 ### Goal
 
@@ -592,7 +589,7 @@ Demonstrate substantial original visitor value in the existing 18-tool product t
 
 ### Dependencies and architectural constraints
 
-Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, AppShell, storage and design system. Preserve F-01/F-02 advertising eligibility, privacy disclosure, existing browser-local file processing and the v0.4.2 header/footer when present. New example data belongs under src/module/tool/valueExamples.ts, presentation under src/component/tool/ToolExamplePanel.tsx, original approved assets under public/examples/v0.4.3/, and operator-verified public identity under src/module/content/siteInformation.ts. Routes /about and /contact use src/app and existing metadata helpers; `/api/contact` and its server-only direct Resend sender use the exact owners in the detailed v0.4.3 plan. They require verified publisher copy, sender/inbox configuration and privacy disclosure before public contact activation. Do not create a parallel tool registry, new support-report backend, analytics/CMS or contact database.
+Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, AppShell, storage and design system. Preserve F-01/F-02 advertising eligibility, privacy disclosure, existing browser-local file processing and the v0.4.2 header/footer when present. New example data belongs under src/module/tool/valueExamples.ts, presentation under src/component/tool/ToolExamplePanel.tsx, original approved assets under public/examples/v0.4.3/, and operator-verified public identity under src/module/content/siteInformation.ts. Routes /about and /contact use src/app and existing metadata helpers; `/api/contact` and its server-only direct Resend sender use the exact owners in the detailed v0.4.3 plan. They require verified publisher copy, sender/inbox configuration and privacy disclosure before public contact activation; Production operation was verified on 2026-10-21 as recorded in [project status](project-status.md). Do not create a parallel tool registry, new support-report backend, analytics/CMS or contact database.
 
 ### Acceptance
 
@@ -604,7 +601,7 @@ Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, Ap
 
 ### Exclusions and handoff
 
-No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation and documentation reconciliation are recorded in [project status](project-status.md); readiness and release remain separate stages.
+No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation, readiness and operational evidence are recorded in [project status](project-status.md); source integration, Production deployment and GitHub publication remain separately verifiable records.
 
 ## Version 0.5.0 — Developer & Text Utility Suite
 
@@ -842,7 +839,7 @@ No standalone catalog version is assigned solely to theme documentation debt.
 
 The following planned items remain preserved but are not assigned to the concrete Priority A+B version sequence.
 
-They must not be silently folded into a catalog version without an explicit planning decision. The previously unassigned About page is explicitly planned in v0.4.3; its publisher copy and public contact details still require operator approval.
+They must not be silently folded into a catalog version without an explicit planning decision. The About page was previously unassigned and was completed in v0.4.3; no additional publisher page work is assigned here.
 
 ### HTTP security-header hardening
 
@@ -926,7 +923,7 @@ v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
-v0.4.3  Utility Value, Trust & Discoverability (release preparation)
+v0.4.3  Utility Value, Trust & Discoverability (scope complete; merged to master)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
