@@ -11,7 +11,12 @@ PUBLIC_EXAMPLE_ASSETS: 13/13 returned HTTP 200.
 CONTACT_PRODUCTION: VERIFIED on 2026-10-21. One authorized `POST /api/contact` returned HTTP 200 (`{"ok":true}`) at `2026-10-21T17:42:59Z`; provider acceptance PASS and inbox delivery verified. Sender: `contact@iworkhere.space`; recipient: `dailephd@gmail.com`; Gmail message ID: `1a15f8f2e86d258d`. SPF and DKIM passed; Reply-To was `dailephd@gmail.com`.
 PRODUCTION_FIREWALL: Verified enabled and published for `POST /api/contact`; 5 requests per 300 seconds per client IP, exceeded-limit action HTTP 429.
 REPORT_ISSUES: default-off. ADVERTISING: default-off.
-RELEASE_PUBLICATION: GitHub tag and Release publication are distinct verification steps; consult GitHub records for their current state.
+RELEASE_TAG: `v0.4.3` verified to resolve to the PR #40 merge commit
+`da1c6b48f2319ffa85f17b725d958980eabc7235`. The numbered GitHub Release
+publication state is not established by tag lookup and requires a separate check.
+NEXT_PLANNING_ACTION: v0.5.0 Developer & Text Utility Suite: inspect the current
+source/ownership, resolve the nine tools' security and execution constraints,
+then freeze `docs/plans/v0.5.0-implementation-plan.md` before implementing.
 
 The following release-preparation checkpoint is retained as historical evidence.
 Its pending and unverified statements describe the state before PR #39 merged

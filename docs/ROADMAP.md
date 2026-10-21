@@ -6,12 +6,14 @@
 
 The current application version is `v0.4.3`; the independent dashboard remains
 `0.1.0`. Version `v0.4.2` was the preceding published release when v0.4.3
-development began. The v0.4.3 scope is complete and merged to `master` by PR
-#39 at `854477488ca5dddad9a47cc4a5036b3fba1bbf37`. Production deployment and
-Contact operation were verified separately from source integration. GitHub
-Release publication remains a distinct publication record and is not inferred
-from a merge or deployment. See [project status](project-status.md) for current
-validation and deployment evidence.
+development began. The v0.4.3 source was merged through PR #39 at
+`854477488ca5dddad9a47cc4a5036b3fba1bbf37`; a subsequent documentation
+merge, PR #40, is the verified `v0.4.3` tag target
+`da1c6b48f2319ffa85f17b725d958980eabc7235`. Production deployment and
+Contact operation were independently verified for the PR #39 source. The tag,
+numbered GitHub Release and Vercel deployment are separate records; tag
+existence alone does not prove GitHub Release publication. See
+[project status](project-status.md) for current validation and deployment evidence.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -567,13 +569,14 @@ The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) preserves 
 
 ## Version 0.4.3 — Utility Value, Trust & Discoverability
 
-Status: SCOPE COMPLETE and merged to `master` by PR #39 at
-`854477488ca5dddad9a47cc4a5036b3fba1bbf37`; readiness passed for implementation
-source `73a4998c93ccb8809ea9541516f278a36c4e905e`. Production deployment and
-Contact operation are recorded separately in [project status](project-status.md).
-GitHub tag and Release publication are distinct records and must be verified
-from GitHub. The version order remains after v0.4.2 and before the unchanged
-v0.5.0 catalog; AdSense resubmission remains a separate operational action.
+Status: IMPLEMENTED and integrated through PR #39, with publication-state
+documentation merged through PR #40. The `v0.4.3` tag resolves to
+`da1c6b48f2319ffa85f17b725d958980eabc7235`; implementation readiness passed
+for source `73a4998c93ccb8809ea9541516f278a36c4e905e`. Production deployment
+and Contact operation were verified on the earlier PR #39 source; see
+[project status](project-status.md). The numbered GitHub Release must be
+verified separately from the tag. The next unchanged catalog is v0.5.0;
+AdSense resubmission remains a separate operational action.
 
 ### Goal
 
@@ -923,7 +926,7 @@ v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
-v0.4.3  Utility Value, Trust & Discoverability (scope complete; merged to master)
+v0.4.3  Utility Value, Trust & Discoverability (implemented; tagged; Production verified)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
@@ -1009,6 +1012,18 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
+Current next action (2026-10-21): begin planner-controlled scope and architecture
+preflight for **v0.5.0 — Developer & Text Utility Suite**, the nine-tool Priority B
+family defined above. Inspect the latest `master` commit and implementation
+precedents, refresh bounded my-dev-kit evidence, resolve the security and
+execution-boundary decisions, then create and freeze
+`docs/plans/v0.5.0-implementation-plan.md` before any implementation prompt.
+Do not prewrite arbitrary batches, revise the nine-tool scope, introduce a new
+registry or bring v0.6.0/converter proposals forward. Confirm numbered GitHub
+Release publication independently of the verified v0.4.3 tag. Operational
+AdSense reconsideration, webmaster review and default-off support activation
+remain separate from v0.5.0 product implementation.
+
 Historical handoff at the 2026-10-20 planning checkpoint: GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before Batch A, verify the latest source/owners and establish original fixture provenance and measurable facts; verify truthful public publisher identity and the selected direct-Resend contact sender/inbox before Batch D, without blocking earlier example and discovery work. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
 
 Verified planning state (2026-10-19): PR #33 reconciled the v0.4.1 release
@@ -1056,7 +1071,8 @@ should freeze their implementation plan before coding prompts are issued.
 The new category migration replaces public Everyday with Converters (converter),
 keeps Length/Weight and all tool URLs, moves QR to Developer, and permanently
 redirects /category/everyday. This records a later decision; the historical v0.4
-decision is unchanged. Migration release assignment remains TBD.
+decision is unchanged. The category migration was delivered in the v0.4.1 release; only the proposed
+additional conversion utilities remain without approved release assignments.
 
 Planner approval is requested for a separate v0.7.0 converter wave:
 Temperature, Volume, Area, Speed and Data Storage. A second wave is proposed for

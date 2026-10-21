@@ -3,7 +3,8 @@
 Research recorded 2026-10-11. Planning only: no new tools, dependencies or runtime
 conversion framework are implemented. Proposed v0.7.0 for wave 1 and v0.8.0 for
 wave 2, both pending planner approval. Frozen v0.5.0 and v0.6.0 remain unchanged.
-The category migration is a separate post-v0.4 change with release assignment TBD.
+The category migration was implemented and released in v0.4.1; only the new
+converter waves below remain proposals without approved release assignments.
 
 ## Accuracy and feasibility
 

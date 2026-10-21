@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.3 — Utility Value, Trust & Discoverability
+## v0.4.3 — Utility Value, Trust & Discoverability — 2026-10-21
 
 - Added a task-first homepage, improved Discover navigation, and distinct task
   guidance across the seven populated categories while retaining all 18
