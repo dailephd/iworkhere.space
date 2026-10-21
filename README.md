@@ -3,19 +3,18 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The v0.4.3 application source is represented by `release/v0.4.3` and package
-version `0.4.3`. It includes 18 registered utilities across seven populated
-categories, five original verified worked examples, a task-first homepage,
-improved Discover navigation, distinct category guidance, publisher About and
-Contact Us pages, and 30 canonical public sitemap URLs. The existing fixed,
-retractable site chrome retains its conditional Report Issues action. The
-contact form uses the direct Resend integration; production delivery depends
-on verified sender and recipient configuration, authorized delivery testing, production rate
-limiting, and confirmed deployment identity. Those operational conditions are
-not established here. The v0.4.2 issue-reporting entry remains conditional on
-`NEXT_PUBLIC_SUPPORT_ENABLED=true`; external support providers and production
-activation are not claimed as provisioned. GitHub publication and Vercel
-deployment identity are verified separately from source version.
+The current application version is v0.4.3. It includes 18 registered utilities
+across seven populated categories, five original verified worked examples, a
+task-first homepage, improved Discover navigation and category guidance,
+publisher About and Contact pages, privacy improvements, and 30 canonical
+public routes. The existing fixed, retractable site chrome retains its
+conditional Report Issues action. Contact uses the direct Resend integration
+with a sender and recipient configured externally; Production delivery was
+verified on 2026-10-21. The v0.4.2 issue-reporting entry remains conditional on
+`NEXT_PUBLIC_SUPPORT_ENABLED=true`; Report Issues and advertising remain
+default-off. Source integration, GitHub Release publication, and Vercel
+Production deployment are distinct release records. Production deploys from
+`master`.
 The preceding v0.4.2 release introduced a homepage that grouped tools by
 category. The current application retains those utilities and Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
@@ -28,9 +27,7 @@ browser-local. The private dashboard remains an independent application at
 version `0.1.0`. The public Vercel project continuously deploys `master`;
 deployed application source and numbered GitHub releases are distinct. The
 historical `v0.4.1` release tag points to `master` commit
-`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (PR #32). Verify current
-production deployment identity and health from Vercel records separately from
-GitHub release publication. Vercel Web Analytics
+`90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (PR #32). Vercel Web Analytics
 measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)

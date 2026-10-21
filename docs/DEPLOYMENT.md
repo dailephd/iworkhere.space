@@ -191,11 +191,36 @@ validation helpers. `VERIFY_TEST_VALUE` is isolated to the verify-script test
 fixture. They are not deployment variables and must not contain credentials.
 
 
-## General contact (v0.4.3 Batch 4) - provisioning and activation
+## General contact (v0.4.3) - implementation and Production operation
 
-Status: the contact page, form, `POST /api/contact` and the direct Resend sender are implemented and tested with provider substitutes only.
-**Nothing below is provisioned, configured, deployed or verified in Vercel or Resend, and no real email has been sent.** Missing
-configuration makes the endpoint answer `503` and the form say contact is unavailable; the page itself still renders.
+### Implemented application contract
+
+The contact page, form, `POST /api/contact` and direct Resend sender are
+implemented. The endpoint applies strict request validation, a 64 KiB
+streaming body limit, same-origin `Origin` validation and a honeypot. Missing
+required configuration fails closed with `503`; the page itself still renders
+and the form reports that contact is unavailable. The application has no
+in-memory per-instance rate limiter and no Contact database. Report Issues is
+a separate integration and remains default-off unless independently enabled.
+
+### Current verified Production operation - 2026-10-21
+
+The Production deployment `dpl_F2KcjMqiiAz1WkAupbMtuGWvo8zN` was READY and ran
+source `854477488ca5dddad9a47cc4a5036b3fba1bbf37`. The required variables
+`RESEND_API_KEY`, `CONTACT_TO_EMAIL` and `CONTACT_FROM_EMAIL` were present in
+Production scope; their values are not documented here. One authorized
+Production request returned HTTP 200 (`{"ok":true}`) at `2026-10-21T17:42:59Z`.
+The inbox delivery was confirmed from `contact@iworkhere.space` to
+`dailephd@gmail.com`; SPF and DKIM passed and Reply-To matched the submitted
+sender. The Production Firewall rule for `POST /api/contact` was verified
+enabled and published, limiting requests to 5 per 300 seconds per client IP
+with HTTP 429 on excess.
+
+### Configuration contract for future environments or deployments
+
+The source implementation does not configure external Resend or Vercel
+settings. Contact delivery requires the following independently configured
+variables. Do not prefix them with `NEXT_PUBLIC_`.
 
 | Name | Owner / visibility | Required when | Off / fail-closed behavior | Secret? |
 | --- | --- | --- | --- | --- |
@@ -204,28 +229,26 @@ configuration makes the endpoint answer `503` and the form say contact is unavai
 | `CONTACT_FROM_EMAIL` | Root / server-only | Contact delivery | Missing answers `503`. Must be an address on a Resend-verified sending domain | No |
 | `CONTACT_FROM_NAME` | Root / server-only | Optional | Default `iworkhere.space` | No |
 | `CONTACT_SUBJECT_PREFIX` | Root / server-only | Optional | Default `[iworkhere.space contact]` | No |
-| `ALLOW_REAL_CONTACT_EMAIL_TEST` | Operator shell | Reserved for a future, explicitly authorized live test | No code path reads it in v0.4.3; keep `false` | No |
+| `ALLOW_REAL_CONTACT_EMAIL_TEST` | Operator shell | Reserved for an explicitly authorized live test | No code path reads it in v0.4.3; keep `false` | No |
 
-Never prefix any of these with `NEXT_PUBLIC_`. The contact settings are independent of `NEXT_PUBLIC_SUPPORT_ENABLED` and the
-`SUPPORT_*` settings: contact works with reporting disabled, and enabling one does not enable the other.
+The contact settings are independent of `NEXT_PUBLIC_SUPPORT_ENABLED` and the
+`SUPPORT_*` settings: Contact can operate with Report Issues disabled, and
+enabling one does not enable the other. For each future environment or
+redeployment, configure the required values in the appropriate protected
+environment scope, verify the sender domain with Resend, and provide a
+deployment-level rate limit for `POST /api/contact`. The application itself
+does not rate-limit requests. Review the `/privacy` "Contact Us messages"
+section; Contact messages are not stored in a site database and the form
+promises neither a reply nor a response time. A successful provider response
+does not by itself guarantee inbox delivery.
 
-Operator prerequisites (external, **not done by this change**):
+### Historical Batch 4 preparation checkpoint
 
-1. The same Resend account and verified sending domain used by the portfolio website (`dailephd/my-website-2026`) may be reused, but the
-   environment variables must be configured independently in the iworkhere.space Vercel project. Secrets from the other project are
-   not inherited, and source code does not establish provider configuration.
-2. Set `RESEND_API_KEY`, `CONTACT_TO_EMAIL` and `CONTACT_FROM_EMAIL` (and optionally the name and prefix) for Production only.
-3. **Rate limiting gate.** The application has a honeypot, strict validation, a 64 KiB streaming cap and a required same-origin `Origin`
-   header. These are not rate limiting, and the application deliberately adds no in-memory per-instance limiter (it would not be effective
-   across serverless instances) and no contact database. Before activation, a verified deployment-level rate limit for
-   `POST /api/contact` (for example a Vercel Firewall rate-limit rule) must exist and be tested. This has **not** been configured
-   or verified.
-4. Review the `/privacy` "Contact Us messages" section (it states that messages go through Resend to the operator inbox, are not stored
-   in a site database, and that no deletion schedule has been set).
-5. A real delivery test needs explicit authorization of the operator. Provider acceptance (`200 { ok: true }`) does not guarantee inbox
-   placement or spam-folder avoidance, and the form promises neither a reply nor a response time.
-
-Do not claim live contact email is ready until items 1-3 are completed and verified.
+At the original Batch 4 implementation checkpoint, before Production setup,
+the contact page and API had only been tested with provider substitutes; no
+Production variables or Firewall rule had been configured and no real email
+had been sent. Those statements describe that historical checkpoint, not the
+Production state verified on 2026-10-21 above.
 
 ## Exact-SHA diagnostic hotfix deployment
 

@@ -1,6 +1,23 @@
 # PROJECT STATUS
 
-## Current release-preparation checkpoint - 2026-10-21
+## Current v0.4.3 Production verification snapshot - 2026-10-21
+
+APPLICATION_VERSION: `0.4.3` (root package remains private; independent dashboard: `0.1.0`).
+COMPLETED_RELEASE_PR: #39, merged to `master` at `854477488ca5dddad9a47cc4a5036b3fba1bbf37`.
+MASTER_CI: 8/8 workflows and 9/9 required jobs passed on that exact SHA. Workflow runs: Build `39639751144`, Container `39639751053`, Dashboard `39639751074`, E2E `39639751158`, Lint `39639751128`, Observability database `39639751178`, Test `39639751088`, Typecheck `39639751123`.
+PRODUCTION_DEPLOYMENT: `dpl_F2KcjMqiiAz1WkAupbMtuGWvo8zN`, READY, source `854477488ca5dddad9a47cc4a5036b3fba1bbf37`.
+PUBLIC_ROUTE_ACCEPTANCE: PASS for homepage, health, About, Contact, Privacy, Discover and sitemap; 30 canonical URLs, 18 utilities across seven populated categories.
+PUBLIC_EXAMPLE_ASSETS: 13/13 returned HTTP 200.
+CONTACT_PRODUCTION: VERIFIED on 2026-10-21. One authorized `POST /api/contact` returned HTTP 200 (`{"ok":true}`) at `2026-10-21T17:42:59Z`; provider acceptance PASS and inbox delivery verified. Sender: `contact@iworkhere.space`; recipient: `dailephd@gmail.com`; Gmail message ID: `1a15f8f2e86d258d`. SPF and DKIM passed; Reply-To was `dailephd@gmail.com`.
+PRODUCTION_FIREWALL: Verified enabled and published for `POST /api/contact`; 5 requests per 300 seconds per client IP, exceeded-limit action HTTP 429.
+REPORT_ISSUES: default-off. ADVERTISING: default-off.
+RELEASE_PUBLICATION: GitHub tag and Release publication are distinct verification steps; consult GitHub records for their current state.
+
+The following release-preparation checkpoint is retained as historical evidence.
+Its pending and unverified statements describe the state before PR #39 merged
+and before Production Contact was configured and tested.
+
+## Historical release-preparation checkpoint - 2026-10-21
 
 DEFAULT_BRANCH: `master`.
 
@@ -72,9 +89,9 @@ audit accepted this pre-existing finding as nonblocking. No repository security
 policy requiring remediation was found. Reassess separately if the dependency
 path or deployment artifact changes.
 
-## v0.4.3 implementation candidate — 2026-10-21
+## Historical v0.4.3 implementation candidate checkpoint — 2026-10-21
 
-The planning record below remains historical evidence of the original product decision. Current candidate status and local validation are recorded at the top of this file. The candidate adds no new tools and does not change the frozen v0.5.0/v0.6.0 catalog scope or proposed converter waves. The published v0.4.2 release and production deployment identity remain separate; production Contact, Search Console evidence, AdSense acceptance and live deployment remain unverified.
+This records the implementation-candidate state before release preparation. The planning record remains historical evidence of the original product decision. The candidate added no new tools and did not change the frozen v0.5.0/v0.6.0 catalog scope or proposed converter waves. At this checkpoint, production Contact, Search Console evidence, AdSense acceptance and live deployment remained unverified; later operational evidence is recorded at the top of this file.
 
 ## v0.4.1 released UI and category changes — 2026-10-11
 

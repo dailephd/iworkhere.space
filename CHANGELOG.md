@@ -8,15 +8,18 @@
 - Added five original, verified worked examples for existing PDF and image
   tools, with measured source/output facts, reproduction steps and limitations.
 - Added publisher About and Contact Us pages, plus the direct Resend contact
-  integration. Production email delivery still requires external credentials,
-  a verified sending domain, authorized delivery testing and production rate
-  limiting.
+  integration. Source code does not configure external Resend or Vercel
+  settings. Production was configured independently and operationally verified
+  on 2026-10-21: the contact API returned HTTP 200, delivery to the configured
+  inbox was confirmed from the verified `contact@iworkhere.space` sender, and
+  the Production Firewall rate limit was verified enabled.
 - Added Resend 6.16.0 for direct contact email.
 - Added the expanded footer action order Contact Us, conditional Report Issues,
   and Privacy Policy, with privacy disclosure and accessibility improvements.
 - Added `/about` and `/contact` to the canonical public sitemap, bringing it to
-  30 URLs. Contact delivery, issue-report activation, AdSense acceptance and
-  production deployment are not established by this source release.
+  30 URLs. Production deployment and Contact delivery were verified separately
+  from source integration. Report Issues and advertising remain default-off;
+  no AdSense acceptance or activation is claimed.
 - Added regression coverage for the new content, routes, contact behavior,
   privacy, accessibility, and existing advertising and footer contracts.
 
