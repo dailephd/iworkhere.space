@@ -50,15 +50,23 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-The v0.4.2 GitHub Release is the preceding published release (2026-10-20). The `release/v0.4.3` branch represents application package version `0.4.3`; readiness passed for source SHA `73a4998c93ccb8809ea9541516f278a36c4e905e`. GitHub publication and Vercel deployment are tracked separately. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md) remains the scope authority; later catalog plans remain unchanged.
+The current application version is `v0.4.3`. PR #39 integrated its source,
+PR #40 updated publication and Production facts, and the `v0.4.3` tag resolves
+to `da1c6b48f2319ffa85f17b725d958980eabc7235`. The implementation-readiness
+source was `73a4998c93ccb8809ea9541516f278a36c4e905e`. Production
+verification and numbered GitHub Release publication are separate records;
+see [project status](project-status.md). The [frozen five-batch plan](plans/v0.4.3-implementation-plan.md)
+remains historical scope authority. The next version is the unchanged v0.5.0
+nine-tool catalog; its implementation plan has not yet been frozen.
 
 The historical `v0.4.1` GitHub Release was published 2026-10-11; its annotated tag
 points to the release-time `master` commit
 `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent v0.4.3 planning PR #35 merge commit is
 `d48e5fcf3d9015db5677d0a7410236a70979db58`; newer documentation commits
 may advance `master` without changing the numbered release tag.
-The released source contains 18 tools, seven populated categories and 28
-registry-derived sitemap URLs. It includes homepage category sections,
+The v0.4.1 source contained 18 tools, seven populated categories and 28
+registry-derived sitemap URLs; the current v0.4.3 source retains 18 tools and
+seven populated categories with 30 canonical public URLs. It includes homepage category sections,
 Calculator keyboard equals, the integrated six-palette appearance system and
 the converter category migration. See `CHANGELOG.md`, `project-status.md` and
 `ROADMAP.md`. Current category ownership is described in `modules/Category.md`;
@@ -77,10 +85,11 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
-  v0.4.2 is the preceding numbered GitHub Release (2026-10-20). Production deployment status is tracked separately.
-  The release branch represents the completed v0.4.3 application source. v0.5.0 is
-  the next catalog expansion, and its implementation plan is not frozen. Vercel deployment identity and health must be verified from deployment
-  records; historical launch records remain date-scoped.
+  v0.4.2 was published on 2026-10-20; v0.4.3 is now the current application
+  version, integrated to `master` and tagged at the PR #40 merge commit.
+  v0.5.0 is the next catalog expansion, and its implementation plan is not
+  frozen. Vercel deployment identity and health are recorded separately in
+  [project status](project-status.md); historical launch records remain date-scoped.
 
 Current persistent-observability references:
 
@@ -136,8 +145,8 @@ do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
 their respective reports. v0.3.1, v0.4.0 and v0.4.1 remain historical GitHub
 Releases; v0.4.2 is the preceding numbered release (2026-10-20). Production
-activation and deployment state are tracked separately. The v0.4.3 release branch
-represents the completed source for original utility value, publisher transparency
+activation and deployment state are tracked separately. The v0.4.3 source is
+integrated and tagged, providing original utility value, publisher transparency
 and distinctive content. v0.5.0 remains the next catalog expansion release.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
@@ -171,8 +180,16 @@ v0.5.0 and v0.6.0 catalog scopes are unchanged.
 
 ### plans/v0.4.3-implementation-plan.md
 
-**Summary:** Frozen product-value scope, implemented in the v0.4.3 release branch; readiness passed for source SHA `73a4998c93ccb8809ea9541516f278a36c4e905e`. Defines five original, reproducible PDF/image examples; task-first homepage; distinct seven-category guidance; publisher About and independent direct-Resend Contact; safe content/asset ownership; and a real-use curation follow-up. The plan retains exact architecture owners, five implementation batches, evidence standards, test expectations, external decisions and release boundaries. It records requirements, not proof of production deployment or publication.
-**When to read:** When auditing the v0.4.3 candidate against its frozen scope or preparing a separate readiness review.
+**Summary:** Frozen product-value scope, implemented and integrated in v0.4.3;
+readiness passed for source SHA `73a4998c93ccb8809ea9541516f278a36c4e905e`.
+Defines five original, reproducible PDF/image examples; task-first homepage;
+distinct seven-category guidance; publisher About and independent direct-Resend
+Contact; safe content/asset ownership; and a real-use curation follow-up. The
+plan retains exact architecture owners, five implementation batches, evidence
+standards, test expectations, external decisions and release boundaries. It
+records requirements, not independent production or publication evidence.
+**When to read:** When reviewing frozen v0.4.3 scope, historical readiness or
+regression risks for later versions.
 **Relations:** [v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md),
 ROADMAP.md, project-status.md, DESIGN.md, ADVERTISING.md, existing tool
 guides, the accepted v0.4.2 reporting/chrome plan and current registry.
