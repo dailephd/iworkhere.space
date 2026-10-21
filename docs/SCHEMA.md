@@ -304,7 +304,7 @@ Schema integrity is foundational to reliability.
 | --- | --- |
 | `category` | `incorrect_result`, `tool_failure`, `invalid_output`, `interface_accessibility`, `performance_compatibility`, `content_link`, `privacy_security`, `suggestion`, `other`. An empty value is `required`. |
 | `area` / `toolId` | `tool`, `site-wide` or `other`. `toolId` is required for `tool`, must be a registered tool id, and is forbidden otherwise. |
-| `pathname` | Allowlist only: `/`, `/discover`, `/privacy`, `/category/<registered category>`, `/tool/<registered slug>`. No query, hash, `//` or other route. |
+| `pathname` | Allowlist only: `/`, `/discover`, `/privacy`, `/about`, `/contact`, `/category/<registered category>`, `/tool/<registered slug>`. No query, hash, `//` or other route. (`/about` and `/contact` were added in v0.4.3 Batch 4 with no schema change.) |
 | `description` | Required, 1–2,000 Unicode code points after trim and NFC normalization. |
 | `expected` | Required (1–1,000) for `incorrect_result`; optional otherwise. For `suggestion` it carries "What improvement would help?". |
 | `observed` | Optional, up to 1,000 code points. For `suggestion` it carries the suggested use case. |
@@ -321,6 +321,14 @@ tool id, pathname, narrative, optional consented email, server receipt time, pri
 attempt count, next attempt, lease, safe provider reference and failure code). `UNIQUE (report_id, kind)` guarantees one job per kind.
 See [database/support/README.md](../database/support/README.md).
 
+
+## Contact request (v0.4.3 Batch 4)
+
+`POST /api/contact` has no persisted schema (no contact database exists). Request keys: `senderEmail`, `title`, `message`, `companyWebsite`
+(honeypot, optional, must be a string and empty for a person). Rules and limits live in `src/module/contact/contract.ts` and are shared by
+the browser form and the server: email at most 254 characters matching `^[^\s@]+@[^\s@]+\.[^\s@]+$` with no control characters; title 1-200
+characters, no control characters; message 10-10,000 characters, control characters other than tab/CR/LF rejected; all three trimmed first.
+Response bodies are `{ ok: true }` or `{ ok: false, error, field? }`; see [API](API.md#post-apicontact).
 
 ## Diagnostic hotfix
 

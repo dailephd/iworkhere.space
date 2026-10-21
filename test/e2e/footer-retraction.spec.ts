@@ -3,7 +3,9 @@ import { test, expect } from "./support/fixture";
 
 // The reporting action only exists in a support-enabled build (see the Batch 1 support-report spec); this flag marks such a run.
 const supportEnabled = process.env.E2E_SUPPORT_RUN === "true";
-const reportName = "Report a problem or suggestion";
+// The visible words are in the accessible name (label in name); the dialog keeps its own title.
+const reportName = "Report Issues — report a problem or suggestion";
+const reportDialogName = "Report a problem or suggestion";
 
 const footer = (page: Page) => page.getByRole("contentinfo");
 const hideFooter = (page: Page) => footer(page).getByRole("button", { name: "Hide footer", exact: true });
@@ -164,14 +166,14 @@ test("the reporting action is directly available in both states", async ({ page 
         return;
     }
     await expect(reportButton(page)).toBeVisible();
-    expect(await reportButton(page).innerText()).toBe(reportName);
+    expect(await reportButton(page).innerText()).toBe("Report Issues");
     await collapse(page);
     await expect(reportButton(page)).toBeVisible();
     // Collapsed, the visible text is the short label while the accessible name keeps the full purpose.
     expect(await reportButton(page).innerText()).toBe("Report");
     await expect(page.getByRole("button", { name: reportName })).toHaveCount(1);
     await reportButton(page).click();
-    const dialog = page.getByRole("dialog", { name: reportName });
+    const dialog = page.getByRole("dialog", { name: reportDialogName });
     await expect(dialog).toBeVisible();
     await expect(page.locator("dialog")).toHaveCount(1);
     // The modal dialog is above the fixed footer and keeps focus and Escape.

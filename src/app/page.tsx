@@ -1,10 +1,38 @@
+import Link from "next/link"
 import HomeClient from "./HomeClient"
 import StatusPanel from "@/component/common/StatusPanel"
 import { buildPageMetadata } from "@/lib/seo"
 
-export const metadata = buildPageMetadata({ title: "Practical browser tools", description: "Resize, compress and convert images, transform text, calculate and work with time using browser-based tools.", canonicalPath: "/" })
+export const metadata = buildPageMetadata({ title: "Practical browser tools", description: "Browser tools for PDFs, images, text, unit conversion, calculation, time values and developer tasks. PDF and image processing runs locally in your browser.", canonicalPath: "/" })
 
-import { getAllTool, getAvailableCategory } from "@/module/tool/metadata"
+import { getAllTool, getAvailableCategory, getToolByIdList } from "@/module/tool/metadata"
+import { getAllValueExample } from "@/module/tool/valueExamples"
+
+interface FeaturedTaskItem {
+  slug: string
+  name: string
+  task: string
+  outcome: string
+  limitation: string
+}
+
+/*
+ * Editorial task entry points, not a catalog and not a ranking. The five tasks come from the
+ * value-example owner and each tool is resolved through the registry, so no tool facts live here.
+ */
+function getFeaturedTask(): FeaturedTaskItem[] {
+  return getAllValueExample().flatMap((example) => {
+    const [tool] = getToolByIdList([example.toolId])
+    if (!tool) return []
+    return [{
+      slug: tool.slug,
+      name: tool.name,
+      task: example.task,
+      outcome: example.whyThisTool,
+      limitation: example.limitation[0],
+    }]
+  })
+}
 
 interface HomeToolItem {
   slug: string
@@ -33,16 +61,37 @@ function toHomeToolItem(one: {
 export default function HomePage() {
   const toolItem = getAllTool().map((one) => toHomeToolItem(one))
   const categoryItem = getAvailableCategory()
+  const featuredTask = getFeaturedTask()
 
   return (
       <div className="space-y-8">
         <section className="space-y-2">
           <h1 className="text-2xl font-semibold text-[var(--text)]">
-            Practical tools for everyday work
+            Practical browser tools for PDFs, images, text and more
           </h1>
           <p className="text-[var(--text-muted)]">
-            Free browser based tools for images, text, documents and everyday tasks.
+            {toolItem.length} browser utilities for PDFs, images, text, unit conversions, calculations, time values and developer tasks. Choose the tool that fits your task, or search and browse by category below.
           </p>
+          <p className="text-sm text-[var(--text-muted)]">
+            Where a tool says so, PDF and image files are processed locally in your browser instead of being uploaded. Results depend on your file, your browser and the limits shown on each tool; not every conversion is lossless and not every file gets smaller.
+          </p>
+        </section>
+
+        <section aria-labelledby="home-task-title" data-featured-task-section className="space-y-3">
+          <h2 id="home-task-title" className="text-xl font-semibold text-[var(--text)]">Start with a common task</h2>
+          <p className="text-sm text-[var(--text-muted)]">Five tasks with a worked example on the tool page. These are hand-picked starting points, not a ranking.</p>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredTask.map((one) => (
+              <li key={one.slug} data-featured-task={one.slug} className="min-w-0 space-y-2 rounded-xl border border-card-border bg-card-bg p-4">
+                <h3 className="font-semibold text-text">
+                  <Link href={`/tool/${one.slug}`} className="underline underline-offset-4 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring">{one.name}</Link>
+                </h3>
+                <p className="text-sm text-text">{one.task}</p>
+                <p className="text-sm text-text-muted">{one.outcome}</p>
+                <p className="text-sm text-text-muted">{one.limitation}</p>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <HomeClient toolItem={toolItem} categoryItem={categoryItem}>

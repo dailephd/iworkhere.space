@@ -40,3 +40,9 @@ Manual review and updates are encouraged to add implementation details.
 ### Component-color correction (Delivery 1 visually approved 2026-10-03)
 
 Shell header uses header-bg; protected advertising surfaces stay quiet surface-alt; footer uses footer-bg. No grid, spacing or scrolling changes.
+
+### v0.4.3 Batch 4 footer composition
+
+`footerActionSlot` still carries only a `ReactNode` and the footer-retraction wrapper is unchanged. `Footer` now places that slot between the
+always-present Contact Us link and the Privacy Policy link in one vertical group; AppShell neither knows about nor reorders them. See
+`docs/components/Footer.md` and `docs/DESIGN.md`.

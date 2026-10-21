@@ -39,3 +39,7 @@ The shared server template renders compact truthful breadcrumbs before the title
 ### Related-tools heading
 
 The related-tools heading is derived from the actual related tools, never from the source tool's own category. When the resolved related set is non-empty and every related tool has the same category, the heading is `Related <that category> tools` (for example the JSON Formatter, a `developer` tool, shows `Related text tools` above its two text-tool links). When the related tools span more than one category, or the set is empty, the heading is the neutral `Related tools`. The template adds no category-label registry and no per-guide heading string.
+
+## v0.4.3 optional worked example
+
+`ToolPageTemplate` accepts one optional `example?: ValueExample` (type from `src/module/tool/valueExamples.ts`). The tool route resolves it with `getValueExample(tool.id)`; the template never looks it up and the route never lists tool ids. When supplied, the template renders `ToolExamplePanel` after the working tool UI and before the guide, as a sibling of the guide section and inside the existing `ToolErrorBoundary` and `AdSenseEligiblePage`. When absent, the output is identical to the previous structure, with no placeholder. The panel adds no H1, boundary, advertising slot or telemetry. See [ToolExamplePanel](ToolExamplePanel.md).

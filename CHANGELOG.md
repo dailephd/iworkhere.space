@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.4.3 — Utility Value, Trust & Discoverability — Unreleased
+
+Implementation is complete in the local feature worktree. This candidate is
+uncommitted, has not been published as a GitHub Release, and is not verified as
+deployed. The package version remains `0.4.2`.
+
+- Added five original, reproducible worked examples for existing PDF and image
+  tools, with measured source/output facts, reproduction steps and limitations.
+- Added five task-first homepage entries while retaining the full eighteen-tool
+  catalog, search and seven category entry points; added distinct guidance to
+  each populated category.
+- Added publisher About and independent Contact pages, a validated direct
+  Resend contact endpoint, and the expanded footer action order Contact Us,
+  Report Issues (when enabled), Privacy Policy.
+- Added `/about` and `/contact` to the public route inventory and sitemap,
+  bringing the candidate sitemap to 30 URLs.
+- Added integrated operation, privacy, accessibility, route, support-enabled,
+  advertising-eligibility and container regression coverage. Local evidence does
+  not establish hosted CI, live email delivery, production activation or release.
+
 ## v0.4.2 — User Reporting & Retractable Site Chrome — 2026-10-20
 
 Published as the numbered GitHub Release on 2026-10-20. GitHub release

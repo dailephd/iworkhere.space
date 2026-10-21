@@ -11,4 +11,9 @@ export const defaultNavItem: NavItem[] = [
         label: "All tools",
         href: "/discover",
     },
+    {
+        id: "about",
+        label: "About",
+        href: "/about",
+    },
 ]

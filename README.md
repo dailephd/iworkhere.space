@@ -4,14 +4,19 @@ Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
 **Latest numbered GitHub Release: v0.4.2 (2026-10-20).** The application
-source/package version is `0.4.2`; its implementation is committed and
-readiness-approved. Production deployment status is tracked separately from GitHub
-Release publication. The anonymous reporting entry is disabled unless
+package version remains `0.4.2`. The v0.4.3 implementation candidate is complete
+in the local `feature/v0.4.3-utility-value` worktree and remains uncommitted;
+it has not been released or verified as deployed. Production deployment status
+is tracked separately from GitHub Release publication. The anonymous reporting entry is disabled unless
 `NEXT_PUBLIC_SUPPORT_ENABLED=true`; external support providers and production
 activation are not claimed as provisioned. The
-registry contains 18 tools across
-seven populated categories and produces 28 sitemap URLs, including `/privacy`.
-The homepage groups every tool under its populated category; Calculator accepts
+released v0.4.2 source contains 18 tools across seven populated categories and
+produces 28 sitemap URLs, including `/privacy`. The v0.4.3 candidate adds
+`/about` and `/contact`, for 30 candidate sitemap URLs, and presents five
+original worked examples on their existing tool pages. Its task-first homepage
+retains the full catalog and search, and each populated category has distinct
+task guidance.
+The released v0.4.2 homepage groups every tool under its populated category; Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
 Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
 Length and Weight while QR Code Generator belongs to Developer. The historical
@@ -87,7 +92,7 @@ for nine required jobs total:
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
-- `e2e.yaml` — `e2e` runs `npm run test:e2e` (public production browser gate); `e2e-support` runs header, footer and report-dialog scenarios in a support-enabled build
+- `e2e.yaml` — `e2e` runs `npm run test:e2e`; `e2e-support` selects `footer-retraction.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` in a support-enabled build
 - `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
 Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the
@@ -132,6 +137,7 @@ Each Vitest run writes JSON and JUnit output under a unique
 
 ## Documentation
 
+- `docs/plans/v0.4.3-implementation-plan.md` — frozen five-batch v0.4.3 scope and acceptance
 - `docs/ROADMAP.md` — canonical version-level goals, scope, dependencies,
   exclusions, acceptance, and deferred work
 - `docs/project-status.md` — actual current implementation and exact next action

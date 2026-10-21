@@ -271,8 +271,11 @@ graph TD
 - `/` — Home page (`page.tsx`, `HomeClient.tsx`)
 - `/discover` — Tool discovery page with category grouping and search
   (`discover/page.tsx`, `discover/DiscoverClient.tsx`)
+- `/about` — Publisher and site information (`about/page.tsx`, content from `module/content/siteInformation.ts`)
+- `/contact` — General contact page with the `ContactForm` client component (`contact/page.tsx`)
 - `/tool/[slug]` — Individual tool page (`tool/[slug]/page.tsx`)
 - `/category/[category]` — Category listing page (`category/[category]/page.tsx`)
+- `/api/contact` — General contact intake and direct Resend delivery (`api/contact/route.ts`; owner `module/contact/`); independent of `/api/support/*`
 - `/api/health` — Health check endpoint (`api/health/route.ts`)
 - `/api/log` — Sanitized technical diagnostics (`api/log/route.ts`)
 - `/api/metric` — Bounded measurement ingestion (`api/metric/route.ts`)
@@ -364,7 +367,7 @@ in `src/module/tool/registry.ts` via the `tool_definition_list` array.
 
 The current registry contains 18 tools across seven populated categories in
 canonical order document, text, math, converter, time, image, developer; the
-public sitemap derives 28 URLs, including `/privacy`. The tagged v0.4.0
+released v0.4.2 sitemap derives 28 URLs, including `/privacy`. The tagged v0.4.0
 release had 27 URLs before the privacy route and before the post-release
 category migration. The v0.3.1 launch catalog historically had 15 tools, six
 populated categories and 23 URLs. Production deploys `master` continuously;
@@ -372,8 +375,13 @@ deployment identity is separate from source and release identity.
 
 Current v0.4.2 source retains all 18 tools and seven populated categories,
 replaces `everyday` with `converter` (Converters), and moves QR to `developer`.
-The current sitemap includes `/privacy` and has 28 canonical URLs. The
-preceding v0.4.0 statement remains the historical release record.
+The v0.4.2 sitemap included `/privacy` and had 28 canonical URLs. v0.4.3 Batch 4 adds
+`/about` and `/contact`, so the source now derives 30 (5 static routes, 18 tools,
+7 categories). The preceding v0.4.0 statement remains the historical release record.
+
+v0.4.3 Batch 4 adds `module/content` (typed publisher copy) and `module/contact`
+(validation, bounded body, origin check, direct Resend sender). Contact messages are
+visitor-authored email content and never enter observability or the support database.
 
 - **Merge PDF** (`document/MergePdfTool.tsx`) — ordered PDF assembly
 - **Split PDF** (`document/SplitPdfTool.tsx`) — ordered page-group outputs
@@ -733,3 +741,28 @@ Existing observability facade and analytics/logger interfaces remain authoritati
 ## UI/discovery Delivery 2 ownership
 
 The approved image workspace composition extends each local image tool without moving operation state or encoders. `src/module/tool/guide.ts` is a small typed server-consumed prose/related-ID companion, not a catalog. Tool identity remains in registry.ts; metadata.ts resolves ID lists and breadcrumb presentation. Tool route composes these server values into ToolPageTemplate; guide data must never be imported into the client catalog. `src/lib/seo.ts` remains generic and owns one canonical origin plus the conservative environment indexability decision. App Router sitemap/robots files compose the established helpers and registry-derived queries. No new search owner or generic image framework.
+
+## Value examples (v0.4.3 Batch 1)
+
+Status: Batch 1 data and assets; the tool pages consume them as described under Batch 2 integration below.
+
+`src/module/tool/valueExamples.ts` is a descriptive data owner for five existing tools: `compress-pdf`, `pdf-to-image`, `images-to-pdf`, `image-resizer` and `image-converter`. It is not a second tool registry: tool identity, slugs and categories stay in `registry.ts`, the records only reference an existing `ToolId`, and `getValueExample(toolId)` returns nothing for any other tool. It imports no Client Component and stores no binary content.
+
+Measured facts (bytes, SHA-256, dimensions, pages, operations and the recorded control steps) come from `public/examples/v0.4.3/manifest.json`, the durable reference asset set described by `public/examples/v0.4.3/README.md`. The outputs are the files the existing tools actually download, produced by `script/v043ExampleFixtures.ts` driving the built tool pages; no processing engine was added or changed. `valueExamples.test.ts` re-reads the committed files and `test/e2e/value-examples.spec.ts` decodes and re-runs them, so a stale or replaced asset fails verification.
+
+### Batch 2 integration (tool-page demonstrations)
+
+Status: implemented. `src/component/tool/ToolExamplePanel.tsx` is a presentation-only Server Component that renders one `ValueExample` (no `"use client"`, no state, no processing imports). The tool route calls `getValueExample(tool.id)` and passes the optional record to `ToolPageTemplate`, which places the panel after the real tool UI and before the tool guide; the other thirteen utilities are unchanged and receive no placeholder. Asset links and previews use only the same-origin `/examples/v0.4.3/` URLs from the records, and downloads are visitor-initiated. Specification: `docs/components/ToolExamplePanel.md`.
+
+Checkout policy: `.gitattributes` marks `public/examples/v0.4.3/**/*.{pdf,png,jpg,webp}` as `binary` so Windows `core.autocrlf` can never alter the hashed asset bytes (a NUL-free PDF is otherwise treated as text), and sets `public/ads.txt` to `text eol=lf` for its byte-sensitive test. No other file changes line-ending behavior.
+
+## Discovery and category guidance (v0.4.3 Batch 3)
+
+Status: implemented. No new structural node: the registry → metadata → route composition, the category definitions → category presentation edge and the ToolSearch state owner are unchanged.
+
+- **Category guidance.** `src/module/tool/category.ts` remains the single owner of category identity. Each definition gains typed, authored `guidance` (`task`, a `choice` list of `{ toolId, when }` and a `limitation`). It is prose about registered tools, not tool identity; `category.test.ts` proves every choice resolves through the registry to a tool of the same category and that every registered tool of the category is covered. The category route reads `getToolCategoryDefinition()` and `getToolByCategory()` and renders identity, then task guidance, then the registry-derived tool grid. Guidance contains no links, so tool-link counts on category pages are unchanged. Two descriptions that named capabilities no registered tool provides were corrected (Text, Time); ids, order and titles are unchanged.
+- **Homepage task entry points.** `src/app/page.tsx` renders one compact "Start with a common task" section before `HomeClient`. The five tasks come from `getAllValueExample()` and each tool is resolved through `getToolByIdList()`, so no tool facts are duplicated in the page. The links are additional entry points, not catalog cards: they do not use `.catalog-card` or `SectionIsland`, so the eighteen registry cards remain exactly once each in their seven category sections. The section is editorial and makes no usage-ranking claim.
+- **Discover.** `src/app/discover/page.tsx` adds server-visible copy and a category list built from `getAvailableCategory()` and `getToolCategoryDefinition()`. `DiscoverClient` and `ToolSearch` are unchanged, so search, tag filtering and the flat eighteen-tool list are unchanged.
+- **Metadata.** Home, Discover and the root default description now describe the actual utilities through the existing `buildPageMetadata` helper.
+- **Indexability.** Math and Time remain one-tool category pages under the existing shared indexing policy; no category-specific noindex, redirect or consolidation was added. Their thin membership is handled by honest guidance, including each tool's limits.
+- **Example descriptions.** `ValueExampleAsset.description` (in `valueExamples.ts`, keyed by path; the manifest is unchanged) supplies image alt text and captions and the descriptive PDF download link names in `ToolExamplePanel`.

@@ -53,3 +53,17 @@ Unique ids; non-empty title/description for every definition; unchanged legacy
 titles/descriptions and migrated converter label; pinned canonical order; `developer` valid, unknown invalid;
 every registered tool category canonical; unpopulated canonical category omitted
 from `getAvailableCategory()`.
+
+## Guidance (v0.4.3 Batch 3)
+
+Every definition also owns typed, authored visitor guidance in the same entry (no second data array, no route-local mapping):
+
+- `guidance.task` - the concrete task or use case;
+- `guidance.choice` - `{ toolId, when }` entries stating when to choose each registered tool;
+- `guidance.limitation` - a meaningful unsupported operation or boundary.
+
+`ToolCategoryChoice.toolId` is a plain string so this module still imports nothing from the registry. `category.test.ts` proves each `toolId` resolves to a registered tool of the same category, that every registered tool of the category has a choice, and that task and limitation text is distinct per category and does not advertise unsupported capabilities. The category route renders it as Choosing a tool (task, tool choices as text, "Keep in mind" limitation) between the category identity and the registry-derived tool grid, with no links inside the guidance.
+
+Description corrections: Text is now "Create URL slugs, extract text from HTML, and count words and characters." (the old text named code formatting that no Text tool provides) and Time is now "Add and subtract time values in HH:MM format." (the old text named time zones and calendars that the only Time tool does not provide). Ids, canonical order and titles are unchanged.
+
+Math and Time stay indexable one-tool categories under the existing shared indexing policy; their guidance states the real limits (ordinary JavaScript numbers; durations only, no time zones, dates or calendars).

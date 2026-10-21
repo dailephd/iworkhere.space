@@ -7,6 +7,8 @@ export function getExpectedPublicSitemapUrls(): string[] {
     `${canonicalOrigin}/`,
     `${canonicalOrigin}/discover`,
     `${canonicalOrigin}/privacy`,
+    `${canonicalOrigin}/about`,
+    `${canonicalOrigin}/contact`,
     ...getAllTool().map(tool => `${canonicalOrigin}${tool.seo.canonicalPath}`),
     ...getAvailableCategory().map(category => `${canonicalOrigin}/category/${category}`),
   ];

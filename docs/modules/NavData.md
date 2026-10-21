@@ -29,3 +29,8 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
+
+### v0.4.3 Batch 4
+
+`defaultNavItem` is now Home (`/`), All tools (`/discover`) and About (`/about`); the root layout appends one entry per available
+category. Contact Us is deliberately not a navigation item: it lives in the footer action group.

@@ -2,11 +2,14 @@ import { describe, expect, it } from "vitest";
 import { getExpectedPublicSitemapUrls, hasExpectedPublicSitemapUrls } from "./publicRouteInventory";
 
 describe("public sitemap route inventory", () => {
-  it("expects the 28 canonical public routes, including privacy exactly once", () => {
+  it("expects the 30 canonical public routes, including privacy, about and contact exactly once", () => {
     const expectedUrls = getExpectedPublicSitemapUrls();
 
-    expect(expectedUrls).toHaveLength(28);
+    expect(expectedUrls).toHaveLength(30);
     expect(expectedUrls.filter(url => url === "https://iworkhere.space/privacy")).toHaveLength(1);
+    expect(expectedUrls.filter(url => url === "https://iworkhere.space/about")).toHaveLength(1);
+    expect(expectedUrls.filter(url => url === "https://iworkhere.space/contact")).toHaveLength(1);
+    expect(expectedUrls.some(url => url.includes("/api/"))).toBe(false);
     expect(new Set(expectedUrls).size).toBe(expectedUrls.length);
     expect(expectedUrls).toContain("https://iworkhere.space/discover");
     expect(expectedUrls).toContain("https://iworkhere.space/tool/json-formatter");

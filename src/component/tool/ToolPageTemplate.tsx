@@ -3,13 +3,16 @@ import type { ReactNode } from "react";
 import type { ToolGuide } from "@/module/tool/guide";
 import type { ToolBreadcrumb } from "@/module/tool/metadata";
 import { AdSenseEligiblePage } from "@/component/common/AdSenseEligiblePage";
+import type { ValueExample } from "@/module/tool/valueExamples";
 import { ToolErrorBoundary } from "./ToolErrorBoundary";
+import { ToolExamplePanel } from "./ToolExamplePanel";
 
 interface ToolPageTemplateProp {
     tool: ToolDefinition;
     toolUi: ReactNode;
     breadcrumb: ToolBreadcrumb[];
     guide?: ToolGuide;
+    example?: ValueExample;
     relatedTool: ToolDefinition[];
 }
 
@@ -18,6 +21,7 @@ export function ToolPageTemplate({
                                      toolUi,
                                      breadcrumb,
                                      guide,
+                                     example,
                                      relatedTool,
                                  }: ToolPageTemplateProp) {
     const relatedCategory =
@@ -43,6 +47,7 @@ export function ToolPageTemplate({
                         <p className="text-text-muted">{tool.description}</p>
                     </header>
                     <div>{toolUi}</div>
+                    {example && <ToolExamplePanel example={example} />}
                     {guide && <section aria-label="Tool guide" className="min-w-0 space-y-5 rounded-xl border border-panel-border bg-panel-bg p-4 sm:p-6">
                         <section className="space-y-2">
                             <h2 className="text-xl font-semibold">How to use</h2>

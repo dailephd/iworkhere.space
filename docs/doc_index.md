@@ -50,7 +50,7 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-Current numbered GitHub Release: `v0.4.2` (2026-10-20); its annotated tag and the then-current `master` resolve to `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`. This source identity does not establish Vercel deployment or activation of the default-off reporting feature. The next product plan is [v0.4.3](plans/v0.4.3-implementation-plan.md), covering original verified demonstrations, task-first discovery, useful category content and operator-approved About/Contact; the later catalog plan remains unchanged.
+Current numbered GitHub Release: `v0.4.2` (2026-10-20); its annotated tag and the then-current `master` resolve to `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`. This source identity does not establish Vercel deployment or activation of the default-off reporting feature. The v0.4.3 implementation candidate is complete in the uncommitted feature worktree. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md) remains the scope authority; the later catalog plan remains unchanged.
 
 The historical `v0.4.1` GitHub Release was published 2026-10-11; its annotated tag
 points to the release-time `master` commit
@@ -79,8 +79,7 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
   v0.4.2 is the current numbered GitHub Release (2026-10-20), with its source
   and package version aligned. Production deployment status is tracked separately.
-  v0.4.3 (original utility
-  value and publisher trust) is the next planned product version. v0.5.0 is
+  v0.4.3 (original utility value and publisher trust) is the current uncommitted implementation candidate. v0.5.0 is
   the next catalog expansion, and its implementation plan is not frozen. Vercel deployment identity and health must be verified from deployment
   records; historical launch records remain date-scoped.
 
@@ -173,17 +172,8 @@ v0.5.0 and v0.6.0 catalog scopes are unchanged.
 
 ### plans/v0.4.3-implementation-plan.md
 
-**Summary:** Product-value patch planned after a publisher-reported AdSense
-Low value content rejection. Defines five original, reproducible PDF/image
-examples; task-first homepage; distinct seven-category guidance; an operator-verified About page and independent direct-Resend Contact form
-reusing `my-website-2026`'s email/title/message, honeypot, From and Reply-To setup;
-safe content/asset ownership and a real-use curation follow-up. Includes exact architecture owners, five context-sharing
-implementation batches, per-tool evidence standards, route/SEO/accessibility/
-privacy/ad-regression tests, explicit external decisions and release boundaries.
-This plan is NOT evidence of implemented or deployed behavior.
-**When to read:** Before any v0.4.3 example assets, tool demonstration UI,
-homepage/category copy, publisher About/Contact routes or value-oriented
-AdSense resubmission improvement work.
+**Summary:** Frozen product-value scope, now implemented in the local uncommitted candidate. Defines five original, reproducible PDF/image examples; task-first homepage; distinct seven-category guidance; publisher About and independent direct-Resend Contact; safe content/asset ownership; and a real-use curation follow-up. The plan retains exact architecture owners, five implementation batches, evidence standards, test expectations, external decisions and release boundaries. It records requirements, not proof of production deployment.
+**When to read:** When auditing the v0.4.3 candidate against its frozen scope or preparing a separate readiness review.
 **Relations:** [v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md),
 ROADMAP.md, project-status.md, DESIGN.md, ADVERTISING.md, existing tool
 guides, the accepted v0.4.2 reporting/chrome plan and current registry.
@@ -335,11 +325,6 @@ production-license release boundaries.
 **Relations:** Uses TESTING.md and the deterministic image-fixture convention;
 preserves registry, storage and observability contracts in architecture.md.
 
-### project-tree.txt
-**Summary:** A text representation of the file structure.
-**When to read:** To understand where files are located.
-**Relations:** Visualizes the structure defined in `architecture.md`.
-
 ---
 
 ## 3. Development & Code Governance
@@ -451,6 +436,13 @@ and `TESTING.md`.
 
 ## 8. Component & Module Specification Layer (docs/components/, docs/modules/)
 
+Current v0.4.3 specifications:
+
+- `components/ToolExamplePanel.md` and `components/ContactForm.md`: presentation and form behavior.
+- `modules/SiteInformation.md` and `modules/ContactEmail.md`: publisher content and the independent server-only contact contract.
+- `public/examples/v0.4.3/README.md`: original asset provenance and measured example procedures.
+
+
 **Summary:** A separate implementation/design-contract layer, one file per
 component (`docs/components/*.md`, 18 files plus `TimeArithmeticTool.md` added
 2026-08-07 = 19) or module/logical-unit (`docs/modules/*.md`, 27 files). Each
@@ -499,9 +491,8 @@ titles).
 files not yet covered by an individual component/module doc. Not for
 authoritative responsibility descriptions — use `architecture.md` for that.
 
-**Relations:** Subordinate to `architecture.md`; overlaps with
-`project-tree.txt` (file locations) but grouped by classifier heuristics
-rather than directory structure.
+**Relations:** Subordinate to `architecture.md`; describes file locations
+grouped by classifier heuristics rather than directory structure.
 
 ---
 

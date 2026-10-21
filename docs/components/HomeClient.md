@@ -57,3 +57,10 @@ all 18 tools appear exactly once. The direct All tools link navigates to
 Discover. Metadata selection and ToolGrid remain local; SectionIsland owns no
 category, tool, search or routing behavior. Shared section styling is consistent
 across categories and appearance palettes.
+
+
+### Task-first section (v0.4.3 Batch 3)
+
+`src/app/page.tsx` (server) renders the introduction and one "Start with a common task" section before `HomeClient`. `HomeClient` itself is unchanged: it still owns ToolSearch, category links and the seven registry-derived sections with all eighteen cards exactly once.
+
+The five featured tasks (`compress-pdf`, `pdf-to-image`, `images-to-pdf`, `image-resizer`, `image-converter`) come from the existing value-example owner (`getAllValueExample()`); each tool is resolved through `getToolByIdList()`. Each item shows the example task, the supported outcome and the first recorded limitation, and links once to `/tool/<slug>`. These are editorial entry points, not catalog cards: they do not carry `.catalog-card`, are not inside a `SectionIsland`, and are not labelled popular, trending or recommended. The introduction states only documented capabilities: local browser processing where a tool says so, and that results depend on file, browser and limits.

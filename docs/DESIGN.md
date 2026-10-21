@@ -89,9 +89,16 @@ Theme values remain in `src/style/theme.css`, wired through Tailwind v4 in `glob
 
 The public privacy page uses the existing AppShell, a readable `max-w-3xl`
 article, one H1 and H2 section headings with ordinary document scrolling.
-Policy and footer links are underlined with visible semantic focus rings.
-The existing footer keeps its copyright and wraps the Privacy Policy link
-onto a separate line on small screens. No new palette or material is introduced.
+Policy links in the page body are underlined with visible semantic focus rings.
+The footer's Privacy Policy and Contact Us links are not permanently underlined
+(see "v0.4.3 footer navigation" below); they keep a visible focus ring.
+No new palette or material is introduced.
+
+The v0.4.3 About (`/about`) and Contact (`/contact`) pages use the same pattern:
+the existing AppShell, a readable `max-w-3xl` article, one H1, H2 sections, no
+advertising frame and no new palette or material. The Contact form reuses the
+SupportDialog control vocabulary (`rounded-lg` inputs on `input-bg`/`input-border`,
+`material-primary` submit, secondary-action Clear message, `danger` for errors).
 
 Use one system sans-serif family for interface text and the existing monospace role for code. Establish hierarchy through size and weight, not display faces, decorative tracking, or excessive letter spacing. Keep spacing predictable and content comfortable without wasting workspace. Use consistent, slightly rounded shapes and subtle borders. Shadows separate surfaces; they do not decorate them.
 
@@ -240,9 +247,9 @@ labels, `aria-invalid` and `aria-describedby` error text; the form is a `fieldse
 `role="alert"` and keep the draft; the receipt uses `role="status"` with the opaque reference. Focus returns to the originating
 trigger on close. Native controls only; no animation. The dialog sits above ordinary content, and the fixed header overlay and footer stay below it (the native modal dialog renders in the top layer).
 
-## Planned v0.4.3 task-first discovery and evidence presentation — 2026-10-18
+## v0.4.3 task-first discovery and evidence presentation — 2026-10-18
 
-Status: PLANNED, NOT IMPLEMENTED. The published v0.4.2 homepage and tool pages remain the implemented design until a separately authorized v0.4.3 release. The new version builds on rather than replaces current UI, and must preserve the released v0.4.2 viewport chrome and reporting controls.
+Status: The v0.4.3 implementation is complete in the local uncommitted candidate. This dated section records its approved design intent; the v0.4.2 release remains historical, and deployment is tracked separately. The candidate preserves the existing viewport chrome and reporting controls.
 
 The homepage introduces practical tasks with honest, outcome-focused entry points to five *existing* file-processing utilities; it retains all registry-based category browsing, search and registered tool links. These are editorially chosen examples, never labeled as popularity or personalized recommendations without measured evidence. Category pages have genuinely different explanations grounded in present registered tools; minimal/one-tool categories do not receive repeated keyword filler.
 
@@ -250,4 +257,4 @@ A shared ToolExamplePanel shows original verified inputs/outputs, reproduction s
 
 About/Contact present operator-approved identity and support channels. Do not invent personal contact details, a tracking form or a second reporting backend. New routes must preserve title/meta, keyboard navigation and responsive layout; links and sitemap/robots behavior must be verified. No changes to existing palette tokens or independent scroll owners. Ad slots stay subject to F-02 eligibility, including privacy/error-page exclusions. Full page/content acceptance belongs to the [v0.4.3 plan](plans/v0.4.3-implementation-plan.md).
 
-Planned v0.4.3 footer navigation (NOT IMPLEMENTED in v0.4.2): keep the existing single fixed, retractable footer, exact copyright line, and separate Hide/Show footer toggle. In the expanded footer, group the three actions in **vertical DOM/visual order**: `Contact Us` (link to `/contact`), `Report Issues` (visible text of the existing support button only when support is enabled), and `Privacy Policy` (link to `/privacy`). This compact group aligns on the trailing side at desktop widths and wraps/stacks safely on mobile. Do not build a conventional oversized multi-column footer. Remove the current always-on underline from **Privacy Policy** only, while retaining semantic link and visible keyboard focus; Contact Us should use the same quiet link treatment. The report trigger's full accessible name remains `Report a problem or suggestion`, and its collapsed visible text remains `Report`. With support disabled, omit the report row rather than show a dead action; the expanded group then contains Contact Us and Privacy Policy. In collapsed mode keep Contact Us, Privacy Policy and copyright hidden and the same report (when available) and Show footer controls visible; do not expand the compact tab or change persistence. The non-JavaScript flow keeps the usable contact/privacy anchors in the ordinary-flow footer. Re-measure footer height/clearance and verify last-action visibility, short/mobile viewports, on-screen keyboard, modal focus, document-end settling, and both flag states. This is a planned UI change, not a retroactive claim about the released v0.4.2 footer.
+v0.4.3 footer navigation (Batch 4, implemented): the existing single fixed, retractable footer keeps the exact copyright line and the separate Hide/Show footer toggle. In the expanded footer one compact group sits on the trailing side at desktop widths (stacked and safe to wrap on mobile), in **vertical DOM and visual order**: `Contact Us` (real link to `/contact`, always shown), `Report Issues` (the existing `Footer.action` slot holding the existing `SupportCoordinator` button; rendered only when `NEXT_PUBLIC_SUPPORT_ENABLED=true`) and `Privacy Policy` (link to `/privacy`). Both links use quiet link styling without a permanent underline (underline on hover only) and keep the visible focus ring. The report trigger's visible text is `Report Issues` expanded and `Report` collapsed; its accessible name is `Report Issues — report a problem or suggestion`, so the visible words are contained in the name (label-in-name). The dialog title and every other report behavior are unchanged. With support disabled the group holds Contact Us and Privacy Policy only. Collapsed: Contact Us, Privacy Policy and the copyright carry `data-footer-detail` and are hidden; the report button (when enabled) and Show footer remain, and the compact tab and the `footer-preference` key are unchanged. Without JavaScript the footer returns to normal flow and the contact/privacy anchors remain. Clearance is still the measured `--footer-clearance` (ResizeObserver); the pre-paint CSS fallbacks are enlarged to approximate the taller expanded footer. Measured heights are recorded in the Batch 4 test evidence (`docs/TESTING.md`).

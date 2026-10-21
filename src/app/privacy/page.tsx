@@ -13,7 +13,7 @@ export default function PrivacyPage() {
         <article className="max-w-3xl space-y-8 text-text [&_p]:leading-7">
             <header className="space-y-2">
                 <h1 className="text-2xl font-semibold">Privacy Policy</h1>
-                <p className="text-sm text-text-muted">Last updated: October 19, 2026</p>
+                <p className="text-sm text-text-muted">Last updated: October 21, 2026</p>
                 <p>This policy explains information processing on iworkhere.space, including its browser tools and the services used to operate and improve the website.</p>
             </header>
 
@@ -42,6 +42,14 @@ export default function PrivacyPage() {
                 <p>When the report form is available, you can send a voluntary report or suggestion from any page. It asks for a category, the affected tool or area and a description, and can include optional expected-behavior or example text. An email address is stored only if you enter one and tick the box that allows us to contact you. We attach the page path without query strings or fragments. We do not ask for files, screenshots, tool inputs or results, and the form asks you not to include passwords, secrets or private records.</p>
                 <p>Reports are sent to a dedicated endpoint, not to the measurement and diagnostic services described above, and are stored separately in our Neon database. We open a private tracker entry in GitHub and send an operator notification through Resend; both contain only the report reference, category, tool or page and a secure triage link. Your report text and email address are not copied into GitHub or into the operator notification. If you provide an address and consent, we send a receipt through Resend. Cloudflare Turnstile checks that a submission is not automated; we verify its token and do not store it with your report.</p>
                 <p>Our retention targets are to remove report text 180 days after it is received and to remove contact addresses no later than 90 days after our last correspondence with you. These targets are not yet a completed deletion practice; we activate removal separately and will update this page when it is in effect. Read <a className={linkStyle} href="https://www.cloudflare.com/privacypolicy/">Cloudflare’s Privacy Policy</a>, <a className={linkStyle} href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s Privacy Statement</a> and <a className={linkStyle} href="https://resend.com/legal/privacy-policy">Resend’s Privacy Policy</a> for information about these providers.</p>
+            </section>
+
+            <section className="space-y-3">
+                <h2 className="text-xl font-semibold">Contact Us messages</h2>
+                <p>You can send a voluntary message from the Contact Us page. The form requires your email address, a title and your message, so a message sent this way is not anonymous. It does not ask for files or screenshots, and you should not include passwords, secrets or private records.</p>
+                <p>When you submit the form, those values are sent to our server, which passes them to Resend, an email delivery provider, to deliver the message to the site operator’s email inbox. Your email address is set as the reply address. We use the message to read and respond to your inquiry. Like every request, the submission passes through our hosting service, Vercel.</p>
+                <p>Contact messages are separate from problem reports and from site measurements and diagnostics. They are not stored in the problem-report database, are not opened as GitHub issues, and are not sent to our analytics or logs. Unlike the browser tools, the message you write leaves your device when you submit it.</p>
+                <p>Once delivered, a message exists as an email in the operator’s inbox and in Resend’s delivery records. We have not set a deletion schedule for contact messages, and the retention targets for problem reports do not apply to them. How long Resend and the inbox provider keep messages follows their own policies and settings, and we cannot guarantee deletion at a particular time. Read <a className={linkStyle} href="https://resend.com/legal/privacy-policy">Resend’s Privacy Policy</a> for information about this provider.</p>
             </section>
 
             <section className="space-y-3">

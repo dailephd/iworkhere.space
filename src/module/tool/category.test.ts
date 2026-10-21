@@ -20,21 +20,28 @@ describe("canonical category definitions", () => {
         }
     })
 
-    it("keeps the exact public titles and descriptions of the five unchanged pre-v0.4 categories", () => {
+    it("keeps the exact public titles and descriptions of the three pre-v0.4 categories whose descriptions were accurate", () => {
         const legacy = {
             document: ["Document Tool", "Tool for working with PDFs and documents."],
             image: ["Image & Media Tool", "Convert, resize, and optimize image."],
-            text: ["Text & Code Tool", "Format, transform, and analyze text and code."],
             math: ["Math & Calculator Tool", "Calculator and numerical utility."],
-            time: ["Time & Date Tool", "Timezone, date, and calendar tool."],
         } as const
         for (const [id, [title, description]] of Object.entries(legacy)) {
-            expect(getToolCategoryDefinition(id as keyof typeof legacy)).toEqual({ id, title, description })
+            expect(getToolCategoryDefinition(id as keyof typeof legacy)).toMatchObject({ id, title, description })
+        }
+    })
+
+    it("keeps the exact titles of Text and Time but corrects descriptions that named unsupported capabilities", () => {
+        // v0.4.3: "text and code" (no code tool in Text) and "Timezone, date, and calendar" (the only Time tool adds and subtracts HH:MM) were false.
+        expect(getToolCategoryDefinition("text")).toMatchObject({ id: "text", title: "Text & Code Tool", description: "Create URL slugs, extract text from HTML, and count words and characters." })
+        expect(getToolCategoryDefinition("time")).toMatchObject({ id: "time", title: "Time & Date Tool", description: "Add and subtract time values in HH:MM format." })
+        for (const id of ["text", "time"] as const) {
+            expect(getToolCategoryDefinition(id).description).not.toMatch(/timezone|calendar|\bcode\b/i)
         }
     })
 
     it("defines developer", () => {
-        expect(getToolCategoryDefinition("developer")).toEqual({
+        expect(getToolCategoryDefinition("developer")).toMatchObject({
             id: "developer",
             title: "Developer Tool",
             description: "Format, validate, transform, and inspect developer data.",
@@ -73,6 +80,55 @@ describe("category population stays registry-derived", () => {
     })
 })
 
+describe("category guidance", () => {
+    const guidance = tool_category_definition_list.map((definition) => ({ id: definition.id, ...definition.guidance }))
+
+    it("gives every populated category a task, at least one tool choice and a limitation", () => {
+        expect(guidance.map((one) => one.id)).toEqual(getAvailableCategory())
+        for (const one of guidance) {
+            expect(one.task.trim().length, `${one.id} task`).toBeGreaterThan(40)
+            expect(one.limitation.trim().length, `${one.id} limitation`).toBeGreaterThan(40)
+            expect(one.choice.length, `${one.id} choice`).toBeGreaterThan(0)
+            for (const choice of one.choice) expect(choice.when.trim().length, `${one.id}/${choice.toolId}`).toBeGreaterThan(10)
+        }
+    })
+
+    it("is distinct per category rather than one paragraph with names substituted", () => {
+        for (const field of ["task", "limitation"] as const) {
+            expect(new Set(guidance.map((one) => one[field])).size, field).toBe(guidance.length)
+        }
+        const when = guidance.flatMap((one) => one.choice.map((choice) => choice.when))
+        expect(new Set(when).size).toBe(when.length)
+    })
+
+    it("resolves every choice to a registered tool of the same category and covers every registered tool once", () => {
+        for (const one of guidance) {
+            const registered = tool_definition_list.filter((tool) => tool.category === one.id).map((tool) => tool.id)
+            expect(one.choice.map((choice) => choice.toolId).sort(), one.id).toEqual([...registered].sort())
+        }
+    })
+
+    it("does not advertise capabilities that no registered tool provides", () => {
+        for (const one of guidance) {
+            expect(one.task, `${one.id} task`).not.toMatch(/currency|translat|time ?zone|calendar|world clock|debug|compile|\bOCR\b|\bOffice\b|\bsign(?:ing|ature)?\b/i)
+        }
+    })
+
+    it("states the honest limits of the one-tool Math and Time categories", () => {
+        expect(getToolCategoryDefinition("math").guidance.limitation).toMatch(/arbitrary-precision/)
+        expect(getToolCategoryDefinition("time").guidance.limitation).toMatch(/does not convert time zones/)
+        expect(getToolCategoryDefinition("time").guidance.limitation).toMatch(/below 00:00/)
+    })
+
+    it("keeps the Document, Image and Converter boundaries the batch requires", () => {
+        expect(getToolCategoryDefinition("document").guidance.limitation).toMatch(/do not get smaller/)
+        expect(getToolCategoryDefinition("document").guidance.limitation).toMatch(/not full PDF editors/)
+        expect(getToolCategoryDefinition("image").guidance.limitation).toMatch(/does not recover detail/)
+        expect(getToolCategoryDefinition("converter").guidance.limitation).toMatch(/no currency, volume, area or temperature/)
+        expect(getToolCategoryDefinition("developer").guidance.limitation).toMatch(/do not run, debug or compile code/)
+    })
+})
+
 describe("single category identity owner", () => {
     function sourceFile(directory: string): string[] {
         return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -98,7 +154,7 @@ describe("single category identity owner", () => {
 })
 
 it("migrates the public converter title and labels without accepting the historical id", () => {
-    expect(getToolCategoryDefinition("converter")).toEqual({ id: "converter", title: "Converters", description: "Convert length and weight between units." });
+    expect(getToolCategoryDefinition("converter")).toMatchObject({ id: "converter", title: "Converters", description: "Convert length and weight between units." });
     expect(getToolCategoryLabel("converter")).toBe("Converters");
     expect(getToolCategoryLabel("developer")).toBe("Developer");
     expect(isToolCategory("everyday")).toBe(false);

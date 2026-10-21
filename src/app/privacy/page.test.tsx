@@ -10,7 +10,7 @@ describe("public privacy policy", () => {
         const html = renderToStaticMarkup(<PrivacyPage />);
         expect(html.match(/<h1\b/g)).toHaveLength(1);
         expect(html).toContain(">Privacy Policy</h1>");
-        expect(html.match(/<h2\b/g)).toHaveLength(7);
+        expect(html.match(/<h2\b/g)).toHaveLength(8);
         expect(html).not.toContain("<h3");
     });
 
@@ -33,6 +33,10 @@ describe("public privacy policy", () => {
         for (const text of ["Problem reports and suggestions", "voluntary report", "tick the box", "We do not ask for files, screenshots, tool inputs or results", "not to the measurement and diagnostic services", "stored separately in our Neon database", "private tracker entry in GitHub", "Resend", "Cloudflare Turnstile", "180 days", "90 days after our last correspondence", "not yet a completed deletion practice"]) expect(html).toContain(text);
         expect(html).toContain('href="https://www.cloudflare.com/privacypolicy/"');
         expect(html).toContain('href="https://resend.com/legal/privacy-policy"');
-        expect(html).toContain("October 19, 2026");
+    });
+    it("discloses Contact Us as a voluntary, non-anonymous email path separate from reports and telemetry", () => {
+        const html = renderToStaticMarkup(<PrivacyPage />);
+        for (const text of ["Contact Us messages", "email address, a title and your message", "not anonymous", "Resend, an email delivery provider", "operator’s email inbox", "reply address", "not stored in the problem-report database", "not opened as GitHub issues", "not sent to our analytics or logs", "the message you write leaves your device", "have not set a deletion schedule", "retention targets for problem reports do not apply", "cannot guarantee deletion"]) expect(html).toContain(text);
+        expect(html).toContain("Last updated: October 21, 2026");
     });
 });

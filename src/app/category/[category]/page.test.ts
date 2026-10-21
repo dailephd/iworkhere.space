@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import AppShell from "@/component/layout/AppShell";
 import { ThemeProvider } from "@/component/common/ThemeProvider";
+import { tool_category_definition_list } from "@/module/tool/category";
+import { tool_definition_list } from "@/module/tool/registry";
 
 vi.mock("next/link", () => ({
     default: ({ href, children, ...props }: { href: string; children: unknown }) =>
@@ -80,4 +82,56 @@ it("renders only the two converters and emits converter canonical metadata", asy
     const metadata = await generateMetadata({ params });
     expect(metadata.title).toBe("Converters — iworkhere.space");
     expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/category/converter");
+});
+
+describe("category task guidance", () => {
+    const render = async (category: string) => renderToStaticMarkup(await CategoryPage({ params: Promise.resolve({ category }) }));
+    const escaped = (text: string) => text.replaceAll("&", "&amp;").replaceAll("'", "&#x27;").replaceAll('"', "&quot;");
+
+    it("renders identity, then task guidance, then registered tools, with one H1 and no tool links inside the guidance", async () => {
+        for (const definition of tool_category_definition_list) {
+            const html = await render(definition.id);
+            const tools = tool_definition_list.filter(tool => tool.category === definition.id);
+            expect(html.match(/<h1\b/g), definition.id).toHaveLength(1);
+            const guidance = html.indexOf('id="category-guidance-title"'), available = html.indexOf('id="category-tool-title"');
+            expect(html.indexOf("</h1>"), definition.id).toBeLessThan(guidance);
+            expect(guidance, definition.id).toBeLessThan(available);
+            expect(html).toContain(escaped(definition.guidance.task));
+            expect(html).toContain(escaped(definition.guidance.limitation));
+            for (const tool of tools) {
+                expect(html.match(new RegExp(`href="/tool/${tool.slug}"`, "g")), `${definition.id}/${tool.slug} card`).toHaveLength(1);
+            }
+            expect(html.match(/href="\/tool\//g), definition.id).toHaveLength(tools.length);
+            expect(html.slice(guidance, available)).not.toContain("<a ");
+            for (const choice of definition.guidance.choice) {
+                const tool = tools.find(one => one.id === choice.toolId)!;
+                expect(html.slice(guidance, available), `${definition.id}/${choice.toolId}`).toContain(escaped(`${tool.name}</strong>: ${choice.when}`));
+            }
+        }
+    });
+
+    it("keeps the guidance visible rather than hidden or collapsed", async () => {
+        for (const definition of tool_category_definition_list) {
+            expect(await render(definition.id), definition.id).not.toMatch(/<details|hidden|display:\s*none|aria-hidden/i);
+        }
+    });
+
+    it("keeps Math and Time as honest one-tool categories that remain indexable", async () => {
+        const math = await render("math"), time = await render("time");
+        expect(math).toContain('href="/tool/calculator"');
+        expect(math).toContain("not arbitrary-precision arithmetic");
+        expect(time).toContain('href="/tool/time-arithmetic"');
+        expect(time).toContain("does not convert time zones");
+        for (const category of ["math", "time"]) {
+            const metadata = await generateMetadata({ params: Promise.resolve({ category }) });
+            expect(metadata.alternates?.canonical).toBe(`https://iworkhere.space/category/${category}`);
+            // No category-specific noindex: the shared indexing policy decides, identically for every category.
+            expect(metadata.robots).toEqual((await generateMetadata({ params: Promise.resolve({ category: "image" }) })).robots);
+        }
+    });
+
+    it("builds Time metadata from the corrected category description", async () => {
+        const metadata = await generateMetadata({ params: Promise.resolve({ category: "time" }) });
+        expect(metadata.description).toBe("Add and subtract time values in HH:MM format.");
+    });
 });

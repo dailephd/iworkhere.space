@@ -278,6 +278,26 @@ missing secret fails closed; the token is never stored or logged), the IP-free g
 documented in [Deployment](DEPLOYMENT.md). Repeating the request with the same `idempotencyKey` and content returns the original
 receipt and creates no second report or job.
 
+### POST /api/contact
+
+General contact intake (v0.4.3 Batch 4). Node.js, dynamic, never cached (`Cache-Control: no-store`); the service worker bypasses all
+`/api/` paths. It is independent of reporting: no database, no GitHub issue and no `/api/support/*` call. Owner and full contract:
+[ContactEmail](modules/ContactEmail.md). The body must be `application/json`, at most 64 KiB (counted while streaming), with only
+`senderEmail`, `title` (<= 200), `message` (10-10,000) and the honeypot `companyWebsite`; unknown fields are rejected. A same-origin
+`Origin` header is required.
+
+| Status | Body | Meaning |
+| --- | --- | --- |
+| `200` | `{ ok: true }` | The provider accepted the message for delivery. This is not a delivery or inbox-placement guarantee. A filled honeypot also answers `200 { ok: true }` and sends nothing. |
+| `400` | `{ ok: false, error: "invalid_request" }` or `{ ok: false, error: "invalid_field", field }` | Malformed JSON, wrong content type, non-object body, unknown or mistyped fields, or a field failing validation. Only the field name is returned, never its value. |
+| `403` | `{ ok: false, error: "forbidden" }` | Missing, foreign or cross-site `Origin`. |
+| `413` | `{ ok: false, error: "too_large" }` | Body exceeded 64 KiB (declared or streamed). |
+| `502` | `{ ok: false, error: "delivery_failed" }` | The provider refused, failed or timed out. Never reported as success. |
+| `503` | `{ ok: false, error: "unavailable" }` | `RESEND_API_KEY`, `CONTACT_TO_EMAIL` or `CONTACT_FROM_EMAIL` is missing (fails closed). |
+
+Responses never contain environment-variable names, tokens, provider bodies or visitor values. The Origin check is not authentication
+and not rate limiting; production activation requires a verified deployment-level rate limit (see [Deployment](DEPLOYMENT.md)).
+
 ### GET|POST /api/support/deliver
 
 Support delivery worker. Requires `Authorization: Bearer CRON_SECRET` (timing-safe comparison); an unauthorized or unconfigured call

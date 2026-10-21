@@ -565,7 +565,7 @@ Test layers are distinct evidence and must not be conflated: public-mode browser
 header, footer and `v0.4.2-integration` specs there assert that no report entry or dialog exists); support-enabled browser tests
 (`npm run test:support-e2e` runs only `support-report.spec.ts`; the header, footer and integration specs switch to real-`SupportDialog`
 scenarios when run with `E2E_SUPPORT_RUN=true` against a support-enabled build, which that command does not package; the `e2e-support`
-job in `e2e.yaml` builds with `NEXT_PUBLIC_SUPPORT_ENABLED=true` and runs `footer-retraction.spec.ts` and `v0.4.2-integration.spec.ts` that way);
+job in `e2e.yaml` builds with `NEXT_PUBLIC_SUPPORT_ENABLED=true` and runs `footer-retraction.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` that way);
 disposable-PostgreSQL integration (`npm run test:support-db`); provider test doubles; dashboard tests (dashboard `npm run verify`);
 container tests (`npm run test:container`); and actual external-provider acceptance and production deployment verification, neither
 of which has been performed.
@@ -580,3 +580,39 @@ Chromium, including simulated `visualViewport` changes, fixed positioning, clear
 Physical iOS and Android software-keyboard and safe-area behavior is not independently verified. Container runs have shown
 intermittent `ERR_NO_BUFFER_SPACE` failures that passed on later runs; this is retained as known flake evidence and has not been
 shown to be permanently fixed.
+
+## v0.4.3 Batch 4 - About, Contact and footer evidence
+
+Unit/component: `src/module/content/siteInformation.test.ts`, `src/app/about/page.test.tsx`, `src/app/contact/page.test.tsx`,
+`src/component/contact/ContactForm.test.tsx`, `src/app/api/contact/route.test.ts` (Resend SDK mocked; no provider call),
+`src/module/contact/*.test.ts` (validation, bounded body, origin, sender), plus updated `Footer`, `FooterViewportControl`,
+`SupportCoordinator`, support `context`, privacy, sitemap and route-inventory tests. Browser: `test/e2e/v0.4.3-contact-footer.spec.ts`
+runs in public mode and, with `E2E_SUPPORT_RUN=true` against a `NEXT_PUBLIC_SUPPORT_ENABLED=true` build, in report-enabled mode (the
+three-row footer and the one-dialog scenario). The report-enabled run needs no Turnstile key or provider: opening the dialog shows the
+unavailable notice. Contact submissions in the browser use route doubles or the real endpoint with provider configuration absent
+(`503`); a test that would reach a configured provider or a remote deployment skips itself. Server-side delivery is proven separately by
+the sender and route tests. Chromium logs a console error for each deliberate non-2xx `/api/contact` response; the spec excuses exactly
+one such line per deliberate failure and still fails on any other console error.
+
+Measured expanded footer (headless Chromium): 67px (9.3%) at 1280x720 and 111px (13.2%) at 390x844 with reporting off; 93px (12.9%)
+and 137px (16.2%) with the three-row group; collapsed tab 35px high (141px wide with only Show footer, 182px with Report). Short
+viewports are tested for reachability, not for the one-fifth share.
+
+## v0.4.3 integrated local candidate evidence
+
+Retained reports in this implementation worktree record the following local
+runs. Their Git `HEAD` was the committed baseline
+`133f3f6c772dcaa906a76ec39550ccb6c81e852a` with the cumulative implementation
+worktree changes present; the reports do not attest a hosted exact-SHA run.
+
+| Gate | Report identity | Result |
+| --- | --- | --- |
+| `npm run verify` | `test-report/2026-10-21T07-49-39-678Z-2b8b87f8/` | Typecheck, lint, test and build passed; 1,803 unit tests passed. The lint log reports five warnings and no errors. |
+| Public E2E | `test-report/e2e/2026-10-21T08-20-28-047Z-c0c16365-browser/` | 758 passed, 4 skipped, 0 unexpected, 0 flaky. |
+| Support-enabled E2E | `test-report/e2e/2026-10-21T08-05-51-258Z-fcb81161/` | 128 passed, 0 skipped, 0 unexpected, 0 flaky. |
+| Ads-enabled E2E | `test-report/e2e/2026-10-21T08-08-15-064Z-80072d2d/` | 4 passed, 2 skipped, 0 unexpected, 0 flaky. |
+| Support full-stack E2E | `test-report/support-e2e-2026-10-21T08-19-25-181Z-ccadc8ef/` | Summary reports passed with disposable PostgreSQL and isolated provider substitutes; it does not record an assertion count or establish live delivery. |
+| Container | `test-report/container/2026-10-21T08-20-28-047Z-c0c16365/` | Runtime health, HTTP smoke, cleanup and the container browser run passed; browser report has 758 passes and 4 skips. |
+
+These local reports do not establish hosted CI, production deployment, Resend
+configuration, inbox delivery, Search Console indexing or AdSense approval.

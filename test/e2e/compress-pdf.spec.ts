@@ -36,14 +36,14 @@ for (const name of ["compression-text-vector", "compression-image-only"]) test(`
     await expect(page.getByRole("region", { name: "Smaller PDF ready" })).toContainText(`${saved.toLocaleString()} bytes`); await expect(page.getByRole("region", { name: "Smaller PDF ready" })).toContainText(`${percentage.toFixed(2)}%`);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true); await page.screenshot({ path: info.outputPath("compress-pdf-smaller.png"), fullPage: true });
     await info.attach("download-static-semantics", { body: JSON.stringify({ INPUT_BYTES: before.length, OUTPUT_BYTES: after.length, REDUCTION_BYTES: saved, REDUCTION_PERCENT: percentage, source, output }), contentType: "application/json" });
-    await page.getByRole("button", { name: "Reset", exact: true }).press("Enter"); await expect(input).toBeFocused(); await expect(action).toBeDisabled(); await expect(page.locator("a[download]")).toHaveCount(0);
+    await page.getByRole("button", { name: "Reset", exact: true }).press("Enter"); await expect(input).toBeFocused(); await expect(action).toBeDisabled(); await expect(page.locator("a[download]:not([data-example-asset])")).toHaveCount(0);
     const log = await resources(page); expect(log.created).toEqual(log.revoked.filter(url => log.created.includes(url))); expect(log.active).toBe(0); await info.attach("compression-lifecycle", { body: JSON.stringify(log), contentType: "application/json" });
 });
 test("Compress PDF: equal/larger candidates have honest no-reduction state without download", async ({ page }, info) => {
     await page.goto("/tool/compress-pdf"); await observe(page); await page.reload();
     for (const name of ["already-optimized", "jpeg-heavy", "png-heavy"]) {
         await page.getByLabel("Choose PDF", { exact: true }).setInputFiles(fixture(name)); await page.getByRole("button", { name: "Compress PDF", exact: true }).click();
-        await expect(page.getByRole("heading", { name: "NO REDUCTION ACHIEVED", exact: true })).toBeFocused(); await expect(page.locator("a[download]")).toHaveCount(0); await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0); await expect(page.getByRole("heading", { name: "Smaller PDF ready" })).toHaveCount(0);
+        await expect(page.getByRole("heading", { name: "NO REDUCTION ACHIEVED", exact: true })).toBeFocused(); await expect(page.locator("a[download]:not([data-example-asset])")).toHaveCount(0); await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0); await expect(page.getByRole("heading", { name: "Smaller PDF ready" })).toHaveCount(0);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     }
     expect((await resources(page)).created).toEqual([]); expect((await resources(page)).active).toBe(0); await page.screenshot({ path: info.outputPath("compress-pdf-no-reduction.png"), fullPage: true });
@@ -55,7 +55,7 @@ test("Compress PDF: replacement and Reset cancel active worker without stale res
     for (const replacement of [true, false]) {
         await input.setInputFiles(fixture("compression-multipage")); await action.click(); await expect(page.getByRole("status")).toContainText("Compressing");
         if (replacement) { await input.setInputFiles(fixture("already-optimized")); await expect(action).toBeEnabled(); } else { await page.getByRole("button", { name: "Reset", exact: true }).click(); await expect(input).toBeFocused(); }
-        await page.waitForTimeout(700); await expect(page.locator("a[download]")).toHaveCount(0); await expect(page.getByRole("heading", { name: "NO REDUCTION ACHIEVED" })).toHaveCount(0); await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0); expect((await resources(page)).active).toBe(0);
+        await page.waitForTimeout(700); await expect(page.locator("a[download]:not([data-example-asset])")).toHaveCount(0); await expect(page.getByRole("heading", { name: "NO REDUCTION ACHIEVED" })).toHaveCount(0); await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0); expect((await resources(page)).active).toBe(0);
     }
 });
 test("Compress PDF: SSR guide, discovery, category and exact sitemap", async ({ page, request }) => {
@@ -65,7 +65,7 @@ test("Compress PDF: SSR guide, discovery, category and exact sitemap", async ({ 
     await page.goto("/"); await expect(page.getByRole("region", { name: "Document tools" }).locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("compress pdf"); await expect(page.getByRole("main").locator('a[href="/tool/compress-pdf"]')).toHaveCount(1);
     await page.goto("/category/document"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(5);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(28); expect(xml.match(/<loc>https:\/\/iworkhere.space\/tool\/compress-pdf<\/loc>/g)).toHaveLength(1);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(30); expect(xml.match(/<loc>https:\/\/iworkhere.space\/tool\/compress-pdf<\/loc>/g)).toHaveLength(1);
 });
 test("Compress PDF: cold unrelated routes request no PDF processing payload", async ({ browser }, info) => {
     for (const route of ["/", "/discover", "/tool/image-converter"]) {

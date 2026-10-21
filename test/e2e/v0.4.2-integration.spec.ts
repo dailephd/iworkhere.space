@@ -5,7 +5,8 @@ import { test, expect } from "./support/fixture";
 // These scenarios exercise the real header, footer and SupportDialog together. They need a support-enabled build (see footer-retraction.spec.ts);
 // a public build exposes no reporting entry, so the scenario asserts that absence instead.
 const supportEnabled = process.env.E2E_SUPPORT_RUN === "true";
-const reportName = "Report a problem or suggestion";
+const reportName = "Report Issues — report a problem or suggestion";
+const reportDialogName = "Report a problem or suggestion";
 
 const showNavigation = (page: Page) => page.getByRole("button", { name: "Show navigation", exact: true });
 const hideNavigation = (page: Page) => page.getByRole("button", { name: "Hide navigation", exact: true });
@@ -90,7 +91,7 @@ for (const footerState of ["expanded", "collapsed"] as const) {
         // The one report trigger opens the real dialog, which sits above the header overlay and the footer.
         await expect(page.getByRole("button", { name: reportName })).toHaveCount(1);
         await reportButton(page).click();
-        const dialog = page.getByRole("dialog", { name: reportName });
+        const dialog = page.getByRole("dialog", { name: reportDialogName });
         await expect(dialog).toBeVisible();
         await expect(page.locator("dialog")).toHaveCount(1);
         expect(await page.locator("dialog").evaluate(element => (element as HTMLDialogElement).open && element.matches(":modal"))).toBe(true);
@@ -150,7 +151,7 @@ for (const footerState of ["expanded", "collapsed"] as const) {
         if (footerState === "collapsed") await hideFooter(page).click();
         const before = await scrollY(page);
         await reportButton(page).click();
-        const dialog = page.getByRole("dialog", { name: reportName });
+        const dialog = page.getByRole("dialog", { name: reportDialogName });
         await expect(dialog).toBeVisible();
 
         const footerToggle = page.getByRole("contentinfo").getByRole("button", { name: footerState === "collapsed" ? "Show footer" : "Hide footer", exact: true });
@@ -188,7 +189,7 @@ test("tabbing through the report dialog never scrolls the page behind it, even w
     await page.evaluate(() => window.scrollTo(0, 900));
     const before = await scrollY(page);
     await reportButton(page).click();
-    await expect(page.getByRole("dialog", { name: reportName })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: reportDialogName })).toBeVisible();
     for (let step = 0; step < 16; step += 1) {
         await page.keyboard.press("Tab");
         expect(await scrollY(page), `Tab ${step + 1} leaves the page where it was`).toBe(before);

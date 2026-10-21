@@ -1,47 +1,27 @@
 # PROJECT STATUS
 
-## Current source, release identity and next planned work — 2026-10-20
+## Current source, release identity and implementation candidate — 2026-10-21
 
 DEFAULT_BRANCH: `master`
 
-SOURCE_BASELINE_FOR_THIS_RECONCILIATION: `d48e5fcf3d9015db5677d0a7410236a70979db58` (2026-10-19; PR #35 merge, following PRs #33 and #34). This is a historical review base, not a promise about the moving `master` HEAD.
+VERIFIED_IMPLEMENTATION_WORKTREE: `.my-dev-kit-workflow/worktrees/v0.4.3-implementation`
+CANDIDATE_BRANCH: `feature/v0.4.3-utility-value`
+COMMITTED_BASELINE_SHA: `133f3f6c772dcaa906a76ec39550ccb6c81e852a`
 
-CURRENT_ROOT_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`)
+CURRENT_ROOT_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`).
+CURRENT_NUMBERED_GITHUB_RELEASE: `v0.4.2`, published 2026-10-20. Its historical tag and release facts remain unchanged.
+V0_4_3_CANDIDATE: implementation complete locally in the existing feature worktree; uncommitted and unreleased. This candidate has not passed hosted exact-SHA CI.
+PRODUCTION_DEPLOYMENT: candidate deployment identity and live service state are not established by this local audit. Verify from Vercel records separately.
 
-CURRENT_NUMBERED_GITHUB_RELEASE: `v0.4.2` was published 2026-10-20. Production deployment status is tracked separately.
-V0_4_2_RELEASE_PR: #37 — MERGED 2026-10-20.
-V0_4_2_TAG_AND_RELEASE_MERGE_SHA: `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87` (tag `v0.4.2` and `master` matched at the 2026-10-20 review checkpoint; this is not a moving-HEAD claim).
+RELEASED_V0_4_2_CATALOG: 18 registered tools, seven populated categories and 28 registry-derived sitemap URLs, including `/privacy`.
+CANDIDATE_V0_4_3_ROUTES: five static public routes, 18 tool routes and seven category routes, for 30 sitemap URLs. The candidate adds `/about` and `/contact`.
 
-V0_4_1_RELEASE_PR: #32 — MERGED 2026-10-11.
+V0_4_3_IMPLEMENTATION: all five approved implementation batches are present in the local worktree. The frozen scope and five-batch plan remain unchanged. The root package version remains 0.4.2.
+LOCAL_VALIDATION_EVIDENCE: retained reports cover `npm run verify` (1,803 tests passed), public E2E (758 passed, 4 skipped), support-enabled E2E (128 passed), ads-enabled E2E (4 passed, 2 skipped), support full-stack E2E (passed summary; no assertion count recorded), and Container validation. These are local reports, not hosted CI; report identities and source context are described in [TESTING](TESTING.md).
 
-V0_4_1_ANNOTATED_TAG_TARGET: `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb` (matched `master` at release verification; current `master` has newer documentation commits).
+CONTACT_SOURCE_STATUS: SOURCE_READY; production activation is pending external configuration and verification. `RESEND_API_KEY`, a verified `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL`, a verified production rate limit for `POST /api/contact`, and an authorized live delivery test remain unverified. No real message was sent during this audit.
 
-V0_4_1_TAGGED_SHA_CI: PASS — Build, Lint, Test, Typecheck, E2E, Container,
-Dashboard and Observability database succeeded on the historical tagged commit.
-This is not a claim that all eight workflows passed on the current `master` SHA.
-
-PRODUCTION_DEPLOYMENT_IDENTITY: Verify the public Vercel deployment source SHA
-and live health from Vercel records. GitHub release publication and passing
-source checks do not establish a particular production deployment's identity
-or health.
-
-CURRENT_RELEASE_CATALOG: 18 registered tools, seven populated categories,
-28 registry-derived sitemap URLs including `/privacy`. The historical v0.4.0
-release had 27 URLs; v0.4.1 retains all tool URLs and adds the Converters
-category with the permanent `/category/everyday` redirect.
-
-CURRENT_RELEASE: `v0.4.2 — User Feedback & Retractable Site Chrome` is
-represented by the release commit on `master` and published as the numbered
-GitHub Release on 2026-10-20. Exact-SHA implementation readiness passed at
-`16b04696d99a2f176f99b8f2606fb62800aed3aa`; release-PR and master CI validated
-their respective exact commits. Production deployment status is tracked separately.
-NEXT_PLANNED_PRODUCT_VERSION: `v0.4.3 — Utility Value, Trust & Discoverability`.
-NEXT_IMPLEMENTATION_HANDOFF (2026-10-20): use the existing [v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md), verify current source/owners, then begin Batch A with original demonstration fixtures and independent measurements before adding example UI, task-first discovery and seven-category guidance. Verify public publisher identity and the owner-selected direct-Resend contact channel (sender and inbox) before Batch D; that operational setup must not block Batches A–C. The owner additionally selected a compact vertically stacked expanded-footer action order Contact Us → Report Issues (existing conditional trigger) → Privacy Policy (without permanent underline), preserving the released fixed/collapsed footer and focus behavior. The plan's five batches remain one product release; no v0.4.3 feature is implemented yet. The v0.4.2 report backend is released but its production activation remains unverified.
-NEXT_PLANNED_CATALOG_VERSION: `v0.5.0 — Developer & Text Utility Suite` (nine tools).
-Its implementation plan is not frozen. Planner-owned specifications and a
-version plan must precede implementation. The frozen v0.6.0 scope remains
-as recorded in ROADMAP.md.
-
+NEXT_WORKFLOW: Step 5 standardized pre-release readiness is a separate planner-authorized workflow and has not begun. The frozen v0.5.0 and v0.6.0 scopes and proposed converter waves remain unchanged.
 ## v0.4.2 planning record — 2026-10-14
 
 At this planning checkpoint, the immediate patch was recorded as: v0.4.2 — User Feedback & Retractable Site Chrome.
@@ -92,16 +72,9 @@ audit accepted this pre-existing finding as nonblocking. No repository security
 policy requiring remediation was found. Reassess separately if the dependency
 path or deployment artifact changes.
 
-## v0.4.3 product-value planning — 2026-10-18
+## v0.4.3 implementation candidate — 2026-10-21
 
-PLANNED: Utility Value, Trust & Discoverability; no source implementation, GitHub Release, production deployment, AdSense approval or re-review is claimed. The publisher reported a specific AdSense **Low value content** rejection after the earlier technical/privacy remediation. That report is an external review outcome, not evidence that a particular file or tool violates Google's policy.
-
-The [v0.4.3 roadmap section](ROADMAP.md) and [detailed version plan](plans/v0.4.3-implementation-plan.md) add original verified PDF/image tool demonstrations for five existing utilities; task-first homepage guidance; useful distinct category pages; authentic publisher About/Contact; and follow-up evidence from real user reports/Search Console where available. This does not change the 18-tool catalog, v0.4.2 feedback/chrome scope, frozen v0.5/v0.6 utilities, or the proposed converter waves.
-
-The site already has tool guides and functioning utilities; the new work targets differentiation and credibility rather than another compliance infrastructure loop. The v0.4.3 planning document was merged through PR #35 at
-`d48e5fcf3d9015db5677d0a7410236a70979db58`, following merged PRs #33
-and #34. Only the plan is merged; v0.4.3 product behavior is not implemented
-or currently live. Operator approval of contact details, original sample provenance, and release sequencing remain before implementation/launch. A live review request to Google remains a separate owner action after the content is deployed and verified.
+The planning record below remains historical evidence of the original product decision. Current candidate status and local validation are recorded at the top of this file. The candidate adds no new tools and does not change the frozen v0.5.0/v0.6.0 catalog scope or proposed converter waves. The published v0.4.2 release and production deployment identity remain separate; production Contact, Search Console evidence, AdSense acceptance and live deployment remain unverified.
 
 ## v0.4.1 released UI and category changes — 2026-10-11
 
