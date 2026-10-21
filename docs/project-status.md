@@ -6,22 +6,24 @@ DEFAULT_BRANCH: `master`
 
 VERIFIED_IMPLEMENTATION_WORKTREE: `.my-dev-kit-workflow/worktrees/v0.4.3-implementation`
 CANDIDATE_BRANCH: `feature/v0.4.3-utility-value`
-COMMITTED_BASELINE_SHA: `133f3f6c772dcaa906a76ec39550ccb6c81e852a`
+COMMITTED_BASELINE_SHA: `7a470957956100554d8e96d1aaa15b023b5acdeb`
 
 CURRENT_ROOT_PACKAGE_VERSION: `0.4.2` (independent dashboard: `0.1.0`).
 CURRENT_NUMBERED_GITHUB_RELEASE: `v0.4.2`, published 2026-10-20. Its historical tag and release facts remain unchanged.
-V0_4_3_CANDIDATE: implementation complete locally in the existing feature worktree; uncommitted and unreleased. This candidate has not passed hosted exact-SHA CI.
+V0_4_3_IMPLEMENTATION: complete and committed on `feature/v0.4.3-utility-value`; unreleased. Original implementation candidate SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight required hosted workflows and nine jobs on `validation/v0.4.3-readiness`. The Observability database workflow's first PostgreSQL image pull failed externally; its permitted retry succeeded and the final workflow result was success.
+V0_4_3_DOCUMENTATION_CORRECTION: this documentation-only commit creates a new candidate SHA. It has not yet undergone hosted CI; readiness applies to each exact candidate SHA and must be verified again after subsequent commits.
 PRODUCTION_DEPLOYMENT: candidate deployment identity and live service state are not established by this local audit. Verify from Vercel records separately.
 
 RELEASED_V0_4_2_CATALOG: 18 registered tools, seven populated categories and 28 registry-derived sitemap URLs, including `/privacy`.
 CANDIDATE_V0_4_3_ROUTES: five static public routes, 18 tool routes and seven category routes, for 30 sitemap URLs. The candidate adds `/about` and `/contact`.
 
-V0_4_3_IMPLEMENTATION: all five approved implementation batches are present in the local worktree. The frozen scope and five-batch plan remain unchanged. The root package version remains 0.4.2.
+V0_4_3_BATCH_COMPLETION: all five approved implementation batches are present in the local worktree. The frozen scope and five-batch plan remain unchanged. The root package version remains 0.4.2.
 LOCAL_VALIDATION_EVIDENCE: retained reports cover `npm run verify` (1,803 tests passed), public E2E (758 passed, 4 skipped), support-enabled E2E (128 passed), ads-enabled E2E (4 passed, 2 skipped), support full-stack E2E (passed summary; no assertion count recorded), and Container validation. These are local reports, not hosted CI; report identities and source context are described in [TESTING](TESTING.md).
 
 CONTACT_SOURCE_STATUS: SOURCE_READY; production activation is pending external configuration and verification. `RESEND_API_KEY`, a verified `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL`, a verified production rate limit for `POST /api/contact`, and an authorized live delivery test remain unverified. No real message was sent during this audit.
 
-NEXT_WORKFLOW: Step 5 standardized pre-release readiness is a separate planner-authorized workflow and has not begun. The frozen v0.5.0 and v0.6.0 scopes and proposed converter waves remain unchanged.
+READINESS_AUDIT: the subsequent standardized audit returned `NEEDS_CORRECTION` solely for stale candidate-commitment and hosted-CI documentation state. The separate exact-SHA readiness rerun for the documentation-correction candidate is pending.
+NEXT_WORKFLOW: separate exact-SHA readiness validation of the documentation-correction candidate, after this commit, using the reserved `validation/v0.4.3-readiness-r2` ref. The frozen v0.5.0 and v0.6.0 scopes and proposed converter waves remain unchanged.
 ## v0.4.2 planning record — 2026-10-14
 
 At this planning checkpoint, the immediate patch was recorded as: v0.4.2 — User Feedback & Retractable Site Chrome.

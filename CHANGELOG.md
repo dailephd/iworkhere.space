@@ -2,9 +2,12 @@
 
 ## v0.4.3 — Utility Value, Trust & Discoverability — Unreleased
 
-Implementation is complete in the local feature worktree. This candidate is
-uncommitted, has not been published as a GitHub Release, and is not verified as
-deployed. The package version remains `0.4.2`.
+Implementation is complete and committed on `feature/v0.4.3-utility-value`.
+The initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb`
+passed all eight required hosted workflows and nine jobs. Each subsequent
+candidate SHA requires its own exact-SHA validation. This version remains
+unreleased and is not verified as deployed. The package version remains
+`0.4.2`.
 
 - Added five original, reproducible worked examples for existing PDF and image
   tools, with measured source/output facts, reproduction steps and limitations.
@@ -17,8 +20,9 @@ deployed. The package version remains `0.4.2`.
 - Added `/about` and `/contact` to the public route inventory and sitemap,
   bringing the candidate sitemap to 30 URLs.
 - Added integrated operation, privacy, accessibility, route, support-enabled,
-  advertising-eligibility and container regression coverage. Local evidence does
-  not establish hosted CI, live email delivery, production activation or release.
+  advertising-eligibility and container regression coverage. The hosted result
+  above applies to the initial implementation SHA; it does not establish live
+  email delivery, production activation or release.
 
 ## v0.4.2 — User Reporting & Retractable Site Chrome — 2026-10-20
 

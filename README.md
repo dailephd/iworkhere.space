@@ -4,9 +4,11 @@ Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
 **Latest numbered GitHub Release: v0.4.2 (2026-10-20).** The application
-package version remains `0.4.2`. The v0.4.3 implementation candidate is complete
-in the local `feature/v0.4.3-utility-value` worktree and remains uncommitted;
-it has not been released or verified as deployed. Production deployment status
+package version remains `0.4.2`. The v0.4.3 implementation is complete and
+committed on `feature/v0.4.3-utility-value`. Its initial implementation commit
+`7a470957956100554d8e96d1aaa15b023b5acdeb` passed the hosted workflow matrix;
+each later candidate SHA requires its own exact-SHA validation. v0.4.3 remains
+unreleased and is not verified as deployed. Production deployment status
 is tracked separately from GitHub Release publication. The anonymous reporting entry is disabled unless
 `NEXT_PUBLIC_SUPPORT_ENABLED=true`; external support providers and production
 activation are not claimed as provisioned. The
