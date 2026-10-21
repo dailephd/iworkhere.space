@@ -50,7 +50,7 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-Current numbered GitHub Release: `v0.4.2` (2026-10-20); its annotated tag and the then-current `master` resolve to `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`. This source identity does not establish Vercel deployment or activation of the default-off reporting feature. The v0.4.3 implementation is complete and committed on `feature/v0.4.3-utility-value`; its initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight hosted workflows and nine jobs. Each subsequent candidate SHA requires separate exact-SHA validation. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md) remains the scope authority; the later catalog plan remains unchanged. v0.4.3 remains unreleased.
+The v0.4.2 GitHub Release is the preceding published release (2026-10-20). The `release/v0.4.3` branch represents application package version `0.4.3`; readiness passed for source SHA `73a4998c93ccb8809ea9541516f278a36c4e905e`. GitHub publication and Vercel deployment are tracked separately. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md) remains the scope authority; later catalog plans remain unchanged.
 
 The historical `v0.4.1` GitHub Release was published 2026-10-11; its annotated tag
 points to the release-time `master` commit
@@ -77,9 +77,8 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   integration, exact production deployment, live Analytics acceptance,
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
-  v0.4.2 is the current numbered GitHub Release (2026-10-20), with its source
-  and package version aligned. Production deployment status is tracked separately.
-  v0.4.3 (original utility value and publisher trust) is the current completed, committed implementation and remains unreleased. v0.5.0 is
+  v0.4.2 is the preceding numbered GitHub Release (2026-10-20). Production deployment status is tracked separately.
+  The release branch represents the completed v0.4.3 application source. v0.5.0 is
   the next catalog expansion, and its implementation plan is not frozen. Vercel deployment identity and health must be verified from deployment
   records; historical launch records remain date-scoped.
 
@@ -136,10 +135,10 @@ in the current release.
 do not replace or silently rewrite it. The v0.3.1 plan remains frozen historical
 planning authority; implementation, reconciliation and launch evidence live in
 their respective reports. v0.3.1, v0.4.0 and v0.4.1 remain historical GitHub
-Releases; v0.4.2 is the current numbered release (2026-10-20). Production
-activation and deployment state are tracked separately. Planned
-v0.4.3 for original utility value, publisher transparency and distinctive
-content. v0.5.0 remains the next catalog expansion release.
+Releases; v0.4.2 is the preceding numbered release (2026-10-20). Production
+activation and deployment state are tracked separately. The v0.4.3 release branch
+represents the completed source for original utility value, publisher transparency
+and distinctive content. v0.5.0 remains the next catalog expansion release.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
@@ -172,7 +171,7 @@ v0.5.0 and v0.6.0 catalog scopes are unchanged.
 
 ### plans/v0.4.3-implementation-plan.md
 
-**Summary:** Frozen product-value scope, implemented and committed on `feature/v0.4.3-utility-value`. The initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight hosted workflows and nine jobs; each subsequent candidate SHA requires separate exact-SHA validation. Defines five original, reproducible PDF/image examples; task-first homepage; distinct seven-category guidance; publisher About and independent direct-Resend Contact; safe content/asset ownership; and a real-use curation follow-up. The plan retains exact architecture owners, five implementation batches, evidence standards, test expectations, external decisions and release boundaries. It records requirements, not proof of production deployment or publication.
+**Summary:** Frozen product-value scope, implemented in the v0.4.3 release branch; readiness passed for source SHA `73a4998c93ccb8809ea9541516f278a36c4e905e`. Defines five original, reproducible PDF/image examples; task-first homepage; distinct seven-category guidance; publisher About and independent direct-Resend Contact; safe content/asset ownership; and a real-use curation follow-up. The plan retains exact architecture owners, five implementation batches, evidence standards, test expectations, external decisions and release boundaries. It records requirements, not proof of production deployment or publication.
 **When to read:** When auditing the v0.4.3 candidate against its frozen scope or preparing a separate readiness review.
 **Relations:** [v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md),
 ROADMAP.md, project-status.md, DESIGN.md, ADVERTISING.md, existing tool

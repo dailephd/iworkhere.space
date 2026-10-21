@@ -4,12 +4,17 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The latest numbered GitHub release is `v0.4.2`, published 2026-10-20;
-the root application package is `0.4.2` and the independent dashboard remains
-`0.1.0`. Source release identity and Vercel production deployment are distinct;
-production deployment status is tracked separately.
+The preceding numbered GitHub release is `v0.4.2`, published 2026-10-20. The
+`release/v0.4.3` branch represents application package version `0.4.3`; the
+independent dashboard remains `0.1.0`. GitHub publication and Vercel production
+deployment are verified separately from source version.
 
-The approved v0.4.3 implementation is complete and committed on `feature/v0.4.3-utility-value`. Initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight hosted workflows and nine jobs; every subsequent candidate SHA requires its own exact-SHA validation. v0.4.3 remains unreleased; deployment identity and production Contact activation are unverified. See [project status](project-status.md) for current evidence and operational gates.
+The approved v0.4.3 implementation passed readiness at source SHA
+`73a4998c93ccb8809ea9541516f278a36c4e905e`; the release branch prepares
+package version `0.4.3`. Its five-batch scope is complete and unchanged.
+Production deployment identity and Contact activation require separate
+verification. See [project status](project-status.md) for the readiness record
+and operational gates.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -565,7 +570,13 @@ The [v0.4.2 implementation plan](plans/v0.4.2-implementation-plan.md) preserves 
 
 ## Version 0.4.3 — Utility Value, Trust & Discoverability
 
-Status: APPROVED SCOPE; IMPLEMENTATION COMPLETE AND COMMITTED on `feature/v0.4.3-utility-value`; UNRELEASED. Initial implementation SHA `7a470957956100554d8e96d1aaa15b023b5acdeb` passed all eight hosted workflows and nine jobs. Each subsequent candidate SHA requires separate exact-SHA validation. The scope was planned on 2026-10-18 after a publisher-reported AdSense "Low value content" rejection. No Google approval, publication or production deployment is claimed. The planned order remains after v0.4.2 and before the unchanged v0.5.0 catalog; AdSense resubmission remains a separate operational action.
+Status: IMPLEMENTATION AND READINESS COMPLETE; release preparation is represented
+by `release/v0.4.3`. Readiness passed for source SHA
+`73a4998c93ccb8809ea9541516f278a36c4e905e`. Contact production activation,
+GitHub publication, Vercel deployment identity and Google approval are separate
+and are not claimed here. The version order remains after v0.4.2 and before the
+unchanged v0.5.0 catalog; AdSense resubmission remains a separate operational
+action.
 
 ### Goal
 
@@ -915,7 +926,7 @@ v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
-v0.4.3  Utility Value, Trust & Discoverability (implemented locally; unreleased)
+v0.4.3  Utility Value, Trust & Discoverability (release preparation)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓

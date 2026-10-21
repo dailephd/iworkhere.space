@@ -3,22 +3,21 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-**Latest numbered GitHub Release: v0.4.2 (2026-10-20).** The application
-package version remains `0.4.2`. The v0.4.3 implementation is complete and
-committed on `feature/v0.4.3-utility-value`. Its initial implementation commit
-`7a470957956100554d8e96d1aaa15b023b5acdeb` passed the hosted workflow matrix;
-each later candidate SHA requires its own exact-SHA validation. v0.4.3 remains
-unreleased and is not verified as deployed. Production deployment status
-is tracked separately from GitHub Release publication. The anonymous reporting entry is disabled unless
+The v0.4.3 application source is represented by `release/v0.4.3` and package
+version `0.4.3`. It includes 18 registered utilities across seven populated
+categories, five original verified worked examples, a task-first homepage,
+improved Discover navigation, distinct category guidance, publisher About and
+Contact Us pages, and 30 canonical public sitemap URLs. The existing fixed,
+retractable site chrome retains its conditional Report Issues action. The
+contact form uses the direct Resend integration; production delivery depends
+on verified sender and recipient configuration, authorized delivery testing, production rate
+limiting, and confirmed deployment identity. Those operational conditions are
+not established here. The v0.4.2 issue-reporting entry remains conditional on
 `NEXT_PUBLIC_SUPPORT_ENABLED=true`; external support providers and production
-activation are not claimed as provisioned. The
-released v0.4.2 source contains 18 tools across seven populated categories and
-produces 28 sitemap URLs, including `/privacy`. The v0.4.3 candidate adds
-`/about` and `/contact`, for 30 candidate sitemap URLs, and presents five
-original worked examples on their existing tool pages. Its task-first homepage
-retains the full catalog and search, and each populated category has distinct
-task guidance.
-The released v0.4.2 homepage groups every tool under its populated category; Calculator accepts
+activation are not claimed as provisioned. GitHub publication and Vercel
+deployment identity are verified separately from source version.
+The preceding v0.4.2 release introduced a homepage that grouped tools by
+category. The current application retains those utilities and Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
 Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
 Length and Weight while QR Code Generator belongs to Developer. The historical
