@@ -13,9 +13,28 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run test:observability-db
+      - name: Observability database validation
+        # GitHub-hosted runners have Docker Hub public-image pull exemptions.
+        # The ECR Public mirror is a fallback for registry throttling only;
+        # both references resolve to the same immutable Docker Official Image
+        # digest. Database and SQL failures never trigger the fallback.
+        shell: bash
         env:
-          OBSERVABILITY_POSTGRES_IMAGE: public.ecr.aws/docker/library/postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+          OBSERVABILITY_POSTGRES_IMAGE: postgres:17@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+          ECR_POSTGRES_FALLBACK_IMAGE: public.ecr.aws/docker/library/postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+        run: |
+          set +e
+          npm run test:observability-db
+          primary_status=$?
+          set -e
+          if [ "$primary_status" -eq 0 ]; then
+            exit 0
+          fi
+          if ! grep -Eiq '429 Too Many Requests|toomanyrequests|pull rate limit|Data limit exceeded' test-report/observability-db-*/postgres.log; then
+            exit "$primary_status"
+          fi
+          echo "::warning::Registry throttled the pinned PostgreSQL image; retrying once from ECR Public with the identical digest"
+          OBSERVABILITY_POSTGRES_IMAGE="$ECR_POSTGRES_FALLBACK_IMAGE" npm run test:observability-db
       - uses: actions/upload-artifact@v4
         if: always()
         with:
