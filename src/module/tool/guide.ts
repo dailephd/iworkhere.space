@@ -170,6 +170,28 @@ const guideById: Partial<Record<ToolId, ToolGuide>> = {
         ],
         relatedToolId: ["length-converter", "weight-converter"],
     },
+    "calculator": {
+        instruction: ["Enter an expression in Expression, typing on the keyboard or using the on-screen keypad.", "Press Enter or = on the keyboard, or select the = button, to evaluate it.", "Read the answer in the Result area; if the expression cannot be evaluated, an error message appears there instead.", "Select C to clear the expression, or ⌫ to remove its last character."],
+        section: [
+            { heading: "Basic arithmetic", text: "The calculator handles whole and decimal numbers with addition (+), subtraction (-), multiplication (*) and division (/). The keypad buttons × and ÷ insert * and /. Spaces are ignored. 2 + 3 * 4 gives 14, 7 / 2 gives 3.5 and 0.5 + 0.25 gives 0.75." },
+            { heading: "Operator precedence and parentheses", text: "Multiplication and division are done before addition and subtraction, and operators of equal rank are applied from left to right. So 2 + 3 * 4 is 2 + 12 = 14. Parentheses group part of an expression so it is calculated first: (2 + 3) * 4 gives 20. Parentheses can be nested. Write multiplication explicitly; 2(3) is not read as 2 * 3 and produces an error." },
+            { heading: "Negative numbers", text: "A minus sign at the start of an expression or directly after an opening parenthesis makes a negative number: -5 + 2 gives -3 and 2 * (-3) gives -6. This calculator does not apply the usual rules when a minus sign directly follows another operator, so 2 * -3 gives -3 rather than -6. Put the negative number in parentheses to be safe." },
+            { heading: "Invalid expressions and numeric limits", text: "Characters other than digits, a decimal point, spaces, + - * / and parentheses are rejected, for example Invalid character: \"&\". An incomplete expression such as 2 + gives Invalid expression., unbalanced parentheses such as (2 + 3 give Mismatched parentheses., and dividing by zero gives Result is not finite. There are no functions, exponents, percentages, units, symbolic algebra or arbitrary-precision arithmetic. Numbers use ordinary finite-precision floating-point arithmetic, and a fractional result is shown rounded to at most 12 decimal places: 1 / 3 shows 0.333333333333, and 0.1 + 0.2 shows 0.3. Treat results as practical approximations, not exact mathematics for very large, very small or highly precise values." },
+            { heading: "Sharing expressions and privacy", text: "The calculator runs in this browser, but the expression is also written to the page address as an expr query parameter as you type, so a copied address can reproduce it. Anyone or any service that receives or records that address, such as a person you send it to or browser history, can see the expression. Do not enter sensitive information such as account numbers, salaries or private figures if you plan to share or save the address. Select C to clear the expression from the address." },
+        ],
+        relatedToolId: ["time-arithmetic", "length-converter", "weight-converter"],
+    },
+    "time-arithmetic": {
+        instruction: ["Enter the first duration in Time A, such as 01:50.", "Select Add or Subtract in Operation.", "Enter the second duration in Time B, such as 00:20.", "Read Result, which updates automatically as you type.", "If a field shows a format message or a negative-result alert appears, correct the input."],
+        section: [
+            { heading: "Adding durations", text: "Time Arithmetic adds lengths of time written as hours and minutes. Both values are converted to total minutes, added, and shown again as hours and minutes, so every 60 minutes carries into one hour. 01:50 + 00:20 gives 02:10, and 50:00 + 50:00 gives 100:00." },
+            { heading: "Subtracting durations", text: "Subtraction takes Time B away from Time A. When the minutes of Time B are larger, an hour is borrowed from Time A, so 02:00 - 00:45 gives 01:15. Subtracting equal durations gives 00:00: 01:30 - 01:30 is 00:00. The result cannot be negative; 00:45 - 02:00 shows an alert that subtraction cannot produce a negative time value." },
+            { heading: "Input format and validation", text: "Enter hours, a colon and exactly two minute digits (H:MM or HH:MM). A single-digit hour such as 9:05 is accepted, and hours may exceed 23, so 120:05 is a valid duration. Minutes must be 00 to 59: 01:5 and 01:60 are invalid. Negative values such as -1:00 are invalid. An invalid Time A or Time B shows a message under that field, and Result stays --:--. Results always show at least two hour digits." },
+            { heading: "Durations versus clock times", text: "This tool works with durations, amounts of time, not times of day. 25:00 means 25 hours, not 1:00 AM the next day. It does not handle calendar dates, time zones, daylight-saving changes, seconds, AM or PM, or scheduling, and it cannot show a negative duration." },
+            { heading: "Local input and limitations", text: "Time A, Operation and Time B are held in this page's local component state. This tool does not save them or put them in the page address as shareable query parameters, so reloading the page clears them. The site still loads ordinary application assets and may use separately enabled site observability, which never receives your entered values." },
+        ],
+        relatedToolId: ["calculator", "length-converter"],
+    },
 };
 
 export function getToolGuide(toolId: ToolId): ToolGuide | undefined {

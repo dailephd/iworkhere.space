@@ -65,7 +65,7 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).toContain("Related converter tools");
                 return;
             }
-            if (["slugify", "length-converter", "weight-converter", "html-text-extractor"].includes(tool.id)) {
+            if (["slugify", "length-converter", "weight-converter", "html-text-extractor", "calculator", "time-arithmetic"].includes(tool.id)) {
                 expect(guide).toBeDefined();
                 expect(html).toContain("How to use");
                 expect(html).toContain("Interactive workspace");
@@ -110,6 +110,47 @@ describe("server guide and breadcrumb composition", () => {
             expect(getToolByIdList(ids).every(sibling => sibling.category === "document")).toBe(true);
         }
     });
+});
+
+describe("calculator and time arithmetic guides", () => {
+    const expected = {
+        "calculator": {
+            h1: "Calculator",
+            headings: ["Basic arithmetic", "Operator precedence and parentheses", "Negative numbers", "Invalid expressions and numeric limits", "Sharing expressions and privacy"],
+            instruction: ["Enter an expression in Expression", "Press Enter or =", "Result area", "Select C to clear"],
+            related: ["time-arithmetic", "length-converter", "weight-converter"],
+            text: ["2 + 3 * 4 gives 14", "(2 + 3) * 4 gives 20", "7 / 2 gives 3.5", "Result is not finite.", "expr query parameter", "sensitive information"],
+        },
+        "time-arithmetic": {
+            h1: "Time Arithmetic",
+            headings: ["Adding durations", "Subtracting durations", "Input format and validation", "Durations versus clock times", "Local input and limitations"],
+            instruction: ["Time A", "Operation", "Time B", "Result"],
+            related: ["calculator", "length-converter"],
+            text: ["01:50 + 00:20 gives 02:10", "50:00 + 50:00 gives 100:00", "02:00 - 00:45 gives 01:15", "01:30 - 01:30 is 00:00", "25:00 means 25 hours", "01:5 and 01:60 are invalid", "120:05 is a valid duration"],
+        },
+    };
+    for (const [id, want] of Object.entries(expected)) {
+        it(`server-renders the ${id} guide through the page template`, () => {
+            const tool = getAllTool().find(entry => entry.id === id)!;
+            const guide = getToolGuide(tool.id)!;
+            expect(Object.keys(guide).sort()).toEqual(["instruction", "relatedToolId", "section"]);
+            expect(guide.relatedToolId).toEqual(want.related);
+            expect(guide.relatedToolId).not.toContain(tool.id);
+            const related = getToolByIdList(guide.relatedToolId);
+            expect(related.map(entry => entry.id)).toEqual(want.related);
+            const html = renderToStaticMarkup(<ToolPageTemplate tool={tool} toolUi={<div>Interactive workspace</div>} breadcrumb={getToolBreadcrumb(tool)} guide={guide} relatedTool={related} />);
+            expect(html.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1]).toBe(want.h1);
+            expect(html).toContain("Interactive workspace");
+            expect(html.split(">How to use</h2>")).toHaveLength(2);
+            expect(guide.section.map(section => section.heading)).toEqual(want.headings);
+            for (const heading of want.headings) expect(html.split(`>${heading}</h2>`)).toHaveLength(2);
+            for (const text of want.instruction) expect(guide.instruction.join(" ")).toContain(text);
+            for (const text of want.text) expect(html).toContain(text);
+            for (const entry of related) expect(html).toContain(`href="${entry.seo.canonicalPath}"`);
+            expect(html).not.toContain("adsbygoogle");
+            expect(html).not.toContain("<script");
+        });
+    }
 });
 
 describe("related-tools heading truthfulness", () => {

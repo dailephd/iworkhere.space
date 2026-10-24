@@ -59,3 +59,21 @@ selector, and a result panel.
   low-risk duplication versus deriving it from `pathname` the way
   `ToolClientFrame` does; noted here for future consolidation, not fixed in
   this documentation-only pass.
+
+## Usage guide coverage
+
+`/tool/time-arithmetic` has a server-rendered usage guide owned by
+`src/module/tool/guide.ts` (`getToolGuide("time-arithmetic")`). It documents
+adding durations, subtracting durations, input format and validation,
+durations versus clock times, and local input and limitations, and links to
+Calculator and Length Converter.
+
+Verified behavior the guide relies on (see `guideExample.test.tsx`):
+
+- `01:50 + 00:20` is `02:10`; `50:00 + 50:00` is `100:00`;
+  `02:00 - 00:45` is `01:15`; `01:30 - 01:30` is `00:00`.
+- `9:05` and `120:05` are valid; `01:5`, `01:60` and negative operands are
+  invalid; a negative subtraction result is an error.
+- The tool handles durations only: no clock times, dates, time zones, seconds
+  or negative output. Inputs stay in local component state and are not placed
+  in the URL.
