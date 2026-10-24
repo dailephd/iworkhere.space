@@ -1,4 +1,4 @@
-import { test as base, expect, type Locator, type Page, type Request } from "@playwright/test";
+﻿import { test as base, expect, type Locator, type Page, type Request } from "@playwright/test";
 import { getConsoleFailure } from "./support/browserDiagnostic";
 
 // Same guarantees as ./support/fixture (no page errors, console errors, hydration diagnostics or advertising requests), with one
@@ -39,8 +39,6 @@ const actions = (page: Page) => footer(page).locator("[data-footer-actions]");
 const contactLink = (page: Page) => footer(page).getByRole("link", { name: "Contact Us", exact: true });
 const privacyLink = (page: Page) => footer(page).getByRole("link", { name: "Privacy Policy", exact: true });
 const reportButton = (page: Page) => footer(page).getByRole("button", { name: reportName, exact: true });
-const hideFooter = (page: Page) => footer(page).getByRole("button", { name: "Hide footer", exact: true });
-const showFooter = (page: Page) => footer(page).getByRole("button", { name: "Show footer", exact: true });
 
 const form = (page: Page) => page.getByRole("form", { name: "Contact form" });
 const emailField = (page: Page) => form(page).getByRole("textbox", { name: "Your email", exact: true });
@@ -419,141 +417,39 @@ test("Contact Us and Privacy Policy navigate; the footer links work from a tool 
     await expect(page).toHaveURL(/\/privacy$/);
 });
 
-test("collapsing hides Contact Us, Privacy Policy and the copyright; the report action (when enabled) and Show footer remain", async ({ page }) => {
+test("the footer links and copyright remain visible regardless of a saved collapsed preference", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("footer-preference", JSON.stringify("collapsed")));
     await page.goto("/contact");
-    await hideFooter(page).click();
-    await expect(page.locator("html")).toHaveAttribute("data-footer", "collapsed");
-    await expect(contactLink(page)).toBeHidden();
-    await expect(privacyLink(page)).toBeHidden();
-    await expect(footer(page).getByText("© 2026 iworkhere.space created by dailephd LLC")).toBeHidden();
-    await expect(showFooter(page)).toBeVisible();
-    if (supportEnabled) {
-        await expect(reportButton(page)).toBeVisible();
-        expect(await reportButton(page).innerText()).toBe("Report");
-        await expect(page.getByRole("button", { name: reportName })).toHaveCount(1);
-    } else {
-        await expect(footer(page).getByRole("button")).toHaveCount(1);
-        await expect(footer(page).getByRole("link")).toHaveCount(0);
+    for (const route of ["/contact", "/about", "/privacy"]) {
+        if (route !== "/contact") await page.goto(route);
+        await expect(contactLink(page)).toBeVisible();
+        await expect(privacyLink(page)).toBeVisible();
+        await expect(footer(page).getByText("© 2026 iworkhere.space created by dailephd LLC")).toBeVisible();
+        await expect(footer(page).getByRole("button", { name: /Hide footer|Show footer/ })).toHaveCount(0);
+        await expect(page.locator("[data-footer-toggle], [data-footer-when]")).toHaveCount(0);
+        await expect(reportButton(page)).toHaveCount(supportEnabled ? 1 : 0);
+        if (supportEnabled) expect(await reportButton(page).innerText()).toBe("Report Issues");
     }
-    expect(await noHorizontalOverflow(page)).toBe(true);
 });
 
-test("the collapsed preference persists across reload and navigation and expands back to the full group", async ({ page }) => {
-    await page.goto("/contact");
-    await hideFooter(page).click();
-    expect(await page.evaluate(() => localStorage.getItem("footer-preference"))).toContain("collapsed");
-    await page.reload();
-    await expect(page.locator("html")).toHaveAttribute("data-footer", "collapsed");
-    await expect(contactLink(page)).toBeHidden();
-    await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "About", exact: true }).click();
-    await expect(page).toHaveURL(/\/about$/);
-    await expect(contactLink(page)).toBeHidden();
-    await showFooter(page).click();
-    await expect(contactLink(page)).toBeVisible();
-    await expect(privacyLink(page)).toBeVisible();
-    await expect(hideFooter(page)).toHaveAttribute("aria-expanded", "true");
-    expect(await page.evaluate(() => localStorage.getItem("footer-preference"))).toContain("expanded");
-});
-
-test("collapsing from the keyboard keeps focus on the toggle and removes the hidden links from the tab order", async ({ page }) => {
-    await page.goto("/contact");
-    await hideFooter(page).focus();
-    await page.keyboard.press("Enter");
-    await expect(showFooter(page)).toBeFocused();
-    await expect(contactLink(page)).toBeHidden();
-    for (let step = 0; step < 3; step += 1) {
-        await page.keyboard.press("Tab");
-        expect(await page.evaluate(() => (document.activeElement?.getAttribute("href") ?? "") === "/contact" || document.activeElement?.getAttribute("href") === "/privacy")).toBe(false);
-    }
-    await showFooter(page).focus();
-    await page.keyboard.press("Space");
-    await expect(hideFooter(page)).toBeFocused();
-    await expect(contactLink(page)).toBeVisible();
-});
-
-test("measured footer heights stay compact and the clearance follows each state", async ({ page }, testInfo) => {
+test("the always-open footer height matches its dynamic clearance and remains bottom anchored", async ({ page }) => {
     await page.goto("/contact");
     const viewport = page.viewportSize()!;
-    const expanded = await geometry(footer(page));
-    expect(expanded.height, "expanded footer stays within a fifth of the viewport").toBeLessThanOrEqual(viewport.height * 0.2);
-    expect(Math.abs(expanded.bottom - viewport.height)).toBeLessThanOrEqual(1);
-    const spacerExpanded = await page.locator("[data-footer-spacer]").evaluate(element => element.getBoundingClientRect().height);
-    expect(Math.abs(spacerExpanded - expanded.height)).toBeLessThanOrEqual(1);
-
-    await hideFooter(page).click();
-    await expect(showFooter(page)).toBeVisible();
-    const collapsed = await geometry(footer(page));
-    expect(collapsed.height).toBeLessThan(expanded.height);
-    const spacerCollapsed = await page.locator("[data-footer-spacer]").evaluate(element => element.getBoundingClientRect().height);
-    expect(Math.abs(spacerCollapsed - collapsed.height)).toBeLessThanOrEqual(1);
-
-    await showFooter(page).click();
-    await expect(hideFooter(page)).toBeVisible();
-    const again = await geometry(footer(page));
-    expect(Math.abs(again.height - expanded.height)).toBeLessThanOrEqual(1);
-    await testInfo.attach("footer-geometry", {
-        contentType: "application/json",
-        body: JSON.stringify({ project: testInfo.project.name, supportEnabled, viewport, expandedHeight: expanded.height, expandedShare: expanded.height / viewport.height, collapsedHeight: collapsed.height, collapsedWidth: collapsed.width }, null, 2),
-    });
-    console.log(`footer-geometry ${testInfo.project.name} support=${supportEnabled} viewport=${viewport.width}x${viewport.height} expanded=${expanded.height.toFixed(1)}px (${(100 * expanded.height / viewport.height).toFixed(1)}%) collapsed=${collapsed.height.toFixed(1)}px x ${collapsed.width.toFixed(1)}px`);
+    const measured = await geometry(footer(page));
+    expect(measured.height, "the footer stays within a fifth of the viewport").toBeLessThanOrEqual(viewport.height * 0.2);
+    expect(Math.abs(measured.bottom - viewport.height)).toBeLessThanOrEqual(1);
+    const spacer = await page.locator("[data-footer-spacer]").evaluate(element => element.getBoundingClientRect().height);
+    expect(Math.abs(spacer - measured.height)).toBeLessThanOrEqual(1);
 });
 
-test("the end of the page stays reachable above the footer in both states, and the scroll position is not reset", async ({ page }) => {
+test("the last contact action and footer remain reachable at the document end", async ({ page }) => {
     await page.goto("/contact");
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    const lastVisibleAboveFooter = () => page.evaluate(() => {
-        const main = document.querySelector("main")!.getBoundingClientRect();
-        const footerBox = document.querySelector("footer")!.getBoundingClientRect();
-        return { mainBottom: main.bottom, footerTop: footerBox.top, atEnd: Math.abs(window.scrollY + window.innerHeight - document.documentElement.scrollHeight) <= 2 };
-    });
-    let state = await lastVisibleAboveFooter();
-    expect(state.atEnd).toBe(true);
-    expect(state.mainBottom).toBeLessThanOrEqual(state.footerTop + 1);
-    await hideFooter(page).click();
-    await expect(showFooter(page)).toBeVisible();
-    state = await lastVisibleAboveFooter();
-    expect(state.atEnd, "a reader at the end stays at the end after collapsing").toBe(true);
-    expect(state.mainBottom).toBeLessThanOrEqual(state.footerTop + 1);
-    await showFooter(page).click();
-    await expect(hideFooter(page)).toBeVisible();
-    state = await lastVisibleAboveFooter();
-    expect(state.atEnd, "a reader at the end stays at the end after expanding").toBe(true);
-    expect(state.mainBottom).toBeLessThanOrEqual(state.footerTop + 1);
-
-    // A mid-page position is untouched by a toggle.
-    await page.evaluate(() => window.scrollTo(0, 120));
-    const before = await page.evaluate(() => window.scrollY);
-    await hideFooter(page).click();
-    await expect(showFooter(page)).toBeVisible();
-    expect(await page.evaluate(() => window.scrollY)).toBe(before);
-});
-
-test("on a short viewport the footer links stay reachable, uncovered and clickable, and content can scroll clear of them", async ({ page }) => {
-    await page.setViewportSize({ width: page.viewportSize()!.width, height: 420 });
-    await page.goto("/contact");
-    await expect(footer(page)).toBeVisible();
-    for (const link of [contactLink(page), privacyLink(page)]) {
-        await expect(link).toBeVisible();
-        const covered = await link.evaluate(element => {
-            const rect = element.getBoundingClientRect();
-            const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-            return hit !== element && !element.contains(hit);
-        });
-        expect(covered, "nothing sits over the footer link").toBe(false);
-    }
-    expect(await noHorizontalOverflow(page)).toBe(true);
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    const clear = await page.evaluate(() => document.querySelector("main")!.getBoundingClientRect().bottom <= document.querySelector("footer")!.getBoundingClientRect().top + 1);
-    expect(clear).toBe(true);
-    // The submit button can be brought fully above the footer.
     await submitButton(page).scrollIntoViewIfNeeded();
     const above = await submitButton(page).evaluate(element => element.getBoundingClientRect().bottom <= document.querySelector("footer")!.getBoundingClientRect().top + 1);
     expect(above).toBe(true);
-    await hideFooter(page).click();
-    await expect(showFooter(page)).toBeVisible();
-    await expect(showFooter(page)).toBeInViewport();
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(footer(page)).toBeInViewport();
 });
-
 test("a focused contact field near the bottom is not hidden by the expanded footer", async ({ page }) => {
     await page.goto("/contact");
     await messageField(page).focus();
@@ -601,7 +497,7 @@ test.describe("without JavaScript", () => {
         await expect(contactLink(page)).toBeVisible();
         await expect(privacyLink(page)).toBeVisible();
         await expect(contactLink(page)).toHaveAttribute("href", "/contact");
-        await expect(page.locator("[data-footer-toggle]")).toBeHidden();
+        await expect(page.locator("[data-footer-toggle]")).toHaveCount(0);
         expect(await noHorizontalOverflow(page)).toBe(true);
     });
 

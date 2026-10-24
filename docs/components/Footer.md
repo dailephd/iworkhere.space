@@ -1,5 +1,9 @@
 # Component: Footer
 
+## Current maintenance state — 2026-10-24
+
+The footer is one fixed, always-open semantic footer. Copyright, Contact Us, Privacy Policy, and the conditional Report Issues action remain visible. There are no footer collapse controls, preference state, storage reads/writes, or compact report label. The single FooterViewportControl still measures footer height and provides document clearance, safe-area spacing, no-script normal-flow fallback, and visual-viewport keyboard handling. The optional footer advertising slot remains independent and in normal document flow. This current-state note supersedes the retractable-footer behavior described in historical v0.4.2/v0.4.3 records; those release records remain unchanged.
+
 **Kind:** Component
 
 <!-- section-id: representative-file -->
@@ -32,7 +36,7 @@ This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
-### Current identity contract
+### Current identity and placement contract
 
 Footer displays exactly `© 2026 iworkhere.space created by dailephd LLC` and adds a visible, keyboard-focusable `/privacy` link. In the released v0.4.2 architecture it is the single server-rendered Footer composed by `AppShell` inside the client `FooterViewportControl`, which anchors it to the viewport bottom and maintains document clearance; it is **not** normal-flow content when JavaScript is enabled. Without JavaScript it falls back to normal flow. `AppShell.footerActionSlot` supplies the existing conditional issue-report action, and its separate optional footer advertising slot remains in document flow (root supplies none). See `docs/DESIGN.md`.
 
@@ -41,6 +45,6 @@ Footer displays exactly `© 2026 iworkhere.space created by dailephd LLC` and ad
 
 Footer uses the shell footer-bg end-region and retains the exact identity copy. Natural **document scrolling** is unchanged; positioning of the footer itself is governed by the released v0.4.2 fixed/retractable wrapper.
 
-### v0.4.3 footer navigation contract (Batch 4, implemented)
+### Historical v0.4.3 footer navigation contract (Batch 4, implemented; collapse behavior superseded)
 
 The `Footer.action` presentation slot and the `FooterViewportControl` state owner are unchanged. The expanded footer renders exactly one compact vertical group, in DOM and visual order: `Contact Us` (`/contact`, always present), `Report Issues` (the existing action slot, only when reporting is enabled) and `Privacy Policy` (`/privacy`). Footer still owns no action logic. The links are quiet (no permanent underline, underline on hover) with the standard focus ring; copyright stays on the leading side and the Hide/Show toggle is untouched. Contact Us and Privacy Policy carry `data-footer-detail`, so the collapsed tab hides them and the copyright while the report action (when enabled) and Show footer remain. The report button's visible text is `Report Issues` expanded and `Report` collapsed; its accessible name is `Report Issues — report a problem or suggestion` (owned by `SupportCoordinator`). No second footer, report button or dialog is created, and the banner slot is untouched. See `docs/DESIGN.md` for geometry and clearance.

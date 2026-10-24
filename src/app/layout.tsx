@@ -13,7 +13,6 @@ import { WebVitals } from "@/component/common/WebVitals";
 import { VercelWebAnalytics } from "@/component/observability/VercelWebAnalytics";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 import { THEME_INIT_SCRIPT } from "@/module/theme/themeRuntime.client";
-import { FOOTER_INIT_SCRIPT } from "@/component/layout/footerPreference";
 import { DEFAULT_APPEARANCE } from "@/module/theme/themeRegistry";
 import { SupportCoordinator } from "@/module/support/SupportCoordinator";
 import { contextSource } from "@/module/support/projection";
@@ -44,7 +43,6 @@ export default function RootLayout({
         <html lang="en" data-palette={DEFAULT_APPEARANCE.palette} data-theme="light" data-theme-preference={DEFAULT_APPEARANCE.mode} suppressHydrationWarning>
         <head>
             <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-            <script dangerouslySetInnerHTML={{ __html: FOOTER_INIT_SCRIPT }} />
         </head>
         <body className="antialiased">
         <ThemeProvider>

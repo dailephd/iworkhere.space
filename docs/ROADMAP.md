@@ -13,6 +13,8 @@ Release publication remains a distinct publication record and is not inferred
 from a merge or deployment. See [project status](project-status.md) for current
 validation and deployment evidence.
 
+> Current maintenance supersession (2026-10-24): the fixed footer remains always open; its collapse controls and preference state have been removed. Older v0.4.2/v0.4.3 roadmap statements below preserve their historical decisions.
+
 The original v0.1.0 product baseline provides six registered utilities:
 
 - Slugify Text

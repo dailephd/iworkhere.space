@@ -46,13 +46,13 @@ it("gives Contact Us and Privacy Policy quiet styling with no permanent underlin
         expect(anchor).toContain("hover:underline");
         expect(anchor).toContain("focus-visible:outline-2");
         expect(anchor).toContain("focus-visible:outline-[var(--focus-ring)]");
-        expect(anchor).toContain("data-footer-detail");
+        expect(anchor).not.toContain("data-footer-detail");
     }
 });
 
-it("marks only the copyright and the two links as collapsed-state details, never the report action", () => {
+it("renders all footer details normally without collapse-specific markers", () => {
     const html = renderToStaticMarkup(<Footer action={<button type="button" data-testid="report">{REPORT}</button>} />);
-    expect(html.match(/data-footer-detail/g)).toHaveLength(3);
+    expect(html).not.toContain("data-footer-detail");
     expect(html).toMatch(/<button[^>]*data-testid="report"/);
     expect(html).not.toMatch(/<button[^>]*data-footer-detail/);
 });
