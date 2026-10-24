@@ -31,7 +31,7 @@ test.describe("home page task entry points", () => {
         await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
         const section = page.getByRole("region", { name: "Start with a common task", exact: true });
         await expect(section).toBeVisible();
-        await expect(section).toContainText("not a ranking");
+        await expect(section).toContainText("Five common jobs");
         await expect(section).not.toContainText(/most popular|trending|recommended for you|top rated|most downloaded/i);
         const task = section.locator("[data-featured-task]");
         await expect(task).toHaveCount(FEATURED.length);
@@ -102,9 +102,9 @@ test.describe("home page task entry points", () => {
 test.describe("discover page", () => {
     test("explains search versus category browsing, links the seven categories and keeps all eighteen tools", async ({ page, request }) => {
         expect((await page.goto("/discover"))?.status()).toBe(200);
-        await expect(page.getByRole("heading", { level: 1, name: "Discover Tool", exact: true })).toBeVisible();
+        await expect(page.getByRole("heading", { level: 1, name: "All tools", exact: true })).toBeVisible();
         const main = page.getByRole("main");
-        await expect(main).toContainText("Search for a utility directly, or browse by category");
+        await expect(main).toContainText("Search for a tool by name or task, or browse by category");
         await expect(main).not.toContainText(/everyday/i);
         const category = main.getByRole("region", { name: "Browse by category", exact: true }).getByRole("link");
         await expect(category).toHaveCount(CATEGORY.length);

@@ -1,8 +1,8 @@
 # PROJECT STATUS
 
-## Current footer maintenance — 2026-10-24
+## Current site chrome — 2026-10-24
 
-The footer is fixed and always open. Footer collapse controls, state, preference persistence, and condensed reporting-label presentation have been removed. Contact Us, Privacy Policy, copyright, and the optional enabled Report Issues trigger remain visible. Dynamic clearance, the normal-flow no-JavaScript fallback, and keyboard viewport handling remain. The v0.4.2 release record below is historical and unchanged.
+The header is fixed to the top of the viewport with no Show/Hide navigation mechanism, and the footer is ordinary document-flow content at the end of the page. `FooterViewportControl` and the `--footer-clearance` variable are removed; `HeaderViewportControl` keeps only the fixed placement and measured height footprint. Every page has the browser title `iworkhere`, About is the last primary navigation link, and the default appearance remains Violet & Graphite with System mode. Visitor-facing copy was reviewed across the public pages and all 18 tools. Earlier retractable-chrome and fixed-footer notes are historical.
 
 ## Current v0.4.3 Production verification snapshot - 2026-10-21
 

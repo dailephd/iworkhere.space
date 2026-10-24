@@ -2,7 +2,7 @@
 
 ## Current maintenance state — 2026-10-24
 
-The footer is one fixed, always-open semantic footer. Copyright, Contact Us, Privacy Policy, and the conditional Report Issues action remain visible. There are no footer collapse controls, preference state, storage reads/writes, or compact report label. The single FooterViewportControl still measures footer height and provides document clearance, safe-area spacing, no-script normal-flow fallback, and visual-viewport keyboard handling. The optional footer advertising slot remains independent and in normal document flow. This current-state note supersedes the retractable-footer behavior described in historical v0.4.2/v0.4.3 records; those release records remain unchanged.
+The footer is one semantic `<footer>` in ordinary document flow. `AppShell` renders it after the main content (and after the optional footer advertising slot) inside a `min-h-screen` flex column, so short pages end with the footer at the bottom of the viewport and long pages reach it by scrolling. Copyright, Contact Us, Privacy Policy and the conditional Report Issues action remain visible. There is no fixed or sticky positioning, collapse control, saved preference, spacer, `--footer-clearance` variable or keyboard-avoidance logic, and `FooterViewportControl` has been deleted. `Footer` itself still renders only the inner content and owns no action logic. Statements below about a fixed or retractable footer are superseded historical records.
 
 **Kind:** Component
 

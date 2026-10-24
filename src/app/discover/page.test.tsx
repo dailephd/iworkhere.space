@@ -19,10 +19,10 @@ describe("discover page content", () => {
     it("keeps one H1 and explains direct search versus browsing by category without the retired everyday category", () => {
         const host = render();
         expect(host.querySelectorAll("h1")).toHaveLength(1);
-        expect(host.querySelector("h1")?.textContent).toBe("Discover Tool");
+        expect(host.querySelector("h1")?.textContent).toBe("All tools");
         const text = host.querySelector("h1")!.parentElement!.textContent ?? "";
-        expect(text).toContain("Search for a utility directly, or browse by category");
-        expect(text).toContain(`all ${getAllTool().length} tools in one list, not grouped by category`);
+        expect(text).toContain("Search for a tool by name or task, or browse by category");
+        expect(text).toContain(`shows all ${getAllTool().length} tools together`);
         expect(text).not.toMatch(/everyday/i);
         expect(text).not.toContain("Browse all available utility tool by category");
     });

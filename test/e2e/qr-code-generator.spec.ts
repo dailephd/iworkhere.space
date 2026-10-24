@@ -201,7 +201,7 @@ test("generation stays local: no payload leaves the browser, no query or storage
 
 test("developer category, Discover search and sitemap include the QR Code Generator", async ({ page, request }) => {
     expect((await page.goto("/category/developer"))?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1, name: "Developer Tool", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Developer Tools", exact: true })).toBeVisible();
     const tools = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(tools).toHaveCount(2);
     await expect(tools).toContainText(["JSON Formatter / Validator", "QR Code Generator"]);

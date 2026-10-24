@@ -47,7 +47,7 @@ test("document family: complete discovery, search, canonical SSR and related nav
         titles.push(html.match(/<title>([^<]+)<\/title>/)![1]);
         descriptions.push(html.match(/name="description" content="([^"]+)"/)![1]);
     }
-    expect(new Set(titles).size).toBe(5); expect(new Set(descriptions).size).toBe(5);
+    expect([...new Set(titles)]).toEqual(["iworkhere"]); expect(new Set(descriptions).size).toBe(5);
     const xml = await (await request.get("/sitemap.xml")).text();
     expect(xml.match(/<loc>/g)).toHaveLength(30);
     for (const route of [...documents.map(tool => `/tool/${tool.slug}`), "/category/document"])

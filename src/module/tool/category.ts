@@ -26,8 +26,8 @@ export interface ToolCategoryDefinition {
 export const tool_category_definition_list = [
     {
         id: "document",
-        title: "Document Tool",
-        description: "Tool for working with PDFs and documents.",
+        title: "PDF Tools",
+        description: "Merge, split, convert and compress PDF files in your browser.",
         guidance: {
             task: "Join, split, convert and shrink PDF files: merge several PDFs into one, split chosen pages into separate PDFs, combine JPEG and PNG images into a PDF, export selected pages as JPG or PNG images, or rewrite a PDF's structure to try to reduce its size.",
             choice: [
@@ -42,7 +42,7 @@ export const tool_category_definition_list = [
     },
     {
         id: "text",
-        title: "Text & Code Tool",
+        title: "Text Tools",
         description: "Create URL slugs, extract text from HTML, and count words and characters.",
         guidance: {
             task: "Prepare or measure plain text: turn a title into a URL-friendly slug, pull readable text out of HTML markup, or count the words and characters in a passage.",
@@ -56,10 +56,10 @@ export const tool_category_definition_list = [
     },
     {
         id: "math",
-        title: "Math & Calculator Tool",
-        description: "Calculator and numerical utility.",
+        title: "Math Tools",
+        description: "Evaluate arithmetic expressions with a calculator.",
         guidance: {
-            task: "Work out a quick arithmetic expression typed with numbers, addition, subtraction, multiplication, division and parentheses.",
+            task: "Work out an arithmetic expression made of numbers, + - * / and parentheses.",
             choice: [
                 { toolId: "calculator", when: "You want to evaluate a typed expression and see the result." },
             ],
@@ -81,8 +81,8 @@ export const tool_category_definition_list = [
     },
     {
         id: "time",
-        title: "Time & Date Tool",
-        description: "Add and subtract time values in HH:MM format.",
+        title: "Time Tools",
+        description: "Add and subtract durations written as HH:MM.",
         guidance: {
             task: "Add or subtract durations written as HH:MM, for example to total several spans of time or to work out what remains after taking one away.",
             choice: [
@@ -93,8 +93,8 @@ export const tool_category_definition_list = [
     },
     {
         id: "image",
-        title: "Image & Media Tool",
-        description: "Convert, resize, and optimize image.",
+        title: "Image Tools",
+        description: "Resize, compress and convert images in your browser.",
         guidance: {
             task: "Prepare a picture for sharing or upload: set its pixel dimensions, reduce its file size, switch its format, or turn a HEIC photo into a more widely supported format.",
             choice: [
@@ -108,8 +108,8 @@ export const tool_category_definition_list = [
     },
     {
         id: "developer",
-        title: "Developer Tool",
-        description: "Format, validate, transform, and inspect developer data.",
+        title: "Developer Tools",
+        description: "Format and validate JSON, and generate QR codes.",
         guidance: {
             task: "Check or reshape structured data, or turn text into a scannable code: format, minify and validate JSON, or generate a QR code from text or a URL.",
             choice: [

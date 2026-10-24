@@ -1,6 +1,5 @@
 import { type ReactNode } from "react"
 import { Footer } from "./Footer"
-import { FooterViewportControl } from "./FooterViewportControl"
 import { Header } from "./Header"
 import { HeaderViewportControl } from "./HeaderViewportControl"
 import type { NavItem } from "./type"
@@ -34,10 +33,10 @@ export default function AppShell({
             : "lg:grid-cols-[minmax(0,1fr)]"
 
     return (
-        <div className="min-h-screen w-full bg-background text-text">
+        <div className="flex min-h-screen w-full flex-col bg-background text-text">
             <a
                 href="#main-content"
-                className="sr-only z-50 rounded-md bg-surface px-4 py-2 text-text focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+                className="sr-only z-[60] rounded-md bg-surface px-4 py-2 text-text focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
             >
                 Skip to main content
             </a>
@@ -51,7 +50,7 @@ export default function AppShell({
                 </div>
             ) : null}
 
-            <div className={`grid min-w-0 grid-cols-1 ${desktopGridColumns}`}>
+            <div className={`grid min-w-0 flex-1 grid-cols-1 ${desktopGridColumns}`}>
                 {leftBannerSlot ? (
                     <aside className="hidden border-r border-border px-2 py-4 lg:block" aria-label="Left advertising area">
                         {leftBannerSlot}
@@ -72,9 +71,9 @@ export default function AppShell({
                     {footerBannerSlot}
                 </div>
             ) : null}
-            <FooterViewportControl>
+            <footer data-site-footer className="border-t border-border bg-footer-bg py-3">
                 <Footer action={footerActionSlot} />
-            </FooterViewportControl>
+            </footer>
         </div>
     )
 }

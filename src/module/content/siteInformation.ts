@@ -44,25 +44,25 @@ export interface SiteInformation {
 export function getSiteInformation(): SiteInformation {
     return {
         publisher: { legalName: "dailephd LLC", productName: "iworkhere.space" },
-        purpose: "iworkhere.space is a utility website maintained by dailephd LLC. It offers focused tools for everyday PDF, image, text, calculation, conversion, time and developer tasks, and each tool has its own page that explains what it does and where it stops.",
+        purpose: "iworkhere.space is a collection of small browser tools for PDF, image, text, calculation, unit conversion, time and developer tasks, published by dailephd LLC. Each tool has its own page that says what it does and where it stops.",
         toolCount: getAllTool().length,
         categoryCount: getAvailableCategory().length,
         capability: [
             { id: "pdf", title: "PDF and documents", body: "Merge PDFs, split chosen pages into separate PDFs, compress a PDF, combine JPEG and PNG images into a PDF, and export PDF pages as JPG or PNG images." },
             { id: "image", title: "Images", body: "Resize and compress images, and convert between JPG, PNG and WebP or from HEIC to JPG or PNG." },
             { id: "text", title: "Text", body: "Create URL slugs, extract readable text from HTML, and count words and characters." },
-            { id: "calculation", title: "Calculation, conversion and time", body: "Evaluate arithmetic expressions, convert lengths and weights, and do arithmetic with dates and times." },
+            { id: "calculation", title: "Calculation, conversion and time", body: "Evaluate arithmetic expressions, convert lengths and weights, and add or subtract durations written as hours and minutes." },
             { id: "developer", title: "Developer tasks", body: "Format and validate JSON, and generate QR codes." },
         ],
         maintenance: [
-            "The PDF, image, text, JSON and QR code tools process the files and text you give them in your browser. Their processing does not upload those files or content to our servers.",
-            "Changes are checked with automated type checking, linting, unit tests, browser tests against a production build and a production-container smoke check before they are released.",
+            "The PDF, image, text, JSON and QR code tools process your files and text in your browser. They are not uploaded to our servers.",
+            "Every change passes type checking, linting, unit tests, browser tests and a production-container check before it is released.",
             "Site measurements and diagnostics exclude tool inputs, files and results. The Privacy Policy describes what is collected and why.",
         ],
         limitation: [
             "These are single-purpose utilities, not full editors. For example, the PDF tools do not edit page content or sign documents, and Compress PDF cannot make every file smaller.",
-            "Files are processed on your device, so very large files depend on your browser and device memory, and the tools enforce size limits.",
-            "Check results before you rely on them. We do not promise that a tool suits every document or input.",
+            "Files are processed on your device, so large files depend on your browser and available memory, and each tool enforces size limits.",
+            "Check results before you rely on them. A tool may not suit every document or input.",
             "Contact Us sends a message to the site operator by email. We do not promise a reply by a particular time.",
         ],
         release: [

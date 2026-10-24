@@ -20,21 +20,21 @@ describe("canonical category definitions", () => {
         }
     })
 
-    it("keeps the exact public titles and descriptions of the three pre-v0.4 categories whose descriptions were accurate", () => {
+    it("uses natural public titles and descriptions for the Document, Image and Math categories", () => {
         const legacy = {
-            document: ["Document Tool", "Tool for working with PDFs and documents."],
-            image: ["Image & Media Tool", "Convert, resize, and optimize image."],
-            math: ["Math & Calculator Tool", "Calculator and numerical utility."],
+            document: ["PDF Tools", "Merge, split, convert and compress PDF files in your browser."],
+            image: ["Image Tools", "Resize, compress and convert images in your browser."],
+            math: ["Math Tools", "Evaluate arithmetic expressions with a calculator."],
         } as const
         for (const [id, [title, description]] of Object.entries(legacy)) {
             expect(getToolCategoryDefinition(id as keyof typeof legacy)).toMatchObject({ id, title, description })
         }
     })
 
-    it("keeps the exact titles of Text and Time but corrects descriptions that named unsupported capabilities", () => {
+    it("names Text and Time without claiming code, time zone or calendar features", () => {
         // v0.4.3: "text and code" (no code tool in Text) and "Timezone, date, and calendar" (the only Time tool adds and subtracts HH:MM) were false.
-        expect(getToolCategoryDefinition("text")).toMatchObject({ id: "text", title: "Text & Code Tool", description: "Create URL slugs, extract text from HTML, and count words and characters." })
-        expect(getToolCategoryDefinition("time")).toMatchObject({ id: "time", title: "Time & Date Tool", description: "Add and subtract time values in HH:MM format." })
+        expect(getToolCategoryDefinition("text")).toMatchObject({ id: "text", title: "Text Tools", description: "Create URL slugs, extract text from HTML, and count words and characters." })
+        expect(getToolCategoryDefinition("time")).toMatchObject({ id: "time", title: "Time Tools", description: "Add and subtract durations written as HH:MM." })
         for (const id of ["text", "time"] as const) {
             expect(getToolCategoryDefinition(id).description).not.toMatch(/timezone|calendar|\bcode\b/i)
         }
@@ -43,8 +43,8 @@ describe("canonical category definitions", () => {
     it("defines developer", () => {
         expect(getToolCategoryDefinition("developer")).toMatchObject({
             id: "developer",
-            title: "Developer Tool",
-            description: "Format, validate, transform, and inspect developer data.",
+            title: "Developer Tools",
+            description: "Format and validate JSON, and generate QR codes.",
         })
     })
 
@@ -159,3 +159,11 @@ it("migrates the public converter title and labels without accepting the histori
     expect(getToolCategoryLabel("developer")).toBe("Developer");
     expect(isToolCategory("everyday")).toBe(false);
 });
+
+it("uses plural, natural category headings and describes only supported capabilities", () => {
+    for (const definition of tool_category_definition_list) {
+        expect(definition.title, definition.id).not.toMatch(/\bTool\b(?!s)/)
+        expect(definition.title, definition.id).not.toContain("&")
+        expect(`${definition.description} ${definition.guidance.task}`, definition.id).not.toMatch(/time ?zone|calendar|\bdates?\b|media/i)
+    }
+})

@@ -43,6 +43,6 @@ Shell header uses header-bg; protected advertising surfaces stay quiet surface-a
 
 ### v0.4.3 Batch 4 footer composition
 
-`footerActionSlot` still carries only a `ReactNode` and the footer-retraction wrapper is unchanged. `Footer` now places that slot between the
+`footerActionSlot` still carries only a `ReactNode`; the footer is now ordinary document-flow content (2026-10-24). `Footer` now places that slot between the
 always-present Contact Us link and the Privacy Policy link in one vertical group; AppShell neither knows about nor reorders them. See
 `docs/components/Footer.md` and `docs/DESIGN.md`.

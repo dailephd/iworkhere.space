@@ -11,7 +11,7 @@ test("JSON Formatter route, SEO, breadcrumb, guide and related links are server-
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/json-formatter"');
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html).toContain('href="/category/developer"');
-    for (const text of ["How to use", "Strict JSON", "RFC 8259", "Token-preserving formatting", "1 MiB", "not uploaded for formatting or validation"]) expect(html).toContain(text);
+    for (const text of ["How to use", "Strict JSON", "RFC 8259", "Your values are not changed", "1 MiB", "is processed in this browser and is not uploaded"]) expect(html).toContain(text);
     for (const href of ["/tool/html-text-extractor", "/tool/slugify"]) expect(html).toContain(`href="${href}"`);
     expect(html).toContain("Related text tools");
     expect(html).not.toContain("Related developer tools");
@@ -75,7 +75,7 @@ test("is keyboard operable and does not overflow the page", async ({ page }) => 
 
 test("developer category, discovery search, home chip and sitemap include JSON Formatter", async ({ page, request }) => {
     expect((await page.goto("/category/developer"))?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1, name: "Developer Tool", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Developer Tools", exact: true })).toBeVisible();
     const tools = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(tools).toHaveCount(2);
     await expect(tools).toContainText(["JSON Formatter / Validator", "QR Code Generator"]);

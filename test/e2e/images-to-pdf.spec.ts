@@ -67,7 +67,7 @@ test("Images to PDF: ordered local sources, real worker, independent rendered do
 });
 test("Images to PDF: initial SEO/guide and automatic registry discovery", async ({ page, request }) => {
     const response = await request.get("/tool/images-to-pdf"); expect(response.status()).toBe(200); const html = await response.text();
-    for (const text of ["Images to PDF", "Combine JPEG and PNG images", "How to use", "One image per page", "PDF points", "PNG alpha", "source images are not uploaded", "Related document tools", 'href="/tool/merge-pdf"', 'href="/tool/split-pdf"', 'href="/category/document"']) expect(html).toContain(text);
+    for (const text of ["Images to PDF", "Combine JPEG and PNG images", "How to use", "One image per page", "PDF points", "PNG alpha", "the images are not uploaded", "Related document tools", 'href="/tool/merge-pdf"', 'href="/tool/split-pdf"', 'href="/category/document"']) expect(html).toContain(text);
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/images-to-pdf"'); expect(html).toContain('property="og:url" content="https://iworkhere.space/tool/images-to-pdf"');
     await page.goto("/"); await expect(page.getByRole("region", { name: "Document tools" }).locator('a[href="/tool/images-to-pdf"]')).toHaveCount(1);
     await page.goto("/discover"); await page.getByLabel("Search", { exact: true }).fill("images to pdf"); await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(1);

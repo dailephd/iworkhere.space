@@ -90,7 +90,7 @@ for nine required jobs total:
 - `lint.yaml` — `npm run lint`
 - `test.yaml` — `npm run test`
 - `build.yaml` — `npm run build`
-- `e2e.yaml` — `e2e` runs `npm run test:e2e`; `e2e-support` selects `footer-retraction.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` in a support-enabled build
+- `e2e.yaml` — `e2e` runs `npm run test:e2e`; `e2e-support` selects `footer-flow.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` in a support-enabled build
 - `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
 Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the

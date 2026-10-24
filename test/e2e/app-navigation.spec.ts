@@ -59,7 +59,7 @@ test("shared search filters registered tags and destinations remain links", asyn
 
 test("text category lists its three registered text tools", async ({ page }) => {
     expect((await page.goto("/category/text"))?.status()).toBe(200);
-    await expect(page.getByRole("heading", { name: "Text & Code Tool", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Text Tools", exact: true })).toBeVisible();
     const main = page.getByRole("main");
     await expect(main.locator('a[href^="/tool/"]')).toHaveCount(3);
     await expect(main.locator('a[href="/tool/slugify"]')).toContainText("Slugify Text");

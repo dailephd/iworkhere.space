@@ -19,18 +19,18 @@ describe("server guide and breadcrumb composition", () => {
                 expect(html).toContain("Related document tools");
                 if (tool.id === "images-to-pdf") {
                     expect(html).toContain("25 MiB"); expect(html).toContain("30 megapixels");
-                    expect(html).toContain("source images are not uploaded"); expect(html).toContain("PDF points");
+                    expect(html).toContain("the images are not uploaded"); expect(html).toContain("PDF points");
                     expect(html).toContain("PNG alpha"); expect(related).toHaveLength(3);
                     expect(html).toContain('href="/tool/pdf-to-image"');
                 } else {
                     expect(html).toContain("10 MiB"); expect(html).toContain("100 pages");
-                    expect(html).toContain("PDF processing happens locally"); expect(related).toHaveLength(tool.id === "compress-pdf" ? 4 : tool.id === "pdf-to-image" ? 3 : 1);
+                    expect(html).toContain("Your PDF is processed in this browser"); expect(related).toHaveLength(tool.id === "compress-pdf" ? 4 : tool.id === "pdf-to-image" ? 3 : 1);
                     if (tool.id === "compress-pdf") for (const text of ["What this compression does", "No reduction is normal", "NO REDUCTION ACHIEVED", "Supported PDFs and limits", "Fidelity boundary", "Local processing", "short-lived browser worker"]) expect(html).toContain(text);
                     if (tool.id === "pdf-to-image") {
                         for (const text of ["Page selection", "PNG vs JPG", "4096-pixel", "16 MP", "lower DPI", "150 DPI", "0.85", "20 output images", "Convert pages"]) expect(html).toContain(text);
                     }
                 }
-                expect(html).toContain("ordinary application assets");
+                expect(html).toContain("Site analytics and diagnostics never receive");
                 for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
                 expect(html).not.toContain("Related image tools");
                 return;
@@ -38,7 +38,7 @@ describe("server guide and breadcrumb composition", () => {
             if (tool.id === "json-formatter") {
                 expect(tool.id).toBe("json-formatter");
                 expect(guide).toBeDefined();
-                for (const text of ["Strict JSON", "RFC 8259", "Token-preserving formatting", "1 MiB", "not uploaded for formatting or validation"]) expect(html).toContain(text);
+                for (const text of ["Strict JSON", "RFC 8259", "Your values are not changed", "1 MiB", "is processed in this browser and is not uploaded"]) expect(html).toContain(text);
                 expect(related.map(item => item.id)).toEqual(["html-text-extractor", "slugify"]);
                 for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
                 expect(html).not.toContain("Related image tools");
@@ -58,7 +58,7 @@ describe("server guide and breadcrumb composition", () => {
             if (tool.id === "qr-code-generator") {
                 expect(tool.category).toBe("developer");
                 expect(guide).toBeDefined();
-                for (const text of ["Text and URLs", "encoded exactly as you enter it", "does not fetch, open or check URLs", "Fixed QR settings", "error correction level M", "512 × 512", "quiet zone", "Payload limit", "2048 UTF-8 bytes", "denser QR symbols", "Not every camera or scanner", "Local processing", "not uploaded for QR generation"]) expect(html).toContain(text);
+                for (const text of ["Text and URLs", "encoded exactly as you enter it", "does not fetch, open or check URLs", "Fixed QR settings", "error correction level M", "512 × 512", "quiet zone", "Payload limit", "2048 UTF-8 bytes", "denser QR symbols", "Not every camera or scanner", "Local processing", "Your text is not uploaded, saved or placed in the page address"]) expect(html).toContain(text);
                 expect(related.map(item => item.id)).toEqual(["length-converter", "weight-converter"]);
                 expect(related.every(item => item.category === "converter")).toBe(true);
                 for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
@@ -88,7 +88,7 @@ describe("server guide and breadcrumb composition", () => {
             expect(Object.keys(guide!).sort()).toEqual(["instruction", "relatedToolId", "section"]);
             expect(html).toContain("25 MiB");
             expect(html).toContain("30 megapixels");
-            expect(html).toContain("ordinary application assets");
+            expect(html).toContain("Site analytics and diagnostics never receive");
             expect(related).toHaveLength(3);
             for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
         });

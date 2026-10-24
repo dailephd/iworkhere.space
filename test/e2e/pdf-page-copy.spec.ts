@@ -105,7 +105,7 @@ test("document registry discovery, search, initial SEO/guides and 30 canonical s
     for (const [slug, name, related] of [["merge-pdf", "Merge PDF", "split-pdf"], ["split-pdf", "Split PDF", "merge-pdf"]]) {
         const html = await (await request.get(`/tool/${slug}`)).text();
         expect(html).toContain(`<h1`); expect(html).toContain(name); expect(html).toContain("How to use");
-        expect(html).toContain("Static-page fidelity"); expect(html).toContain("PDF processing happens locally");
+        expect(html).toContain("Static-page fidelity"); expect(html).toContain("Your PDF is processed in this browser");
         expect(html).toContain("Related document tools"); expect(html).toContain(`href="/tool/${related}"`);
         expect(html).toContain(`rel="canonical" href="https://iworkhere.space/tool/${slug}"`);
         expect(html).toContain(`property="og:url" content="https://iworkhere.space/tool/${slug}"`);

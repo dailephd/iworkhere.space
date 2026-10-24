@@ -18,7 +18,7 @@ for (const theme of ["light", "dark", "onedark", "system"] as const) {
             const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb", exact: true });
             await expect(breadcrumb.getByRole("link", { name: "Home", exact: true })).toHaveAttribute("href", "/");
             await expect(breadcrumb.getByRole("link", { name: "Image", exact: true })).toHaveAttribute("href", "/category/image");
-            await expect(page.getByRole("region", { name: "Tool guide" })).toContainText("ordinary application assets");
+            await expect(page.getByRole("region", { name: "Tool guide" })).toContainText("Site analytics and diagnostics never receive");
             await expect(page.getByRole("region", { name: "Tool guide" }).getByRole("link")).toHaveCount(3);
             await expect(page.getByRole("button", { name: tool.action, exact: true })).toBeDisabled();
             await page.getByLabel(tool.input, { exact: true }).setInputFiles(path.resolve(`test/fixtures/images/${tool.source}`));

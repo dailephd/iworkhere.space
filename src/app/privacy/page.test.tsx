@@ -4,7 +4,7 @@ import PrivacyPage, { metadata } from "./page";
 
 describe("public privacy policy", () => {
     it("uses the canonical page metadata and a semantic heading hierarchy", () => {
-        expect(metadata.title).toBe("Privacy Policy — iworkhere.space");
+        expect(metadata.title).toBe("iworkhere");
         expect(metadata.description).toContain("diagnostics");
         expect(metadata.alternates).toEqual({ canonical: "https://iworkhere.space/privacy" });
         const html = renderToStaticMarkup(<PrivacyPage />);

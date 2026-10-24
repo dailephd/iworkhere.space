@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Locator, Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
 
-/** The always-open fixed footer stays anchored and leaves natural scrolling and processed actions intact. */
+/** The ordinary-flow footer follows the content and leaves natural scrolling and processed actions intact. */
 async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locator[]) {
     const hrefs = async () => Promise.all(actions.map(action => action.getAttribute("href")));
     const before = await hrefs();
@@ -12,10 +12,10 @@ async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locat
         const state = "always-open";
         const layout = await page.evaluate(() => {
             const element = document.querySelector("footer")!, main = document.querySelector("main")!;
-            return { position: getComputedStyle(element).position, anchored: Math.abs(innerHeight - element.getBoundingClientRect().bottom) <= 1,
+            return { position: getComputedStyle(element).position,
                 scrollOwner: document.scrollingElement?.tagName, mainOverflow: getComputedStyle(main).overflowY, horizontalOverflow: document.documentElement.scrollWidth > innerWidth };
         });
-        expect(layout, `${state} footer layout`).toEqual({ position: "fixed", anchored: true, scrollOwner: "HTML", mainOverflow: "visible", horizontalOverflow: false });
+        expect(layout, `${state} footer layout`).toEqual({ position: "static", scrollOwner: "HTML", mainOverflow: "visible", horizontalOverflow: false });
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         const end = await page.evaluate(() => ({ mainBottom: document.querySelector("main")!.getBoundingClientRect().bottom, footerTop: document.querySelector("footer")!.getBoundingClientRect().top }));
         expect(end.mainBottom, `${state}: the last content can be brought above the footer`).toBeLessThanOrEqual(end.footerTop + 1);
@@ -63,7 +63,7 @@ async function inspectResult(page: Page) {
 test("Converter registry, SEO, category and discovery", async ({ page }) => {
     expect((await page.goto("/tool/image-converter"))?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1, name: "JPG / PNG / WebP Converter", exact: true })).toBeVisible();
-    await expect(page).toHaveTitle(/JPG \/ PNG \/ WebP Converter/);
+    await expect(page).toHaveTitle("iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/tool\/image-converter$/);
     await page.goto("/category/image");
     const links = page.getByRole("main").locator('a[href^="/tool/"]');
@@ -210,7 +210,7 @@ for (const failure of ["context", "encoding", "mime"] as const) {
     });
 }
 
-test("completed workflow preserves document flow, a fixed footer that hides no action, and contained previews", async ({ page }, testInfo) => {
+test("completed workflow preserves document flow, an ordinary-flow footer that hides no action, and contained previews", async ({ page }, testInfo) => {
     await page.goto("/tool/image-converter"); await selectSource(page, "png");
     await page.getByLabel("Quality", { exact: true }).focus();
     await page.getByLabel("Quality", { exact: true }).press("ArrowLeft");

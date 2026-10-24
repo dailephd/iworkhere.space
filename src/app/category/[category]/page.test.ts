@@ -17,7 +17,7 @@ describe("category route", () => {
     it("renders Image Resizer through the existing image category", async () => {
         const content = await CategoryPage({ params: Promise.resolve({ category: "image" }) });
         const html = renderToStaticMarkup(content);
-        expect(html).toContain("Image &amp; Media Tool");
+        expect(html).toContain("Image Tools");
         expect(html).toContain('href="/tool/image-resizer"');
         expect(html).toContain("Image Resizer");
         expect(html).toContain('href="/tool/image-compressor"');
@@ -34,21 +34,21 @@ describe("category route", () => {
             createElement(ThemeProvider, null, createElement(AppShell, null, categoryContent)),
         );
         expect(html.match(/<main\b/g)).toHaveLength(1);
-        expect(html).toContain("Text &amp; Code Tool");
+        expect(html).toContain("Text Tools");
         expect(html).toContain('href="/tool/slugify"');
         expect(html).toContain('id="main-content"');
     });
     it("renders the developer category with the JSON Formatter / Validator", async () => {
         const content = await CategoryPage({ params: Promise.resolve({ category: "developer" }) });
         const html = renderToStaticMarkup(content);
-        expect(html).toContain("Developer Tool");
-        expect(html).toContain("Format, validate, transform, and inspect developer data.");
+        expect(html).toContain("Developer Tools");
+        expect(html).toContain("Format and validate JSON, and generate QR codes.");
         expect(html).toContain('href="/tool/json-formatter"');
         expect(html).toContain("JSON Formatter / Validator");
         expect(html).not.toContain("No tool available");
     });
     it("keeps the exact title of each unchanged pre-v0.4 category", async () => {
-        const titles = { document: "Document Tool", image: "Image &amp; Media Tool", text: "Text &amp; Code Tool", math: "Math &amp; Calculator Tool", time: "Time &amp; Date Tool" };
+        const titles = { document: "PDF Tools", image: "Image Tools", text: "Text Tools", math: "Math Tools", time: "Time Tools" };
         for (const [category, title] of Object.entries(titles)) {
             const html = renderToStaticMarkup(await CategoryPage({ params: Promise.resolve({ category }) }));
             expect(html).toContain(`>${title}</h1>`);
@@ -60,8 +60,9 @@ describe("category route", () => {
     });
     it("builds canonical metadata for developer from the category owner", async () => {
         const metadata = await generateMetadata({ params: Promise.resolve({ category: "developer" }) });
-        expect(metadata.title).toBe("Developer Tool — iworkhere.space");
-        expect(metadata.description).toBe("Format, validate, transform, and inspect developer data.");
+        expect(metadata.title).toBe("iworkhere");
+        expect(metadata.openGraph).toMatchObject({ title: "Developer Tools — iworkhere.space" });
+        expect(metadata.description).toBe("Format and validate JSON, and generate QR codes.");
     });
 });
 
@@ -80,7 +81,8 @@ it("renders only the two converters and emits converter canonical metadata", asy
     expect(html).toContain('href="/tool/weight-converter"');
     expect(html).not.toContain("qr-code-generator");
     const metadata = await generateMetadata({ params });
-    expect(metadata.title).toBe("Converters — iworkhere.space");
+    expect(metadata.title).toBe("iworkhere");
+    expect(metadata.openGraph).toMatchObject({ title: "Converters — iworkhere.space" });
     expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/category/converter");
 });
 
@@ -132,6 +134,6 @@ describe("category task guidance", () => {
 
     it("builds Time metadata from the corrected category description", async () => {
         const metadata = await generateMetadata({ params: Promise.resolve({ category: "time" }) });
-        expect(metadata.description).toBe("Add and subtract time values in HH:MM format.");
+        expect(metadata.description).toBe("Add and subtract durations written as HH:MM.");
     });
 });

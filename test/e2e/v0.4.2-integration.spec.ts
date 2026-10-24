@@ -2,14 +2,12 @@
 import { getConsoleFailure } from "./support/browserDiagnostic";
 import { test, expect } from "./support/fixture";
 
-// These scenarios exercise the real header, footer and SupportDialog together. They need a support-enabled build (see footer-retraction.spec.ts);
+// These scenarios exercise the real header, footer and SupportDialog together. They need a support-enabled build (see footer-flow.spec.ts);
 // a public build exposes no reporting entry, so the scenario asserts that absence instead.
 const supportEnabled = process.env.E2E_SUPPORT_RUN === "true";
 const reportName = "Report Issues — report a problem or suggestion";
 const reportDialogName = "Report a problem or suggestion";
 
-const showNavigation = (page: Page) => page.getByRole("button", { name: "Show navigation", exact: true });
-const hideNavigation = (page: Page) => page.getByRole("button", { name: "Hide navigation", exact: true });
 const reportButton = (page: Page) => page.getByRole("contentinfo").getByRole("button", { name: reportName });
 const scrollY = (page: Page) => page.evaluate(() => window.scrollY);
 
@@ -34,7 +32,7 @@ async function openScrolledPage(page: Page) {
         document.body.append(spacer);
     });
     await page.mouse.wheel(0, 1500);
-    await expect(showNavigation(page)).toBeVisible();
+    await expect.poll(() => scrollY(page)).toBeGreaterThan(500);
 }
 
 // The shared fixture already fails any test that logs a page error or hydration diagnostic; these scenarios additionally assert the load itself is clean
@@ -63,7 +61,7 @@ for (const saved of [undefined, "expanded", "collapsed"] as const) {
     });
 }
 
-test("header, always-open footer and the real report dialog work together", async ({ page }) => {
+test("fixed header, ordinary-flow footer and the real report dialog work together", async ({ page }) => {
     await page.goto("/discover");
     await waitForHydration(page);
     if (!supportEnabled) {
@@ -71,8 +69,7 @@ test("header, always-open footer and the real report dialog work together", asyn
         return;
     }
     await openScrolledPage(page);
-    await showNavigation(page).click();
-    await expect(page.locator("header")).toHaveAttribute("data-header-state", "overlay");
+    await reportButton(page).scrollIntoViewIfNeeded();
     const before = await scrollY(page);
     await reportButton(page).click();
     const dialog = page.getByRole("dialog", { name: reportDialogName });
@@ -85,12 +82,12 @@ test("header, always-open footer and the real report dialog work together", asyn
     await expect(dialog).toBeHidden();
     await expect(reportButton(page)).toBeFocused();
     expect(await scrollY(page)).toBe(before);
-    await expect(page.locator("header")).toHaveAttribute("data-header-state", "overlay");
-    await expect(hideNavigation(page)).toBeVisible();
+    expect(await page.locator("header").evaluate(element => getComputedStyle(element).position)).toBe("fixed");
+    await expect(page.locator("header")).toBeInViewport({ ratio: 1 });
 });
 
-test("tabbing through the report dialog never scrolls the page behind it, even where its fields sit over the footer", async ({ page }) => {
-    // On a shorter screen the dialog's lower fields overlap the footer; the footer's keyboard avoidance must not move the inert page for them.
+test("tabbing through the report dialog never scrolls the page behind it, wherever the footer sits", async ({ page }) => {
+    // The dialog is modal and the page behind it is inert, so tabbing through its fields must not scroll that page.
     await page.setViewportSize({ width: 390, height: 700 });
     await page.goto("/tool/merge-pdf");
     await waitForHydration(page);
@@ -103,7 +100,7 @@ test("tabbing through the report dialog never scrolls the page behind it, even w
         spacer.style.height = "3000px";
         document.querySelector("main")!.append(spacer);
     });
-    await page.evaluate(() => window.scrollTo(0, 900));
+    await reportButton(page).scrollIntoViewIfNeeded();
     const before = await scrollY(page);
     await reportButton(page).click();
     await expect(page.getByRole("dialog", { name: reportDialogName })).toBeVisible();

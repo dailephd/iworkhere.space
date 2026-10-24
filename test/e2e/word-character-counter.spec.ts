@@ -66,7 +66,7 @@ test("is keyboard operable", async ({ page }) => {
 
 test("text category, discovery search, home and sitemap include the counter and keep developer", async ({ page, request }) => {
     expect((await page.goto("/category/text"))?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1, name: "Text & Code Tool", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Text Tools", exact: true })).toBeVisible();
     const tools = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(tools).toHaveCount(3);
     await expect(tools).toContainText(["Slugify Text", "HTML Text Extractor", "Word / Character Counter"]);
