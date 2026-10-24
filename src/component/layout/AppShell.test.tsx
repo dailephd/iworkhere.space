@@ -61,6 +61,10 @@ describe("AppShell", () => {
         const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>"));
         expect(footer).toContain("Footer action");
         expect(footer).toContain('href="/privacy"');
+        expect(footer).toContain('href="/contact"');
+        expect(footer).not.toContain("Hide footer");
+        expect(footer).not.toContain("Show footer");
+        expect(footer).not.toContain("data-footer-toggle");
         expect(html.indexOf("Footer action")).toBeGreaterThan(html.indexOf("Workspace"));
         expect(html).toContain("Skip to main content");
         expect(html).not.toContain("Left advertising area");

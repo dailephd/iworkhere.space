@@ -40,7 +40,6 @@ const FAILURE_MESSAGE: Record<SubmissionFailure, string> = {
 const TRIGGER_LABEL = "Report Issues";
 // The accessible name contains the visible words, so speech input ("click Report Issues") and label-in-name checks work.
 const TRIGGER_ACCESSIBLE_NAME = "Report Issues — report a problem or suggestion";
-const TRIGGER_COMPACT_LABEL = "Report";
 
 const FIELD_ALIAS: Record<string, string> = { toolId: "area", turnstileToken: "challenge", pathname: "area" };
 
@@ -148,9 +147,7 @@ export function SupportCoordinator({ source, siteKey }: SupportCoordinatorProps)
     return <>
         <button ref={trigger} type="button" onClick={openDialog} aria-haspopup="dialog" aria-label={TRIGGER_ACCESSIBLE_NAME}
             className="inline-flex min-h-6 w-fit items-center rounded-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]">
-            {/* The accessible name stays the full one; a compact surface such as the retracted footer shows only the short visible label. */}
-            <span data-support-label="full">{TRIGGER_LABEL}</span>
-            <span data-support-label="compact" aria-hidden="true">{TRIGGER_COMPACT_LABEL}</span>
+            {TRIGGER_LABEL}
         </button>
         {dialog ? createPortal(dialog, document.body) : null}
     </>;

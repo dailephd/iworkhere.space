@@ -1,13 +1,6 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
-import {
-    readFooterState,
-    subscribeFooterState,
-    syncFooterStateFromStorage,
-    writeFooterState,
-    type FooterState,
-} from "./footerPreference";
+import { useEffect, useRef, type ReactNode } from "react";
 
 interface FooterViewportControlProp {
     /** The single server-rendered Footer; it is never cloned or remounted. */
@@ -18,14 +11,8 @@ const CLEARANCE_PROPERTY = "--footer-clearance";
 const END_TOLERANCE = 2;
 const ZOOMED_SCALE = 1.01;
 const EDITABLE_SELECTOR = "input, textarea, select, [contenteditable]:not([contenteditable='false'])";
-// Without JavaScript the toggle cannot work, so the footer reverts to ordinary document flow and stays fully readable.
-const NO_SCRIPT_STYLE = "[data-site-footer]{position:static!important}[data-footer-spacer],[data-footer-toggle]{display:none!important}";
-const toggleClass =
-    "mr-5 shrink-0 rounded-md border border-border bg-surface px-3 py-1.5 text-sm font-medium text-text shadow-sm hover:bg-surface-alt focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)] sm:mr-6 lg:mr-8";
-
-function readServerState(): FooterState {
-    return "expanded";
-}
+// Without JavaScript the footer stays in ordinary document flow and remains fully readable.
+const NO_SCRIPT_STYLE = "[data-site-footer]{position:static!important}[data-footer-spacer]{display:none!important}";
 
 /** Publishes the footer's occupied height as the shell clearance; `applied` holds the last published height, or -1 before the first. */
 function applyFooterClearance(footer: HTMLElement, applied: { current: number }) {
@@ -42,26 +29,10 @@ function applyFooterClearance(footer: HTMLElement, applied: { current: number })
 }
 
 export function FooterViewportControl({ children }: FooterViewportControlProp) {
-    const contentId = useId();
     const footerRef = useRef<HTMLElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-    const toggleRef = useRef<HTMLButtonElement>(null);
     const appliedClearance = useRef(-1);
-    const state = useSyncExternalStore(subscribeFooterState, readFooterState, readServerState);
 
-    // Adopts the saved preference when the pre-paint script did not run.
-    useEffect(() => {
-        syncFooterStateFromStorage();
-    }, []);
-
-    // A toggle changes the footer's height in the same commit, so the clearance follows before the task ends. Waiting for the observer
-    // would leave the footer and the spacer disagreeing until the next rendering step, which a script or a slow frame can observe.
-    useLayoutEffect(() => {
-        const footer = footerRef.current;
-        if (footer) applyFooterClearance(footer, appliedClearance);
-    }, [state]);
-
-    // The shell's one clearance value follows the footer's actual occupied height, in either state and at any width.
+    // The shell's one clearance value follows the footer's actual occupied height at every width.
     useEffect(() => {
         const footer = footerRef.current;
         if (!footer || typeof ResizeObserver === "undefined") return;
@@ -108,19 +79,6 @@ export function FooterViewportControl({ children }: FooterViewportControlProp) {
         };
     }, []);
 
-    function toggle() {
-        if (state === "expanded") {
-            // Collapsing hides the copyright and privacy link; keep focus on a control that stays visible.
-            const hiding = contentRef.current?.querySelectorAll("[data-footer-detail]") ?? [];
-            if ([...hiding].some((element) => element.contains(document.activeElement))) toggleRef.current?.focus();
-            writeFooterState("collapsed");
-            return;
-        }
-        writeFooterState("expanded");
-    }
-
-    const expanded = state === "expanded";
-
     return (
         <>
             <noscript>
@@ -132,23 +90,7 @@ export function FooterViewportControl({ children }: FooterViewportControlProp) {
                 data-site-footer
                 className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-footer-bg py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
             >
-                <div className="flex flex-wrap items-center justify-between gap-y-1">
-                    <div ref={contentRef} id={contentId} data-footer-content className="min-w-0 flex-1 basis-64">
-                        {children}
-                    </div>
-                    <button
-                        ref={toggleRef}
-                        type="button"
-                        data-footer-toggle
-                        aria-expanded={expanded}
-                        aria-controls={contentId}
-                        className={toggleClass}
-                        onClick={toggle}
-                    >
-                        <span data-footer-when="expanded" hidden={!expanded}>Hide footer</span>
-                        <span data-footer-when="collapsed" hidden={expanded}>Show footer</span>
-                    </button>
-                </div>
+                {children}
             </footer>
         </>
     );

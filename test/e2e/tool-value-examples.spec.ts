@@ -145,8 +145,8 @@ test.describe("v0.4.3 tool-page worked examples", () => {
             await control.scrollIntoViewIfNeeded();
             await expect(control).toBeEnabled();
 
-            for (const state of ["expanded", "collapsed"] as const) {
-                if (state === "collapsed") await page.getByRole("contentinfo").getByRole("button", { name: "Hide footer", exact: true }).click();
+            {
+                const state = "always-open";
                 await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
                 const end = await page.evaluate(() => ({ mainBottom: document.querySelector("main")!.getBoundingClientRect().bottom, footerTop: document.querySelector("footer")!.getBoundingClientRect().top }));
                 expect(end.mainBottom, `${state}: the end of the page is above the footer`).toBeLessThanOrEqual(end.footerTop + 1);

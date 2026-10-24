@@ -5,14 +5,13 @@ import { test, expect } from "./support/fixture";
 
 const fixturePath = (extension: string) => path.resolve(`test/fixtures/images/resizer-source.${extension}`);
 
-/** The footer is fixed to the viewport. In both states it must stay anchored, never hide an action, and leave natural document scrolling and the processed result intact. */
+/** The always-open fixed footer stays anchored and leaves natural scrolling and processed actions intact. */
 async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locator[]) {
-    const footer = page.getByRole("contentinfo");
     const hrefs = async () => Promise.all(actions.map(action => action.getAttribute("href")));
     const before = await hrefs();
     expect(before.every(href => !!href)).toBe(true);
-    for (const state of ["expanded", "collapsed"] as const) {
-        if (state === "collapsed") await footer.getByRole("button", { name: "Hide footer", exact: true }).click();
+    {
+        const state = "always-open";
         const layout = await page.evaluate(() => {
             const element = document.querySelector("footer")!, main = document.querySelector("main")!;
             return { position: getComputedStyle(element).position, anchored: Math.abs(innerHeight - element.getBoundingClientRect().bottom) <= 1,
@@ -33,8 +32,7 @@ async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locat
             expect(reachable, `${state}: the action is not obstructed by the footer`).toEqual({ notBeneathFooter: true, receivesPointer: true });
         }
     }
-    await footer.getByRole("button", { name: "Show footer", exact: true }).click();
-    expect(await hrefs(), "Changing the footer state leaves the processed result untouched").toEqual(before);
+    expect(await hrefs(), "The footer leaves the processed result untouched").toEqual(before);
 }
 
 async function selectSource(page: Page, extension = "jpg") {

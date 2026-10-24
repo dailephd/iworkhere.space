@@ -1,5 +1,9 @@
 # PROJECT STATUS
 
+## Current footer maintenance — 2026-10-24
+
+The footer is fixed and always open. Footer collapse controls, state, preference persistence, and condensed reporting-label presentation have been removed. Contact Us, Privacy Policy, copyright, and the optional enabled Report Issues trigger remain visible. Dynamic clearance, the normal-flow no-JavaScript fallback, and keyboard viewport handling remain. The v0.4.2 release record below is historical and unchanged.
+
 ## Current v0.4.3 Production verification snapshot - 2026-10-21
 
 APPLICATION_VERSION: `0.4.3` (root package remains private; independent dashboard: `0.1.0`).

@@ -83,18 +83,16 @@ describe("entry and defaults", () => {
         expect(document.getElementById(dialog()!.getAttribute("aria-labelledby")!)!.textContent).toBe("Report a problem or suggestion");
         expect(dialog()!.hasAttribute("open")).toBe(true);
     });
-    it("keeps the full accessible name while offering a compact visible label, and still owns the one dialog", async () => {
+    it("shows the full visible label and owns the one dialog", async () => {
         await mount();
         const button = trigger();
         expect(button.getAttribute("aria-label")).toBe(ACCESSIBLE_NAME);
-        expect(button.querySelector('[data-support-label="full"]')!.textContent).toBe("Report Issues");
+        expect(button.textContent).toBe("Report Issues");
         // Label in name: the visible words are contained in the accessible name, which keeps the established meaning.
         expect(button.getAttribute("aria-label")).toContain("Report Issues");
         expect(button.getAttribute("aria-label")).toContain("report a problem or suggestion");
-        const compact = button.querySelector('[data-support-label="compact"]')!;
-        expect(compact.textContent).toBe("Report");
-        expect(compact.getAttribute("aria-hidden")).toBe("true");
-        await act(async () => compact.dispatchEvent(new MouseEvent("click", { bubbles: true })));
+        expect(button.querySelector("[data-support-label]")).toBeNull();
+        await act(async () => button.click());
         expect(document.querySelectorAll("dialog")).toHaveLength(1);
         expect(document.querySelectorAll("button[aria-haspopup='dialog']")).toHaveLength(1);
     });

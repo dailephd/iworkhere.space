@@ -67,6 +67,9 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         }
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         await expect(page.getByRole("contentinfo")).toBeInViewport();
+        await expect(page.getByRole("contentinfo").getByRole("link", { name: "Contact Us", exact: true })).toBeVisible();
+        await expect(page.getByRole("contentinfo").getByRole("link", { name: "Privacy Policy", exact: true })).toBeVisible();
+        await expect(page.getByRole("button", { name: /Hide footer|Show footer/ })).toHaveCount(0);
         // The footer is fixed to the viewport bottom, and at the end of the document the main region ends above it.
         const fixedFooter = await page.evaluate(() => {
             const footer = document.querySelector("footer")!.getBoundingClientRect();

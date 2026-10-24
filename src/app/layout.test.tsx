@@ -28,6 +28,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.clearAllMocks(); });
 it("composes exactly one Vercel Analytics wrapper", () => {
     const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
     expect(html.match(/data-test-vercel-wrapper=/g)).toHaveLength(1);
+    expect(html).not.toContain("Hide footer");
+    expect(html).not.toContain("Show footer");
 });
 
 it("always exposes the exact verification metadata", () => {
@@ -71,6 +73,8 @@ it("composes exactly one reporting entry in the footer slot with a serializable 
     vi.stubEnv("NEXT_PUBLIC_SUPPORT_TURNSTILE_SITE_KEY", "public-site-key");
     const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
     expect(html.match(/Report a problem or suggestion/g)).toHaveLength(1);
+    expect(html).not.toContain("Hide footer");
+    expect(html).not.toContain("Show footer");
     expect(coordinator).toHaveBeenCalledTimes(1);
     const props = coordinator.mock.calls[0][0] as { source: { tool: unknown[]; category: string[] }; siteKey: string };
     expect(props.siteKey).toBe("public-site-key");

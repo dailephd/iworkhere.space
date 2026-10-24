@@ -1,5 +1,9 @@
 # Design system
 
+## Current footer behavior — 2026-10-24
+
+The single semantic footer is fixed to the viewport bottom and always visibly expanded. Copyright, Contact Us, Privacy Policy, and the conditional Report Issues trigger remain available without a collapse control or saved footer preference. Its measured --footer-clearance, in-flow spacer, natural document scrolling, safe-area spacing, no-script normal-flow fallback, and software-keyboard focus handling remain in effect. The footer advertising slot remains independent and in normal document flow. Historical v0.4.2/v0.4.3 descriptions below record the behavior at release time; this maintenance note supersedes their footer-collapse details for current behavior. Header/navigation behavior remains unchanged.
+
 Slugify uses a visible Text label explicitly associated with `slugify-input`. Its input follows existing semantic input tokens, full-width responsive sizing and a visible keyboard focus outline. This applies the existing form convention without adding tokens or changing the page template.
 
 This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `docs/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
@@ -215,7 +219,7 @@ related-tool headings continue to describe their related entries.
 The v0.4 release decision is historical and remains intact.
 
 
-## v0.4.2 viewport chrome and reporting — 2026-10-14
+## Historical v0.4.2 viewport chrome and reporting — 2026-10-14
 
 Status: INCLUDED IN THE v0.4.2 GITHUB RELEASE (2026-10-20). The notes below describe the released footer and header behavior, which supersedes the earlier normal-flow footer-placement rule, not the document-owned scroll model. Vercel production deployment and support activation are verified separately. The report entry is shown only when the build-time flag `NEXT_PUBLIC_SUPPORT_ENABLED=true` is set (default off), so a normal public build renders the fixed footer and retractable header but no report entry. The paragraphs that follow keep the approved plan wording; the labeled implementation notes record what was built.
 

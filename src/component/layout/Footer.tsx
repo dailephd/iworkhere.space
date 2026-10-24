@@ -12,16 +12,16 @@ export function Footer({ action }: FooterProps = {}) {
     return (
         <div data-footer-inset className="px-5 sm:px-6 lg:px-8">
             <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-1 text-sm text-[var(--text-muted)] sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-                <p data-footer-detail>
+                <p>
                     © 2026 iworkhere.space created by dailephd LLC
                 </p>
                 {/* One compact vertical group: Contact Us, then the optional report action, then Privacy Policy. */}
                 <div data-footer-actions className="flex flex-col items-start gap-0.5 sm:items-end">
-                    <a href="/contact" data-footer-detail className={quietLink}>
+                    <a href="/contact" className={quietLink}>
                         Contact Us
                     </a>
                     {action}
-                    <a href="/privacy" data-footer-detail className={quietLink}>
+                    <a href="/privacy" className={quietLink}>
                         Privacy Policy
                     </a>
                 </div>
