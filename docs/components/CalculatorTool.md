@@ -34,3 +34,25 @@ Manual review and updates are encouraged to add implementation details.
 The expression input runs the current expression with Enter, keyboard `=`, or
 the on-screen equals button. Keyboard equals does not insert a parser-invalid
 character; all three actions use the same calculation handler.
+
+## Usage guide coverage
+
+`/tool/calculator` has a server-rendered usage guide owned by
+`src/module/tool/guide.ts` (`getToolGuide("calculator")`). It documents basic
+arithmetic, operator precedence and parentheses, negative numbers, invalid
+expressions and numeric limits, and expression sharing and privacy, and links
+to Time Arithmetic, Length Converter and Weight Converter.
+
+Verified behavior the guide relies on (see `guideExample.test.tsx`):
+
+- `2 + 3 * 4` is `14`, `(2 + 3) * 4` is `20`, `7 / 2` is `3.5`.
+- A leading minus or a minus after `(` is negative: `-5 + 2` is `-3`,
+  `2 * (-3)` is `-6`. A minus directly after another operator is rewritten as
+  `0 -` at the same precedence as subtraction, so `2 * -3` is `-3`; the guide
+  tells visitors to use parentheses. The parser was not changed.
+- Errors: `Invalid character: "&"`, `Invalid expression.` (incomplete input,
+  `2(3)`, `2 ** 3`), `Mismatched parentheses.`, `Result is not finite.`.
+- Fractional results are rounded to at most 12 decimals; arithmetic is
+  JavaScript floating point.
+- The expression is written to the `expr` query parameter, so the guide warns
+  against entering sensitive values in a shared address.
