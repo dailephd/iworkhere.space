@@ -270,7 +270,7 @@ graph TD
 - `/` — Home page (`page.tsx`, `HomeClient.tsx`)
 - `/discover` — Tool discovery page with category grouping and search
   (`discover/page.tsx`, `discover/DiscoverClient.tsx`)
-- `/about` — Publisher and site information (`about/page.tsx`, content from `module/content/siteInformation.ts`)
+- `/about` — Approved About copy (`about/page.tsx`)
 - `/contact` — General contact page with the `ContactForm` client component (`contact/page.tsx`)
 - `/tool/[slug]` — Individual tool page (`tool/[slug]/page.tsx`)
 - `/category/[category]` — Category listing page (`category/[category]/page.tsx`)

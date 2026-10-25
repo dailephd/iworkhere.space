@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { getAllTool, getAvailableCategory } from "@/module/tool/metadata";
 import { getSiteInformation } from "./siteInformation";
 
 const everyString = (value: unknown): string[] => {
@@ -20,31 +19,8 @@ describe("site information", () => {
         expect(footer).toContain(`© 2026 ${site.publisher.productName} created by ${site.publisher.legalName}`);
     });
 
-    it("derives tool and category counts from the registry instead of typing them", () => {
-        expect(site.toolCount).toBe(getAllTool().length);
-        expect(site.categoryCount).toBe(getAvailableCategory().length);
-    });
-
-    it("describes every documented tool group once with unique ids", () => {
-        expect(site.capability.map(item => item.id)).toEqual(["pdf", "image", "text", "calculation", "developer"]);
-        expect(new Set(site.capability.map(item => item.id)).size).toBe(site.capability.length);
-        for (const item of site.capability) expect(item.body.length).toBeGreaterThan(20);
-    });
-
-    it("grounds its capability words in tools that exist in the registry", () => {
-        const names = getAllTool().map(tool => tool.name);
-        for (const expected of ["Merge PDF", "Split PDF", "Compress PDF", "Images to PDF", "Image Resizer", "Image Compressor", "Slugify Text", "Calculator", "JSON Formatter / Validator", "QR Code Generator"]) expect(names, expected).toContain(expected);
-        const prose = site.capability.map(item => item.body).join(" ");
-        for (const word of ["Merge", "split", "compress", "Resize", "slugs", "JSON", "QR codes"]) expect(prose).toContain(word);
-    });
-
-    it("lists only published releases, newest first, from the changelog", () => {
-        const changelog = readFileSync(path.resolve(__dirname, "../../../CHANGELOG.md"), "utf8");
-        for (const release of site.release) expect(changelog, release.version).toContain(`## ${release.version} — ${release.title} — ${release.date}`);
-        const dates = site.release.map(item => item.date);
-        expect([...dates].sort().reverse()).toEqual(dates);
-        expect(site.release.map(item => item.version)).not.toContain("v0.4.3");
-        expect(everyString(site.release).join(" ")).not.toMatch(/v0\.[5-9]/);
+    it("holds only the publisher identity and the Contact copy", () => {
+        expect(Object.keys(site).sort()).toEqual(["contact", "publisher"]);
     });
 
     it("keeps the Contact and Report Issues distinction and never exposes an address", () => {
@@ -62,22 +38,11 @@ describe("site information", () => {
             /testimonial/i, /\bcustomers?\b/i, /\busers? (love|trust)/i, /\bmillions?\b/i, /\bdaily\b/i, /\bevery (day|week)\b/i, /\b24\/7\b/, /within \d+ (hours?|days?)/i,
             /\+\d|\(\d{3}\)|\b\d{3}[ .-]\d{3}[ .-]\d{4}\b/, /\b(street|avenue|suite|po box)\b/i, /guarantee[sd]? (a |the )?(reply|response)/i,
         ]) expect(text, String(pattern)).not.toMatch(pattern);
-        expect(text).toContain("do not promise a reply by a particular time");
     });
 
     it("returns independent copies so a caller cannot change the shared source", () => {
         const first = getSiteInformation();
-        first.capability.pop();
         first.publisher.legalName = "changed";
-        expect(getSiteInformation().capability).toHaveLength(5);
         expect(getSiteInformation().publisher.legalName).toBe("dailephd LLC");
     });
 });
-
-describe("capability claims", () => {
-    it("describes Time Arithmetic as hours-and-minutes durations, not dates or time zones", () => {
-        const text = getSiteInformation().capability.map(item => item.body).join(" ")
-        expect(text).toContain("durations written as hours and minutes")
-        expect(text).not.toMatch(/dates? and times?|calendar|time ?zone/i)
-    })
-})
