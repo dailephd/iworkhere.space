@@ -61,6 +61,77 @@ test("on a short page the footer sits at the bottom of the viewport after the co
     expect(mainBottom).toBeLessThanOrEqual(geometry.top + 1);
 });
 
+const sparseCategoryRoute = ["/category/math", "/category/time", "/category/developer", "/category/converter"];
+const standardViewport = [
+    { width: 1920, height: 1080 },
+    { width: 1440, height: 900 },
+    { width: 1280, height: 800 },
+    { width: 768, height: 1024 },
+    { width: 390, height: 844 },
+    { width: 360, height: 740 },
+];
+
+/** The footer is the last thing in the document: flush with the viewport on short pages, with the document end on long ones. */
+async function expectFooterAtDocumentEnd(page: Page, label: string) {
+    const geometry = await footerGeometry(page);
+    const overflowX = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(geometry.position, label).toBe("static");
+    expect(Math.abs(geometry.documentBottom - Math.max(geometry.documentHeight, geometry.viewportHeight)), `${label}: footer bottom meets the document or viewport bottom`).toBeLessThanOrEqual(2);
+    expect(geometry.documentHeight, `${label}: no blank area below the footer`).toBeLessThanOrEqual(Math.max(geometry.viewportHeight, geometry.documentBottom) + 2);
+    expect(overflowX, `${label}: no horizontal overflow`).toBeLessThanOrEqual(0);
+    return geometry;
+}
+
+test("sparse category pages put the footer at the viewport bottom at standard desktop and mobile sizes", async ({ page }) => {
+    for (const viewport of standardViewport) {
+        await page.setViewportSize(viewport);
+        for (const route of sparseCategoryRoute) {
+            await page.goto(route);
+            const label = `${route} at ${viewport.width}x${viewport.height}`;
+            const geometry = await expectFooterAtDocumentEnd(page, label);
+            const main = await page.locator("main").evaluate(element => element.getBoundingClientRect());
+            expect(main.bottom, `${label}: the footer follows the content`).toBeLessThanOrEqual(geometry.top + 1);
+            expect(main.top, `${label}: content stays at the top of its region`).toBeLessThan(viewport.height / 2);
+            if (geometry.documentHeight <= viewport.height + 1) {
+                expect(Math.abs(geometry.bottom - viewport.height), `${label}: short page footer is flush with the viewport`).toBeLessThanOrEqual(2);
+            }
+        }
+    }
+});
+
+test("the footer follows the viewport when a short page is resized and the header wraps", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/category/math");
+    for (const viewport of [{ width: 1920, height: 1080 }, { width: 390, height: 844 }, { width: 1280, height: 800 }, { width: 768, height: 1024 }]) {
+        await page.setViewportSize(viewport);
+        await expect.poll(async () => {
+            const geometry = await footerGeometry(page);
+            return Math.abs(geometry.documentBottom - Math.max(geometry.documentHeight, geometry.viewportHeight));
+        }, { message: `${viewport.width}x${viewport.height}` }).toBeLessThanOrEqual(2);
+        await expectFooterAtDocumentEnd(page, `${viewport.width}x${viewport.height}`);
+    }
+});
+
+test("content added to a short page pushes the footer down without overlap and removing it restores the bottom", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/category/math");
+    const before = await expectFooterAtDocumentEnd(page, "before growth");
+    expect(before.documentHeight).toBeLessThanOrEqual(before.viewportHeight + 1);
+    await page.evaluate(() => {
+        const block = document.createElement("div");
+        block.id = "growth-block";
+        block.style.height = "2000px";
+        document.querySelector("main")!.append(block);
+    });
+    const grown = await expectFooterAtDocumentEnd(page, "after growth");
+    expect(grown.documentHeight).toBeGreaterThan(before.viewportHeight + 1000);
+    const separation = await page.evaluate(() => document.querySelector("footer")!.getBoundingClientRect().top - document.getElementById("growth-block")!.getBoundingClientRect().bottom);
+    expect(separation, "the footer does not overlay the new content").toBeGreaterThanOrEqual(-1);
+    await page.evaluate(() => document.getElementById("growth-block")!.remove());
+    const restored = await expectFooterAtDocumentEnd(page, "after removal");
+    expect(Math.abs(restored.bottom - restored.viewportHeight)).toBeLessThanOrEqual(2);
+});
+
 test("old collapsed preference, malformed storage and stale document state cannot hide footer links", async ({ page }) => {
     await page.addInitScript(() => {
         localStorage.setItem("footer-preference", JSON.stringify("collapsed"));

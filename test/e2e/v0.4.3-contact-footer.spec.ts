@@ -334,7 +334,7 @@ test("contact works the same with reporting disabled or enabled and adds no seco
 
 // --- Footer ------------------------------------------------------------------------------------
 
-test("the expanded footer stacks Contact Us, Report Issues (when enabled) and Privacy Policy in DOM and visual order", async ({ page }) => {
+test("the expanded footer lays out Contact Us, Report Issues (when enabled) and Privacy Policy in DOM and visual order on one row", async ({ page }) => {
     await page.goto("/contact");
     await expect(footer(page)).toHaveCount(1);
     await expect(page.locator("footer")).toHaveCount(1);
@@ -345,12 +345,19 @@ test("the expanded footer stacks Contact Us, Report Issues (when enabled) and Pr
     const domOrder = await actions(page).evaluate(group => [...group.children].map(child => (child as HTMLElement).innerText.trim()));
     expect(domOrder).toEqual(expected);
 
-    // Visual order: strictly increasing tops, each below the previous, so the group is a vertical stack.
+    // Visual order: strictly increasing lefts on one shared row (desktop); on narrow screens items may wrap but never reorder.
     const boxes = [await geometry(contactLink(page))];
     if (supportEnabled) boxes.push(await geometry(reportButton(page)));
     boxes.push(await geometry(privacyLink(page)));
     for (let index = 1; index < boxes.length; index += 1) {
-        expect(boxes[index].top, `row ${index} is below row ${index - 1}`).toBeGreaterThanOrEqual(boxes[index - 1].bottom - 1);
+        const previous = boxes[index - 1];
+        const sameRow = Math.abs(boxes[index].top - previous.top) <= 2;
+        const wrappedBelow = boxes[index].top >= previous.bottom - 1;
+        expect(sameRow || wrappedBelow, `item ${index} follows item ${index - 1}`).toBe(true);
+        if (sameRow) expect(boxes[index].left, `item ${index} is right of item ${index - 1}`).toBeGreaterThanOrEqual(previous.right - 1);
+    }
+    if (page.viewportSize()!.width >= 1024) {
+        expect(Math.abs(boxes[boxes.length - 1].top - boxes[0].top), "desktop links share one row").toBeLessThanOrEqual(2);
     }
     for (const box of boxes) expect(box.height).toBeGreaterThanOrEqual(24);
 

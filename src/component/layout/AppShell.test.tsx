@@ -107,8 +107,11 @@ describe("AppShell", () => {
 
     it("stacks the header, a growing content region and the footer so short pages end at the viewport bottom", () => {
         const html = renderToStaticMarkup(<ThemeProvider><AppShell><h1>Workspace</h1></AppShell></ThemeProvider>);
-        expect(html).toContain("flex min-h-screen w-full flex-col");
+        expect(html).toContain("flex min-h-screen w-full flex-col supports-[height:100dvh]:min-h-dvh");
         expect(html).toMatch(/<div class="grid min-w-0 flex-1 /);
         expect(html.indexOf("<main")).toBeLessThan(html.indexOf("<footer"));
+        const footerTag = html.slice(html.indexOf("<footer"), html.indexOf(">", html.indexOf("<footer")));
+        expect(footerTag).toContain("shrink-0");
+        expect(footerTag).not.toMatch(/(fixed|sticky|absolute)/);
     });
 });
