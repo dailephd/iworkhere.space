@@ -15,6 +15,7 @@ verified on 2026-10-21. The v0.4.2 issue-reporting entry remains conditional on
 default-off. Source integration, GitHub Release publication, and Vercel
 Production deployment are distinct release records. Production deploys from
 `master`.
+
 The preceding v0.4.2 release introduced a homepage that grouped tools by
 category. The current application retains those utilities and Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
@@ -135,7 +136,7 @@ Each Vitest run writes JSON and JUnit output under a unique
 
 ## Documentation
 
-- `docs/plans/v0.4.3-implementation-plan.md` — frozen five-batch v0.4.3 scope and acceptance
+- `docs/plans/v0.4.3-implementation-plan.md` — historical frozen five-batch v0.4.3 scope and acceptance
 - `docs/ROADMAP.md` — canonical version-level goals, scope, dependencies,
   exclusions, acceptance, and deferred work
 - `docs/project-status.md` — actual current implementation and exact next action
