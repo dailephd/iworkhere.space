@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Locator, Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
 
-/** The always-open fixed footer stays anchored and leaves natural scrolling and processed actions intact. */
+/** The ordinary-flow footer follows the content and leaves natural scrolling and processed actions intact. */
 async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locator[]) {
     const hrefs = async () => Promise.all(actions.map(action => action.getAttribute("href")));
     const before = await hrefs();
@@ -12,10 +12,10 @@ async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locat
         const state = "always-open";
         const layout = await page.evaluate(() => {
             const element = document.querySelector("footer")!, main = document.querySelector("main")!;
-            return { position: getComputedStyle(element).position, anchored: Math.abs(innerHeight - element.getBoundingClientRect().bottom) <= 1,
+            return { position: getComputedStyle(element).position,
                 scrollOwner: document.scrollingElement?.tagName, mainOverflow: getComputedStyle(main).overflowY, horizontalOverflow: document.documentElement.scrollWidth > innerWidth };
         });
-        expect(layout, `${state} footer layout`).toEqual({ position: "fixed", anchored: true, scrollOwner: "HTML", mainOverflow: "visible", horizontalOverflow: false });
+        expect(layout, `${state} footer layout`).toEqual({ position: "static", scrollOwner: "HTML", mainOverflow: "visible", horizontalOverflow: false });
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         const end = await page.evaluate(() => ({ mainBottom: document.querySelector("main")!.getBoundingClientRect().bottom, footerTop: document.querySelector("footer")!.getBoundingClientRect().top }));
         expect(end.mainBottom, `${state}: the last content can be brought above the footer`).toBeLessThanOrEqual(end.footerTop + 1);

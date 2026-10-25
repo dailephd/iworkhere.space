@@ -1,8 +1,14 @@
 # Design system
 
-## Current footer behavior — 2026-10-24
+## Current site chrome — 2026-10-24
 
-The single semantic footer is fixed to the viewport bottom and always visibly expanded. Copyright, Contact Us, Privacy Policy, and the conditional Report Issues trigger remain available without a collapse control or saved footer preference. Its measured --footer-clearance, in-flow spacer, natural document scrolling, safe-area spacing, no-script normal-flow fallback, and software-keyboard focus handling remain in effect. The footer advertising slot remains independent and in normal document flow. Historical v0.4.2/v0.4.3 descriptions below record the behavior at release time; this maintenance note supersedes their footer-collapse details for current behavior. Header/navigation behavior remains unchanged.
+Header: one semantic `<header>` is fixed to the top of the viewport (`fixed inset-x-0 top-0 z-50`) and stays visible while the document scrolls. It holds the branding, the single primary navigation, the Search tools link and the Themes control, wraps responsively and has no show/hide control. `HeaderViewportControl` (client, `src/component/layout/`) only measures the rendered header with a `ResizeObserver`, sizes one in-flow footprint to match (so wrapped navigation never covers content) and publishes the height as `--header-height`, which `global.css` uses for `scroll-padding-top` so anchors and the skip link land clear of the header. Without JavaScript a `<noscript>` rule returns the header to ordinary flow.
+
+Footer: one semantic `<footer>` in ordinary document flow, rendered by `AppShell` after the main content and the optional footer advertising slot. `AppShell` is a `flex min-h-screen flex-col` container whose content region grows, so a short page ends with the footer at the bottom of the viewport and a long page reaches the footer only by scrolling to the end. The footer is never fixed or sticky, has no spacer, no `--footer-clearance` variable, no viewport tracking and no software-keyboard handling. Copyright, Contact Us, Privacy Policy and the conditional Report Issues trigger remain.
+
+Browser tab title: every page uses the exact title `iworkhere` (`BROWSER_TITLE` in `src/lib/seo.ts`). Descriptions, canonical URLs, robots rules and the page-specific Open Graph and Twitter titles are unchanged. Primary navigation order is Home, All tools, each populated category in registry order, then About.
+
+Superseded history: the retractable header (Show navigation / Hide navigation), the fixed collapsible footer, `FooterViewportControl` and `--footer-clearance` described in the v0.4.2 and v0.4.3 sections below record behavior at release time and are no longer current.
 
 Slugify uses a visible Text label explicitly associated with `slugify-input`. Its input follows existing semantic input tokens, full-width responsive sizing and a visible keyboard focus outline. This applies the existing form convention without adding tokens or changing the page template.
 

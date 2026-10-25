@@ -89,7 +89,7 @@ jobs:
       - name: Support-enabled E2E
         env:
           E2E_SUPPORT_RUN: "true"
-        run: npm run test:e2e -- footer-retraction.spec.ts v0.4.2-integration.spec.ts v0.4.3-contact-footer.spec.ts
+        run: npm run test:e2e -- footer-flow.spec.ts v0.4.2-integration.spec.ts v0.4.3-contact-footer.spec.ts
 
       - name: Upload support-enabled E2E report
         if: always()

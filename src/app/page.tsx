@@ -70,16 +70,16 @@ export default function HomePage() {
             Practical browser tools for PDFs, images, text and more
           </h1>
           <p className="text-[var(--text-muted)]">
-            {toolItem.length} browser utilities for PDFs, images, text, unit conversions, calculations, time values and developer tasks. Choose the tool that fits your task, or search and browse by category below.
+            {toolItem.length} browser tools for PDFs, images, text, unit conversion, calculation, time values and JSON. Search by name or task, or browse by category below.
           </p>
           <p className="text-sm text-[var(--text-muted)]">
-            Where a tool says so, PDF and image files are processed locally in your browser instead of being uploaded. Results depend on your file, your browser and the limits shown on each tool; not every conversion is lossless and not every file gets smaller.
+            PDF and image files are processed in your browser and are not uploaded. Results depend on your file and browser, and each tool page lists its limits. Not every conversion is lossless, and not every file gets smaller.
           </p>
         </section>
 
         <section aria-labelledby="home-task-title" data-featured-task-section className="space-y-3">
           <h2 id="home-task-title" className="text-xl font-semibold text-[var(--text)]">Start with a common task</h2>
-          <p className="text-sm text-[var(--text-muted)]">Five tasks with a worked example on the tool page. These are hand-picked starting points, not a ranking.</p>
+          <p className="text-sm text-[var(--text-muted)]">Five common jobs, each with a worked example on its tool page.</p>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {featuredTask.map((one) => (
               <li key={one.slug} data-featured-task={one.slug} className="min-w-0 space-y-2 rounded-xl border border-card-border bg-card-bg p-4">

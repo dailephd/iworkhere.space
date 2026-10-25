@@ -55,13 +55,13 @@ test("QR Code Generator route, SEO, breadcrumb, guide and related links are serv
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/qr-code-generator"');
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html).toContain('href="/category/developer"');
-    for (const text of ["How to use", "Text and URLs", "Fixed QR settings", "Payload limit", "Local processing", "2048 UTF-8 bytes", "error correction level M", "Related converter tools"]) expect(html).toContain(text);
-    for (const href of ["/tool/length-converter", "/tool/weight-converter"]) expect(html).toContain(`href="${href}"`);
+    for (const text of ["How to use", "Text and URLs", "Fixed QR settings", "Payload limit", "Local processing", "2048 UTF-8 bytes", "error correction level M", "Related tools"]) expect(html).toContain(text);
+    for (const href of ["/tool/json-formatter", "/tool/slugify"]) expect(html).toContain(`href="${href}"`);
 
     await page.goto("/tool/qr-code-generator", { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { level: 1, name: "QR Code Generator", exact: true })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Developer" })).toHaveAttribute("href", "/category/developer");
-    for (const href of ["/tool/length-converter", "/tool/weight-converter"]) {
+    for (const href of ["/tool/json-formatter", "/tool/slugify"]) {
         await expect(page.getByRole("main").locator(`a[href="${href}"]`).first()).toBeVisible();
         expect((await request.get(href)).status()).toBe(200);
     }
@@ -201,7 +201,7 @@ test("generation stays local: no payload leaves the browser, no query or storage
 
 test("developer category, Discover search and sitemap include the QR Code Generator", async ({ page, request }) => {
     expect((await page.goto("/category/developer"))?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1, name: "Developer Tool", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Developer Tools", exact: true })).toBeVisible();
     const tools = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(tools).toHaveCount(2);
     await expect(tools).toContainText(["JSON Formatter / Validator", "QR Code Generator"]);

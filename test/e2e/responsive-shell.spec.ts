@@ -70,13 +70,13 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         await expect(page.getByRole("contentinfo").getByRole("link", { name: "Contact Us", exact: true })).toBeVisible();
         await expect(page.getByRole("contentinfo").getByRole("link", { name: "Privacy Policy", exact: true })).toBeVisible();
         await expect(page.getByRole("button", { name: /Hide footer|Show footer/ })).toHaveCount(0);
-        // The footer is fixed to the viewport bottom, and at the end of the document the main region ends above it.
+        // The footer is ordinary flow content: at the end of the document it sits at the viewport bottom, below the main region.
         const fixedFooter = await page.evaluate(() => {
             const footer = document.querySelector("footer")!.getBoundingClientRect();
             return { position: getComputedStyle(document.querySelector("footer")!).position, anchored: Math.abs(window.innerHeight - footer.bottom) <= 1,
                 mainEndsAboveFooter: document.querySelector("main")!.getBoundingClientRect().bottom <= footer.top + 1 };
         });
-        expect(fixedFooter).toEqual({ position: "fixed", anchored: true, mainEndsAboveFooter: true });
+        expect(fixedFooter).toEqual({ position: "static", anchored: true, mainEndsAboveFooter: true });
         const scroll = await page.evaluate(() => ({ y: window.scrollY, maximum: document.documentElement.scrollHeight - window.innerHeight }));
         expect(scroll.y).toBeGreaterThanOrEqual(Math.max(0, scroll.maximum - 1));
         await navigation.getByRole("link", { name: "All tools", exact: true }).click();

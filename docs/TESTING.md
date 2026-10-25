@@ -565,7 +565,7 @@ Test layers are distinct evidence and must not be conflated: public-mode browser
 header, footer and `v0.4.2-integration` specs there assert that no report entry or dialog exists); support-enabled browser tests
 (`npm run test:support-e2e` runs only `support-report.spec.ts`; the header, footer and integration specs switch to real-`SupportDialog`
 scenarios when run with `E2E_SUPPORT_RUN=true` against a support-enabled build, which that command does not package; the `e2e-support`
-job in `e2e.yaml` builds with `NEXT_PUBLIC_SUPPORT_ENABLED=true` and runs `footer-retraction.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` that way);
+job in `e2e.yaml` builds with `NEXT_PUBLIC_SUPPORT_ENABLED=true` and runs `footer-flow.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` that way);
 disposable-PostgreSQL integration (`npm run test:support-db`); provider test doubles; dashboard tests (dashboard `npm run verify`);
 container tests (`npm run test:container`); and actual external-provider acceptance and production deployment verification, neither
 of which has been performed.

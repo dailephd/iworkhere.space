@@ -8,7 +8,7 @@ describe("contact page", () => {
     const html = renderToStaticMarkup(<ContactPage />);
 
     it("uses the canonical page metadata", () => {
-        expect(metadata.title).toBe("Contact Us — iworkhere.space");
+        expect(metadata.title).toBe("iworkhere");
         expect(metadata.alternates).toEqual({ canonical: "https://iworkhere.space/contact" });
         expect(metadata.openGraph).toMatchObject({ url: "https://iworkhere.space/contact" });
         expect(typeof metadata.description).toBe("string");

@@ -22,7 +22,7 @@ export function HtmlTextExtractorTool({ toolId }: ToolComponentProp) {
             trackEvent("tool_executed", { toolId, slug });
         } catch (e) {
             captureError(e, { toolId, boundary: "HtmlTextExtractorTool.handleConvert" });
-            setError("Failed to extract text. Please check your HTML input.");
+            setError("Could not extract text. Check the HTML and try again.");
         }
     }, [input, toolId]);
 

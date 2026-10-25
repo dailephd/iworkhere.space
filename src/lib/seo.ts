@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 
 const SITE_NAME = "iworkhere.space"
+/** Every page uses this exact browser tab title; page-specific wording stays in social titles. */
+export const BROWSER_TITLE = "iworkhere"
 export const SITE_URL = "https://iworkhere.space"
 
 export interface IndexEnvironment {
@@ -24,25 +26,25 @@ interface SeoInput {
 }
 
 export function buildPageMetadata(seo: SeoInput): Metadata {
-    const title = `${seo.title} — ${SITE_NAME}`
+    const socialTitle = `${seo.title} — ${SITE_NAME}`
     const description = seo.description
     const canonical = canonicalUrl(seo.canonicalPath)
 
     return {
-        title,
+        title: BROWSER_TITLE,
         description,
         robots: { index: isIndexable(), follow: isIndexable() },
         alternates: {
             canonical,
         },
         openGraph: {
-            title,
+            title: socialTitle,
             description,
             url: canonical,
             siteName: SITE_NAME,
             type: "website",
         },
-        twitter: { card: "summary", title, description },
+        twitter: { card: "summary", title: socialTitle, description },
     }
 }
 

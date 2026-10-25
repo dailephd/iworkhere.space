@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AppShell from "@/component/layout/AppShell"
 import { ServiceWorkerRegister } from "@/component/layout/ServiceWorkerRegister"
 import { ThemeProvider } from "@/component/common/ThemeProvider"
-import { defaultNavItem } from "./navData"
+import { aboutNavItem, defaultNavItem } from "./navData"
 import { getToolCategoryLabel } from "@/module/tool/category"
 import { getAvailableCategory } from "@/module/tool/metadata"
 import type { NavItem } from "@/component/layout/type"
@@ -36,6 +36,7 @@ export default function RootLayout({
             label: getToolCategoryLabel(category),
             href: `/category/${encodeURIComponent(category)}`,
         })),
+        aboutNavItem,
     ]
     // Public enable flag defaults off; the registry projection is built only when reporting is enabled.
     const supportEnabled = process.env.NEXT_PUBLIC_SUPPORT_ENABLED === "true"

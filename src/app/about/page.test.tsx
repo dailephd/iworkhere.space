@@ -7,7 +7,7 @@ describe("about page", () => {
     const html = renderToStaticMarkup(<AboutPage />);
 
     it("uses the canonical page metadata", () => {
-        expect(metadata.title).toBe("About — iworkhere.space");
+        expect(metadata.title).toBe("iworkhere");
         expect(metadata.description).toContain("dailephd LLC");
         expect(metadata.alternates).toEqual({ canonical: "https://iworkhere.space/about" });
         expect(metadata.openGraph).toMatchObject({ url: "https://iworkhere.space/about", title: "About — iworkhere.space" });
@@ -28,7 +28,7 @@ describe("about page", () => {
     });
 
     it("describes real capabilities, local processing, tests and limits honestly", () => {
-        for (const text of ["Merge PDFs", "Resize and compress images", "Format and validate JSON", "in your browser", "does not upload those files", "unit tests, browser tests", "not full editors", "We do not promise a reply"]) expect(html).toContain(text);
+        for (const text of ["Merge PDFs", "Resize and compress images", "Format and validate JSON", "in your browser", "They are not uploaded to our servers", "Changes are checked with automated type checking, linting, unit tests, browser tests and a production-container build", "not full editors", "do not guarantee that a tool is free of errors", "We do not promise a reply"]) expect(html).toContain(text);
     });
 
     it("links to Contact Us, the Privacy Policy and All tools", () => {

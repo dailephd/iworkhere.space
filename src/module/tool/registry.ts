@@ -77,7 +77,7 @@ export const tool_definition_list: ToolDefinition[] = [
         category: "text",
         seo: {
             title: "Slugify Text",
-            description: "Free slug generator",
+            description: "Turn a title or phrase into a lowercase, hyphenated URL slug in your browser.",
             canonicalPath: "/tool/slugify",
         },
         capability: ["client-only", "offline"],
@@ -94,7 +94,7 @@ export const tool_definition_list: ToolDefinition[] = [
         category: "math",
         seo: {
             title: "Calculator",
-            description: "Free calculator for quick math.",
+            description: "Evaluate arithmetic with + - * / and parentheses in your browser. Uses ordinary JavaScript numbers.",
             canonicalPath: "/tool/calculator",
         },
         capability: ["client-only", "offline"],
@@ -118,7 +118,7 @@ export const tool_definition_list: ToolDefinition[] = [
         category: "converter",
         seo: {
             title: "Length Converter",
-            description: "Free length unit converter",
+            description: "Convert between meters, kilometers, centimeters, millimeters, inches, feet, yards and miles.",
             canonicalPath: "/tool/length-converter",
         },
         capability: ["client-only", "offline"],
@@ -135,7 +135,7 @@ export const tool_definition_list: ToolDefinition[] = [
         category: "text",
         seo: {
             title: "HTML Text Extractor",
-            description: "Free online tool to extract visible text from HTML with preserved line breaks.",
+            description: "Extract the visible text from pasted HTML and keep its line breaks.",
             canonicalPath: "/tool/html-text-extractor",
         },
         capability: ["client-only", "offline"],
@@ -152,7 +152,7 @@ export const tool_definition_list: ToolDefinition[] = [
         category: "converter",
         seo: {
             title: "Weight Converter",
-            description: "Free weight unit converter",
+            description: "Convert between grams, kilograms, pounds and ounces.",
             canonicalPath: "/tool/weight-converter",
         },
         capability: ["client-only", "offline"],
@@ -165,11 +165,11 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "time-arithmetic",
         slug: "time-arithmetic",
         name: "Time Arithmetic",
-        description: "Add and subtract time values in HH:MM format.",
+        description: "Add and subtract durations written as HH:MM.",
         category: "time",
         seo: {
             title: "Time Arithmetic",
-            description: "Free online tool to add and subtract time values with carry and borrow normalization.",
+            description: "Add or subtract two HH:MM durations. A subtraction that would go below 00:00 is rejected.",
             canonicalPath: "/tool/time-arithmetic",
         },
         capability: ["client-only", "offline"],

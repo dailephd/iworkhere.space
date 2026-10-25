@@ -73,3 +73,11 @@ describe("site information", () => {
         expect(getSiteInformation().publisher.legalName).toBe("dailephd LLC");
     });
 });
+
+describe("capability claims", () => {
+    it("describes Time Arithmetic as hours-and-minutes durations, not dates or time zones", () => {
+        const text = getSiteInformation().capability.map(item => item.body).join(" ")
+        expect(text).toContain("durations written as hours and minutes")
+        expect(text).not.toMatch(/dates? and times?|calendar|time ?zone/i)
+    })
+})

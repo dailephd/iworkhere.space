@@ -98,12 +98,11 @@ Private delivery path: `GET|POST /api/support/deliver` (Bearer `CRON_SECRET`, ti
 outbox -> `github.server.ts` (private issue, reconcile-before-create) and `resend.server.ts` (operator email and optional consented
 receipt). Provider calls never run inside a database transaction and a provider failure never removes an accepted report.
 
-Viewport chrome (v0.4.2 Batches 2-4): `AppShell` (a Server Component) wraps the single server-rendered header in the client
-`HeaderViewportControl` and the single `Footer` in the client `FooterViewportControl` (both in `src/component/layout/`; the footer
-preference helper is `footerPreference.ts`, applied pre-paint from `RootLayout`). The header is an in-flow element that becomes a fixed
-overlay on demand; the footer is one semantic fixed region with a persisted expanded/collapsed preference, and the footer advertising
-slot stays in normal flow outside it. Neither wrapper knows tools, routes or reporting; details and verification limits are in
-[DESIGN.md](DESIGN.md).
+Site chrome (current): `AppShell` (a Server Component) wraps the single server-rendered header in the client
+`HeaderViewportControl` (in `src/component/layout/`), which keeps the header fixed to the top of the viewport and sizes one in-flow
+footprint to its measured height. The single `Footer` is plain document-flow content after the main region. The retractable header,
+the fixed footer, `FooterViewportControl` and its preference helper were removed; the footer advertising slot stays in normal
+flow. Neither layout component knows tools, routes or reporting; details are in [DESIGN.md](DESIGN.md).
 
 Protected read path: the existing independent `dashboard/` adds `/support` and `/support/[id]` using `SUPPORT_DASHBOARD_DATABASE_URL`
 (SELECT-only on three views). It adds no route handlers or write privileges, and the observability pages keep their own credential.

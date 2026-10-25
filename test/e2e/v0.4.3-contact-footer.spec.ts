@@ -74,7 +74,7 @@ test("About renders the publisher information, links and metadata with no advert
     const html = await response.text();
     expect(html).not.toMatch(/adsbygoogle|Advertisement/);
     await page.goto("/about");
-    await expect(page).toHaveTitle("About — iworkhere.space");
+    await expect(page).toHaveTitle("iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/about");
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("About iworkhere.space");
@@ -104,7 +104,7 @@ test("Contact renders one H1, the form, metadata and a privacy path, and disclos
     expect(html).not.toMatch(/adsbygoogle|Advertisement|mailto:/);
     expect(html).not.toMatch(/RESEND_API_KEY|CONTACT_TO_EMAIL|CONTACT_FROM_EMAIL/);
     await page.goto("/contact");
-    await expect(page).toHaveTitle("Contact Us — iworkhere.space");
+    await expect(page).toHaveTitle("iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/contact");
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Contact Us");
@@ -432,14 +432,15 @@ test("the footer links and copyright remain visible regardless of a saved collap
     }
 });
 
-test("the always-open footer height matches its dynamic clearance and remains bottom anchored", async ({ page }) => {
+test("the footer stays compact, in ordinary flow and ends the document with no spacer", async ({ page }) => {
     await page.goto("/contact");
     const viewport = page.viewportSize()!;
+    expect(await footer(page).evaluate(element => getComputedStyle(element).position)).toBe("static");
+    await expect(page.locator("[data-footer-spacer]")).toHaveCount(0);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const measured = await geometry(footer(page));
     expect(measured.height, "the footer stays within a fifth of the viewport").toBeLessThanOrEqual(viewport.height * 0.2);
     expect(Math.abs(measured.bottom - viewport.height)).toBeLessThanOrEqual(1);
-    const spacer = await page.locator("[data-footer-spacer]").evaluate(element => element.getBoundingClientRect().height);
-    expect(Math.abs(spacer - measured.height)).toBeLessThanOrEqual(1);
 });
 
 test("the last contact action and footer remain reachable at the document end", async ({ page }) => {

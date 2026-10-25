@@ -8,7 +8,7 @@ import type { ToolSearchItem } from "@/component/common/ToolSearch"
 const categoryLabel = getAvailableCategory().map((category) => getToolCategoryLabel(category))
 
 export const metadata = buildPageMetadata({
-    title: "Discover Tool",
+    title: "All tools",
     description: `Search all ${getAllTool().length} browser tools by name, description, category or tag, or browse by category: ${categoryLabel.slice(0, -1).join(", ")} and ${categoryLabel[categoryLabel.length - 1]}.`,
     canonicalPath: "/discover",
 })
@@ -33,10 +33,10 @@ export default function DiscoverPage() {
         <div className="space-y-8">
             <section className="space-y-2">
                 <h1 className="text-2xl font-semibold text-[var(--text)]">
-                    Discover Tool
+                    All tools
                 </h1>
                 <p className="text-[var(--text-muted)]">
-                    Search for a utility directly, or browse by category when you know the kind of task. The list below shows all {allTool.length} tools in one list, not grouped by category. Searching matches a tool&apos;s name, description, category and tags, for example merge, compress, resize or convert.
+                    Search for a tool by name or task, or browse by category. The list below shows all {allTool.length} tools together. Search matches names, descriptions, categories and tags, for example merge, compress, resize or convert.
                 </p>
             </section>
 

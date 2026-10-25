@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import AppShell from "./AppShell";
 import { ThemeProvider } from "@/component/common/ThemeProvider";
 
+
 vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 
 describe("AppShell", () => {
@@ -83,21 +84,31 @@ describe("AppShell", () => {
         expect(html.match(/<header\b/g)).toHaveLength(1);
         expect(html.match(/<nav\b/g)).toHaveLength(1);
         expect(html).not.toContain("Show navigation");
+        expect(html).not.toContain("Hide navigation");
+        expect(html).toContain("data-site-header");
     });
 
-    it("keeps the footer banner in document flow before the single fixed footer", () => {
+    it("keeps the footer banner in document flow before the single ordinary-flow footer", () => {
         const html = renderToStaticMarkup(
             <ThemeProvider><AppShell footerBannerSlot={<span>Footer slot content</span>} footerActionSlot={<button type="button">Footer action</button>}><h1>Workspace</h1></AppShell></ThemeProvider>,
         );
         expect(html.match(/<footer\b/g)).toHaveLength(1);
         const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>"));
         expect(footer).not.toContain("Footer slot content");
-        expect(footer).toContain("fixed inset-x-0 bottom-0");
+        expect(footer).not.toMatch(/fixed|sticky/);
         expect(footer).toContain("Footer action");
         const banner = html.slice(html.indexOf("border-t border-border bg-surface-alt px-5 py-3"), html.indexOf("Footer slot content"));
         expect(banner).not.toContain("fixed");
         expect(html.indexOf("Workspace")).toBeLessThan(html.indexOf("Footer slot content"));
         expect(html.indexOf("Footer slot content")).toBeLessThan(html.indexOf("<footer"));
-        expect(html).toContain("data-footer-spacer");
+        expect(html).not.toContain("data-footer-spacer");
+        expect(html).not.toContain("footer-clearance");
+    });
+
+    it("stacks the header, a growing content region and the footer so short pages end at the viewport bottom", () => {
+        const html = renderToStaticMarkup(<ThemeProvider><AppShell><h1>Workspace</h1></AppShell></ThemeProvider>);
+        expect(html).toContain("flex min-h-screen w-full flex-col");
+        expect(html).toMatch(/<div class="grid min-w-0 flex-1 /);
+        expect(html.indexOf("<main")).toBeLessThan(html.indexOf("<footer"));
     });
 });

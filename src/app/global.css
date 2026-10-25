@@ -84,15 +84,9 @@ body {
   height: 100%;
 }
 
-/* Shell-level footer clearance: FooterViewportControl replaces the fallback with the always-open footer's measured height. */
+/* The fixed header publishes its rendered height as --header-height; the fallback matches the single-row header. */
 :root {
-  --footer-clearance: 5.8rem;
-  scroll-padding-bottom: var(--footer-clearance);
-  /* Keeps focus targets and anchors clear of the fixed Show navigation control at the top of the viewport. */
-  scroll-padding-top: 3rem;
-}
-@media (max-width: 639px) {
-  :root { --footer-clearance: 8.6rem; }
+  scroll-padding-top: calc(var(--header-height, 4rem) + 0.5rem);
 }
 
 body {

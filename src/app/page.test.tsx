@@ -23,11 +23,11 @@ describe("home page task-first content", () => {
         const host = render();
         expect(host.querySelectorAll("h1")).toHaveLength(1);
         const text = host.querySelector("h1")!.parentElement!.textContent ?? "";
-        expect(text).toContain(`${getAllTool().length} browser utilities`);
-        for (const word of ["PDFs", "images", "text", "unit conversions", "calculations", "time values", "developer"]) expect(text).toContain(word);
-        expect(text).toContain("Where a tool says so");
-        expect(text).toContain("processed locally in your browser");
-        expect(text).toContain("not every conversion is lossless");
+        expect(text).toContain(`${getAllTool().length} browser tools`);
+        for (const word of ["PDFs", "images", "text", "unit conversion", "calculation", "time values", "JSON"]) expect(text).toContain(word);
+        expect(text).toContain("processed in your browser and are not uploaded");
+        expect(text).toContain("each tool page lists its limits");
+        expect(text).toContain("Not every conversion is lossless");
         expect(text).toContain("not every file gets smaller");
         expect(text).not.toMatch(/works offline|everything works offline|collects no|no data|all files|any file|certif|always (?:smaller|lossless)/i);
         expect(text).not.toContain("everyday");
@@ -54,7 +54,7 @@ describe("home page task-first content", () => {
 
     it("makes no usage-ranking claim about the featured tasks", () => {
         const section = render().querySelector("[data-featured-task-section]")!;
-        expect(section.textContent).toContain("not a ranking");
+        expect(section.textContent).toContain("Five common jobs");
         expect(section.textContent).not.toMatch(/most popular|trending|recommended for you|top rated|most downloaded|bestsell/i);
     });
 

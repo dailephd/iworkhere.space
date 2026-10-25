@@ -8,9 +8,11 @@ describe("buildToolMetadata", () => {
         canonicalPath: "/tool/slugify",
     }
 
-    it("generates title with site name suffix", () => {
+    it("uses the exact browser title and keeps the descriptive social title", () => {
         const result = buildToolMetadata(seo)
-        expect(result.title).toBe("Slugify Text — iworkhere.space")
+        expect(result.title).toBe("iworkhere")
+        expect(result.openGraph).toMatchObject({ title: "Slugify Text — iworkhere.space" })
+        expect(result.twitter).toMatchObject({ title: "Slugify Text — iworkhere.space" })
     })
 
     it("passes description through", () => {
@@ -43,7 +45,7 @@ describe("buildToolMetadata", () => {
             canonicalPath: "/tool/calculator",
         }
         const result = buildToolMetadata(other)
-        expect(result.title).toBe("Calculator — iworkhere.space")
+        expect(result.title).toBe("iworkhere")
         expect(result.alternates?.canonical).toBe(
             "https://iworkhere.space/tool/calculator",
         )
@@ -77,9 +79,9 @@ describe("indexability and public metadata", () => {
 })
 
 describe("buildCategoryMetadata", () => {
-    it("generates title with category name and site suffix", () => {
+    it("uses the exact browser title for category pages", () => {
         const result = buildCategoryMetadata("text", "Text Tool", "Format and transform text.")
-        expect(result.title).toBe("Text Tool — iworkhere.space")
+        expect(result.title).toBe("iworkhere")
     })
 
     it("passes description through", () => {

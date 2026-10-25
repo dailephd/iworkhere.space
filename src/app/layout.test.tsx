@@ -10,7 +10,8 @@ function assertNoAdRegions(props: AppShellProps) {
     for (const name of adRegionProps) expect(props[name], name).toBeUndefined();
 }
 
-vi.mock("@/module/tool/metadata", () => ({ getAvailableCategory: () => [] }));
+const { availableCategory } = vi.hoisted(() => ({ availableCategory: vi.fn((): string[] => []) }));
+vi.mock("@/module/tool/metadata", () => ({ getAvailableCategory: availableCategory }));
 vi.mock("@/component/common/ThemeProvider", () => ({ ThemeProvider: ({ children }: { children: ReactNode }) => children }));
 const { coordinator } = vi.hoisted(() => ({ coordinator: vi.fn() }));
 vi.mock("@/module/support/SupportCoordinator", () => ({ SupportCoordinator: (props: unknown) => { coordinator(props); return <button type="button">Report a problem or suggestion</button>; } }));
@@ -30,6 +31,18 @@ it("composes exactly one Vercel Analytics wrapper", () => {
     expect(html.match(/data-test-vercel-wrapper=/g)).toHaveLength(1);
     expect(html).not.toContain("Hide footer");
     expect(html).not.toContain("Show footer");
+});
+
+it("orders primary navigation as Home, All tools, registry categories, then About", () => {
+    availableCategory.mockReturnValueOnce(["document", "image"]);
+    renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
+    const navItem = (appShell.mock.calls[0][0] as AppShellProps).navItem!;
+    expect(navItem.map(item => item.href)).toEqual(["/", "/discover", "/category/document", "/category/image", "/about"]);
+    expect(navItem.filter(item => item.href === "/about")).toHaveLength(1);
+});
+
+it("uses the exact browser title for the root metadata", () => {
+    expect(metadata.title).toBe("iworkhere");
 });
 
 it("always exposes the exact verification metadata", () => {
