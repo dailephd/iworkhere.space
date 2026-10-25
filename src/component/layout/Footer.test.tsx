@@ -26,8 +26,9 @@ it("renders the actions in the order Contact Us, report action, Privacy Policy i
     expect(contact).toBeLessThan(report);
     expect(report).toBeLessThan(privacy);
     expect(html.indexOf("data-footer-actions")).toBeLessThan(contact);
-    // The group is a vertical stack, and the copyright stays outside it.
-    expect(html).toMatch(/data-footer-actions[^>]*class="[^"]*flex-col/);
+    // The group is a horizontal row (not a column), and the copyright stays outside it.
+    expect(html).toMatch(/data-footer-actions[^>]*class="[^"]*flex flex-wrap/);
+    expect(html).not.toMatch(/data-footer-actions[^>]*class="[^"]*flex-col/);
     expect(html.indexOf("© 2026")).toBeLessThan(html.indexOf("data-footer-actions"));
 });
 
