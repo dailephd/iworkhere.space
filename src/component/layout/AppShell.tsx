@@ -33,7 +33,7 @@ export default function AppShell({
             : "lg:grid-cols-[minmax(0,1fr)]"
 
     return (
-        <div className="flex min-h-screen w-full flex-col bg-background text-text">
+        <div className="flex min-h-screen w-full flex-col supports-[height:100dvh]:min-h-dvh bg-background text-text">
             <a
                 href="#main-content"
                 className="sr-only z-[60] rounded-md bg-surface px-4 py-2 text-text focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
@@ -71,7 +71,7 @@ export default function AppShell({
                     {footerBannerSlot}
                 </div>
             ) : null}
-            <footer data-site-footer className="border-t border-border bg-footer-bg py-3">
+            <footer data-site-footer className="shrink-0 border-t border-border bg-footer-bg py-3">
                 <Footer action={footerActionSlot} />
             </footer>
         </div>
