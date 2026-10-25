@@ -4,11 +4,11 @@
 
 ## Representative File
 
-`src/module/content/siteInformation.ts` (tests: `siteInformation.test.ts`; consumers: `src/app/about/page.tsx`, `src/app/contact/page.tsx`)
+`src/module/content/siteInformation.ts` (tests: `siteInformation.test.ts`; consumer: `src/app/contact/page.tsx`)
 
 ## Purpose
 
-The one typed owner of the publisher and trust-page copy introduced in v0.4.3 Batch 4. It is not a CMS, a company database or a profile store. Route components compose it; they do not hold prose.
+The typed owner of the publisher identity and the Contact page copy. It is not a CMS, a company database or a profile store. Route components compose it; they do not hold prose. The `/about` page holds its own approved public copy directly in `src/app/about/page.tsx` and no longer consumes this module.
 
 ## Verified source facts
 
@@ -16,9 +16,6 @@ The one typed owner of the publisher and trust-page copy introduced in v0.4.3 Ba
 | --- | --- |
 | Publisher: dailephd LLC | Footer identity line `© 2026 iworkhere.space created by dailephd LLC` (`src/component/layout/Footer.tsx`) |
 | Product: iworkhere.space | Same line, `SITE_URL` in `src/lib/seo.ts` |
-| Tool and category counts | Derived at call time from `getAllTool()` and `getAvailableCategory()` in `src/module/tool/metadata.ts`; never typed as a number |
-| Browser-local processing | The released privacy policy (`src/app/privacy/page.tsx`) |
-| Release history | Published headings of `CHANGELOG.md`, v0.3.0 and later; v0.4.3 is not listed until released |
 | Contact channel and Report Issues | `docs/components/ContactForm.md`, `docs/modules/ContactEmail.md`, v0.4.2 reporting |
 
 ## Exported contract
@@ -26,13 +23,9 @@ The one typed owner of the publisher and trust-page copy introduced in v0.4.3 Ba
 `getSiteInformation(): SiteInformation` returns a fresh object with:
 
 - `publisher`: `{ legalName, productName }`.
-- `purpose`: one paragraph.
-- `toolCount` and `categoryCount`: derived from the registry.
-- `capability`: ordered `{ id, title, body }` entries for the documented tool groups.
-- `maintenance`: statements about automated tests and validation that exist in the repository.
-- `limitation`: honest constraints (not full editors, no guaranteed results, no guaranteed contact reply).
-- `release`: ordered `{ version, date, title }` entries for published releases.
 - `contact`: `{ purpose, reportDistinction }` paragraphs. It never contains an address.
+
+The earlier About-specific fields (`purpose`, `toolCount`, `categoryCount`, `capability`, `maintenance`, `limitation`, `release`) were removed when the About page was replaced; release history remains in `CHANGELOG.md`.
 
 ## Must not contain
 

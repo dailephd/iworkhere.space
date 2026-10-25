@@ -79,8 +79,11 @@ test("About renders the publisher information, links and metadata with no advert
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("About iworkhere.space");
     await expect(page.getByRole("main")).toContainText("dailephd LLC");
-    await expect(page.getByRole("main").getByRole("link", { name: "Contact Us" })).toHaveAttribute("href", "/contact");
-    await expect(page.getByRole("main").getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "/privacy");
+    await expect(page.getByRole("main").getByRole("link", { name: "contact us", exact: true })).toHaveAttribute("href", "/contact");
+    await expect(page.getByRole("main").getByRole("link", { name: "Privacy Policy", exact: true })).toHaveAttribute("href", "/privacy");
+    await expect(page.getByRole("main").getByRole("link", { name: "All tools", exact: true })).toHaveAttribute("href", "/discover");
+    await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(["Tools designed for everyday work", "Working in your browser", "About the publisher"]);
+    await expect(page.getByRole("main")).not.toContainText(/Release history|v0\.4\.2|Who publishes it/);
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
     expect(await noHorizontalOverflow(page)).toBe(true);
 });
