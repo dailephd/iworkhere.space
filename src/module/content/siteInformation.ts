@@ -56,7 +56,7 @@ export function getSiteInformation(): SiteInformation {
         ],
         maintenance: [
             "The PDF, image, text, JSON and QR code tools process your files and text in your browser. They are not uploaded to our servers.",
-            "Every change passes type checking, linting, unit tests, browser tests and a production-container check before it is released.",
+            "Changes are checked with automated type checking, linting, unit tests, browser tests and a production-container build. These checks run on pull requests and on the main branches, and we review the results, but they do not guarantee that a tool is free of errors.",
             "Site measurements and diagnostics exclude tool inputs, files and results. The Privacy Policy describes what is collected and why.",
         ],
         limitation: [

@@ -168,7 +168,7 @@ const guideById: Partial<Record<ToolId, ToolGuide>> = {
             { heading: "Payload limit", text: "Text is limited to 2048 UTF-8 bytes, which can be fewer than 2048 characters when the text includes accented letters, non-Latin scripts or emoji. Larger payloads create denser QR symbols, and shorter payloads are generally easier to scan. Not every camera or scanner can read a QR code at the maximum size." },
             { heading: "Local processing", text: "The QR code is generated in this browser. Your text is not uploaded, saved or placed in the page address, and site analytics and diagnostics never receive it." },
         ],
-        relatedToolId: ["length-converter", "weight-converter"],
+        relatedToolId: ["json-formatter", "slugify"],
     },
     "calculator": {
         instruction: ["Enter an expression in Expression, typing on the keyboard or using the on-screen keypad.", "Press Enter or = on the keyboard, or select the = button, to evaluate it.", "Read the answer in the Result area; if the expression cannot be evaluated, an error message appears there instead.", "Select C to clear the expression, or ⌫ to remove its last character."],

@@ -59,10 +59,11 @@ describe("server guide and breadcrumb composition", () => {
                 expect(tool.category).toBe("developer");
                 expect(guide).toBeDefined();
                 for (const text of ["Text and URLs", "encoded exactly as you enter it", "does not fetch, open or check URLs", "Fixed QR settings", "error correction level M", "512 × 512", "quiet zone", "Payload limit", "2048 UTF-8 bytes", "denser QR symbols", "Not every camera or scanner", "Local processing", "Your text is not uploaded, saved or placed in the page address"]) expect(html).toContain(text);
-                expect(related.map(item => item.id)).toEqual(["length-converter", "weight-converter"]);
-                expect(related.every(item => item.category === "converter")).toBe(true);
+                expect(related.map(item => item.id)).toEqual(["json-formatter", "slugify"]);
+                expect(new Set(related.map(item => item.category)).size).toBe(2);
                 for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
-                expect(html).toContain("Related converter tools");
+                expect(html).toContain("Related tools");
+                expect(html).not.toContain("Related converter tools");
                 return;
             }
             if (["slugify", "length-converter", "weight-converter", "html-text-extractor", "calculator", "time-arithmetic"].includes(tool.id)) {
@@ -190,7 +191,7 @@ describe("related-tools heading truthfulness", () => {
 
     it("keeps the existing correct headings", () => {
         expect(renderGuided("word-character-counter").heading).toBe("Related text tools");
-        expect(renderGuided("qr-code-generator").heading).toBe("Related converter tools");
+        expect(renderGuided("qr-code-generator").heading).toBe("Related tools");
         for (const id of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) expect(renderGuided(id).heading, id).toBe("Related image tools");
         for (const id of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image", "compress-pdf"]) expect(renderGuided(id).heading, id).toBe("Related document tools");
     });

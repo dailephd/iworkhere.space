@@ -63,3 +63,49 @@ test("About is the last primary navigation stop in keyboard order and is highlig
     await page.keyboard.press("Shift+Tab");
     await expect(about).toBeFocused();
 });
+
+const expected404 = "Failed to load resource: the server responded with a status of 404 (Not Found)";
+
+// A 404 response logs one browser resource message; every other console error or page error still fails.
+// Next adds its own noindex tag beside the page metadata; every robots tag must forbid indexing.
+async function expectOnlyNoindex(page: import("@playwright/test").Page) {
+    const content = await page.locator('meta[name="robots"]').evaluateAll(list => list.map(node => node.getAttribute("content") ?? ""));
+    expect(content.length).toBeGreaterThan(0);
+    for (const value of content) expect(value).toContain("noindex");
+}
+
+async function openInvalidPage(browser: import("@playwright/test").Browser, viewport: import("@playwright/test").ViewportSize | null) {
+    const context = await browser.newContext({ viewport });
+    const page = await context.newPage();
+    const unexpected: string[] = [];
+    page.on("pageerror", error => unexpected.push(error.message));
+    page.on("console", message => {
+        if (message.type() === "error" && message.text() !== expected404) unexpected.push(message.text());
+    });
+    return { context, page, unexpected };
+}
+
+test("a directly requested invalid URL returns 404 with the exact title and noindex", async ({ browser, request }, testInfo) => {
+    const { context, page, unexpected } = await openInvalidPage(browser, testInfo.project.use.viewport ?? null);
+    const response = await page.goto("/no-such-page");
+    expect(response?.status()).toBe(404);
+    expect(await page.title()).toBe("iworkhere");
+    await expectOnlyNoindex(page);
+    await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+    const sitemap = await (await request.get("/sitemap.xml")).text();
+    expect(sitemap).not.toContain("no-such-page");
+    expect(unexpected).toEqual([]);
+    await context.close();
+});
+
+test("client-side navigation to an invalid URL keeps the exact title and noindex", async ({ browser }, testInfo) => {
+    const { context, page, unexpected } = await openInvalidPage(browser, testInfo.project.use.viewport ?? null);
+    await page.goto("/");
+    await page.evaluate(() => (window as unknown as { next: { router: { push(href: string): void } } }).next.router.push("/no-such-page"));
+    await expect(page).toHaveURL(/\/no-such-page$/);
+    await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+    await expect.poll(() => page.title()).toBe("iworkhere");
+    await expectOnlyNoindex(page);
+    expect(unexpected).toEqual([]);
+    await context.close();
+});
