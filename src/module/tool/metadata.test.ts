@@ -42,7 +42,7 @@ describe("tool metadata index", () => {
 
     it("derives Converter SEO from the registry", () => {
         expect(getToolSeoBySlug("image-converter")).toEqual({
-            title: "JPG / PNG / WebP Converter", description: "Convert JPEG, PNG, and WebP images locally in your browser.", canonicalPath: "/tool/image-converter",
+            title: "JPG, PNG and WebP Converter", description: "Convert JPEG, PNG, and WebP images locally in your browser.", canonicalPath: "/tool/image-converter",
         })
     })
 
@@ -50,14 +50,14 @@ describe("tool metadata index", () => {
         it("returns seo for existing slug", () => {
             const seo = getToolSeoBySlug("slugify")
             expect(seo).toBeDefined()
-            expect(seo?.title).toBe("Slugify Text")
+            expect(seo?.title).toBe("Slug Generator")
             expect(seo?.canonicalPath).toBe("/tool/slugify")
         })
 
         it("returns seo for calculator slug", () => {
             const seo = getToolSeoBySlug("calculator")
             expect(seo).toBeDefined()
-            expect(seo?.title).toBe("Calculator")
+            expect(seo?.title).toBe("Online Calculator")
         })
 
         it("returns undefined for nonexistent slug", () => {

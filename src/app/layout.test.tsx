@@ -41,8 +41,8 @@ it("orders primary navigation as Home, All tools, registry categories, then Abou
     expect(navItem.filter(item => item.href === "/about")).toHaveLength(1);
 });
 
-it("uses the exact browser title for the root metadata", () => {
-    expect(metadata.title).toBe("iworkhere");
+it("uses the descriptive browser title for the root default metadata", () => {
+    expect(metadata.title).toBe("Browser Tools for PDFs, Images and Text - iworkhere");
 });
 
 it("always exposes the exact verification metadata", () => {

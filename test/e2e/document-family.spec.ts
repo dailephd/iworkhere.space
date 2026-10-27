@@ -47,7 +47,7 @@ test("document family: complete discovery, search, canonical SSR and related nav
         titles.push(html.match(/<title>([^<]+)<\/title>/)![1]);
         descriptions.push(html.match(/name="description" content="([^"]+)"/)![1]);
     }
-    expect([...new Set(titles)]).toEqual(["iworkhere"]); expect(new Set(descriptions).size).toBe(5);
+    expect(titles).toEqual(["Merge PDF Files Online - iworkhere", "Split PDF Pages Online - iworkhere", "Images to PDF Converter - iworkhere", "PDF to JPG and PNG Converter - iworkhere", "Compress PDF Files Online - iworkhere"]); expect(new Set(descriptions).size).toBe(5);
     const xml = await (await request.get("/sitemap.xml")).text();
     expect(xml.match(/<loc>/g)).toHaveLength(30);
     for (const route of [...documents.map(tool => `/tool/${tool.slug}`), "/category/document"])

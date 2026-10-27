@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { buildToolMetadata, buildCategoryMetadata, buildPageMetadata, canonicalUrl, isIndexable } from "./seo"
+import { buildBrowserTitle, buildToolMetadata, buildCategoryMetadata, buildPageMetadata, canonicalUrl, isIndexable } from "./seo"
 
 describe("buildToolMetadata", () => {
     const seo = {
@@ -8,9 +8,9 @@ describe("buildToolMetadata", () => {
         canonicalPath: "/tool/slugify",
     }
 
-    it("uses the exact browser title and keeps the descriptive social title", () => {
+    it("appends the browser suffix once and keeps the descriptive social title", () => {
         const result = buildToolMetadata(seo)
-        expect(result.title).toBe("iworkhere")
+        expect(result.title).toBe("Slugify Text - iworkhere")
         expect(result.openGraph).toMatchObject({ title: "Slugify Text — iworkhere.space" })
         expect(result.twitter).toMatchObject({ title: "Slugify Text — iworkhere.space" })
     })
@@ -45,7 +45,7 @@ describe("buildToolMetadata", () => {
             canonicalPath: "/tool/calculator",
         }
         const result = buildToolMetadata(other)
-        expect(result.title).toBe("iworkhere")
+        expect(result.title).toBe("Calculator - iworkhere")
         expect(result.alternates?.canonical).toBe(
             "https://iworkhere.space/tool/calculator",
         )
@@ -78,10 +78,24 @@ describe("indexability and public metadata", () => {
     })
 })
 
+describe("buildBrowserTitle", () => {
+    it("appends exactly one suffix to an unbranded title", () => {
+        expect(buildBrowserTitle("Merge PDF Files Online")).toBe("Merge PDF Files Online - iworkhere")
+        expect(buildBrowserTitle("Page Not Found")).toBe("Page Not Found - iworkhere")
+    })
+
+    it("applies the suffix to page metadata without branding the social titles twice", () => {
+        const result = buildPageMetadata({ title: "All Tools", description: "d", canonicalPath: "/discover" })
+        expect(result.title).toBe("All Tools - iworkhere")
+        expect((result.title as string).match(/iworkhere/g)).toHaveLength(1)
+        expect(result.openGraph).toMatchObject({ title: "All Tools — iworkhere.space" })
+    })
+})
+
 describe("buildCategoryMetadata", () => {
-    it("uses the exact browser title for category pages", () => {
+    it("appends the browser suffix once for category pages", () => {
         const result = buildCategoryMetadata("text", "Text Tool", "Format and transform text.")
-        expect(result.title).toBe("iworkhere")
+        expect(result.title).toBe("Text Tool - iworkhere")
     })
 
     it("passes description through", () => {

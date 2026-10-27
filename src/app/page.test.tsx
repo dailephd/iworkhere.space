@@ -90,6 +90,10 @@ describe("home page task-first content", () => {
 });
 
 describe("home page metadata", () => {
+    it("uses the descriptive browser title with one suffix", () => {
+        expect(metadata.title).toBe("Browser Tools for PDFs, Images and Text - iworkhere");
+    });
+
     it("describes the real utilities and keeps the canonical home URL", () => {
         expect(metadata.description).toContain("PDFs, images, text, unit conversion, calculation, time values and developer tasks");
         expect(metadata.description).not.toMatch(/everyday|offline/i);

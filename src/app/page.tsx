@@ -3,7 +3,7 @@ import HomeClient from "./HomeClient"
 import StatusPanel from "@/component/common/StatusPanel"
 import { buildPageMetadata } from "@/lib/seo"
 
-export const metadata = buildPageMetadata({ title: "Practical browser tools", description: "Browser tools for PDFs, images, text, unit conversion, calculation, time values and developer tasks. PDF and image processing runs locally in your browser.", canonicalPath: "/" })
+export const metadata = buildPageMetadata({ title: "Browser Tools for PDFs, Images and Text", description: "Browser tools for PDFs, images, text, unit conversion, calculation, time values and developer tasks. PDF and image processing runs locally in your browser.", canonicalPath: "/" })
 
 import { getAllTool, getAvailableCategory, getToolByIdList } from "@/module/tool/metadata"
 import { getAllValueExample } from "@/module/tool/valueExamples"

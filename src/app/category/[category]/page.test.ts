@@ -60,7 +60,7 @@ describe("category route", () => {
     });
     it("builds canonical metadata for developer from the category owner", async () => {
         const metadata = await generateMetadata({ params: Promise.resolve({ category: "developer" }) });
-        expect(metadata.title).toBe("iworkhere");
+        expect(metadata.title).toBe("Developer Tools - iworkhere");
         expect(metadata.openGraph).toMatchObject({ title: "Developer Tools — iworkhere.space" });
         expect(metadata.description).toBe("Format and validate JSON, and generate QR codes.");
     });
@@ -81,7 +81,7 @@ it("renders only the two converters and emits converter canonical metadata", asy
     expect(html).toContain('href="/tool/weight-converter"');
     expect(html).not.toContain("qr-code-generator");
     const metadata = await generateMetadata({ params });
-    expect(metadata.title).toBe("iworkhere");
+    expect(metadata.title).toBe("Converters - iworkhere");
     expect(metadata.openGraph).toMatchObject({ title: "Converters — iworkhere.space" });
     expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/category/converter");
 });

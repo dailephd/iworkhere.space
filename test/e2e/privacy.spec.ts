@@ -14,7 +14,7 @@ test("privacy is public, server-rendered and reachable from home and tools", asy
         await expect(page).toHaveURL(/\/privacy$/);
         await expect(page.getByRole("heading", { level: 1, name: "Privacy Policy" })).toBeVisible();
     }
-    await expect(page).toHaveTitle("iworkhere");
+    await expect(page).toHaveTitle("Privacy Policy - iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/privacy");
     await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /site measurements/);
     await expect(page.getByRole("link", { name: "Google Ad Settings", exact: true })).toHaveAttribute("href", "https://adssettings.google.com/");

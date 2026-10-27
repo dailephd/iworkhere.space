@@ -3,8 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import NotFound, { metadata } from "./not-found";
 
 describe("app not-found", () => {
-    it("uses the exact browser title and is not indexable", () => {
-        expect(metadata.title).toBe("iworkhere");
+    it("uses the exact not-found browser title and is not indexable", () => {
+        expect(metadata.title).toBe("Page Not Found - iworkhere");
         expect(metadata.robots).toEqual({ index: false, follow: false });
     });
 

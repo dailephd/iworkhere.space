@@ -692,3 +692,11 @@ The candidate passed category/layout validation and desktop/mobile Observer
 acceptance; the original canonical Observer baseline remains preserved. Proposed
 v0.7/v0.8 converter expansion remains subject to planner approval. The v0.4.0
 category decision remains a historical record.
+
+## v0.4.4 Batch 1 checkpoint — 2026-10-27
+
+Browser title recovery is implemented in the local working tree on
+`feature/v0.4.4-site-quality` (uncommitted, unreleased; package version remains
+0.4.3). `buildPageMetadata` now emits the unbranded title plus " - iworkhere" for
+the 18 tools, five fixed pages, seven categories and the not-found page. This
+checkpoint does not claim the v0.4.4 release or later batches complete.

@@ -74,7 +74,7 @@ test("About renders the publisher information, links and metadata with no advert
     const html = await response.text();
     expect(html).not.toMatch(/adsbygoogle|Advertisement/);
     await page.goto("/about");
-    await expect(page).toHaveTitle("iworkhere");
+    await expect(page).toHaveTitle("About - iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/about");
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("About iworkhere.space");
@@ -107,7 +107,7 @@ test("Contact renders one H1, the form, metadata and a privacy path, and disclos
     expect(html).not.toMatch(/adsbygoogle|Advertisement|mailto:/);
     expect(html).not.toMatch(/RESEND_API_KEY|CONTACT_TO_EMAIL|CONTACT_FROM_EMAIL/);
     await page.goto("/contact");
-    await expect(page).toHaveTitle("iworkhere");
+    await expect(page).toHaveTitle("Contact Us - iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/contact");
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Contact Us");
