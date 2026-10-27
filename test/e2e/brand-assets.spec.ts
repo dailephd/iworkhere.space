@@ -22,7 +22,7 @@ test("browser favicon uses the Le SVG and supplied ICO at required display sizes
     const iconLinks = await page.locator('link[rel="icon"]').evaluateAll(elements => elements.map(element => {
         const link = element as HTMLLinkElement;
         const url = new URL(link.href);
-        return { path: url.pathname, search: url.search, type: link.type };
+        return { href: link.href, origin: url.origin, path: url.pathname, search: url.search, type: link.type };
     }));
     const svgLink = iconLinks.find(link => link.path === "/icon.svg");
     const faviconLink = iconLinks.find(link => link.path === "/favicon.ico");
@@ -30,6 +30,7 @@ test("browser favicon uses the Le SVG and supplied ICO at required display sizes
     expect(faviconLink).toBeDefined();
     expect(svgLink!.search).not.toBe("");
     expect(faviconLink!.search).not.toBe("");
+    expect(faviconLink!.origin).toBe(new URL(page.url()).origin);
 
     const svgResponse = await request.get(svgLink!.path);
     expect(svgResponse.status()).toBe(200);
@@ -49,9 +50,9 @@ test("browser favicon uses the Le SVG and supplied ICO at required display sizes
         { width: 64, height: 64 },
     ]));
 
-    const renders = await page.evaluate(async sizes => {
+    const renders = await page.evaluate(async ({ sizes, href }) => {
         const image = new Image();
-        image.src = "/favicon.ico";
+        image.src = href;
         await image.decode();
         const proof = document.createElement("div");
         proof.id = "favicon-size-proof";
@@ -79,7 +80,7 @@ test("browser favicon uses the Le SVG and supplied ICO at required display sizes
         });
         document.body.append(proof);
         return rendered;
-    }, faviconSizes);
+    }, { sizes: faviconSizes, href: faviconLink!.href });
     expect(renders.map(render => render.size)).toEqual(faviconSizes);
     for (const render of renders) {
         expect(render.width).toBe(render.size);

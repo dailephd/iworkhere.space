@@ -39,6 +39,29 @@ Preserve the current fixed header, document-flow footer and approved About
 copy. The title statement in the October 24 snapshot below remains a description
 of current code until v0.4.4 implements the explicit new requirement.
 
+## v0.4.4 Batch 3 implementation checkpoint — 2026-10-27
+
+Status: LOCAL COMMIT WITH CONTAINER GATE DEFERRED. The package remains 0.4.3. No
+push, release, deployment, ad activation or AdSense change. This is not release
+readiness: `npm run test:container` was not run (Docker daemon unavailable) and
+must pass for the final candidate before release.
+
+Implemented on `feature/v0.4.4-site-quality` after Batch 2 (6706c50):
+a preview guard in `adsenseEnabled` (optional deployment-environment argument,
+passed from `process.env.VERCEL_ENV` at the server `AdSenseEligiblePage` gate),
+a rewritten `public/sw.js` (cache `iworkhere-shell-v0.4.4`, network-first clean
+HTML, allowlisted static prefixes only, owned-cache eviction), and the Privacy
+caching sentence and date (October 27, 2026).
+
+Evidence: unit 1,892 passed (verify, default-off); preview-denial E2E 8 passed,
+2 skipped by mode; controlled enabled ads E2E 4 passed, 4 skipped by mode;
+service-worker E2E 12 passed. The favicon test decoded the unversioned
+`/favicon.ico`, which fails under the shared fixture's Playwright routing
+independent of the worker (the old broad cache had masked it); it now decodes the
+versioned href from the page's icon link. Complete default-off E2E after that
+fix: 768 passed, 6 skipped by mode, 0 failed. Container gate not run (Docker
+daemon unavailable). Merge/Split/HEIC Batch 2 coverage evidence remains an open gap.
+
 ## Current site chrome — 2026-10-24
 
 The header is fixed to the top of the viewport with no Show/Hide navigation mechanism, and the footer is ordinary document-flow content at the end of the page. `FooterViewportControl` and the `--footer-clearance` variable are removed; `HeaderViewportControl` keeps only the fixed placement and measured height footprint. Every page has the browser title `iworkhere`, About is the last primary navigation link, and the default appearance remains Violet & Graphite with System mode. Visitor-facing copy was reviewed across the public pages and all 18 tools. Earlier retractable-chrome and fixed-footer notes are historical.

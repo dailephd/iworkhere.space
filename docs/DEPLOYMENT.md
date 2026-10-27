@@ -103,6 +103,20 @@ Batch 6 validated these candidate assets in the non-root standalone container;
 that evidence does not deploy v0.3 or describe current live production assets.
 
 The service worker and manifest are served from the application origin. The
+v0.4.4 worker (`public/sw.js`, cache `iworkhere-shell-v0.4.4`) is network first
+for clean same-origin HTML pages, so a deployment's new titles and copy appear
+online without waiting for the cache; it serves a stored copy only for the same
+pathname after a network failure and otherwise returns an honest 503. It is
+cache first only under `/_next/static/`, `/vendor/pdfjs/6.4.299/`,
+`/vendor/qpdf/12.4.2/`, `/examples/v0.4.3/` and `/examples/v0.4.4/`. API,
+Next RSC/prefetch/data, query-bearing, cross-origin, root files (robots,
+sitemap, ads.txt, sw.js, manifest) and all other requests are network only and
+never touch Cache Storage. On activation the worker deletes only `app-shell-v1`
+and older `iworkhere-shell-` caches; unrelated cache names are kept. The first
+activation after upgrading drops the old warmed assets, so a returning visitor
+must open a PDF or HEIC tool online again before relying on offline use. Cold
+offline operation is not provided. A pre-existing browser tab is not reloaded.
+The
 HEIC decoder remains lazy: its Worker and decoder assets load from local
 application assets after a HEIC source is selected, with no external conversion
 service. The runtime retains
@@ -174,6 +188,7 @@ production state.
 | `CRON_SECRET` | Root / server-only | Public maintenance cron configured | Empty; endpoint fails closed | Set after cron setup | Empty | Empty | Yes |
 | `NEXT_PUBLIC_ADSENSE_ENABLED` | Root / public build-time | External AdSense gates pass | Unset/false renders no script or slots | False until ownership/site/CMP readiness | False | False | No |
 | `OBSERVABILITY_DASHBOARD_DATABASE_URL` | Dashboard / server-only | Dashboard requests need database results | Empty; dashboard shows unavailable state | Read-only credential after project protection | Empty; never production DB | Empty or isolated read-only DB | Yes |
+| `VERCEL_ENV` | Vercel / build and server runtime | Supplied by Vercel; never set manually | Absent: standalone ad policy (exact public flag plus production NODE_ENV) | `production` | `preview`: ads denied even with the public flag | Absent | No |
 | `NODE_ENV` | Next.js / runtime | Set by Next.js | Framework-managed; do not set manually in deployment | `production` | `production` for deployed preview | `development` for `next dev` | No |
 | `E2E_BASE_URL` | Playwright / test runner | E2E intentionally targets an already-running runtime | Unset; Playwright manages its local production server | Not an app setting | Not an app setting | Optional external test target | No |
 | `E2E_RUN_ID` | Playwright / test runner | E2E report identity override | Generated when unset; container smoke supplies it | Not an app setting | Not an app setting | Optional test report override | No |

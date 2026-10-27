@@ -285,6 +285,15 @@ E2E tests verify what users actually experience in a browser.
 
 - In production builds, `/sw.js` is served with the correct content type.
 - `ServiceWorkerRegister` does not register the SW in development mode.
+- Registration alone is not sufficient evidence. Browser tests must read
+  Cache Storage keys and prove clean pages are cached, query-bearing, RSC,
+  API, root-file and error responses are not, an online refresh replaces stale
+  HTML, offline serves only the same cached page, activation removes only owned
+  stale caches, and the warmed HEIC bootstrap works offline.
+- Advertising has three separate build modes (default-off, preview denial with
+  `NEXT_PUBLIC_ADSENSE_ENABLED=true` plus `VERCEL_ENV=preview`, and enabled with
+  `E2E_ADS_ENABLED=true`). Set the same variables for build and runtime; one
+  mode's result is not evidence for another. See ADVERTISING.md.
 
 ---
 

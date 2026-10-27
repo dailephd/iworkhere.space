@@ -37,6 +37,13 @@ describe("public privacy policy", () => {
     it("discloses Contact Us as a voluntary, non-anonymous email path separate from reports and telemetry", () => {
         const html = renderToStaticMarkup(<PrivacyPage />);
         for (const text of ["Contact Us messages", "email address, a title and your message", "not anonymous", "Resend, an email delivery provider", "operator’s email inbox", "reply address", "not stored in the problem-report database", "not opened as GitHub issues", "not sent to our analytics or logs", "the message you write leaves your device", "have not set a deletion schedule", "retention targets for problem reports do not apply", "cannot guarantee deletion"]) expect(html).toContain(text);
-        expect(html).toContain("Last updated: October 21, 2026");
+    });
+    it("discloses that the offline cache excludes query-bearing requests and no longer claims URL parameters are cached", () => {
+        const html = renderToStaticMarkup(<PrivacyPage />);
+        expect(html).toContain("Last updated: October 27, 2026");
+        expect(html).toContain("only page addresses without URL parameters");
+        expect(html).toContain("excludes requests that include query strings");
+        expect(html).not.toContain("cached page addresses can include URL parameters");
+        expect(html).toContain("URLs may be kept in browser history, sent when a page is requested, or disclosed when you share a link");
     });
 });

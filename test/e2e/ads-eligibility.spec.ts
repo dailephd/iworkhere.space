@@ -55,6 +55,58 @@ test("disabled mode emits no advertising on tools, navigation pages or errors", 
     expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
 });
 
+// Preview denial is only evidence when the build and runtime both carried the
+// enabled public flag with a non-production deployment environment.
+const previewDenialMode = !enabledTestMode
+    && process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true"
+    && process.env.NODE_ENV !== "development"
+    && Boolean(process.env.VERCEL_ENV)
+    && process.env.VERCEL_ENV !== "production";
+
+test("preview deployment denies advertising on valid tools even with the enabled public flag", async ({ page, request }) => {
+    test.skip(!previewDenialMode, "This scenario runs with NEXT_PUBLIC_ADSENSE_ENABLED=true and a non-production VERCEL_ENV in both build and runtime.");
+
+    const adRequests: string[] = [];
+    await page.route(/https?:\/\/[^/]*(?:googlesyndication\.com|doubleclick\.net|googleadservices\.com|google\.com\/pagead)\//, async route => {
+        adRequests.push(route.request().url());
+        await route.abort();
+    });
+
+    for (const route of ["/tool/json-formatter", "/tool/word-character-counter", "/tool/calculator"]) {
+        const response = await request.get(route);
+        expect(response.status()).toBe(200);
+        const html = await response.text();
+        expect(html).not.toContain("adsbygoogle");
+        expect(html).not.toContain('id="google-adsense"');
+        expect(html).not.toContain("Advertisement");
+        expect(html).not.toContain("advertising area");
+    }
+
+    await page.goto("/tool/json-formatter");
+    await expect(page.getByLabel("JSON input")).toBeVisible();
+    await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
+    await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
+    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.locator('aside[aria-label*="advertising area"]')).toHaveCount(0);
+    await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
+    expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+    await page.goto("/tool/word-character-counter");
+    await expect(page.getByLabel("Text", { exact: true })).toBeVisible();
+    await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
+    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+
+    for (const [route, status] of [["/", 200], ["/privacy", 200], ["/tool/__f02-missing-tool", 404], ["/__f02-missing-route", 404]] as const) {
+        const response = await request.get(route);
+        expect(response.status()).toBe(status);
+        const html = await response.text();
+        expect(html).not.toContain("adsbygoogle");
+        expect(html).not.toContain("Advertisement");
+    }
+    expect(adRequests).toEqual([]);
+});
+
 test("enabled mode limits manual ads to registered tool pages across client navigation", async ({ page, request }) => {
     test.skip(!enabledTestMode, "This scenario runs with the controlled enabled production build.");
 

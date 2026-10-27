@@ -8,7 +8,7 @@ interface AdSenseEligiblePageProp {
 }
 
 export function AdSenseEligiblePage({ children }: AdSenseEligiblePageProp) {
-    if (!adsenseEnabled()) return children;
+    if (!adsenseEnabled(process.env.NEXT_PUBLIC_ADSENSE_ENABLED, process.env.NODE_ENV, process.env.VERCEL_ENV)) return children;
 
     return (
         <>

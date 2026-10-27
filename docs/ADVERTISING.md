@@ -8,12 +8,18 @@ serving. The [immediate implementation plan](plans/v0.4.4-implementation-plan.md
 preserves default-off advertising and all existing informational/error-page
 exclusions.
 
-The current config checks the explicit flag and NODE_ENV. The planned change
-adds an explicit deployment-environment input at the existing server eligibility
-boundary: a supplied VERCEL_ENV other than production denies ads even when
-NODE_ENV is production. Generic standalone production still requires the
-explicit public flag. Controlled enabled tests use stubbed Google endpoints;
-no browser-side value can override server denial.
+Implemented locally on 2026-10-27 (v0.4.4 Batch 3; not released or deployed):
+`adsenseEnabled(flag, mode, deploymentEnvironment?)` takes an optional third
+deployment-environment argument. `AdSenseEligiblePage`, the server eligibility
+boundary, passes `process.env.VERCEL_ENV` explicitly. A supplied value other
+than `production` (preview, development, custom or empty) denies ads even when
+the public flag is `true` and NODE_ENV is production. `production` permits ads
+only with the exact `true` flag and NODE_ENV production. When VERCEL_ENV is
+absent, standalone production keeps the original flag-plus-mode behavior, and
+two-argument callers are unchanged. The client script and slot components keep
+their own flag check but are mounted only behind this server gate, so no
+browser-side value can override a server denial. There is no runtime, page,
+query or storage toggle. Controlled enabled tests use stubbed Google endpoints.
 
 The planned /guide hub and its four task pages remain ineligible. Correct
 metadata and richer content do not automatically make a route ad-eligible.
@@ -68,7 +74,7 @@ The implementation uses manual units only. Auto ads may inject independently of 
 
 ## Activation and placement
 
-Only exact `NEXT_PUBLIC_ADSENSE_ENABLED=true` in a production build activates ads, and then only within the eligible tool-page frame. Absent/other values, development, normal CI, default Playwright and container validation render no ad slot, script, initialization or empty placeholder. Public flags are build-time settings; rebuild after changing them. Tests never click or contact live ads.
+Only exact `NEXT_PUBLIC_ADSENSE_ENABLED=true` in a production build activates ads, and then only within the eligible tool-page frame. A deployment whose `VERCEL_ENV` is anything but `production` (for example a Vercel preview) serves no ad script, slot, label or reserved wrapper even with that flag, because the server gate denies it. `VERCEL_ENV` must therefore be present, as Vercel supplies it, in both build and runtime for the preview guard to apply. Absent/other values, development, normal CI, default Playwright and container validation render no ad slot, script, initialization or empty placeholder. Public flags are build-time settings; rebuild after changing them. Tests never click or contact live ads.
 
 One Next Script, page-composed once with `afterInteractive` and `crossOrigin=anonymous`, loads Google's client script on an eligible tool page. Header/right slots reuse one client component and initialize each visible element at most once; width observation defers the hidden right slot. Errors use safe logging and cannot break rendering.
 
@@ -85,7 +91,9 @@ Disclosure evidence is owned by `metric.ts`, `logSafety.ts`, `diagnostic.ts`,
 `persistence.server.ts`, the database maintenance contracts, and
 `vercelWebAnalytics.client.ts`. Local preferences are owned by `themeStorage.ts`
 and `recentlyUsed.ts`; URL state by ToolClientFrame and the registry; offline
-page caching by `public/sw.js`. Tool processing remains local. The policy
+page caching by `public/sw.js`, which caches only eligible clean-path HTML pages
+and allowlisted static assets and excludes query-bearing requests (disclosed in
+the October 27, 2026 policy text). Tool processing remains local. The policy
 does not promise that hosting providers never process IP addresses, that all
 analytics are anonymous, or that database retention governs vendor logs.
 
@@ -120,4 +128,4 @@ AdSense reports business ad performance. [Application observability](OBSERVABILI
 
 ## Validation and production packaging
 
-Focused unit coverage validates the eligible page frame, stable IDs, disabled output, duplicate-safe initialization, tool failure/retry and boundary reset between tools. Root-layout assertions inspect all four advertising-slot props and include negative fixtures that prove accidental slot composition is detected. `test/e2e/ads-eligibility.spec.ts` checks the default-off build and, with `E2E_ADS_ENABLED=true`, a production build with a stubbed AdSense script and blocked Google ad endpoints. It covers direct invalid routes, eligible and ineligible server output, mobile/desktop placement, navigation in both directions, and repeated navigation. A browser-only Text Encoder fault during the word counter's render exercises the actual tool boundary, ad-free fallback, unsuccessful/successful retry and subsequent navigation without adding a public failure route. `npm run test -- src/component/tool/ToolPageTemplate.test.tsx src/component/tool/ToolErrorBoundary.test.tsx src/app/layout.test.tsx src/module/ad/ad.test.tsx` runs the focused unit contracts; `npm run test:e2e -- test/e2e/ads-eligibility.spec.ts` runs the matching production-build browser scenarios. Container smoke explicitly builds both public enable flags false and verifies exact `/ads.txt` body/content type and `/api/health`, then runs desktop/mobile E2E. No real impression is claimed. Docker production builds accept the two explicit public flag build arguments, defaulting false; activation requires the external gate and a separately authorized deployment.
+Focused unit coverage validates the eligible page frame, stable IDs, disabled output, duplicate-safe initialization, tool failure/retry and boundary reset between tools. Root-layout assertions inspect all four advertising-slot props and include negative fixtures that prove accidental slot composition is detected. `test/e2e/ads-eligibility.spec.ts` checks the default-off build and, with `E2E_ADS_ENABLED=true`, a production build with a stubbed AdSense script and blocked Google ad endpoints. It covers direct invalid routes, eligible and ineligible server output, mobile/desktop placement, navigation in both directions, and repeated navigation. A browser-only Text Encoder fault during the word counter's render exercises the actual tool boundary, ad-free fallback, unsuccessful/successful retry and subsequent navigation without adding a public failure route. `npm run test -- src/component/tool/ToolPageTemplate.test.tsx src/component/tool/ToolErrorBoundary.test.tsx src/app/layout.test.tsx src/module/ad/ad.test.tsx` runs the focused unit contracts; `npm run test:e2e -- test/e2e/ads-eligibility.spec.ts` runs the matching production-build browser scenarios. Three controlled modes are kept separate and none counts as evidence for another. Default-off: no flag or `VERCEL_ENV`; the standard gates. Preview denial: build and runtime with `NEXT_PUBLIC_ADSENSE_ENABLED=true` and `VERCEL_ENV=preview`, `E2E_ADS_ENABLED` unset; the preview scenario in `ads-eligibility.spec.ts` asserts no script, slot, label, rail, reserved wrapper or Google request on valid tools (a default-off build skips it). Enabled: build and runtime with the flag `true`, `VERCEL_ENV=production` and `E2E_ADS_ENABLED=true`, with Google endpoints stubbed. In the enabled mode the shared fixture's abort of Google requests makes tool-page visits in other specs (such as `privacy.spec.ts`) log an ad-script error, so run only `ads-eligibility.spec.ts` there. The 2026-10-27 controlled layout review (stubbed ads, 1280x720 and 390x844, three tools) found the labeled top unit above the title, a right rail from 1280px, tool controls within the first viewport and no horizontal overflow. Empty stubbed units do not prove real ad-serving size or policy compliance; verify configured serving behavior before activation. Container smoke explicitly builds both public enable flags false and verifies exact `/ads.txt` body/content type and `/api/health`, then runs desktop/mobile E2E. No real impression is claimed. Docker production builds accept the two explicit public flag build arguments, defaulting false; activation requires the external gate and a separately authorized deployment.

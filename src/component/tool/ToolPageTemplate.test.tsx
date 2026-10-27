@@ -109,6 +109,15 @@ it("does not carry a failed tool state into another registered tool or an inelig
     expect(initialize).toHaveBeenCalledTimes(2);
 });
 
+it("keeps a healthy tool free of advertising on a non-production deployment even with the enabled production flag", async () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    await act(async () => root.render(page()));
+    expect(element.textContent).toContain("Working utility content");
+    expect(element.querySelectorAll("ins.adsbygoogle, #google-adsense, aside")).toHaveLength(0);
+    expect(element.textContent).not.toContain("Advertisement");
+    expect(initialize).not.toHaveBeenCalled();
+});
+
 it("keeps both healthy and failed tools free of advertising when the global flag is disabled", async () => {
     vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
     await act(async () => root.render(page()));
