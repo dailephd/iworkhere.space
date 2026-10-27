@@ -18,7 +18,7 @@
 
 - `src/module/tool/time/TimeArithmeticTool.tsx` [implementation]
 - `src/module/tool/time/timeArithmetic.ts` [pure logic — `calculateTime`, `addTime`, `subtractTime`, `parseTime`]
-- `src/module/tool/time/timeArithmetic.test.ts` [test-companion, 31 tests]
+- `src/module/tool/time/timeArithmetic.test.ts` [test-companion, 50 tests]
 
 <!-- section-id: responsibility -->
 ## Responsibility
@@ -36,7 +36,13 @@ selector, and a result panel.
   two-digit minutes 00–59) via a regex, converts to total minutes, applies
   add/subtract, and re-formats. Returns a discriminated result:
   `{ ok: true, value }` or `{ ok: false, error }` where `error` is one of
-  `"invalid-left" | "invalid-right" | "negative-result"`.
+  `"invalid-left" | "invalid-right" | "negative-result" | "result-out-of-range"`.
+  Parsed hours, each operand's total minutes and the computed result are
+  checked with `Number.isSafeInteger`: an operand over the limit
+  (`150119987579016:31` is the largest) is `invalid-left`/`invalid-right`,
+  and an addition whose result is unsafe is `result-out-of-range`, shown as
+  the alert `The result is too large to calculate exactly.` (nothing is
+  rounded silently).
 - Local component state only (`useState` for both inputs and the operation);
   nothing is persisted or synced to the URL.
 - Fires `trackEvent("tool_opened", { toolId, slug: "time-arithmetic" })` once

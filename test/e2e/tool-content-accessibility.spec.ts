@@ -179,7 +179,8 @@ for (const tool of cases) {
             await main.getByLabel("To", { exact: true }).selectOption(length ? "m" : "oz");
             await expect(result).toHaveText(length ? "2000 m" : "32 oz");
             await main.getByLabel("Value", { exact: true }).fill("");
-            await expect(result).toContainText("Invalid input");
+            await expect(main.locator("div[role=alert]:not([id])")).toHaveText("Invalid input: enter a number.");
+            await expect(result).toHaveCount(0);
         }
 
         expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);

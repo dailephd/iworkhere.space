@@ -42,8 +42,10 @@ it.each([
         Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "");
         input.dispatchEvent(new Event("input", { bubbles: true }));
     });
-    expect(host.textContent).toContain("Invalid input");
-    expect(prose).toContain("Invalid input");
+    expect(host.textContent).toContain("Invalid input: enter a number.");
+    expect(host.querySelector('[role="alert"]')?.textContent).toBe("Invalid input: enter a number.");
+    expect(prose).toContain("Invalid input: enter a number.");
+    expect(prose).toContain("Result is out of range for this conversion.");
 });
 
 it("verifies the HTML guide example and CSS visibility limitation through the real parser", () => {
@@ -69,7 +71,11 @@ it.each([
     ["0.5 + 0.25", "0.75"],
     ["-5 + 2", "-3"],
     ["2 * (-3)", "-6"],
-    ["2 * -3", "-3"],
+    ["2 * -3", "-6"],
+    ["2 / -2", "-1"],
+    ["1--2", "3"],
+    ["-(2 + 3)", "-5"],
+    ["--2", "2"],
     ["1 / 3", "0.333333333333"],
     ["0.1 + 0.2", "0.3"],
 ])("verifies the calculator guide example %s = %s against the real component", async (expression, result) => {
@@ -81,6 +87,7 @@ it.each([
 
 it.each([
     ["2 &", 'Invalid character: "&"'],
+    ["", "Enter an expression to calculate."],
     ["2 +", "Invalid expression."],
     ["(2 + 3", "Mismatched parentheses."],
     ["2(3)", "Invalid expression."],
@@ -121,6 +128,9 @@ it("verifies time arithmetic validation claims", () => {
     expect(calculateTime("-1:00", "add", "00:20")).toEqual({ ok: false, error: "invalid-left" });
     expect(calculateTime("01:00", "add", "-0:30")).toEqual({ ok: false, error: "invalid-right" });
     expect(calculateTime("00:45", "subtract", "02:00")).toEqual({ ok: false, error: "negative-result" });
+    expect(calculateTime("150119987579016:32", "add", "00:00")).toEqual({ ok: false, error: "invalid-left" });
+    expect(calculateTime("150119987579016:31", "add", "00:01")).toEqual({ ok: false, error: "result-out-of-range" });
+    expect(getToolGuide("time-arithmetic")!.section.map(section => section.text).join(" ")).toContain("150119987579016:31");
     expect(calculateTime("25:00", "add", "00:00")).toEqual({ ok: true, value: "25:00" });
     expect(calculateTime("9:05", "add", "00:00")).toEqual({ ok: true, value: "09:05" });
 });

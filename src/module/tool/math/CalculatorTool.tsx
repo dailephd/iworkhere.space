@@ -43,7 +43,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
     const run = useCallback(() => {
         const cleaned = expr.trim()
         if (!cleaned) {
-            setRunState({ ok: true, value: "" })
+            setRunState({ ok: false, error: "Enter an expression to calculate." })
             return
         }
 
@@ -167,7 +167,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
                         {runState.value}
                     </output>
                 ) : (
-                    <div className="mt-2 text-sm text-[var(--text-muted)]">
+                    <div role="alert" className="mt-2 text-sm text-[var(--text-muted)]">
                         {runState.error}
                     </div>
                 )}
@@ -178,11 +178,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
 
 /* ---- Expression evaluation (safe, no eval) ---- */
 
-function evalExpr(input: string): number {
-    const token = tokenize(input)
-    const rpn = toRpn(token)
-    return evalRpn(rpn)
-}
+const MAX_NESTING = 200
 
 type Token =
     | { kind: "num"; value: number }
@@ -190,12 +186,95 @@ type Token =
     | { kind: "lp" }
     | { kind: "rp" }
 
+function evalExpr(input: string): number {
+    const token = tokenize(input)
+    let pos = 0
+    let depth = 0
+
+    function peekOp(...allowed: string[]): "+" | "-" | "*" | "/" | null {
+        const one = token[pos]
+        if (one && one.kind === "op" && allowed.includes(one.value)) return one.value
+        return null
+    }
+
+    function apply(op: "+" | "-" | "*" | "/", a: number, b: number): number {
+        let out: number
+        if (op === "+") out = a + b
+        else if (op === "-") out = a - b
+        else if (op === "*") out = a * b
+        else out = a / b
+        if (!Number.isFinite(out)) throw new Error("Result is not finite.")
+        return out
+    }
+
+    function parseExpression(): number {
+        let left = parseProduct()
+        let op = peekOp("+", "-")
+        while (op) {
+            pos += 1
+            left = apply(op, left, parseProduct())
+            op = peekOp("+", "-")
+        }
+        return left
+    }
+
+    function parseProduct(): number {
+        let left = parseUnary()
+        let op = peekOp("*", "/")
+        while (op) {
+            pos += 1
+            left = apply(op, left, parseUnary())
+            op = peekOp("*", "/")
+        }
+        return left
+    }
+
+    function parseUnary(): number {
+        const sign = peekOp("+", "-")
+        if (!sign) return parsePrimary()
+        pos += 1
+        depth += 1
+        if (depth > MAX_NESTING) throw new Error("Expression is too deeply nested.")
+        const operand = parseUnary()
+        depth -= 1
+        return sign === "-" ? -operand : operand
+    }
+
+    function parsePrimary(): number {
+        const one = token[pos]
+        if (!one) throw new Error("Invalid expression.")
+        if (one.kind === "num") {
+            pos += 1
+            return one.value
+        }
+        if (one.kind === "lp") {
+            pos += 1
+            depth += 1
+            if (depth > MAX_NESTING) throw new Error("Expression is too deeply nested.")
+            const inner = parseExpression()
+            depth -= 1
+            const close = token[pos]
+            if (!close || close.kind !== "rp") throw new Error("Mismatched parentheses.")
+            pos += 1
+            return inner
+        }
+        throw new Error("Invalid expression.")
+    }
+
+    const value = parseExpression()
+    if (pos < token.length) {
+        if (token[pos].kind === "rp") throw new Error("Mismatched parentheses.")
+        throw new Error("Invalid expression.")
+    }
+    return value
+}
+
 function tokenize(s: string): Token[] {
     const out: Token[] = []
     let i = 0
 
-    function isDigit(ch: string): boolean {
-        return ch >= "0" && ch <= "9"
+    function isDigit(ch: string | undefined): boolean {
+        return ch !== undefined && ch >= "0" && ch <= "9"
     }
 
     while (i < s.length) {
@@ -226,20 +305,14 @@ function tokenize(s: string): Token[] {
 
         if (isDigit(ch) || ch === ".") {
             let j = i
-            let dot = 0
-            while (j < s.length) {
-                const c = s[j]
-                if (c === ".") {
-                    dot += 1
-                    if (dot > 1) break
-                    j += 1
-                    continue
-                }
-                if (!isDigit(c)) break
+            while (isDigit(s[j])) j += 1
+            if (s[j] === ".") {
                 j += 1
+                while (isDigit(s[j])) j += 1
             }
 
             const raw = s.slice(i, j)
+            if (raw === ".") throw new Error("Invalid number.")
             const num = Number(raw)
             if (!Number.isFinite(num)) throw new Error("Invalid number.")
             out.push({ kind: "num", value: num })
@@ -250,111 +323,7 @@ function tokenize(s: string): Token[] {
         throw new Error(`Invalid character: "${ch}"`)
     }
 
-    return normalizeUnary(out)
-}
-
-function normalizeUnary(token: Token[]): Token[] {
-    const out: Token[] = []
-    for (let i = 0; i < token.length; i += 1) {
-        const one = token[i]
-        if (one.kind === "op" && one.value === "-") {
-            const prev = out[out.length - 1]
-            const isUnary = !prev || prev.kind === "op" || prev.kind === "lp"
-            if (isUnary) {
-                out.push({ kind: "num", value: 0 })
-                out.push({ kind: "op", value: "-" })
-                continue
-            }
-        }
-        out.push(one)
-    }
     return out
-}
-
-function prec(op: "+" | "-" | "*" | "/"): number {
-    if (op === "*" || op === "/") return 2
-    return 1
-}
-
-function toRpn(token: Token[]): Token[] {
-    const out: Token[] = []
-    const stack: Token[] = []
-
-    for (const one of token) {
-        if (one.kind === "num") {
-            out.push(one)
-            continue
-        }
-
-        if (one.kind === "op") {
-            while (stack.length > 0) {
-                const top = stack[stack.length - 1]
-                if (top.kind === "op" && prec(top.value) >= prec(one.value)) {
-                    out.push(stack.pop() as Token)
-                    continue
-                }
-                break
-            }
-            stack.push(one)
-            continue
-        }
-
-        if (one.kind === "lp") {
-            stack.push(one)
-            continue
-        }
-
-        if (one.kind === "rp") {
-            let found = false
-            while (stack.length > 0) {
-                const top = stack.pop() as Token
-                if (top.kind === "lp") {
-                    found = true
-                    break
-                }
-                out.push(top)
-            }
-            if (!found) throw new Error("Mismatched parentheses.")
-            continue
-        }
-    }
-
-    while (stack.length > 0) {
-        const top = stack.pop() as Token
-        if (top.kind === "lp" || top.kind === "rp") throw new Error("Mismatched parentheses.")
-        out.push(top)
-    }
-
-    return out
-}
-
-function evalRpn(token: Token[]): number {
-    const st: number[] = []
-
-    for (const one of token) {
-        if (one.kind === "num") {
-            st.push(one.value)
-            continue
-        }
-
-        if (one.kind === "op") {
-            const b = st.pop()
-            const a = st.pop()
-            if (a == null || b == null) throw new Error("Invalid expression.")
-
-            if (one.value === "+") st.push(a + b)
-            else if (one.value === "-") st.push(a - b)
-            else if (one.value === "*") st.push(a * b)
-            else st.push(a / b)
-
-            continue
-        }
-
-        throw new Error("Invalid expression.")
-    }
-
-    if (st.length !== 1) throw new Error("Invalid expression.")
-    return st[0]
 }
 
 function formatNumber(v: number): string {

@@ -52,6 +52,10 @@ test("calculator: documented examples and errors match the running tool", async 
         ["(2 + 3) * 4", "20"],
         ["7 / 2", "3.5"],
         ["2 * (-3)", "-6"],
+        ["2 * -3", "-6"],
+        ["2 / -2", "-1"],
+        ["1--2", "3"],
+        ["-(2 + 3)", "-5"],
     ];
     for (const [input, output] of examples) {
         await expression.fill(input);
@@ -62,6 +66,10 @@ test("calculator: documented examples and errors match the running tool", async 
     await expression.fill("1 / 0");
     await expression.press("Enter");
     await expect(page.getByText("Result is not finite.", { exact: true })).toBeVisible();
+
+    await expression.fill("");
+    await expression.press("Enter");
+    await expect(page.locator("div[role=alert]:not([id])")).toHaveText("Enter an expression to calculate.");
 
     await expression.fill("");
     await page.getByRole("button", { name: "7", exact: true }).click();

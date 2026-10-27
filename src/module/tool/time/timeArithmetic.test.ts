@@ -189,3 +189,58 @@ describe("calculateTime", () => {
         })
     })
 })
+
+describe("safe numeric range", () => {
+    const MAX_HOURS = 150119987579016
+    const MAX_OPERAND = `${MAX_HOURS}:31`
+
+    test("parses the largest operand whose total minutes are a safe integer", () => {
+        expect(parseTime(MAX_OPERAND)).toEqual({ hours: MAX_HOURS, minutes: 31 })
+    })
+
+    test("rejects an operand whose total minutes are unsafe", () => {
+        expect(parseTime(`${MAX_HOURS}:32`)).toBeNull()
+        expect(parseTime(`${MAX_HOURS + 1}:00`)).toBeNull()
+    })
+
+    test("rejects hour counts that are not safe integers", () => {
+        expect(parseTime("99999999999999999999:00")).toBeNull()
+        expect(parseTime(`${"9".repeat(400)}:00`)).toBeNull()
+    })
+
+    test("reports unsafe operands as invalid inputs, not as results", () => {
+        expect(calculateTime(`${MAX_HOURS}:32`, "add", "00:00")).toEqual({ ok: false, error: "invalid-left" })
+        expect(calculateTime("00:00", "add", `${MAX_HOURS}:32`)).toEqual({ ok: false, error: "invalid-right" })
+    })
+
+    test("keeps the maximum operand exact", () => {
+        expect(calculateTime(MAX_OPERAND, "add", "00:00")).toEqual({ ok: true, value: MAX_OPERAND })
+        expect(calculateTime(MAX_OPERAND, "subtract", MAX_OPERAND)).toEqual({ ok: true, value: "00:00" })
+        expect(calculateTime(MAX_OPERAND, "subtract", "00:01")).toEqual({ ok: true, value: `${MAX_HOURS}:30` })
+    })
+
+    test("refuses the first unsafe addition instead of rounding silently", () => {
+        expect(calculateTime(MAX_OPERAND, "add", "00:01")).toEqual({ ok: false, error: "result-out-of-range" })
+        expect(calculateTime(MAX_OPERAND, "add", MAX_OPERAND)).toEqual({ ok: false, error: "result-out-of-range" })
+    })
+})
+
+describe("documented arithmetic", () => {
+    test.each([
+        ["01:50", "add", "00:20", "02:10"],
+        ["50:00", "add", "50:00", "100:00"],
+        ["02:00", "subtract", "00:45", "01:15"],
+        ["01:30", "subtract", "01:30", "00:00"],
+        ["00:59", "add", "00:01", "01:00"],
+    ] as const)("%s %s %s = %s", (left, operation, right, value) => {
+        expect(calculateTime(left, operation, right)).toEqual({ ok: true, value })
+    })
+
+    test.each(["01:5", "01:60", "1:2:3", "-1:00", "1.5:00", "", "abc"])("rejects invalid minute syntax %j", (input) => {
+        expect(calculateTime(input, "add", "00:00")).toEqual({ ok: false, error: "invalid-left" })
+    })
+
+    test("refuses a negative subtraction result", () => {
+        expect(calculateTime("00:45", "subtract", "02:00")).toEqual({ ok: false, error: "negative-result" })
+    })
+})

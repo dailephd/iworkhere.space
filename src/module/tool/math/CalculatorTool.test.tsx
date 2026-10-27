@@ -50,3 +50,90 @@ describe("calculator execution controls", () => {
         expect(host.querySelector("output")).toBeNull();
     });
 });
+
+async function calculate(expression: string) {
+    await render(expression);
+    await execute("Enter");
+    return {
+        value: host.querySelector("output")?.textContent ?? null,
+        error: host.querySelector('[role="alert"]')?.textContent ?? null,
+    };
+}
+describe("calculator grammar", () => {
+    it.each([
+        ["2 * -3", "-6"],
+        ["2 / -2", "-1"],
+        ["1--2", "3"],
+        ["-(2+3)", "-5"],
+        ["2 * (-3)", "-6"],
+        ["--2", "2"],
+        ["+2", "2"],
+        ["2 + 3 * 4", "14"],
+        ["(2 + 3) * 4", "20"],
+        ["10 - 4 - 3", "3"],
+        ["16 / 4 / 2", "2"],
+        ["-2 * -3", "6"],
+        [".5 + 2.", "2.5"],
+        ["0 * -1", "0"],
+        ["-0", "0"],
+    ])("accepts %s = %s", async (expression, expected) => {
+        expect(await calculate(expression)).toEqual({ value: expected, error: null });
+    });
+    it.each([
+        ["", "Enter an expression to calculate."],
+        ["   ", "Enter an expression to calculate."],
+        [".", "Invalid number."],
+        ["2 3", "Invalid expression."],
+        ["1.2.3", "Invalid expression."],
+        ["2(3)", "Invalid expression."],
+        ["(2)(3)", "Invalid expression."],
+        ["2 ** 3", "Invalid expression."],
+        ["2 +", "Invalid expression."],
+        ["* 2", "Invalid expression."],
+        ["()", "Invalid expression."],
+        ["(2 + 3", "Mismatched parentheses."],
+        ["2 + 3)", "Mismatched parentheses."],
+        ["1 / 0", "Result is not finite."],
+        ["1 / (1 / 0)", "Result is not finite."],
+        ["0 / 0", "Result is not finite."],
+        ["9".repeat(400), "Invalid number."],
+        ["1" + "0".repeat(300) + " * " + "1" + "0".repeat(300), "Result is not finite."],
+        ["(".repeat(500) + "1" + ")".repeat(500), "Expression is too deeply nested."],
+        ["2 & 3", 'Invalid character: "&"'],
+    ])("rejects %j with %s", async (expression, message) => {
+        expect(await calculate(expression)).toEqual({ value: null, error: message });
+    });
+    it("keeps the untouched initial state as a placeholder without an alert", async () => {
+        await render("");
+        expect(host.querySelector('[role="alert"]')).toBeNull();
+        expect(host.textContent).toContain("Run the expression to see result.");
+    });
+    it("reports empty input when the on-screen equals is pressed", async () => {
+        await render("");
+        await act(async () => [...host.querySelectorAll("button")].find(button => button.textContent === "=")!.click());
+        expect(host.querySelector('[role="alert"]')?.textContent).toBe("Enter an expression to calculate.");
+    });
+    it("keeps keypad editing, backspace and clear working", async () => {
+        await act(async () => root.render(<CalculatorTool toolId="calculator" />));
+        const press = async (label: string) => act(async () => [...host.querySelectorAll("button")].find(button => button.textContent === label)!.click());
+        for (const label of ["2", "×", "−", "3"]) await press(label);
+        expect(host.querySelector("input")!.value).toBe("2*-3");
+        await press("=");
+        expect(host.querySelector("output")?.textContent).toBe("-6");
+        await press("⌫");
+        expect(host.querySelector("input")!.value).toBe("2*-");
+        await press("C");
+        expect(host.querySelector("input")!.value).toBe("");
+        expect(host.querySelector("output")).toBeNull();
+    });
+    it("writes the expression to the shareable query", async () => {
+        const setQuery = vi.fn();
+        await act(async () => root.render(<CalculatorTool toolId="calculator" query={{ expr: "" }} setQuery={setQuery} />));
+        const input = host.querySelector("input")!;
+        await act(async () => {
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "2 * -3");
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+        expect(setQuery).toHaveBeenLastCalledWith({ expr: "2 * -3" });
+    });
+});
