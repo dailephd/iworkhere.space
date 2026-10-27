@@ -40,9 +40,9 @@ The next planned release is [v0.4.4 — Site Quality & Search Recovery](docs/pla
 restore descriptive browser titles, correct known calculation defects,
 strengthen verified examples and add four practical file-workflow guides.
 The [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
-the findings and their limits. This work is planned, not yet implemented;
+the findings and their limits. Batches 1-5 are implemented on the local, unpushed branch `feature/v0.4.4-site-quality` and Batch 6 verifies that candidate; nothing is released, deployed or submitted for review, and the package remains 0.4.3;
 the [roadmap](docs/ROADMAP.md) preserves the later v0.5.0/v0.6.0 catalogs.
-Batch 5 (local, unreleased) adds [Practical File Workflows](docs/modules/TaskGuide.md): the `/guide` hub and four multi-tool task guides.
+Batch 5 (local, unreleased) adds [Practical File Workflows](docs/modules/TaskGuide.md): the `/guide` hub and four multi-tool task guides. Batch 6 evidence is in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
 ## Getting Started
 

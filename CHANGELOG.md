@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased v0.4.4 — Site Quality & Search Recovery (local candidate, not released)
+
+- Restored descriptive browser titles, corrected calculator, converter and time arithmetic, added a Vercel preview advertising guard, a rewritten service worker (network-first HTML, allowlisted static cache), four more verified file examples (nine in total), the `/guide` hub with four task guides, and 35 canonical sitemap URLs.
+- Added browser boundary tests for the Merge PDF file, size and page limits, the Split PDF 20-group limit, and a decode of downloaded HEIC output. An over-30-megapixel HEIC remains unit-tested only.
+- Not released: the container gate and a complete browser run are not yet green, hosted CI has not run, and the package version remains 0.4.3.
+
 ## v0.4.3 — Utility Value, Trust & Discoverability
 
 - Added a task-first homepage, improved Discover navigation, and distinct task

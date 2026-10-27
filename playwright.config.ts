@@ -6,6 +6,8 @@ const runId = process.env.E2E_RUN_ID ?? `${new Date().toISOString().replace(/[:.
 process.env.E2E_RUN_ID = runId;
 const reportDir = path.resolve("test-report", "e2e", runId);
 const externalBaseUrl = process.env.E2E_BASE_URL;
+// Opt-in Windows-only diagnostic for Chromium loopback ERR_NO_BUFFER_SPACE; off unless the variable is exactly "true".
+const useWindowsLoopbackMitigation = process.platform === "win32" && process.env.E2E_DISABLE_TCP_PORT_RANDOMIZATION_WIN === "true";
 
 process.stdout.write(`E2E_RUN_ID: ${runId}\nE2E report: ${reportDir}\n`);
 
@@ -30,6 +32,7 @@ export default defineConfig({
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         video: "off",
+        ...(useWindowsLoopbackMitigation ? { launchOptions: { args: ["--disable-features=TcpPortRandomizationWin"] } } : {}),
     },
     projects: [
         { name: "desktop-chromium", use: { viewport: { width: 1280, height: 720 } } },

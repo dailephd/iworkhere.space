@@ -48,3 +48,7 @@ telemetry. Verified success emits only tool_executed with toolId/slug. Ordinary
 application asset traffic and separately enabled observability remain possible.
 
 Adjacent unit/component tests and real fixture browser tests own acceptance.
+
+## Limit evidence (v0.4.4 Batch 6)
+
+`test/e2e/pdf-page-copy.spec.ts` fills 20 ordered, overlapping output groups, confirms the 21st cannot be added, and checks each of the 20 downloads with PDF.js against an independent expected page table.

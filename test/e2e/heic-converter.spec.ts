@@ -84,6 +84,78 @@ async function decoded(page: Page, alt: string) {
     }, url);
 }
 
+interface ImageHeader { type: string; width: number; height: number }
+// Independent container reader: judges the downloaded bytes without the browser decoder or application code.
+function imageHeader(bytes: Buffer): ImageHeader | null {
+    const png = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    if (png.every((value, index) => bytes[index] === value) && bytes.toString("ascii", 12, 16) === "IHDR") {
+        return { type: "image/png", width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+    }
+    if (bytes[0] !== 0xff || bytes[1] !== 0xd8 || bytes[2] !== 0xff) return null;
+    let offset = 2;
+    while (offset + 9 < bytes.length && bytes[offset] === 0xff) {
+        const marker = bytes[offset + 1];
+        if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+            return { type: "image/jpeg", width: bytes.readUInt16BE(offset + 7), height: bytes.readUInt16BE(offset + 5) };
+        }
+        offset += 2 + bytes.readUInt16BE(offset + 2);
+    }
+    return null;
+}
+
+async function sourcePreviewBase64(page: Page): Promise<string> {
+    const url = await page.getByAltText("Selected HEIC source preview").getAttribute("src");
+    return page.evaluate(async source => {
+        const buffer = new Uint8Array(await (await fetch(source!)).arrayBuffer());
+        let binary = "";
+        for (const value of buffer) binary += String.fromCharCode(value);
+        return btoa(binary);
+    }, url);
+}
+
+async function expectDownloadedOutput(page: Page, savedPath: string, target: "jpeg" | "png", sourcePreview: string) {
+    const bytes = readFileSync(savedPath);
+    expect(bytes.length).toBeGreaterThan(0);
+    expect(imageHeader(bytes)).toEqual({ type: `image/${target}`, width: 480, height: 320 });
+    const link = await page.getByRole("link", { name: "Download converted image" }).getAttribute("href");
+    const served = await page.evaluate(async href => { const blob = await (await fetch(href!)).blob(); return { type: blob.type, bytes: blob.size }; }, link);
+    expect(served).toEqual({ type: `image/${target}`, bytes: bytes.length });
+    const comparison = await page.evaluate(async ({ base64, mime, sourceBase64 }) => {
+        const raster = async (blob: Blob) => {
+            const bitmap = await createImageBitmap(blob);
+            const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+            const context = canvas.getContext("2d")!;
+            context.drawImage(bitmap, 0, 0);
+            const result = { width: bitmap.width, height: bitmap.height, data: context.getImageData(0, 0, bitmap.width, bitmap.height).data };
+            bitmap.close();
+            return result;
+        };
+        const output = await raster(new Blob([Uint8Array.from(atob(base64), character => character.charCodeAt(0))], { type: mime }));
+        const reference = await raster(new Blob([Uint8Array.from(atob(sourceBase64), character => character.charCodeAt(0))], { type: "image/png" }));
+        const at = (image: typeof output, x: number, y: number) => { const index = (y * image.width + x) * 4; return [image.data[index], image.data[index + 1], image.data[index + 2], image.data[index + 3]]; };
+        let direct = 0, mirrored = 0, samples = 0;
+        const colors = new Set<string>();
+        for (let y = 0; y < output.height; y += 5) {
+            for (let x = 0; x < output.width; x += 5) {
+                const pixel = at(output, x, y), same = at(reference, x, y), flipped = at(reference, output.width - 1 - x, y);
+                for (let channel = 0; channel < 3; channel++) { direct += Math.abs(pixel[channel] - same[channel]); mirrored += Math.abs(pixel[channel] - flipped[channel]); }
+                colors.add(pixel.slice(0, 3).map(value => value >> 5).join(","));
+                samples += 3;
+            }
+        }
+        return { output: { width: output.width, height: output.height }, reference: { width: reference.width, height: reference.height },
+            meanDirect: direct / samples, meanMirrored: mirrored / samples, colorBucket: colors.size, alpha: at(output, 240, 160)[3] };
+    }, { base64: bytes.toString("base64"), mime: `image/${target}`, sourceBase64: sourcePreview });
+    expect(comparison.output).toEqual({ width: 480, height: 320 });
+    expect(comparison.reference).toEqual({ width: 480, height: 320 });
+    expect(comparison.alpha).toBe(255);
+    // Several distinct colors prove a non-blank picture; a mirrored copy of the asymmetric source must be a clearly worse match.
+    expect(comparison.colorBucket).toBeGreaterThan(3);
+    expect(comparison.meanDirect).toBeLessThan(target === "png" ? 1.5 : 16);
+    expect(comparison.meanMirrored).toBeGreaterThan(comparison.meanDirect + 5);
+    return comparison;
+}
+
 function expectApplicationWorkerUrls(page: Page, workers: WorkerRecord[]) {
     const applicationOrigin = new URL(page.url()).origin;
     expect(workers.map(worker => new URL(worker.url).origin)).toEqual(workers.map(() => applicationOrigin));
@@ -104,6 +176,7 @@ test.describe("HEIC converter", () => {
             await page.getByLabel("Output format").selectOption(target);
             if (target === "jpeg") await page.getByLabel("Quality", { exact: true }).fill("60");
             else await expect(page.getByLabel("Quality", { exact: true })).toHaveCount(0);
+            const sourcePreview = await sourcePreviewBase64(page);
             await page.getByRole("button", { name: "Convert image", exact: true }).click();
             await expect(page.getByRole("heading", { name: "Converted image ready" })).toBeVisible();
             const output = await decoded(page, "Converted image preview");
@@ -113,8 +186,11 @@ test.describe("HEIC converter", () => {
             await page.getByRole("link", { name: "Download converted image" }).click();
             const download = await downloadPromise;
             expect(download.suggestedFilename()).toBe(`heic-source-converted.${target === "jpeg" ? "jpg" : "png"}`);
-            await download.saveAs(testInfo.outputPath(download.suggestedFilename()));
+            const savedPath = testInfo.outputPath(download.suggestedFilename());
+            await download.saveAs(savedPath);
             expect(await download.failure()).toBeNull();
+            const downloaded = await expectDownloadedOutput(page, savedPath, target, sourcePreview);
+            await testInfo.attach("downloaded-output-comparison", { body: JSON.stringify(downloaded), contentType: "application/json" });
             const workers = (await snapshot(page)).workers;
             expect(workers).toMatchObject([
                 { operation: "inspect", terminated: true }, { operation: "convert", terminated: true },

@@ -50,3 +50,7 @@ The decoder bundles libheif 1.22.2 and libde265 1.0.16; heic-to package metadata
 ## Delivery 2 presentation contract
 
 Reuse the approved Resizer grammar: 280–320px source/settings track beside a flexible preview/result stage at desktop; mobile source, preview, settings, and result actions stack logically. Local source/result previews preserve actual aspect ratio. Existing semantic palette/material classes provide the six-palette Light/Dark/System modes and fixed-dark One Dark; no new shared processing/state owner. Errors, limits, quality/transparency behavior, downloads, cancellation and URL/worker lifecycle remain unchanged. HEIC source composition remains local.
+
+## Output and limit evidence (v0.4.4 Batch 6)
+
+The real-conversion tests in `test/e2e/heic-converter.spec.ts` decode the downloaded JPEG and PNG (container header, native decode, pixel comparison with the decoded source, mirror control). The 30,000,000-pixel limit is covered at its exact boundary by unit tests in `imageFeedback.test.ts`. No retained oversized HEIC fixture exists, so an over-limit image through the real decoder in a browser is not verified.

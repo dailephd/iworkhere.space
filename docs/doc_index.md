@@ -613,3 +613,4 @@ Current v0.4.4 Batch 5 specifications:
 
 - `modules/TaskGuide.md`: the four authored task guides, their queries and editorial rules.
 - `components/TaskGuidePage.md`: the presentation-only guide detail component and its props.
+- `reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md`: v0.4.4 Batch 6 whole-site acceptance report: boundary evidence, mode-specific gates, container diagnosis and remaining release gates (not release readiness).

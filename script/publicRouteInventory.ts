@@ -1,3 +1,4 @@
+import { getAllTaskGuide } from "../src/module/content/taskGuide";
 import { getAllTool, getAvailableCategory } from "../src/module/tool/metadata";
 
 const canonicalOrigin = "https://iworkhere.space";
@@ -11,6 +12,8 @@ export function getExpectedPublicSitemapUrls(): string[] {
     `${canonicalOrigin}/contact`,
     ...getAllTool().map(tool => `${canonicalOrigin}${tool.seo.canonicalPath}`),
     ...getAvailableCategory().map(category => `${canonicalOrigin}/category/${category}`),
+    `${canonicalOrigin}/guide`,
+    ...getAllTaskGuide().map(guide => `${canonicalOrigin}/guide/${guide.slug}`),
   ];
 }
 

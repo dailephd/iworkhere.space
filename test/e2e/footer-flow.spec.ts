@@ -17,6 +17,15 @@ const footerGeometry = (page: Page) => page.locator("footer").evaluate(element =
     };
 });
 
+/**
+ * Tests that append nodes to the React-managed main element must wait until hydration has finished.
+ * The "Themes" button stays disabled until ThemeProvider's layout effect runs during the hydration commit,
+ * so an enabled button means main has hydrated. Appending earlier makes React report #418 and discard the node.
+ */
+async function waitForHydration(page: Page) {
+    await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
+}
+
 test("there is exactly one footer with its content and no collapse control on public pages", async ({ page }) => {
     for (const route of ["/", "/discover", "/contact", "/privacy", "/tool/json-formatter"]) {
         await page.goto(route);
@@ -33,6 +42,7 @@ test("there is exactly one footer with its content and no collapse control on pu
 
 test("on a long page the footer is in ordinary flow and is reached only by scrolling to the end", async ({ page }) => {
     await page.goto("/discover");
+    await waitForHydration(page);
     await page.evaluate(() => {
         const spacer = document.createElement("div");
         spacer.style.height = "4000px";
@@ -115,6 +125,7 @@ test("the footer follows the viewport when a short page is resized and the heade
 test("content added to a short page pushes the footer down without overlap and removing it restores the bottom", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/category/math");
+    await waitForHydration(page);
     const before = await expectFooterAtDocumentEnd(page, "before growth");
     expect(before.documentHeight).toBeLessThanOrEqual(before.viewportHeight + 1);
     await page.evaluate(() => {
@@ -151,6 +162,7 @@ test("old collapsed preference, malformed storage and stale document state canno
 
 test("the last page action is not covered by the footer", async ({ page }) => {
     await page.goto("/contact");
+    await waitForHydration(page);
     await page.evaluate(() => {
         const button = document.createElement("button");
         button.textContent = "Last page action";
