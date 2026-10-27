@@ -16,8 +16,8 @@ records the evidence and limits; the plan specifies exact owners, paths,
 six implementation batches and acceptance gates.
 
 Planning refresh on 2026-10-27 confirmed that master remains at the inspected
-commit and reread the official Google guidance. The plan now explicitly uses
-Z:/Users/newuser/Projects/iworkhere.space, selects DIRECT_IMPLEMENTATION for
+commit and reread the official Google guidance. The corrected plan explicitly uses
+C:/Users/daile/Projects/iworkhere.space, selects DIRECT_IMPLEMENTATION for
 Batches 1-5, and includes the advertising-versus-content layout check. The
 October 26 HTTP observations below have not been relabeled as new measurements.
 
