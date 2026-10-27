@@ -1,5 +1,44 @@
 # PROJECT STATUS
 
+## Immediate v0.4.4 planning checkpoint — 2026-10-26
+
+Status: PLANNING COMPLETE; APPLICATION IMPLEMENTATION NOT STARTED by this update.
+
+Inspected source: master at 59396b224157ad290e768c7f70998a9c947bda42.
+The application package remains 0.4.3; the dashboard remains 0.1.0.
+The v0.4.3 GitHub Release was separately verified as published on 2026-10-21;
+later master maintenance is not assumed to be a new numbered release.
+
+The immediate next scope is [v0.4.4 — Site Quality & Search Recovery](plans/v0.4.4-implementation-plan.md),
+before the unchanged v0.5.0/v0.6.0 catalogs. All nine new priorities are included
+now, with browser-title restoration first. The [dated quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+records the evidence and limits; the plan specifies exact owners, paths,
+six implementation batches and acceptance gates.
+
+Planning refresh on 2026-10-27 confirmed that master remains at the inspected
+commit and reread the official Google guidance. The plan now explicitly uses
+Z:/Users/newuser/Projects/iworkhere.space, selects DIRECT_IMPLEMENTATION for
+Batches 1-5, and includes the advertising-versus-content layout check. The
+October 26 HTTP observations below have not been relabeled as new measurements.
+
+Source findings include the uniform browser-title contract and incorrect
+signed calculator arithmetic currently preserved by a guide test. The source
+already contains 18 tools/guides, seven category guides, five measured
+examples and the existing trust pages. Live HTTP checks on 2026-10-26 found
+30/30 sitemap pages reachable with canonical URLs and index/follow metadata;
+all 30 HTML titles were iworkhere. The invalid-route probe returned 404/noindex.
+These HTTP observations do not identify the production deployment SHA.
+
+This update changes planning documentation only. It does not claim application
+fixes, four new guide pages, nine file examples, 35 deployed URLs, a new package
+version, release, deployment, ad activation or review submission. Real search
+query/traffic and field-performance data were unavailable. The next action is
+the detailed plan's implementation preflight, starting with title recovery.
+
+Preserve the current fixed header, document-flow footer and approved About
+copy. The title statement in the October 24 snapshot below remains a description
+of current code until v0.4.4 implements the explicit new requirement.
+
 ## Current site chrome — 2026-10-24
 
 The header is fixed to the top of the viewport with no Show/Hide navigation mechanism, and the footer is ordinary document-flow content at the end of the page. `FooterViewportControl` and the `--footer-clearance` variable are removed; `HeaderViewportControl` keeps only the fixed placement and measured height footprint. Every page has the browser title `iworkhere`, About is the last primary navigation link, and the default appearance remains Violet & Graphite with System mode. Visitor-facing copy was reviewed across the public pages and all 18 tools. Earlier retractable-chrome and fixed-footer notes are historical.

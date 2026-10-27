@@ -13,7 +13,13 @@ Release publication remains a distinct publication record and is not inferred
 from a merge or deployment. See [project status](project-status.md) for current
 validation and deployment evidence.
 
-> Current maintenance supersession (2026-10-24): the fixed footer remains always open; its collapse controls and preference state have been removed. Older v0.4.2/v0.4.3 roadmap statements below preserve their historical decisions.
+> Current maintenance supersession (2026-10-24): the header is fixed and the footer is ordinary document-flow content. Retractable controls and footer preference state have been removed. Older v0.4.2/v0.4.3 statements below preserve their historical decisions.
+
+The next immediate release is **v0.4.4 — Site Quality & Search Recovery**, planned
+on 2026-10-26 after the current quality audit. Browser-title recovery is priority
+1. All new quality/content/discovery additions belong to this release before
+the unchanged v0.5.0 and v0.6.0 catalog releases. The current package remains
+0.4.3; this planning update is not implementation or deployment evidence.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -605,6 +611,66 @@ Reuse the current registry, existing ToolGuide/ToolPageTemplate, SEO/sitemap, Ap
 
 No new tools, article farm, fake user-interest metrics, new tracking provider, server content service, ad activation or review submission. Do not alter frozen v0.5.0/v0.6.0 scopes or proposed converter waves. The [detailed v0.4.3 implementation plan](plans/v0.4.3-implementation-plan.md) owns Batches 1–5, path responsibilities, original example standards, case coverage, publisher decisions and validation gates. Implementation, readiness and operational evidence are recorded in [project status](project-status.md); source integration, Production deployment and GitHub publication remain separately verifiable records.
 
+## Version 0.4.4 — Site Quality & Search Recovery
+
+Status: PLANNED — immediate next implementation scope, authorized by the
+2026-10-26 request to improve site quality before another AdSense review.
+The application package remains 0.4.3 until the separate release stage.
+
+### Goal
+
+Correct observable product defects and strengthen useful, original task
+outcomes and search discovery across the existing utility website. Google
+retains the approval decision; no traffic, word-count or article-count
+threshold is implied.
+
+### Scope in priority order
+
+1. Restore distinct HTML browser titles, including Merge PDF Files Online - iworkhere.
+2. Correct signed calculator arithmetic, converter nonfinite output and unsafe duration totals.
+3. Verify all 18 existing tools through actual results, output inspection and relevant failures.
+4. Preserve truthful privacy/ad exclusions and explicitly deny advertising on Vercel previews.
+5. Add verified examples for Merge PDF, Split PDF, Image Compressor and HEIC, plus useful JSON/counter/QR examples.
+6. Publish four original task guides and their useful hub: an ordered PDF packet, an upload-ready image, HEIC photos to PDF and PDF pages for slides.
+7. Connect the guides and existing tools with descriptive navigation and relevant internal links.
+8. Extend crawl/metadata coverage and verify service-worker freshness, mobile usability and performance.
+9. Complete exact-deployment evidence, real measurement setup and the AdSense resubmission handoff.
+
+All new implementation scope is immediate; later traffic observations require
+elapsed time but are not deferred product additions. The [detailed plan](plans/v0.4.4-implementation-plan.md)
+owns the precise contracts, routes, paths, batches and tests. The [dated audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+separates confirmed findings from recommendations and unverified external state.
+
+### Dependencies and constraints
+
+Build on completed v0.4.3 and subsequent master maintenance, including the
+fixed header, normal-flow footer and approved About copy. Reuse registry,
+metadata, ToolGuide, ValueExample, ToolPageTemplate, content, SEO and ad owners.
+Add only the bounded authored task-guide node and five specified public routes.
+Preserve the five homepage featured examples while expanding file-example
+coverage to all nine file-processing tools.
+
+Do not add a CMS, processing engine, analytics vendor, account system, automatic
+file handoff or generic article program. Do not reactivate old chrome, publish
+placeholder guides or assign the new work to future catalog releases.
+
+### Acceptance
+
+All 18 tools complete their advertised tasks correctly within stated limits;
+nine file tools have reproduced examples; four distinct guides help complete
+real outcomes; 35 public route identities have truthful distinct titles and
+correct metadata; existing trust, privacy, ad and offline boundaries hold;
+and the required browser/runtime/CI checks pass on the actual candidate.
+Production verification and a requested AdSense review are separate recorded
+outcomes. A green test run does not establish approval or traffic growth.
+
+### Exclusions and handoff
+
+No new registered utilities, v0.5.0/v0.6.0 scope changes, arbitrary keyword
+landing pages, fabricated traffic/reviews, ad activation or automatic account
+submission. After the immediate release and verified review handoff, resume
+the frozen v0.5.0 Developer & Text Utility Suite. Preserve old plans as history.
+
 ## Version 0.5.0 — Developer & Text Utility Suite
 
 Status: Planned
@@ -927,6 +993,8 @@ v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
 v0.4.3  Utility Value, Trust & Discoverability (scope complete; merged to master)
         ↓
+v0.4.4  Site Quality & Search Recovery (immediate planned release)
+        ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
 v0.6.0  Time & Everyday Calculators
@@ -1010,6 +1078,14 @@ This roadmap does not authorize a coding agent to:
 Where a version has unresolved planning decisions, resolve them before its implementation plan is frozen.
 
 ## Next planning action
+
+Current decision (2026-10-26): implement the complete [v0.4.4 Site Quality &
+Search Recovery plan](plans/v0.4.4-implementation-plan.md) before the frozen
+v0.5.0 catalog expansion. Browser-title recovery is first. The [current audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+is the evidence baseline; old audit reports and handoffs below are date-scoped
+history. Current package/version and production observations remain in
+[project status](project-status.md). Planning documents do not establish
+implementation, deployment, live ad activation or AdSense review submission.
 
 Historical handoff at the 2026-10-20 planning checkpoint: GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before Batch A, verify the latest source/owners and establish original fixture provenance and measurable facts; verify truthful public publisher identity and the selected direct-Resend contact sender/inbox before Batch D, without blocking earlier example and discovery work. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
 

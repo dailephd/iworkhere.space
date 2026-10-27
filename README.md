@@ -7,15 +7,16 @@ The current application version is v0.4.3. It includes 18 registered utilities
 across seven populated categories, five original verified worked examples, a
 task-first homepage, improved Discover navigation and category guidance,
 publisher About and Contact pages, privacy improvements, and 30 canonical
-public routes. The existing fixed, retractable site chrome retains its
-conditional Report Issues action. Contact uses the direct Resend integration
+public routes. The header is fixed and the footer is ordinary document-flow
+content with its conditional Report Issues action. Contact uses the direct
+Resend integration
 with a sender and recipient configured externally; Production delivery was
 verified on 2026-10-21. The v0.4.2 issue-reporting entry remains conditional on
 `NEXT_PUBLIC_SUPPORT_ENABLED=true`; Report Issues and advertising remain
 default-off. Source integration, GitHub Release publication, and Vercel
 Production deployment are distinct release records. Production deploys from
 `master`.
-The preceding v0.4.2 release introduced a homepage that grouped tools by
+The earlier v0.4.1 release introduced a homepage that grouped tools by
 category. The current application retains those utilities and Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
 Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
@@ -32,6 +33,15 @@ measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
 and [the changelog](CHANGELOG.md).
+
+## Immediate quality plan
+
+The next planned release is [v0.4.4 — Site Quality & Search Recovery](docs/plans/v0.4.4-implementation-plan.md):
+restore descriptive browser titles, correct known calculation defects,
+strengthen verified examples and add four practical file-workflow guides.
+The [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
+the findings and their limits. This work is planned, not yet implemented;
+the [roadmap](docs/ROADMAP.md) preserves the later v0.5.0/v0.6.0 catalogs.
 
 ## Getting Started
 

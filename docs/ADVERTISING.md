@@ -1,5 +1,39 @@
 # Google AdSense integration
 
+## Planned v0.4.4 review safeguards
+
+Status: planned on 2026-10-26. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+does not establish AdSense approval, runtime consent configuration or live
+serving. The [immediate implementation plan](plans/v0.4.4-implementation-plan.md)
+preserves default-off advertising and all existing informational/error-page
+exclusions.
+
+The current config checks the explicit flag and NODE_ENV. The planned change
+adds an explicit deployment-environment input at the existing server eligibility
+boundary: a supplied VERCEL_ENV other than production denies ads even when
+NODE_ENV is production. Generic standalone production still requires the
+explicit public flag. Controlled enabled tests use stubbed Google endpoints;
+no browser-side value can override server denial.
+
+The planned /guide hub and its four task pages remain ineligible. Correct
+metadata and richer content do not automatically make a route ad-eligible.
+No new slots, vendor, Auto ads activation or consent implementation is added.
+
+The 2026-10-27 policy refresh adds an explicit desktop/mobile layout check:
+advertising and paid promotional material must not exceed actual publisher
+content. Whitespace, header/footer content and links to other site content
+do not count as extra publisher content. Use stubbed advertising for controlled
+tests and verify actual configured serving behavior before activation; do not
+invent a universal pixel ratio or slot limit. See [Google's content-versus-advertising
+policy](https://support.google.com/publisherpolicies/answer/11169917). This is a
+planned safeguard, not a finding that the default-off site currently violates it.
+
+Content-review resubmission and live ad activation are separate operations.
+Do not require a site to be Ready before requesting the review that may grant
+that status. The external activation gate below applies before serving ads.
+Verify account-provided review issues, site ownership and crawler accessibility
+for resubmission; do not turn on ads merely to demonstrate site ownership.
+
 ## Public configuration
 
 `src/module/ad/config.ts` is the single configuration owner:
@@ -78,6 +112,7 @@ Do not set the public ad flag true until the operator confirms all of:
 3. Deployed `/ads.txt` reachable and **Authorized** in AdSense.
 4. Applicable Privacy & messaging / Google-certified CMP configured.
 5. Auto ads remain disabled, or independently reviewed URL exclusions cover all ineligible routes and are verified against client navigation.
+6. The configured desktop/mobile ad layout preserves usable tool controls and does not contain more advertising or paid promotional material than actual publisher content.
 
 Google requires a Google-certified TCF CMP for personalized ads in the EEA, United Kingdom and Switzerland. Configure the applicable message through AdSense **Privacy & messaging** or another certified CMP; configure applicable US state privacy messages as required. No homegrown consent system is included. See [Google's current consent requirements](https://support.google.com/adsense/answer/13554116?hl=en). Repository code does not prove legal compliance, site Ready, ads.txt authorization, CMP configuration, real serving or revenue.
 

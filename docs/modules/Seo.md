@@ -12,17 +12,21 @@
 This is the primary anchor file for the logical unit. It is the canonical reference for retrieval and context-pack consumers.
 
 <!-- section-id: contract -->
-## Contract (added 2026-08-07 reconciliation)
+## Current contract at the 2026-10-26 inspection
 
 ```typescript
+function buildPageMetadata(seo: { title, description, canonicalPath }): Metadata
 function buildToolMetadata(seo: { title, description, canonicalPath }): Metadata
 function buildCategoryMetadata(slug: string, title: string, description: string): Metadata
 ```
 
-- Both functions build a Next.js `Metadata` object: `title` suffixed with
-  " — iworkhere.space", `description`, `alternates.canonical` (absolute URL
+- The helpers currently build a Next.js `Metadata` object with the constant
+  browser title `iworkhere`, `description`, `alternates.canonical` (absolute URL
   under `https://iworkhere.space`), and an `openGraph` block
   (`title`/`description`/`url`/`siteName`/`type: "website"`).
+- Descriptive Open Graph/Twitter titles currently use the input title plus
+  " — iworkhere.space". The HTML title was deliberately made uniform in the
+  October 24 implementation; the new requirement below supersedes that design.
 - `buildToolMetadata` takes a `ToolSeo`-shaped object and resolves its
   canonical URL from `canonicalPath` (e.g. `/tool/slugify`).
 - `buildCategoryMetadata` resolves its canonical URL as
@@ -56,10 +60,31 @@ This logical unit was identified by the following merge signals:
 <!-- section-id: notes -->
 ## Notes
 
-This document was generated from the Milestone 12 merged-unit ingestion pass.
+This document originated in the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.
 
 ## Delivery 2 crawl and metadata contract
 
 The existing SITE_URL is the single canonical origin and is exported for root metadata, sitemap and robots. Generic metadata helpers build apex HTTPS canonicals, Open Graph and Twitter summary fields without importing tool guide data. `isIndexable` is true for Vercel production, false for Vercel preview/development/unknown environments, and true for generic NODE_ENV=production without Vercel metadata. Root metadata applies the corresponding robots directive. Production robots permits ordinary public crawling and advertises the canonical sitemap; previews block crawling and advertise no sitemap. No GPTBot-specific training policy is added.
+
+## Planned v0.4.4 title recovery
+
+Status: planned, not yet implemented. The 2026-10-26 user instruction requires
+descriptive HTML titles; [the implementation plan](../plans/v0.4.4-implementation-plan.md)
+owns the exact route titles and acceptance criteria.
+
+The existing buildPageMetadata owner will produce each input title plus the
+single suffix " - iworkhere". Registry SEO input stays unbranded; do not add
+another title registry, duplicate root suffix or client document.title effect.
+The merge route must emit "Merge PDF Files Online - iworkhere". Category
+titles remain derived from category.ts; fixed pages and four authored guides
+use their own truthful metadata input. Not-found routes use
+"Page Not Found - iworkhere", preserve 404/noindex and remain outside the sitemap.
+
+Preserve canonical query/hash removal, environment indexability, descriptions
+and descriptive social metadata. Verify initial HTML and final DOM for every
+public route, direct/client/back-forward navigation, reload and error routes.
+Tests that currently require the uniform title must change with this contract.
+The five planned guide URLs extend the current 30-route sitemap to 35; this
+is planned inventory and is not a claim about current deployment.

@@ -1,5 +1,53 @@
 # ARCHITECTURE
 
+## Planned v0.4.4 quality and task-guide extension
+
+Status: planned on 2026-10-26; no source implementation is claimed here.
+The [v0.4.4 implementation plan](plans/v0.4.4-implementation-plan.md) is the
+exact behavior/path contract. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+records the inspected baseline and distinguishes source from live observations.
+
+Existing registry, category, metadata, route, processing, storage, telemetry
+and advertisement owners remain authoritative. Correct titles in lib/seo,
+arithmetic in the existing math/everyday/time owners, and caching in public/sw.js.
+No new tool registry, calculation framework or processing engine is introduced.
+
+The bounded new node is src/module/content/taskGuide.ts, containing exactly
+four authored multi-tool task guides. It refers to existing ToolIds and example
+records without duplicating tool names, categories or canonical paths. The
+guide hub and detail Server Components live at src/app/guide/page.tsx and
+src/app/guide/[slug]/page.tsx. They resolve references through current metadata/
+example owners, call the generic SEO helper, and pass display-ready props to
+the presentation-only src/component/content/TaskGuidePage.tsx. Unknown guide
+slugs return notFound. No CMS, MDX evaluator, server content API or new store
+is added. Generic lib/seo never imports module/content.
+
+The existing homepage composes a compact guide section server-side between
+its featured tasks and HomeClient. Tool routes pass resolved taskGuideLink
+items into ToolPageTemplate; category routes compose relevant guide links.
+Guide prose never enters client catalog payloads. Navigation adds Guides after
+All tools and retains About last; fixed-header/document-flow-footer ownership
+and approved About copy are unchanged.
+
+The existing valueExamples/ToolExamplePanel path expands from five to nine
+file demonstrations using a separate immutable public/examples/v0.4.4/
+manifest and exact assets named in the plan. A featuredOnHome field and
+getFeaturedValueExample() keep the existing five homepage tasks stable.
+The HEIC sample retains its upstream MIT provenance; original measurements
+do not imply original ownership of that input.
+
+The five guide URLs are planned additions to the existing 30-route sitemap,
+yielding 35 route identities after implementation. All guide pages remain
+outside AdSenseEligiblePage. The server advertising policy will explicitly
+deny non-production Vercel environments; client code cannot grant eligibility.
+The service worker retains one owner with explicit same-origin cache classes
+and network-only exclusions for APIs, private/query data and RSC/prefetch.
+
+All details, required tests and report paths belong to the implementation plan.
+After source validation, update the corresponding module/component specs and
+current status; retain older architecture sections as date-scoped history
+where the new implementation changes them.
+
 ## Diagnostic hotfix architecture
 
 Diagnostics preserve bounded redacted Error fields, causes, aggregate children,
