@@ -723,3 +723,36 @@ Browser title recovery is implemented in the local working tree on
 0.4.3). `buildPageMetadata` now emits the unbranded title plus " - iworkhere" for
 the 18 tools, five fixed pages, seven categories and the not-found page. This
 checkpoint does not claim the v0.4.4 release or later batches complete.
+
+## v0.4.4 Batch 4 checkpoint — 2026-10-27
+
+Four verified tool examples are implemented on `feature/v0.4.4-site-quality`
+(local, unreleased, not pushed; package version remains 0.4.3; the staged v0.4.4
+PR #48 remains an integration dependency and PR #41 overlaps documentation).
+Merge PDF, Split PDF, Image Compressor and HEIC → JPG / PNG Converter now have a
+worked example beside the five v0.4.3 examples: nine in total, with exactly five
+featured on the home page (`ValueExample.featuredOnHome`,
+`getFeaturedValueExample()`). The original five records and the v0.4.3 assets are
+unchanged.
+
+The sources and outputs are under `public/examples/v0.4.4/` with a SHA-256
+manifest, README and the HEIC `LICENSE.txt`. `script/v044ExampleFixtures.ts`
+produces every output by driving the real tool page in Chromium and saving its
+actual download. The HEIC input is not project-authored: it is the synthetic MIT
+fixture `asym-base.heic` from the su-engineering/heic-web project (commit
+`3261b10a31625dcb395b82081b3e9f7d10c9fc2c`), verified by SHA-256 and Git blob id
+before it is copied. That permission covers the test fixture only; the
+production decoder release-license gate in `docs/modules/HeicConverter.md` is
+separate and unchanged. The JSON Formatter, Word and Character Counter and QR
+Code Generator guides gained a short example each, verified against the real
+tools. Merge and Split PDF page identity is verified by PDF.js text and rendered
+pixels; PDF output bytes vary between runs, so the committed SHA-256 values
+identify the committed files while page content is the reproducible part.
+
+Evidence is recorded in `docs/TESTING.md` (v0.4.4 Batch 4). Open items carried to
+Batch 6: the container gate ran twice and did not pass (one `net::ERR_NO_BUFFER_SPACE` browser failure per run in an unrelated image-converter spec, everything else green), so it stays release-blocking until a green exact-candidate run; browser-level coverage of the Merge
+10-file / 25 MiB / 100-page limits, the Split 20-group limit, the HEIC
+30-megapixel limit and a decode of the downloaded HEIC output is still absent,
+so the 18 journeys do not all have independent coverage; the Compress PDF,
+Images to PDF, PDF to JPG / PNG and image tools were not re-audited here. Batch
+5 (four task guides and a hub) needs a separately scoped prompt.

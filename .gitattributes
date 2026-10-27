@@ -15,5 +15,10 @@ public/examples/v0.4.3/**/*.pdf binary
 public/examples/v0.4.3/**/*.png binary
 public/examples/v0.4.3/**/*.jpg binary
 public/examples/v0.4.3/**/*.webp binary
+# v0.4.4 example assets are hashed in public/examples/v0.4.4/manifest.json; never convert their bytes.
+public/examples/v0.4.4/**/*.pdf binary
+public/examples/v0.4.4/**/*.png binary
+public/examples/v0.4.4/**/*.jpg binary
+public/examples/v0.4.4/**/*.heic binary
 # Byte-sensitive public test: always check out with LF.
 public/ads.txt text eol=lf

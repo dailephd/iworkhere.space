@@ -152,6 +152,7 @@ test("encrypted/malformed PDFs remain bounded accessible errors", async ({ page 
         await input.setInputFiles(fixture("encrypted")); const alert = page.getByRole("main").getByRole("alert");
         await expect(alert).toContainText("Encrypted or password-protected"); await expect(alert).toBeFocused();
         await input.setInputFiles(fixture("invalid-body")); await expect(alert).toContainText("could not be parsed safely");
-        await expect(page.getByRole("main").locator("a[download]")).toHaveCount(0); await noOverflow(page);
+        // The tool offers no result download after an error. The page's worked-example links are separate, marked data-example-asset and visitor-initiated.
+        await expect(page.getByRole("main").locator("a[download]:not([data-example-asset])")).toHaveCount(0); await noOverflow(page);
     }
 });

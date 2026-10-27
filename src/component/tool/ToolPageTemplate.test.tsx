@@ -129,7 +129,8 @@ it("keeps both healthy and failed tools free of advertising when the global flag
     expect(initialize).not.toHaveBeenCalled();
 });
 
-const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
+// Nine tool pages carry a worked example: the five v0.4.3 tools and the four added in v0.4.4.
+const WITH_EXAMPLE = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter", "merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
 function featuredPage(slug: string, withExample = true) {
     const tool = getToolBySlug(slug)!;
     return <ToolPageTemplate tool={tool} guide={getToolGuide(tool.id)} breadcrumb={[{ label: "Home", href: "/" }, { label: tool.name }]} relatedTool={[]}
@@ -137,15 +138,15 @@ function featuredPage(slug: string, withExample = true) {
         toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />;
 }
 
-it("gives exactly the five featured tools an example and every other registered tool none", async () => {
+it("gives exactly the nine example tools an example and every other registered tool none", async () => {
     for (const tool of tool_definition_list) {
         const result = (await ToolPage({ params: Promise.resolve({ slug: tool.slug }) })) as React.ReactElement<{ example?: { toolId: string } }>;
-        expect(result.props.example?.toolId, tool.id).toBe(FEATURED.includes(tool.id) ? tool.id : undefined);
+        expect(result.props.example?.toolId, tool.id).toBe(WITH_EXAMPLE.includes(tool.id) ? tool.id : undefined);
     }
-    expect(tool_definition_list.filter(tool => FEATURED.includes(tool.id))).toHaveLength(FEATURED.length);
+    expect(tool_definition_list.filter(tool => WITH_EXAMPLE.includes(tool.id))).toHaveLength(WITH_EXAMPLE.length);
 });
 
-it.each(FEATURED)("renders the %s example after the working tool and before the guide, keeping page structure", async slug => {
+it.each(WITH_EXAMPLE)("renders the %s example after the working tool and before the guide, keeping page structure", async slug => {
     await act(async () => root.render(featuredPage(slug)));
     const tool = [...element.querySelectorAll("p")].find(value => value.textContent === "Working utility content")!;
     expect(tool).toBeDefined();
@@ -163,16 +164,18 @@ it.each(FEATURED)("renders the %s example after the working tool and before the 
     expect(guide.querySelectorAll("h2").length).toBeGreaterThan(1);
 });
 
-it.each(FEATURED)("renders the %s page without any example section when no example is supplied", async slug => {
+it.each(WITH_EXAMPLE)("renders the %s page without any example section when no example is supplied", async slug => {
     await act(async () => root.render(featuredPage(slug, false)));
     expect(element.textContent).not.toContain("Worked example");
     expect(element.querySelector('section[aria-labelledby$="-example-heading"]')).toBeNull();
     expect(element.querySelector('section[aria-label="Tool guide"]')).not.toBeNull();
 });
 
-it("renders an unfeatured tool with no example section or placeholder", async () => {
-    await act(async () => root.render(featuredPage("json-formatter")));
+it.each(["json-formatter", "word-character-counter", "qr-code-generator"])("renders the guided %s page with no example section or placeholder, even though its guide has its own example", async slug => {
+    // Their guides carry an input-and-output example, but "Worked example" names only the tool-page panel.
+    await act(async () => root.render(featuredPage(slug)));
     expect(element.textContent).not.toContain("Worked example");
+    expect(element.querySelector('section[aria-labelledby$="-example-heading"]')).toBeNull();
     expect(element.querySelectorAll('a[href^="/examples/"], img[src^="/examples/"]')).toHaveLength(0);
 });
 

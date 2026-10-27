@@ -6,7 +6,7 @@ import { buildPageMetadata } from "@/lib/seo"
 export const metadata = buildPageMetadata({ title: "Browser Tools for PDFs, Images and Text", description: "Browser tools for PDFs, images, text, unit conversion, calculation, time values and developer tasks. PDF and image processing runs locally in your browser.", canonicalPath: "/" })
 
 import { getAllTool, getAvailableCategory, getToolByIdList } from "@/module/tool/metadata"
-import { getAllValueExample } from "@/module/tool/valueExamples"
+import { getFeaturedValueExample } from "@/module/tool/valueExamples"
 
 interface FeaturedTaskItem {
   slug: string
@@ -18,10 +18,11 @@ interface FeaturedTaskItem {
 
 /*
  * Editorial task entry points, not a catalog and not a ranking. The five tasks come from the
- * value-example owner and each tool is resolved through the registry, so no tool facts live here.
+ * value-example owner (its featured subset, not every example) and each tool is resolved through the registry,
+ * so no tool facts live here.
  */
 function getFeaturedTask(): FeaturedTaskItem[] {
-  return getAllValueExample().flatMap((example) => {
+  return getFeaturedValueExample().flatMap((example) => {
     const [tool] = getToolByIdList([example.toolId])
     if (!tool) return []
     return [{

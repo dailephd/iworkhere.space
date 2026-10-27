@@ -2,11 +2,17 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import type { Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
-import manifest from "../../public/examples/v0.4.3/manifest.json";
+import manifest043 from "../../public/examples/v0.4.3/manifest.json";
+import manifest044 from "../../public/examples/v0.4.4/manifest.json";
 
-const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
-const UNFEATURED = ["json-formatter", "calculator", "image-compressor", "merge-pdf"];
-const MEDIA_LABEL: Record<string, string> = { "application/pdf": "PDF", "image/png": "PNG", "image/jpeg": "JPEG", "image/webp": "WebP" };
+// Nine tool pages carry a worked example; only the first five are presented as tasks on the home page.
+const HOME_TASK = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
+const FEATURED = [...HOME_TASK, "merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
+const UNFEATURED = ["json-formatter", "calculator", "qr-code-generator", "word-character-counter"];
+const MEDIA_LABEL: Record<string, string> = { "application/pdf": "PDF", "image/png": "PNG", "image/jpeg": "JPEG", "image/webp": "WebP", "image/heic": "HEIC" };
+// Files a browser cannot show inline: their download link is named by what the file contains.
+const DESCRIBED_LINK = ["application/pdf", "image/heic"];
+const manifest = { asset: [...manifest043.asset, ...manifest044.asset], operation: [...manifest043.operation, ...manifest044.operation] };
 
 const assetOf = (slug: string) => manifest.asset.filter(value => value.exampleId === `${slug}-example`);
 const urlOf = (asset: { path: string }) => `/${asset.path.slice("public/".length)}`;
@@ -16,8 +22,8 @@ const guide = (page: Page) => page.getByRole("region", { name: "Tool guide", exa
 const firstControl = (slug: string) => manifest.operation.find(value => value.toolId === slug)!.step.find(step => step.kind === "choose-files")!.control;
 const noHorizontalOverflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
 
-test.describe("v0.4.3 tool-page worked examples", () => {
-    test("the five featured tool pages server-render their example and every other page has none", async ({ request }) => {
+test.describe("v0.4.3 and v0.4.4 tool-page worked examples", () => {
+    test("the nine example tool pages server-render their example and every other page has none", async ({ request }) => {
         for (const slug of FEATURED) {
             const response = await request.get(`/tool/${slug}`);
             expect(response.status(), slug).toBe(200);
@@ -28,7 +34,7 @@ test.describe("v0.4.3 tool-page worked examples", () => {
         for (const slug of UNFEATURED) {
             const html = await (await request.get(`/tool/${slug}`)).text();
             expect(html, slug).not.toContain("Worked example");
-            expect(html, slug).not.toContain("/examples/v0.4.3/");
+            expect(html, slug).not.toContain("/examples/v0.4.");
         }
     });
 
@@ -75,6 +81,23 @@ test.describe("v0.4.3 tool-page worked examples", () => {
         }
     });
 
+    test("the home page presents exactly the five original tasks, not the four added examples, and fetches no sample", async ({ page }) => {
+        const download: string[] = [], request: string[] = [];
+        page.on("download", value => download.push(value.suggestedFilename()));
+        page.on("request", value => request.push(value.url()));
+        await page.goto("/", { waitUntil: "networkidle" });
+        const task = page.locator("[data-featured-task]");
+        await expect(task).toHaveCount(5);
+        expect(await task.evaluateAll(element => element.map(value => value.getAttribute("data-featured-task")))).toEqual(HOME_TASK);
+        for (const slug of FEATURED.filter(value => !HOME_TASK.includes(value))) await expect(page.locator(`[data-featured-task="${slug}"]`), slug).toHaveCount(0);
+        await expect(page.locator('a[href^="/examples/"], img[src^="/examples/"]')).toHaveCount(0);
+        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await page.waitForTimeout(300);
+        expect(download).toEqual([]);
+        expect(request.filter(value => value.includes("/examples/"))).toEqual([]);
+        expect(await noHorizontalOverflow(page)).toBe(true);
+    });
+
     test("every example file resolves from this origin with its recorded media type, size and SHA-256", async ({ request }) => {
         for (const asset of manifest.asset) {
             const response = await request.get(urlOf(asset));
@@ -98,7 +121,7 @@ test.describe("v0.4.3 tool-page worked examples", () => {
         }
         expect(download, "no file is downloaded without a visitor action").toEqual([]);
         expect(popup, "no PDF viewer or window opens by itself").toEqual([]);
-        expect(request.filter(value => /\/examples\/.*\.pdf(\?|$)/i.test(value)), "PDF examples are only fetched on request").toEqual([]);
+        expect(request.filter(value => /\/examples\/.*\.(pdf|heic)(\?|$)/i.test(value)), "PDF and HEIC examples are only fetched on request").toEqual([]);
         const origin = new URL(baseURL!).origin;
         expect(request.filter(value => /^https?:/i.test(value) && new URL(value).origin !== origin), "no external sample host").toEqual([]);
     });
@@ -109,8 +132,8 @@ test.describe("v0.4.3 tool-page worked examples", () => {
             for (const asset of assetOf(slug)) {
                 const link = panel(page).locator(`a[href="${urlOf(asset)}"]`);
                 await expect(link).toHaveCount(1);
-                // PDF links also name what the file contains (v0.4.3 Batch 3); image links are described by their figure's alt text and caption.
-                const description = asset.mediaType === "application/pdf" ? " \\(.{15,}\\)" : "";
+                // PDF and HEIC links also name what the file contains; previewed image links are described by their figure's alt text and caption.
+                const description = DESCRIBED_LINK.includes(asset.mediaType) ? " \\(.{15,}\\)" : "";
                 await expect(link).toHaveAccessibleName(new RegExp(`^Download (source|result) ${MEDIA_LABEL[asset.mediaType]}: ${nameOf(asset).replace(".", "\\.")}${description}$`));
                 const pending = page.waitForEvent("download");
                 await link.click();

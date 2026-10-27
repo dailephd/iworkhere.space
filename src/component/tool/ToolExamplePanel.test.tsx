@@ -4,11 +4,17 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import manifest from "../../../public/examples/v0.4.3/manifest.json";
+import manifest044 from "../../../public/examples/v0.4.4/manifest.json";
 import { getAllValueExample, getValueExample, type ValueExample } from "@/module/tool/valueExamples";
 import { ToolExamplePanel } from "./ToolExamplePanel";
 
 const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
-const MEDIA_LABEL: Record<string, string> = { "application/pdf": "PDF", "image/png": "PNG", "image/jpeg": "JPEG", "image/webp": "WebP" };
+const ADDED = ["merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
+const WITH_EXAMPLE = [...FEATURED, ...ADDED];
+const MEDIA_LABEL: Record<string, string> = { "application/pdf": "PDF", "image/png": "PNG", "image/jpeg": "JPEG", "image/webp": "WebP", "image/heic": "HEIC" };
+const PREVIEWABLE = ["image/png", "image/jpeg", "image/webp"];
+// Measured facts come from whichever immutable manifest owns the file.
+const ALL_ASSET = [...manifest.asset, ...manifest044.asset];
 
 function render(example: ValueExample): HTMLElement {
     const host = document.createElement("div");
@@ -25,11 +31,12 @@ const assetOf = (example: ValueExample) => [...example.source, ...example.output
 const itemFor = (host: HTMLElement, url: string) => host.querySelector(`a[href="${url}"]`)!.closest("li")!;
 
 describe("ToolExamplePanel", () => {
-    it("has a record for exactly the five featured tools", () => {
-        expect(getAllValueExample().map(example => example.toolId)).toEqual(FEATURED);
+    it("has a record for exactly the nine tools with a worked example, five of them featured on the home page", () => {
+        expect(getAllValueExample().map(example => example.toolId)).toEqual(WITH_EXAMPLE);
+        expect(getAllValueExample().filter(example => example.featuredOnHome).map(example => example.toolId)).toEqual(FEATURED);
     });
 
-    describe.each(FEATURED)("%s", toolId => {
+    describe.each(WITH_EXAMPLE)("%s", toolId => {
         const example = exampleOf(toolId);
 
         it("is one labelled section with a single H2 and no H1", () => {
@@ -52,13 +59,15 @@ describe("ToolExamplePanel", () => {
                 expect(text).toContain(operation.summary);
                 for (const step of operation.reproduction) expect(text).toContain(step);
             }
-            expect(text).not.toMatch(/zip/i);
+            // The panel adds no ZIP claim of its own; a record may state that there is no ZIP file (Split PDF).
+            const recordText = [example.task, example.whyThisTool, example.outcome, ...example.changed, ...example.unchanged, ...example.limitation].join(" ");
+            expect(text.match(/zip/gi)?.length ?? 0).toBe(recordText.match(/zip/gi)?.length ?? 0);
         });
 
         it("shows each file's measured facts exactly as the manifest records them", () => {
             const host = render(example);
             for (const asset of assetOf(example)) {
-                const recorded = manifest.asset.find(value => value.path === asset.path)!;
+                const recorded = ALL_ASSET.find(value => value.path === asset.path)!;
                 const text = itemFor(host, asset.url).textContent ?? "";
                 expect(text).toContain(fileName(asset.url));
                 expect(text).toContain(MEDIA_LABEL[recorded.mediaType]);
@@ -78,12 +87,12 @@ describe("ToolExamplePanel", () => {
             expect(link.map(value => value.getAttribute("href")).sort()).toEqual(assetOf(example).map(value => value.url).sort());
             for (const value of link) {
                 const href = value.getAttribute("href")!;
-                expect(href.startsWith("/examples/v0.4.3/")).toBe(true);
+                expect(href.startsWith("/examples/v0.4.3/") || href.startsWith("/examples/v0.4.4/")).toBe(true);
                 expect(href).not.toMatch(/^[a-z]+:|^\/\//i);
                 expect(value.getAttribute("download")).toBe(fileName(href));
                 expect(value.getAttribute("data-example-asset")).toMatch(/^(source|output)$/);
-                expect(value.getAttribute("type")).toBe(manifest.asset.find(asset => asset.path === `public${href}`)!.mediaType);
-                expect(value.textContent).toMatch(/^Download (source|result) (PDF|PNG|JPEG|WebP): /);
+                expect(value.getAttribute("type")).toBe(ALL_ASSET.find(asset => asset.path === `public${href}`)!.mediaType);
+                expect(value.textContent).toMatch(/^Download (source|result) (PDF|PNG|JPEG|WebP|HEIC): /);
                 expect(value.textContent).toContain(fileName(href));
             }
             const name = link.map(value => value.textContent);
@@ -93,7 +102,8 @@ describe("ToolExamplePanel", () => {
         it("previews only images, at their recorded size, lazily and with alt text", () => {
             const host = render(example);
             const image = [...host.querySelectorAll("img")];
-            const expected = assetOf(example).filter(asset => asset.mediaType.startsWith("image/"));
+            // HEIC is offered for download only: browsers cannot display it, so it is never an inline image.
+            const expected = assetOf(example).filter(asset => PREVIEWABLE.includes(asset.mediaType));
             expect(image.map(value => value.getAttribute("src")).sort()).toEqual(expected.map(asset => asset.url).sort());
             for (const value of image) {
                 const asset = expected.find(item => item.url === value.getAttribute("src"))!;
@@ -122,9 +132,9 @@ describe("ToolExamplePanel", () => {
             expect(new Set(alt).size, "each image has its own description").toBe(alt.length);
         });
 
-        it("names each PDF download by what the file contains, uniquely", () => {
+        it("names each PDF and HEIC download by what the file contains, uniquely", () => {
             const host = render(example);
-            const pdf = assetOf(example).filter(asset => asset.mediaType === "application/pdf");
+            const pdf = assetOf(example).filter(asset => !PREVIEWABLE.includes(asset.mediaType));
             for (const asset of pdf) {
                 const link = host.querySelector(`a[href="${asset.url}"]`)!;
                 expect(link.textContent).toContain(`(${asset.description})`);
@@ -183,6 +193,38 @@ describe("ToolExamplePanel", () => {
         const converter = render(exampleOf("image-converter")).textContent ?? "";
         expect(converter).toContain("flattened onto white");
         expect(converter).toContain("keeps its transparency");
+    });
+
+    it("offers the HEIC source as a download-only upstream file, never as an inline image", () => {
+        const host = render(exampleOf("heic-converter"));
+        expect(host.querySelectorAll("img")).toHaveLength(2);
+        expect([...host.querySelectorAll("img")].map(value => value.getAttribute("src")).sort()).toEqual(["/examples/v0.4.4/heic-converter/converted.jpg", "/examples/v0.4.4/heic-converter/converted.png"]);
+        const link = host.querySelector('a[href="/examples/v0.4.4/heic-converter/source.heic"]')!;
+        expect(link.getAttribute("type")).toBe("image/heic");
+        expect(link.getAttribute("download")).toBe("source.heic");
+        expect(link.textContent).toMatch(/^Download source HEIC: source\.heic \(.+\)$/);
+        const text = host.textContent ?? "";
+        expect(text).toContain("not project-authored");
+        expect(text).toContain("MIT");
+        expect(text).toContain("480 × 320 px");
+        expect(text).toContain("No HEIC transparency guarantee is made");
+    });
+
+    it("keeps the per-tool facts of the four new examples visible", () => {
+        const merge = render(exampleOf("merge-pdf")).textContent ?? "";
+        expect(merge).toContain(`Under "Choose PDFs", choose source-001.pdf then source-002.pdf.`);
+        expect(merge).toContain("A1, A2, B1, B2 and B3");
+        expect(merge).toContain("Page 5");
+        const split = render(exampleOf("split-pdf")).textContent ?? "";
+        expect(split).toContain(`Enter 3,1 in "Pages for output group 1".`);
+        expect(split).toContain(`Press "Add output group".`);
+        expect(split).toContain(`Enter 2-3 in "Pages for output group 2".`);
+        expect(split).toContain("Download output group 2");
+        expect(split).toContain("3-1 is rejected");
+        const compressor = render(exampleOf("image-compressor")).textContent ?? "";
+        expect(compressor).toContain(`Move the "Quality" slider to 40.`);
+        expect(compressor).toContain("not a typical rate");
+        expect(compressor).toContain("No smaller file produced");
     });
 
     it("stays a Server Component without client state or processing imports", () => {

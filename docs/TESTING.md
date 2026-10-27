@@ -625,3 +625,30 @@ worktree changes present; the reports do not attest a hosted exact-SHA run.
 
 These local reports do not establish hosted CI, production deployment, Resend
 configuration, inbox delivery, Search Console indexing or AdSense approval.
+
+## v0.4.4 Batch 4 - worked-example evidence
+
+Nine tool pages carry a worked example: the five v0.4.3 tools and, from this batch, Merge PDF, Split PDF, Image Compressor and HEIC → JPG / PNG Converter. Only the five original tasks are featured on the home page (`ValueExample.featuredOnHome`, `getFeaturedValueExample()`).
+
+What the tests read, rather than trust:
+
+- `src/module/tool/valueExamples.test.ts` reads both example manifests and the committed files. For every v0.4.4 file it checks byte count, SHA-256 and magic bytes against the declared media type; image dimensions parsed from the JPEG, PNG and HEIF headers (an ISO base media box walk to the `ispe` property, independent of the generator); and, for the PDFs, PDF.js page text and a hash of each page's rendered pixels, in order. Merge output pages must be A1, A2, B1, B2, B3 and render exactly like their source pages; Split results must be P3, P1 and P2, P3 with overlap on page 3. Replaced, truncated, mistyped and missing files are proven to be detected. The recorded group expressions, quality and download names are checked against the tools' own `parsePageSelection`, `splitPdfFilename`, `mergePdfFilename`, `imageCompressorFilename`, `heicFilename` and quality rules.
+- The HEIC source must equal `test/fixtures/images/heic-source.heic` byte for byte (SHA-256 and Git blob id), and `LICENSE.txt` must say the file is not project-authored and end with the pinned upstream MIT text unchanged. The decoded PNG is checked at seven known points.
+- `src/module/tool/guideExample.test.tsx` runs the JSON, word-counter and QR guide examples through the real components or logic; the QR PNG is decoded by the test-only `jsqr` reader back to the same text.
+- `test/e2e/value-examples.spec.ts` serves every v0.4.4 file from the production build and checks its identity and content type, decodes the JPEG and PNG outputs natively and samples their pixels, and re-runs every recorded operation on the real tool with the committed sources. `test/e2e/tool-value-examples.spec.ts` covers the nine pages, the home page's five tasks, no unsolicited sample request or download, and overflow at desktop and mobile widths.
+
+Things that are easy to get wrong:
+
+- The example panel's links and images carry `data-example-asset`. A spec that asserts "no download" or "no image" for a tool must exclude them (`a[download]:not([data-example-asset])`, `getByRole("img").and(page.locator(":not([data-example-asset])"))`).
+- "Worked example" is the accessible name of the tool-page panel only. Guide sections use other headings, so a page without an example never contains that phrase.
+- A guide paragraph must not contain a long unbroken token: it cannot wrap on a 390 px viewport. `json-formatter.spec.ts` caught this.
+- pdf-lib output bytes differ between runs even when every page is identical, so reproduction checks compare page text and rendered pixels, never PDF bytes. JPEG and PNG outputs came from Chromium's encoders and are compared by decoded pixels.
+
+| Gate | Report identity | Result |
+| --- | --- | --- |
+| `npm run verify` | `test-report/2026-10-27T14-13-05-884Z-b4152759/` | Typecheck, lint, test and build passed; 1,971 unit tests passed, 0 skipped. |
+| Focused E2E (value examples, tool pages, Merge/Split, HEIC) | `test-report/e2e/2026-10-27T14-17-19-088Z-19398f9b/` | 124 passed. |
+| Public E2E, default-off | `test-report/e2e/2026-10-27T14-21-38-267Z-c1971992/` | 808 passed, 6 skipped, 0 unexpected, 0 flaky. The skips are the ads-enabled preview and support-enabled Contact tests, which this configuration does not run. |
+| Container | `test-report/container/2026-10-27T14-41-14-361Z-01cf74b2/` and `test-report/container/2026-10-27T15-01-46-814Z-2db5925a/` | NOT PASSED, release-blocking until a green exact-candidate run in Batch 6. Both runs built the image and passed health, 42 HTTP smoke routes, the service worker, shutdown and cleanup; each browser pass had 807 passed, 6 skipped and 1 failure, a `net::ERR_NO_BUFFER_SPACE` on `page.goto` in `image-converter.spec.ts` (a different test each time; the same spec passes in the standard run). The cause is probably host socket exhaustion, but that is not proven. |
+
+Not claimed: that all 18 tool journeys have independent coverage. The existing Merge, Split and HEIC specs assert real ordered downloads inspected with PDF.js (text, size and rotation), invalidation and URL revocation, the 25 MiB and empty precheck, content sniffing and race handling, but not the 10-file, 25 MiB and 100-page Merge limits or the 20-group Split limit in a browser, the 30-megapixel HEIC limit, or a decode of the downloaded HEIC output bytes. The new example checks add page-level rendering and pixel evidence for the positive paths only.

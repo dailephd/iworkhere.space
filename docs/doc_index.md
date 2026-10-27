@@ -470,6 +470,7 @@ Current v0.4.3 specifications:
 - `components/ToolExamplePanel.md` and `components/ContactForm.md`: presentation and form behavior.
 - `modules/SiteInformation.md` and `modules/ContactEmail.md`: publisher content and the independent server-only contact contract.
 - `public/examples/v0.4.3/README.md`: original asset provenance and measured example procedures.
+- `public/examples/v0.4.4/README.md`: v0.4.4 example provenance (including the upstream-licensed HEIC fixture), generator command and reproducibility limits.
 
 
 **Summary:** A separate implementation/design-contract layer, one file per

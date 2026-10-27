@@ -7,10 +7,11 @@ vi.mock("next/link", () => ({ default: ({ children, ...props }: { children: unkn
 
 import HomePage, { metadata } from "./page";
 import { getAvailableCategory, getAllTool } from "@/module/tool/metadata";
-import { getAllValueExample } from "@/module/tool/valueExamples";
+import { getAllValueExample, getFeaturedValueExample } from "@/module/tool/valueExamples";
 import { getToolCategoryLabel } from "@/module/tool/category";
 
 const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
+const ADDED = ["merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
 
 function render(): HTMLElement {
     const host = document.createElement("div");
@@ -37,10 +38,13 @@ describe("home page task-first content", () => {
         const host = render();
         const item = [...host.querySelectorAll<HTMLElement>("[data-featured-task]")];
         expect(item.map(one => one.getAttribute("data-featured-task"))).toEqual(FEATURED);
-        expect(getAllValueExample().map(example => example.toolId)).toEqual(FEATURED);
+        // Nine tools have worked examples, but only the five original tasks are presented on the home page.
+        expect(getAllValueExample().map(example => example.toolId)).toEqual([...FEATURED, ...ADDED]);
+        expect(getFeaturedValueExample().map(example => example.toolId)).toEqual(FEATURED);
+        for (const slug of ADDED) expect(host.querySelector(`[data-featured-task="${slug}"]`), slug).toBeNull();
         for (const [index, one] of item.entries()) {
             const tool = getAllTool().find(value => value.slug === FEATURED[index])!;
-            const example = getAllValueExample()[index];
+            const example = getFeaturedValueExample()[index];
             const link = one.querySelectorAll("a");
             expect(link).toHaveLength(1);
             expect(link[0].getAttribute("href")).toBe(`/tool/${tool.slug}`);

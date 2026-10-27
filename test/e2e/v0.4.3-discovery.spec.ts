@@ -197,10 +197,12 @@ test.describe("tool example panel accessibility", () => {
         await expect(pdf).toHaveCount(2);
     });
 
-    test("the thirteen tools without an example still render no example panel", async ({ page }) => {
+    test("the nine tools without an example still render no example panel", async ({ page }) => {
+        // v0.4.4 Batch 4 added examples to four more tools; they are not home-page tasks, so FEATURED stays at five.
+        const added = ["merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
         const registry = readFileSync(resolve(process.cwd(), "src/module/tool/registry.ts"), "utf8");
-        const slugs = [...registry.matchAll(/slug:\s*"([^"]+)"/g)].map(match => match[1]).filter(slug => !FEATURED.some(one => one.slug === slug));
-        expect(slugs).toHaveLength(TOOL_COUNT - FEATURED.length);
+        const slugs = [...registry.matchAll(/slug:\s*"([^"]+)"/g)].map(match => match[1]).filter(slug => !FEATURED.some(one => one.slug === slug) && !added.includes(slug));
+        expect(slugs).toHaveLength(TOOL_COUNT - FEATURED.length - added.length);
         for (const slug of slugs) {
             await page.goto(`/tool/${slug}`);
             await expect(page.getByRole("region", { name: "Worked example", exact: true })).toHaveCount(0);

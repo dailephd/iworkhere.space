@@ -2,7 +2,14 @@
 import { act, createElement } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { getToolGuide } from "./guide";
+import jsQR from "jsqr";
+import { COUNTER_GUIDE_DECOMPOSED, COUNTER_GUIDE_FAMILY, JSON_GUIDE_EXAMPLE, JSON_GUIDE_MEMBER, QR_GUIDE_EXAMPLE, getToolGuide } from "./guide";
+import { JsonFormatterTool } from "./developer/JsonFormatterTool";
+import { formatJson, minifyJson } from "./developer/jsonFormat";
+import { WordCharacterCounterTool } from "./text/WordCharacterCounterTool";
+import { measureText } from "./text/textMetric";
+import { QrCodeGeneratorTool } from "./everyday/QrCodeGeneratorTool";
+import { generateQrRaster, QR_MAX_PAYLOAD_BYTES } from "./everyday/qrCode";
 import { LengthConverterTool } from "./everyday/LengthConverterTool";
 import { WeightConverterTool } from "./everyday/WeightConverterTool";
 import { extractHtmlText } from "./text/extractHtmlText";
@@ -160,4 +167,99 @@ it("verifies the time arithmetic labels, result placeholder and negative-result 
     expect(host.textContent).toContain("--:--");
     expect(guide.instruction.join(" ")).toContain("Time A");
     expect(guide.section.map(section => section.text).join(" ")).toContain("negative time value");
+});
+
+const proseOf = (id: string) => getToolGuide(id)!.section.map(section => section.text).join(" ");
+async function typeInto(element: HTMLTextAreaElement, value: string) {
+    await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")!.set!.call(element, value);
+        element.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+}
+async function pressButton(name: string) {
+    await act(async () => { [...host.querySelectorAll("button")].find(button => button.textContent === name)!.click(); });
+}
+
+it("verifies the JSON Formatter guide example keeps every token exactly as written, unlike parse and re-serialize", async () => {
+    await act(async () => root.render(createElement(JsonFormatterTool, { toolId: "json-formatter" })));
+    const guide = getToolGuide("json-formatter")!;
+    const output = () => host.querySelector<HTMLTextAreaElement>("#json-output")!.value;
+    // The page shows short member tokens that can wrap on a phone; together they are exactly the document the tool is run on below.
+    expect(proseOf("json-formatter")).toContain(JSON_GUIDE_MEMBER.join(", "));
+    expect(JSON_GUIDE_EXAMPLE).toBe(`{${JSON_GUIDE_MEMBER.join(",")}}`);
+    for (const member of JSON_GUIDE_MEMBER) expect(member.length, member).toBeLessThan(30);
+    await typeInto(host.querySelector<HTMLTextAreaElement>("#json-input")!, JSON_GUIDE_EXAMPLE);
+    await pressButton("Minify JSON");
+    expect(output()).toBe(JSON_GUIDE_EXAMPLE);
+    await pressButton("Format JSON");
+    expect(output().split("\n")).toEqual(["{", `  "id": 12345678901234567890,`, `  "n": 1.50E+2,`, String.raw`  "s": "\u00e9",`, `  "s": 2`, "}"]);
+    expect(formatJson(JSON_GUIDE_EXAMPLE)).toEqual({ ok: true, output: output() });
+    expect(minifyJson(output())).toEqual({ ok: true, output: JSON_GUIDE_EXAMPLE });
+    // A JavaScript parse and re-serialize would have changed all four tokens, which is what the guide says this tool avoids.
+    expect(JSON.stringify(JSON.parse(JSON_GUIDE_EXAMPLE))).not.toBe(JSON_GUIDE_EXAMPLE);
+    expect(JSON.stringify(JSON.parse(JSON_GUIDE_EXAMPLE))).toBe(`{"id":12345678901234567000,"n":150,"s":2}`);
+    const prose = proseOf("json-formatter");
+    for (const token of ["12345678901234567890", "1.50E+2", String.raw`\u00e9`, `repeated "s" member name`]) expect(prose).toContain(token);
+    for (const label of ["Format JSON", "Minify JSON", "Copy result"]) {
+        expect(guide.instruction.join(" ")).toContain(label);
+        expect([...host.querySelectorAll("button")].map(button => button.textContent)).toContain(label);
+    }
+});
+
+it("verifies the JSON Formatter guide error example at its stated line and column", () => {
+    const result = formatJson(`{"a":1,}`);
+    expect(result).toMatchObject({ ok: false, error: { code: "trailing-comma", message: "Trailing commas are not allowed.", line: 1, column: 8 } });
+    expect(minifyJson(`{"a":1}`)).toEqual({ ok: true, output: `{"a":1}` });
+    const prose = proseOf("json-formatter");
+    expect(prose).toContain("Trailing commas are not allowed.");
+    expect(prose).toContain("line 1, column 8");
+    expect(prose).toContain(`{"a":1,}`);
+});
+
+it.each([
+    ["Don’t", { Words: "1", Characters: "5", "Characters excluding whitespace": "5", Lines: "1" }],
+    [COUNTER_GUIDE_DECOMPOSED, { Words: "1", Characters: "1", "Characters excluding whitespace": "1", Lines: "1" }],
+    [COUNTER_GUIDE_FAMILY, { Words: "0", Characters: "1", "Characters excluding whitespace": "1", Lines: "1" }],
+    [`Hello world${"\n"}`, { Words: "2", Characters: "12", "Characters excluding whitespace": "10", Lines: "2" }],
+])("verifies the Word and Character Counter guide example %j through the real component", async (text, expected) => {
+    await act(async () => root.render(createElement(WordCharacterCounterTool, { toolId: "word-character-counter" })));
+    await typeInto(host.querySelector<HTMLTextAreaElement>("#counter-input")!, text);
+    const shown = Object.fromEntries([...host.querySelectorAll("dt")].map(term => [term.textContent, term.nextElementSibling!.textContent]));
+    expect(shown).toEqual(expected);
+    expect(measureText(text)).toMatchObject({ ok: true, metric: { wordCount: Number(expected.Words), characterCount: Number(expected.Characters), lineCount: Number(expected.Lines) } });
+});
+
+it("states the Word and Character Counter worked example in the same terms the tool counts", async () => {
+    const prose = proseOf("word-character-counter");
+    for (const text of ["Don’t is 1 word and 5 characters", COUNTER_GUIDE_DECOMPOSED, COUNTER_GUIDE_FAMILY, "is 1 character but 0 words", "2 words, 12 characters, 10 characters excluding whitespace and 2 lines", "trailing line break starts a second, empty line"]) expect(prose).toContain(text);
+    expect(COUNTER_GUIDE_DECOMPOSED).toHaveLength(2);
+    expect(COUNTER_GUIDE_FAMILY.split("\u200D")).toHaveLength(3);
+    await act(async () => root.render(createElement(WordCharacterCounterTool, { toolId: "word-character-counter" })));
+    expect([...host.querySelectorAll("label")].map(label => label.textContent!.trim())).toEqual(["Text"]);
+    expect([...host.querySelectorAll("dt")].map(term => term.textContent)).toEqual(["Words", "Characters", "Characters excluding whitespace", "Lines"]);
+});
+
+it("verifies the QR Code Generator guide example decodes, with an independent reader, to exactly the entered text", () => {
+    const result = generateQrRaster(QR_GUIDE_EXAMPLE);
+    if (!result.ok) throw new Error(result.error.message);
+    expect([result.raster.width, result.raster.height]).toEqual([512, 512]);
+    expect(jsQR(result.raster.data, result.raster.width, result.raster.height)?.data).toBe(QR_GUIDE_EXAMPLE);
+    // The recovery advice rests on these facts: the text is encoded as typed, and a stray space is part of the payload.
+    const spaced = generateQrRaster(`${QR_GUIDE_EXAMPLE} `);
+    if (!spaced.ok) throw new Error(spaced.error.message);
+    expect(jsQR(spaced.raster.data, spaced.raster.width, spaced.raster.height)?.data).toBe(`${QR_GUIDE_EXAMPLE} `);
+    const prose = proseOf("qr-code-generator");
+    for (const text of [QR_GUIDE_EXAMPLE, "512 × 512 pixel PNG", "stray space", "encoded exactly as entered"]) expect(prose).toContain(text);
+});
+
+it("verifies the QR Code Generator size limit, its error message and its controls", async () => {
+    expect(generateQrRaster("x".repeat(QR_MAX_PAYLOAD_BYTES)).ok).toBe(true);
+    expect(generateQrRaster("x".repeat(QR_MAX_PAYLOAD_BYTES + 1))).toEqual({ ok: false, error: { code: "input-too-large", message: "QR code text must be 2,048 UTF-8 bytes or less." } });
+    expect(proseOf("qr-code-generator")).toContain("QR code text must be 2,048 UTF-8 bytes or less.");
+    await act(async () => root.render(createElement(QrCodeGeneratorTool, { toolId: "qr-code-generator" })));
+    const guide = getToolGuide("qr-code-generator")!;
+    expect([...host.querySelectorAll("label")].map(label => label.textContent!.trim())).toEqual(["Text or URL"]);
+    const buttons = [...host.querySelectorAll("button")].map(button => button.textContent);
+    for (const label of ["Generate QR code", "Reset"]) { expect(buttons).toContain(label); expect(guide.instruction.join(" ")).toContain(label); }
+    expect(guide.instruction.join(" ")).toContain("Download PNG");
 });
