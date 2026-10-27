@@ -213,7 +213,7 @@ test("developer category, Discover search and sitemap include the QR Code Genera
     await expect(results).toHaveAttribute("href", "/tool/qr-code-generator");
 
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(30);
+    expect(xml.match(/<loc>/g)).toHaveLength(35);
     expect(xml.split("<loc>https://iworkhere.space/tool/qr-code-generator</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/category/developer</loc>")).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);

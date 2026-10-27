@@ -118,7 +118,7 @@ test("Contact renders one H1, the form, metadata and a privacy path, and disclos
 
 test("sitemap lists About and Contact exactly once and no API route", async ({ request }) => {
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(30);
+    expect(xml.match(/<loc>/g)).toHaveLength(35);
     expect(xml.match(/<loc>https:\/\/iworkhere\.space\/about<\/loc>/g)).toHaveLength(1);
     expect(xml.match(/<loc>https:\/\/iworkhere\.space\/contact<\/loc>/g)).toHaveLength(1);
     expect(xml).not.toContain("/api/");

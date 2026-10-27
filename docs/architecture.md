@@ -813,3 +813,7 @@ Status: implemented. No new structural node: the registry → metadata → route
 - **Metadata.** Home, Discover and the root default description now describe the actual utilities through the existing `buildPageMetadata` helper.
 - **Indexability.** Math and Time remain one-tool category pages under the existing shared indexing policy; no category-specific noindex, redirect or consolidation was added. Their thin membership is handled by honest guidance, including each tool's limits.
 - **Example descriptions.** `ValueExampleAsset.description` (in `valueExamples.ts`, keyed by path; the manifest is unchanged) supplies image alt text and captions and the descriptive PDF download link names in `ToolExamplePanel`.
+
+## v0.4.4 Batch 5 implementation status (2026-10-27)
+
+The task-guide node described above is implemented locally on `feature/v0.4.4-site-quality`: `src/module/content/taskGuide.ts` ([spec](modules/TaskGuide.md)), `src/app/guide/page.tsx`, `src/app/guide/[slug]/page.tsx`, and the presentation-only `src/component/content/TaskGuidePage.tsx` ([spec](components/TaskGuidePage.md)). The home page, document and image category pages, tool pages (`taskGuideLink`), navigation and sitemap compose it as planned (35 canonical URLs, 11 navigation links). Dependency direction is unchanged: `app` routes import `module/content`, `module/tool` and the component; the component imports no module; `lib/seo` imports nothing from content. `ToolPageTemplate` takes only a type-only import of `TaskGuideLink`.

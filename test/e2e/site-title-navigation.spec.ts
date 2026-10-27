@@ -1,6 +1,6 @@
 import { test, expect } from "./support/fixture";
 
-// The sitemap is the existing list of public routes: 5 site pages, 18 tools and 7 categories.
+// The sitemap is the existing list of public routes: 5 site pages, 18 tools, 7 categories, the guide hub and 4 guides.
 async function publicPath(request: import("@playwright/test").APIRequestContext): Promise<string[]> {
     const response = await request.get("/sitemap.xml");
     expect(response.ok()).toBe(true);
@@ -8,7 +8,7 @@ async function publicPath(request: import("@playwright/test").APIRequestContext)
     return [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
 }
 
-// Independent expectation for all 30 sitemap identities; production code keeps no second title table.
+// Independent expectation for all 35 sitemap identities; production code keeps no second title table.
 const expectedTitle: Record<string, string> = {
     "/": "Browser Tools for PDFs, Images and Text - iworkhere",
     "/discover": "All Tools - iworkhere",
@@ -40,15 +40,20 @@ const expectedTitle: Record<string, string> = {
     "/tool/json-formatter": "JSON Formatter and Validator - iworkhere",
     "/tool/word-character-counter": "Word and Character Counter - iworkhere",
     "/tool/qr-code-generator": "QR Code Generator - iworkhere",
+    "/guide": "Practical File Workflows - iworkhere",
+    "/guide/assemble-pdf-packet": "Assemble an Ordered PDF Packet - iworkhere",
+    "/guide/prepare-image-for-upload": "Prepare an Image for an Upload - iworkhere",
+    "/guide/heic-photos-to-pdf": "Turn HEIC Photos into a PDF - iworkhere",
+    "/guide/pdf-pages-for-slides": "Prepare PDF Pages for Slides - iworkhere",
 };
 const notFoundTitle = "Page Not Found - iworkhere";
 
 test("every public URL has its descriptive browser title in initial HTML and the live DOM, with its own canonical path and description", async ({ page, request }) => {
     const pathList = await publicPath(request);
-    expect(pathList).toHaveLength(30);
-    expect(new Set(pathList).size).toBe(30);
+    expect(pathList).toHaveLength(35);
+    expect(new Set(pathList).size).toBe(35);
     expect([...pathList].sort()).toEqual(Object.keys(expectedTitle).sort());
-    expect(new Set(Object.values(expectedTitle)).size).toBe(30);
+    expect(new Set(Object.values(expectedTitle)).size).toBe(35);
     const descriptionList = new Set<string>();
     for (const path of pathList) {
         const html = await (await request.get(path)).text();
@@ -93,17 +98,18 @@ test("a query-bearing tool URL keeps its title and a query-free canonical", asyn
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/tool/calculator");
 });
 
-test("primary navigation is Home, All tools, every populated category in registry order, then About", async ({ page, request }) => {
+test("primary navigation is Home, All tools, Guides, every populated category in registry order, then About", async ({ page, request }) => {
     const categoryPath = (await publicPath(request)).filter(path => path.startsWith("/category/"));
     expect(categoryPath).toHaveLength(7);
     await page.goto("/");
     const hrefList = await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link").evaluateAll(list => list.map(link => link.getAttribute("href")));
     expect(hrefList[0]).toBe("/");
     expect(hrefList[1]).toBe("/discover");
-    expect(hrefList.slice(2, -1).sort()).toEqual([...categoryPath].sort());
+    expect(hrefList[2]).toBe("/guide");
+    expect(hrefList.slice(3, -1).sort()).toEqual([...categoryPath].sort());
     expect(hrefList.at(-1)).toBe("/about");
     expect(hrefList.filter(href => href === "/about")).toHaveLength(1);
-    expect(hrefList).toHaveLength(10);
+    expect(hrefList).toHaveLength(11);
 });
 
 test("About is the last primary navigation stop in keyboard order and is highlighted on its page", async ({ page }) => {

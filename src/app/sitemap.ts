@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { canonicalUrl } from "@/lib/seo";
+import { getAllTaskGuide } from "@/module/content/taskGuide";
 import { getAllTool, getAvailableCategory } from "@/module/tool/metadata";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,5 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: canonicalUrl("/contact") },
         ...getAllTool().map(tool => ({ url: canonicalUrl(tool.seo.canonicalPath) })),
         ...getAvailableCategory().map(category => ({ url: canonicalUrl(`/category/${category}`) })),
+        { url: canonicalUrl("/guide") },
+        ...getAllTaskGuide().map(guide => ({ url: canonicalUrl(`/guide/${guide.slug}`) })),
     ];
 }

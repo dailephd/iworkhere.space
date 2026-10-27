@@ -200,3 +200,53 @@ it("replaces the whole page, example included, with the ad-free fallback when th
     expectAdFreeFallback();
     expect(element.textContent).not.toContain("Worked example");
 });
+
+const GUIDE_LINK_TOOL: Record<string, string[]> = {
+    "split-pdf": ["assemble-pdf-packet"], "merge-pdf": ["assemble-pdf-packet"], "compress-pdf": ["assemble-pdf-packet"],
+    "images-to-pdf": ["assemble-pdf-packet", "heic-photos-to-pdf"], "image-converter": ["prepare-image-for-upload"],
+    "image-resizer": ["prepare-image-for-upload", "pdf-pages-for-slides"], "image-compressor": ["prepare-image-for-upload"],
+    "heic-converter": ["heic-photos-to-pdf"], "pdf-to-image": ["pdf-pages-for-slides"],
+};
+
+it("resolves task-guide links for exactly the participating tools, with titles from the guide owner", async () => {
+    for (const tool of tool_definition_list) {
+        const result = (await ToolPage({ params: Promise.resolve({ slug: tool.slug }) })) as React.ReactElement<{ taskGuideLink?: { title: string; href: string; summary: string }[] }>;
+        const link = result.props.taskGuideLink ?? [];
+        expect(link.map(one => one.href), tool.id).toEqual((GUIDE_LINK_TOOL[tool.id] ?? []).map(slug => `/guide/${slug}`));
+        for (const one of link) {
+            expect(one.title.length).toBeGreaterThan(10);
+            expect(one.summary.length).toBeGreaterThan(20);
+        }
+    }
+});
+
+it("renders task-guide links in their own labelled section after the tool guidance and keeps the page ad-free", async () => {
+    vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
+    const tool = getToolBySlug("images-to-pdf")!;
+    await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]} guide={getToolGuide(tool.id)}
+        taskGuideLink={[{ title: "Assemble an Ordered PDF Packet", href: "/guide/assemble-pdf-packet", summary: "One ordered PDF." }]}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+    const guide = element.querySelector('section[aria-label="Tool guide"]')!;
+    const section = element.querySelector("section[data-task-guide-link]")!;
+    expect(section.querySelector("h2")?.textContent).toBe("Use this tool in a workflow");
+    expect(guide.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(guide.contains(section)).toBe(false);
+    expect(section.querySelector("a")!.getAttribute("href")).toBe("/guide/assemble-pdf-packet");
+    expect(element.querySelectorAll("h1")).toHaveLength(1);
+    expect(element.querySelectorAll("ins.adsbygoogle, #google-adsense, aside, script")).toHaveLength(0);
+});
+
+it("renders no workflow section without links and replaces it with the fallback when the tool fails", async () => {
+    const tool = getToolBySlug("json-formatter")!;
+    await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]} taskGuideLink={[]}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+    expect(element.querySelector("section[data-task-guide-link]")).toBeNull();
+    shouldThrow = true;
+    await act(async () => root.unmount());
+    root = createRoot(element);
+    await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]}
+        taskGuideLink={[{ title: "Prepare an Image for an Upload", href: "/guide/prepare-image-for-upload", summary: "A checked image." }]}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+    expectAdFreeFallback();
+    expect(element.querySelector("section[data-task-guide-link]")).toBeNull();
+});

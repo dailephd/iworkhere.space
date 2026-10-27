@@ -33,11 +33,12 @@ it("composes exactly one Vercel Analytics wrapper", () => {
     expect(html).not.toContain("Show footer");
 });
 
-it("orders primary navigation as Home, All tools, registry categories, then About", () => {
+it("orders primary navigation as Home, All tools, Guides, registry categories, then About", () => {
     availableCategory.mockReturnValueOnce(["document", "image"]);
     renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
     const navItem = (appShell.mock.calls[0][0] as AppShellProps).navItem!;
-    expect(navItem.map(item => item.href)).toEqual(["/", "/discover", "/category/document", "/category/image", "/about"]);
+    expect(navItem.map(item => item.href)).toEqual(["/", "/discover", "/guide", "/category/document", "/category/image", "/about"]);
+    expect(navItem.find(item => item.href === "/guide")?.label).toBe("Guides");
     expect(navItem.filter(item => item.href === "/about")).toHaveLength(1);
 });
 

@@ -93,3 +93,7 @@ Online — iworkhere.space"). The not-found page builds its title with
 Tests that required the uniform title were replaced with exact expected titles.
 The five planned guide URLs extend the current 30-route sitemap to 35; this
 is planned inventory and is not a claim about current deployment.
+
+## v0.4.4 Batch 5 guide metadata
+
+`src/lib/seo.ts` is unchanged and still imports no content registry. The hub exports `buildPageMetadata({ title: "Practical File Workflows", description, canonicalPath: "/guide" })`; each detail route's `generateMetadata` calls `buildPageMetadata({ title: guide.title, description: guide.description, canonicalPath: "/guide/<slug>" })`, giving titles such as `Assemble an Ordered PDF Packet - iworkhere` with exactly one suffix and aligned canonical, description, Open Graph and robots values (index and follow only in production). An unknown guide slug returns `{}` from `generateMetadata` and `notFound()` from the page: HTTP 404 with Next's `noindex`, no sitemap entry and no advertising. The sitemap now lists 35 unique canonical URLs: 5 fixed, 18 tools, 7 categories, `/guide` and four guides.

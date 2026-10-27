@@ -42,6 +42,7 @@ strengthen verified examples and add four practical file-workflow guides.
 The [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
 the findings and their limits. This work is planned, not yet implemented;
 the [roadmap](docs/ROADMAP.md) preserves the later v0.5.0/v0.6.0 catalogs.
+Batch 5 (local, unreleased) adds [Practical File Workflows](docs/modules/TaskGuide.md): the `/guide` hub and four multi-tool task guides.
 
 ## Getting Started
 

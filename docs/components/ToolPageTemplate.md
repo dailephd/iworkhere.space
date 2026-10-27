@@ -43,3 +43,7 @@ The related-tools heading is derived from the actual related tools, never from t
 ## v0.4.3 optional worked example
 
 `ToolPageTemplate` accepts one optional `example?: ValueExample` (type from `src/module/tool/valueExamples.ts`). The tool route resolves it with `getValueExample(tool.id)`; the template never looks it up and the route never lists tool ids. When supplied, the template renders `ToolExamplePanel` after the working tool UI and before the guide, as a sibling of the guide section and inside the existing `ToolErrorBoundary` and `AdSenseEligiblePage`. When absent, the output is identical to the previous structure, with no placeholder. The panel adds no H1, boundary, advertising slot or telemetry. See [ToolExamplePanel](ToolExamplePanel.md).
+
+## v0.4.4 Batch 5 task-guide links
+
+`ToolPageTemplate` accepts an optional display-ready `taskGuideLink?: TaskGuideLink[]` (a type-only import from `src/component/content/TaskGuidePage.tsx`; the component never imports `taskGuide.ts`). When the list is not empty it renders a separately labelled section "Use this tool in a workflow" (`data-task-guide-link`) after the tool guide, inside the same `AdSenseEligiblePage` and `ToolErrorBoundary`, so a failing tool still replaces the whole page with the ad-free fallback and advertising eligibility is unchanged. `src/app/tool/[slug]/page.tsx` builds the list from `getTaskGuideForTool(tool.id)` with `/guide/<slug>` addresses. Nine tools receive links; the other nine receive none.

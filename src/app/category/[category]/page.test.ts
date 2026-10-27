@@ -137,3 +137,23 @@ describe("category task guidance", () => {
         expect(metadata.description).toBe("Add and subtract durations written as HH:MM.");
     });
 });
+
+describe("category workflow guides", () => {
+    const guideHref = async (category: string) => {
+        const html = renderToStaticMarkup(await CategoryPage({ params: Promise.resolve({ category }) }));
+        return [...html.matchAll(/href="(\/guide\/[^"]+)"/g)].map(match => match[1]);
+    };
+
+    it("offers the two PDF guides on the document page only", async () => {
+        expect(await guideHref("document")).toEqual(["/guide/assemble-pdf-packet", "/guide/pdf-pages-for-slides"]);
+    });
+    it("offers the two picture guides on the image page only", async () => {
+        expect(await guideHref("image")).toEqual(["/guide/prepare-image-for-upload", "/guide/heic-photos-to-pdf"]);
+    });
+    it("lists no guide on any other category page", async () => {
+        for (const definition of tool_category_definition_list) {
+            if (definition.id === "document" || definition.id === "image") continue;
+            expect(await guideHref(definition.id), definition.id).toEqual([]);
+        }
+    });
+});

@@ -1144,3 +1144,5 @@ unchanged. Units, accuracy, feasibility, user value, tests and a possible shared
 interface are recorded in [the catalog proposal](plans/converter-catalog-expansion.md).
 Currency remains deferred until its data/freshness/cache/failure/disclosure
 contract is designed and approved. No converter expansion is implemented here.
+
+Status note (2026-10-27): v0.4.4 Batch 5 (four task guides, the `/guide` hub and their discovery links) is implemented locally on `feature/v0.4.4-site-quality`; the release, container gate and whole-site reconciliation remain Batch 6 work. See [project status](project-status.md).

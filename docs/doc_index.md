@@ -608,3 +608,8 @@ version plan remains historical process debt; no retrospective plan was authored
 - [v0.4.0 related-tool label correction report](reports/V0_4_RELATED_TOOL_LABEL_CORRECTION_REPORT.md): completeness-audit correction making the related-tools heading reflect the related tools' categories.
 - [v0.4.0 implementation-completeness and reconciliation report](reports/V0_4_IMPLEMENTATION_COMPLETENESS_RECONCILIATION_REPORT.md): final audit of the assembled v0.4 candidate against the frozen plan and the documentation reconciliation (implementation complete and documentation reconciled; pre-release readiness was completed in a later run).
 - [v0.4.0 pre-release readiness correction report](reports/V0_4_PRE_RELEASE_READINESS_CORRECTION_REPORT.md): fixes for the first readiness run (QR encoder bundle isolation, `dev:check` stale paths, deployed-state wording) and the QR preview-latency finding.
+
+Current v0.4.4 Batch 5 specifications:
+
+- `modules/TaskGuide.md`: the four authored task guides, their queries and editorial rules.
+- `components/TaskGuidePage.md`: the presentation-only guide detail component and its props.

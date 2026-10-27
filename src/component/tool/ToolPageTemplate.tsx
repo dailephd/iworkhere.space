@@ -4,6 +4,7 @@ import type { ToolGuide } from "@/module/tool/guide";
 import type { ToolBreadcrumb } from "@/module/tool/metadata";
 import { AdSenseEligiblePage } from "@/component/common/AdSenseEligiblePage";
 import type { ValueExample } from "@/module/tool/valueExamples";
+import type { TaskGuideLink } from "@/component/content/TaskGuidePage";
 import { ToolErrorBoundary } from "./ToolErrorBoundary";
 import { ToolExamplePanel } from "./ToolExamplePanel";
 
@@ -14,6 +15,7 @@ interface ToolPageTemplateProp {
     guide?: ToolGuide;
     example?: ValueExample;
     relatedTool: ToolDefinition[];
+    taskGuideLink?: TaskGuideLink[];
 }
 
 export function ToolPageTemplate({
@@ -23,6 +25,7 @@ export function ToolPageTemplate({
                                      guide,
                                      example,
                                      relatedTool,
+                                     taskGuideLink,
                                  }: ToolPageTemplateProp) {
     const relatedCategory =
         relatedTool.length > 0 && relatedTool.every((related) => related.category === relatedTool[0].category)
@@ -63,6 +66,13 @@ export function ToolPageTemplate({
                                 <a href={related.seo.canonicalPath} className="inline-block rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 underline underline-offset-4">{related.name}</a>
                             </li>)}</ul>
                         </section>
+                    </section>}
+                    {taskGuideLink && taskGuideLink.length > 0 && <section aria-labelledby="tool-task-guide-title" data-task-guide-link className="min-w-0 space-y-2 rounded-xl border border-panel-border bg-panel-bg p-4 sm:p-6">
+                        <h2 id="tool-task-guide-title" className="text-xl font-semibold">Use this tool in a workflow</h2>
+                        <ul className="space-y-2">{taskGuideLink.map(link => <li key={link.href} className="min-w-0">
+                            <a href={link.href} className="underline underline-offset-4">{link.title}</a>
+                            <span className="block text-sm text-text-muted">{link.summary}</span>
+                        </li>)}</ul>
                     </section>}
                 </section>
             </AdSenseEligiblePage>

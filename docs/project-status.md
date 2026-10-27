@@ -756,3 +756,11 @@ Batch 6: the container gate ran twice and did not pass (one `net::ERR_NO_BUFFER_
 so the 18 journeys do not all have independent coverage; the Compress PDF,
 Images to PDF, PDF to JPG / PNG and image tools were not re-audited here. Batch
 5 (four task guides and a hub) needs a separately scoped prompt.
+
+## v0.4.4 Batch 5 implementation checkpoint — 2026-10-27
+
+Status: LOCAL COMMIT, VALIDATED (unit 2,003; full default-off E2E 842 passed, 6 skipped by mode, 0 failed) ON `feature/v0.4.4-site-quality` after Batch 4 (cece08c); package remains 0.4.3. No push, merge, release, deployment, ad activation or AdSense change. This is not release readiness.
+
+Added the `/guide` hub "Practical File Workflows" and four guides (assemble-pdf-packet, prepare-image-for-upload, heic-photos-to-pdf, pdf-pages-for-slides), links in primary navigation (Guides after All tools), a server-rendered home workflow section, the document and image category pages and nine tool pages, and five sitemap URLs (35 total). Planner-authorized documentation-list extension: `docs/modules/NavData.md` was edited only to reconcile the new Home / All tools / Guides / categories / About order.
+
+Inherited release blocker, unchanged by this batch: the Batch 4 `npm run test:container` gate was run twice and failed both times (807 browser tests passed, one `net::ERR_NO_BUFFER_SPACE` navigation failure each, in different image-converter scenarios); host socket exhaustion is a hypothesis only. It must be re-run and resolved on the exact Batch 6 candidate. Merge 10-file/25 MiB/100-page, Split 20-group, HEIC 30-megapixel and downloaded HEIC decode limit evidence also remains for Batch 6; the guide workflows add positive evidence only for the small samples they use.
