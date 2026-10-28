@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import type { ToolComponentProp } from "../type"
 
 type RunState =
@@ -15,11 +15,13 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
     }, [query])
 
     const [expr, setExpr] = useState(exprFromQuery)
+    const [previousQueryExpr, setPreviousQueryExpr] = useState(exprFromQuery)
     const [runState, setRunState] = useState<RunState>(null)
 
-    useEffect(() => {
+    if (exprFromQuery !== previousQueryExpr) {
+        setPreviousQueryExpr(exprFromQuery)
         setExpr(exprFromQuery)
-    }, [exprFromQuery])
+    }
 
     const pushQuery = useCallback(
         (nextExpr: string) => {

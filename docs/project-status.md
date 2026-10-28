@@ -1,5 +1,26 @@
 # PROJECT STATUS
 
+## v0.4.4 release-preparation candidate — 2026-10-28
+
+Status: LOCAL RELEASE-PREPARATION CANDIDATE; NOT PUBLISHED OR PRODUCTION-DEPLOYED.
+
+The v0.4.4 implementation scope and release-facing documentation are reconciled
+on `release/v0.4.4`. The CalculatorTool React Hooks lint violation was fixed by
+guarded render-time synchronization of external query expressions while
+preserving local editing and result state. Its focused regression tests,
+typecheck, lint and `npm run verify` pass. The complete default-off browser run
+passed (854 passed, 6 mode skips); the production-container run passed; preview
+denial passed (6 passed, 2 mode skips); and enabled advertising passed with
+stubbed Google endpoints (4 passed, 4 mode skips). Both production and full npm
+audits report zero vulnerabilities. No install scripts were approved.
+
+The release branch has not yet received its release-preparation commit or exact
+candidate hosted validation at this checkpoint. No tag, GitHub Release, merge,
+publication, production deployment, live advertising activation or AdSense
+submission is claimed. The v0.5.0/v0.6.0 roadmap remains unchanged. Evidence and
+the next hosted-validation status are recorded in the local
+`.my-dev-kit-workflow/tmp/v0.4.4/release-prep/release-prep-report.txt`.
+
 ## Immediate v0.4.4 planning checkpoint — 2026-10-26
 
 Status: PLANNING COMPLETE; APPLICATION IMPLEMENTATION NOT STARTED by this update.

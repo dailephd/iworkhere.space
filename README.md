@@ -3,7 +3,7 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The current application version is v0.4.3. It includes 18 registered utilities
+The current release candidate is application version v0.4.4. It includes 18 registered utilities
 across seven populated categories, five original verified worked examples, a
 task-first homepage, improved Discover navigation and category guidance,
 publisher About and Contact pages, privacy improvements, and 30 canonical
@@ -34,15 +34,19 @@ public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
 and [the changelog](CHANGELOG.md).
 
-## Immediate quality plan
+## v0.4.4 release preparation
 
-The next planned release is [v0.4.4 — Site Quality & Search Recovery](docs/plans/v0.4.4-implementation-plan.md):
-restore descriptive browser titles, correct known calculation defects,
-strengthen verified examples and add four practical file-workflow guides.
-The [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
-the findings and their limits. Batches 1-5 are implemented on the local, unpushed branch `feature/v0.4.4-site-quality` and Batch 6 verifies that candidate; nothing is released, deployed or submitted for review, and the package remains 0.4.3;
-the [roadmap](docs/ROADMAP.md) preserves the later v0.5.0/v0.6.0 catalogs.
-Batch 5 (local, unreleased) adds [Practical File Workflows](docs/modules/TaskGuide.md): the `/guide` hub and four multi-tool task guides. Batch 6 evidence is in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+[v0.4.4 — Site Quality & Search Recovery](docs/plans/v0.4.4-implementation-plan.md)
+is implemented on the `release/v0.4.4` candidate. Its local validation includes
+the calculator correction, security-clean dependency audits, default-off,
+preview-denial and stubbed enabled advertising checks, browser tests and the
+production-container gate. The candidate is release-prepared but not published
+or production-deployed; exact-SHA hosted validation remains pending. The
+[October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
+the original findings and their limits. The [roadmap](docs/ROADMAP.md) retains
+the planned v0.5.0/v0.6.0 catalogs. The `/guide` hub and four task guides are
+documented in [Practical File Workflows](docs/modules/TaskGuide.md), and the
+implementation history remains in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
 ## Getting Started
 

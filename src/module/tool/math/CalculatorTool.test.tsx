@@ -126,14 +126,48 @@ describe("calculator grammar", () => {
         expect(host.querySelector("input")!.value).toBe("");
         expect(host.querySelector("output")).toBeNull();
     });
+    it("updates from external query changes without clearing the current result", async () => {
+        const setQuery = vi.fn();
+        await act(async () => root.render(
+            <CalculatorTool
+                toolId="calculator"
+                query={{ expr: "2+3", mode: "scientific" }}
+                setQuery={setQuery}
+            />
+        ));
+        expect(host.querySelector("input")!.value).toBe("2+3");
+
+        await execute("Enter");
+        expect(host.querySelector("output")?.textContent).toBe("5");
+
+        await act(async () => root.render(
+            <CalculatorTool
+                toolId="calculator"
+                query={{ expr: "4*5", mode: "scientific" }}
+                setQuery={setQuery}
+            />
+        ));
+        expect(host.querySelector("input")!.value).toBe("4*5");
+        expect(host.querySelector("output")?.textContent).toBe("5");
+        expect(setQuery).not.toHaveBeenCalled();
+    });
+    it("treats a non-string query expression as empty", async () => {
+        await act(async () => root.render(
+            <CalculatorTool
+                toolId="calculator"
+                query={{ expr: 7 } as unknown as Record<string, string>}
+            />
+        ));
+        expect(host.querySelector("input")!.value).toBe("");
+    });
     it("writes the expression to the shareable query", async () => {
         const setQuery = vi.fn();
-        await act(async () => root.render(<CalculatorTool toolId="calculator" query={{ expr: "" }} setQuery={setQuery} />));
+        await act(async () => root.render(<CalculatorTool toolId="calculator" query={{ expr: "", mode: "scientific" }} setQuery={setQuery} />));
         const input = host.querySelector("input")!;
         await act(async () => {
             Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "2 * -3");
             input.dispatchEvent(new Event("input", { bubbles: true }));
         });
-        expect(setQuery).toHaveBeenLastCalledWith({ expr: "2 * -3" });
+        expect(setQuery).toHaveBeenLastCalledWith({ expr: "2 * -3", mode: "scientific" });
     });
 });

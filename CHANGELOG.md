@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased v0.4.4 — Site Quality & Search Recovery (local candidate, not released)
+## Unreleased v0.4.4 — Site Quality & Search Recovery (release-preparation candidate; not published)
 
 - Restored descriptive browser titles, corrected calculator, converter and time arithmetic, added a Vercel preview advertising guard, a rewritten service worker (network-first HTML, allowlisted static cache), four more verified file examples (nine in total), the `/guide` hub with four task guides, and 35 canonical sitemap URLs.
 - Added browser boundary tests for the Merge PDF file, size and page limits, the Split PDF 20-group limit, and a decode of downloaded HEIC output. An over-30-megapixel HEIC remains unit-tested only.
-- Not released: the container gate and a complete browser run are not yet green, hosted CI has not run, and the package version remains 0.4.3.
+- Release-preparation validation is green: local verify, the complete default-off browser suite, both preview-denial and stubbed-enabled advertising modes, and the production-container gate. Production and full npm audits report zero vulnerabilities. Exact-SHA hosted CI remains pending; this candidate has not been published or production-deployed.
+- Corrected CalculatorTool query synchronization with a guarded render-time state adjustment and added regression coverage for external query changes, optional setters, query-field preservation, expression evaluation and result-state retention.
 
 ## v0.4.3 — Utility Value, Trust & Discoverability — 2026-10-21
 

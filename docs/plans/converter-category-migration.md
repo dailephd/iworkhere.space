@@ -6,6 +6,11 @@ preserves its bounded implementation plan and historical category decision.
 This is a new migration after v0.4.0, not a rewrite of its category decision.
 No new tool is implemented. v0.5.0 and v0.6.0 scopes remain frozen.
 
+Release-preparation status (2026-10-28): this migration remains implemented as
+recorded above. The v0.4.4 candidate preserves it without expanding converter
+scope; v0.5.0 and v0.6.0 remain planned, and v0.4.4 is not published or
+production-deployed.
+
 ## Bounded owner plan
 
 1. Keep the migration isolated from the original v0.4.0 release record and preserve all existing tool URLs and slugs.
