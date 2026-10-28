@@ -1,8 +1,8 @@
 # PROJECT STATUS
 
-## v0.4.4 release-preparation candidate — 2026-10-28
+## v0.4.4 release source and validation — 2026-10-28
 
-Status: LOCAL RELEASE-PREPARATION CANDIDATE; NOT PUBLISHED OR PRODUCTION-DEPLOYED.
+Status: IMPLEMENTED AND EXACT-SHA RELEASE-PREPARATION VALIDATED. GitHub Release and Vercel Production outcomes require separate verification.
 
 The v0.4.4 implementation scope and release-facing documentation are reconciled
 on `release/v0.4.4`. The CalculatorTool React Hooks lint violation was fixed by
@@ -14,11 +14,23 @@ denial passed (6 passed, 2 mode skips); and enabled advertising passed with
 stubbed Google endpoints (4 passed, 4 mode skips). Both production and full npm
 audits report zero vulnerabilities. No install scripts were approved.
 
-The release branch has not yet received its release-preparation commit or exact
-candidate hosted validation at this checkpoint. No tag, GitHub Release, merge,
-publication, production deployment, live advertising activation or AdSense
-submission is claimed. The v0.5.0/v0.6.0 roadmap remains unchanged. Evidence and
-the next hosted-validation status are recorded in the local
+The release-preparation candidate `f6bee013b8cafa3253f568128be94e192a791ea6`
+was committed and pushed on `release/v0.4.4`. Eight GitHub Actions workflows
+and nine required jobs passed on that immutable SHA through PR #49. A later
+release-documentation commit requires validation at its own SHA before merge;
+the merged `master` commit also requires its own checks. Production deployment,
+GitHub tag, and GitHub Release must each be verified from their actual records.
+Live advertising activation and AdSense submission are not part of this release.
+
+The 2026-10-28 draft PR triggered Vercel preview deployments contrary to the
+release-preparation no-deployment condition. The main preview was canceled;
+the observability preview reached READY and was reportedly removed, but its
+removal was not independently proven at the reconciliation checkpoint. Historical
+policy compliance remains FAIL; the project owner accepted a one-time exception
+for those specific non-production previews. This does not waive future
+preview or production deployment controls. The v0.5.0/v0.6.0 roadmap is
+unchanged. The existing local preparation report remains the historical
+validation and incident evidence authority:
 `.my-dev-kit-workflow/tmp/v0.4.4/release-prep/release-prep-report.txt`.
 
 ## Immediate v0.4.4 planning checkpoint — 2026-10-26

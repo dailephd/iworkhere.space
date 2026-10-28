@@ -3,10 +3,10 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The current release candidate is application version v0.4.4. It includes 18 registered utilities
-across seven populated categories, five original verified worked examples, a
+The v0.4.4 application release contains 18 registered utilities
+across seven populated categories, nine verified worked file examples, a
 task-first homepage, improved Discover navigation and category guidance,
-publisher About and Contact pages, privacy improvements, and 30 canonical
+publisher About and Contact pages, privacy improvements, and 35 canonical
 public routes. The header is fixed and the footer is ordinary document-flow
 content with its conditional Report Issues action. Contact uses the direct
 Resend integration
@@ -34,14 +34,17 @@ public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
 and [the changelog](CHANGELOG.md).
 
-## v0.4.4 release preparation
+## v0.4.4 — Site Quality & Search Recovery
 
 [v0.4.4 — Site Quality & Search Recovery](docs/plans/v0.4.4-implementation-plan.md)
-is implemented on the `release/v0.4.4` candidate. Its local validation includes
-the calculator correction, security-clean dependency audits, default-off,
-preview-denial and stubbed enabled advertising checks, browser tests and the
-production-container gate. The candidate is release-prepared but not published
-or production-deployed; exact-SHA hosted validation remains pending. The
+is implemented in application version `0.4.4`. The release-preparation
+source passed local verification, security-clean production and full dependency
+audits, default-off, preview-denial and stubbed-enabled advertising checks,
+browser tests, and the production-container gate. All eight GitHub Actions
+workflows and nine required jobs passed for the validated release-preparation
+commit `f6bee013b8cafa3253f568128be94e192a791ea6`. GitHub Release
+publication and Vercel Production deployment have independent identity and
+verification requirements; source validation does not establish either. The
 [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
 the original findings and their limits. The [roadmap](docs/ROADMAP.md) retains
 the planned v0.5.0/v0.6.0 catalogs. The `/guide` hub and four task guides are

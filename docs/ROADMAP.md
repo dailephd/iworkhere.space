@@ -4,8 +4,8 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The current application version is `v0.4.3`; the independent dashboard remains
-`0.1.0`. Version `v0.4.2` was the preceding published release when v0.4.3
+The current application release source is `v0.4.4`; the independent dashboard
+remains `0.1.0`. Version `v0.4.2` was the preceding published release when v0.4.3
 development began. The v0.4.3 scope is complete and merged to `master` by PR
 #39 at `854477488ca5dddad9a47cc4a5036b3fba1bbf37`. Production deployment and
 Contact operation were verified separately from source integration. GitHub
@@ -15,11 +15,12 @@ validation and deployment evidence.
 
 > Current maintenance supersession (2026-10-24): the header is fixed and the footer is ordinary document-flow content. Retractable controls and footer preference state have been removed. Older v0.4.2/v0.4.3 statements below preserve their historical decisions.
 
-The next immediate release is **v0.4.4 — Site Quality & Search Recovery**, planned
-on 2026-10-26 after the current quality audit. Browser-title recovery is priority
-1. All new quality/content/discovery additions belong to this release before
-the unchanged v0.5.0 and v0.6.0 catalog releases. The current package remains
-0.4.3; this planning update is not implementation or deployment evidence.
+**v0.4.4 — Site Quality & Search Recovery** was planned on 2026-10-26
+and is now implemented and validated as application package `0.4.4`.
+Browser-title recovery, arithmetic corrections, task examples and guides,
+privacy safeguards, and search improvements belong to this release. GitHub
+Release publication and Vercel Production deployment are separately verified
+records; the unchanged v0.5.0 and v0.6.0 catalog versions remain future work.
 
 The original v0.1.0 product baseline provides six registered utilities:
 
@@ -613,9 +614,10 @@ No new tools, article farm, fake user-interest metrics, new tracking provider, s
 
 ## Version 0.4.4 — Site Quality & Search Recovery
 
-Status: PLANNED — immediate next implementation scope, authorized by the
-2026-10-26 request to improve site quality before another AdSense review.
-The application package remains 0.4.3 until the separate release stage.
+Status: IMPLEMENTED — application package `0.4.4`, release-preparation
+validated. GitHub Release and production deployment are separate evidence
+gates. The original scope was approved on 2026-10-26 to improve site quality
+before another AdSense review.
 
 ### Goal
 
@@ -993,7 +995,7 @@ v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
 v0.4.3  Utility Value, Trust & Discoverability (scope complete; merged to master)
         ↓
-v0.4.4  Site Quality & Search Recovery (immediate planned release)
+v0.4.4  Site Quality & Search Recovery (implemented; release source validated)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
@@ -1079,13 +1081,14 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 ## Next planning action
 
-Current decision (2026-10-26): implement the complete [v0.4.4 Site Quality &
-Search Recovery plan](plans/v0.4.4-implementation-plan.md) before the frozen
-v0.5.0 catalog expansion. Browser-title recovery is first. The [current audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
-is the evidence baseline; old audit reports and handoffs below are date-scoped
-history. Current package/version and production observations remain in
-[project status](project-status.md). Planning documents do not establish
-implementation, deployment, live ad activation or AdSense review submission.
+The complete [v0.4.4 Site Quality & Search Recovery plan](plans/v0.4.4-implementation-plan.md)
+is implemented and validated as release source. The frozen v0.5.0 catalog
+expansion is the next planned implementation version after v0.4.4 release
+integration. The [2026-10-26 quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+remains historical evidence of the original priorities. Actual publication
+and deployment identity are recorded separately in [project status](project-status.md)
+and external release records; live advertising and AdSense review are not
+implied by implementation.
 
 Historical handoff at the 2026-10-20 planning checkpoint: GitHub Release `v0.4.2` is published and its tag matches the then-current `master` commit `106cc1bfe3d1e40a9be2469fc28061c8d3e09d87`; this does not verify Vercel production activation. The next planned product version is `v0.4.3 — Utility Value, Trust & Discoverability`, governed by [its existing five-batch plan](plans/v0.4.3-implementation-plan.md). Before Batch A, verify the latest source/owners and establish original fixture provenance and measurable facts; verify truthful public publisher identity and the selected direct-Resend contact sender/inbox before Batch D, without blocking earlier example and discovery work. Preserve the current 18-tool catalog and the frozen later versions; treat support-service activation and any AdSense re-review as separate operational decisions.
 
@@ -1147,4 +1150,4 @@ interface are recorded in [the catalog proposal](plans/converter-catalog-expansi
 Currency remains deferred until its data/freshness/cache/failure/disclosure
 contract is designed and approved. No converter expansion is implemented here.
 
-Status note (2026-10-27): v0.4.4 Batch 5 (four task guides, the `/guide` hub and their discovery links) is implemented locally on `feature/v0.4.4-site-quality`; the release, container gate and whole-site reconciliation remain Batch 6 work. Batch 6 verification (2026-10-27) found the container gate and one complete browser run still not green, so v0.4.4 is not release ready; see [project status](project-status.md) and the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+Historical status note (2026-10-27): v0.4.4 Batch 5 (four task guides, the `/guide` hub and their discovery links) is implemented locally on `feature/v0.4.4-site-quality`; the release, container gate and whole-site reconciliation remain Batch 6 work. Batch 6 verification (2026-10-27) found the container gate and one complete browser run still not green, so v0.4.4 is not release ready; see [project status](project-status.md) and the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).

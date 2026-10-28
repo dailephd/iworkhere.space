@@ -50,12 +50,12 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-The current application package is 0.4.3, with completed source and subsequent
-maintenance on master. The v0.4.3 GitHub Release was published on 2026-10-21;
-publication and Vercel deployment remain separate records. Its [frozen five-batch
-plan](plans/v0.4.3-implementation-plan.md) preserves historical scope. The next
-immediate implementation is [v0.4.4 Site Quality & Search Recovery](plans/v0.4.4-implementation-plan.md),
-planned on 2026-10-26 before the unchanged v0.5.0/v0.6.0 catalogs.
+The v0.4.4 application package is version 0.4.4. The previous v0.4.3
+GitHub Release was published on 2026-10-21; publication and Vercel deployment
+remain separate records. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md)
+preserves historical scope. [v0.4.4 Site Quality & Search Recovery](plans/v0.4.4-implementation-plan.md)
+is implemented and release-preparation validated; the unchanged v0.5.0/v0.6.0
+catalogs remain the next planned product versions.
 
 The historical `v0.4.1` GitHub Release was published 2026-10-11; its annotated tag
 points to the release-time `master` commit
@@ -84,8 +84,8 @@ Current v0.3.1 Vercel Web Analytics lifecycle references:
   existing-observability regression and release identity.
 - `project-status.md` and `ROADMAP.md`: current source and version-level plan.
   v0.4.3 was published on 2026-10-21; production deployment status is tracked
-  separately. Master includes later maintenance. v0.4.4 is the immediate
-  quality/content plan; v0.5.0 is the next catalog expansion and its detailed
+  separately. Master includes later maintenance. v0.4.4 is implemented and
+  validated as release source; v0.5.0 is the next catalog expansion and its detailed
   implementation plan is not frozen. Deployment identity and health require
   their own evidence; historical launch records remain date-scoped.
 
@@ -144,8 +144,8 @@ planning authority; implementation, reconciliation and launch evidence live in
 their respective reports. v0.3.1, v0.4.0 and v0.4.1 remain historical GitHub
 Releases; v0.4.2 and v0.4.3 were published on 2026-10-20 and 2026-10-21.
 Production activation and deployment state are tracked separately. Completed
-v0.4.3 source and later maintenance are on master. v0.4.4 is the immediate
-quality/content release plan; v0.5.0 remains the next catalog expansion.
+v0.4.3 source and later maintenance are on master. v0.4.4 is the implemented and validated
+site-quality release source; v0.5.0 remains the next catalog expansion.
 
 ### docs/plans/vX.Y.Z-implementation-plan.md
 **Summary:** Version-specific frozen implementation plan, created only when that
@@ -161,7 +161,7 @@ authority, not evidence that a batch or version was implemented.
 
 ### plans/v0.4.4-implementation-plan.md
 
-**Summary:** Immediate Site Quality & Search Recovery plan. Contains nine ranked
+**Summary:** Frozen Site Quality & Search Recovery implementation plan. Contains nine ranked
 priorities, six implementation batches, exact owner/path contracts, corrected
 arithmetic semantics, four additional file examples, four multi-tool task
 guides, advertising/cache boundaries, acceptance tests and production review
