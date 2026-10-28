@@ -47,18 +47,18 @@ Status: APPROVED CORRECTION FOR THE IN-PROGRESS LOCAL COLORFIELD CANDIDATE; visu
 **Dark appearance color model:** Dark surfaces are not light pastels darkened independently. Use a neutral, palette-compatible progression of canvas → slightly lighter, softly category-tinted board → distinct elevated card; use limited chroma for background fills and let icons/chips retain recognizable but restrained category accents. Do not mix plum boards with green-gray cards and muddy brown hero treatments. Keep icon/card titles readable and category distinguishability beyond color alone. Homepage-specific CSS variables/rules must be scoped to the homepage and key off the existing `data-theme` / `data-palette` attributes; do not replace global application or dashboard palette values.
 
 For the original palette in Dark mode, the explicit design anchors are:
-- homepage canvas: `#111B28`
-- neutral category-board base: `#1B2B36`
-- card: `#273946`; borders: `#425565`
-- primary text: `#F3F7F8`; secondary text: `#C2CFD4`
+- homepage canvas: the existing original-Dark `--background` (`#1A1D23` at the documented baseline), not an unrelated blue override
+- neutral category-board base: `#222B35`, with 10–14% category tint
+- card: `#2A3140` (original Dark elevated neutral); borders: `#465367`
+- primary text: `#F3F7F8`; secondary text: `#C5CCDA`
 - hero: warm coral `#E7A28F` with dark foreground `#172A2E` and secondary foreground `#314347`; no brown/gray-mauve hero
-- each category board: approximately 86% of the neutral board base plus 14% of that category's current registered accent color, with accessible border/foreground; keep individual cards neutral rather than fully saturated.
+- each category board: approximately 86–90% of the neutral board base plus 10–14% of that category's current registered accent color, with accessible border/foreground; keep individual cards neutral rather than fully saturated.
 
 For One Dark, preserve its established theme identity and fixed-dark selection behavior but use a separate homepage-specific harmony:
-- homepage canvas: `#232831`; neutral category-board base: `#2B303A`
+- homepage canvas: existing One Dark `--background` (`#282C34` at the documented baseline); neutral category-board base: `#2B303A`
 - elevated card: `#363E4A`; border: `#526072`
 - primary text: `#F4F5F7`; secondary text: `#C6CDD6`
-- hero: the same coordinated warm coral `#E7A28F` with dark foreground `#172A2E`, instead of muted brown
+- hero: intentional lavender `#B6A1D8` with dark foreground `#211F2B`, instead of muted brown
 - category board tint: approximately 88–90% neutral board and 10–12% category accent. No extra glass blur/neomorphic layers inside Colorfield cards.
 
 For Mineral, Oxblood, Signal, Cobalt and Amber Dark modes, **do not reuse the original Dark blues or a fixed plum board**. Retain the active palette's base canvas and choose a neutral board from a mix of that palette's `--background` and `--surface`; add only 10–14% of the current `--category-color` for recognizable category identity. Cards use the same palette's `--surface-alt` or a tested, visibly elevated neutral, not a clashing hue from a different palette. The seven explicit Dark-mode hero reference fills and dark-text colors are:
@@ -70,7 +70,7 @@ For Mineral, Oxblood, Signal, Cobalt and Amber Dark modes, **do not reuse the or
 - amber: fill `#E8C482`, foreground `#26231A`;
 - onedark: fill `#B6A1D8`, foreground `#211F2B`.
 
-The One Dark reference above for a coral hero is superseded by its intentionally lavender hero `#B6A1D8`; keep the rest of the One Dark neutral surface/foreground hierarchy. The specified hero foregrounds all exceed 4.5:1 contrast against their paired fills, before any later blending. Do not recolor the entire site's global palette or change palette IDs, persistence, theme geometry or unrelated pages.
+The specified hero foregrounds all exceed 4.5:1 contrast against their paired fills, before any later blending. Do not recolor the entire site's global palette or change palette IDs, persistence, theme geometry or unrelated pages.
 
 **Quantitative and visual checks:** For each category and secondary card, normal text/background contrast must be at least 4.5:1; large text and meaningful boundaries/icons should satisfy 3:1 where applicable. Test actual computed colors, not token values alone, across original Light, original Dark, One Dark and all five other named palettes in Dark, at 1440×900 and 390×844. Review whole-page screenshots with catalog, featured tasks and guide links in the same capture. Test keyboard focus, search/no-match, no horizontal overflow, no cut-off text, proper header clearance, unchanged tool links and no visible count labels. The candidate may not report visual PASS from test status alone; inspect the screenshots and correct misaligned surface/font/card styling.
 
