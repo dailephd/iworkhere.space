@@ -1,5 +1,9 @@
 # PROJECT STATUS
 
+## Homepage Colorfield design decision — 2026-10-28
+
+Status: approved visual direction, **NOT IMPLEMENTED**. On the dedicated documentation branch `design/homepage-colorfield-20261028`, the user approved adapting the existing category-based homepage to the colorful Colorfield 03 concept. The next bounded implementation removes displayed tool/category totals, moves search and the complete icon/name/description catalog ahead of featured examples and guides, and introduces a coral introduction plus strong per-category pastel panels. This is not a new catalog release or permission to change the v0.5.0/v0.6.0 roadmap. The exact visual and validation contract is in [DESIGN.md](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28), with component boundaries in [HomeClient.md](components/HomeClient.md). The current Production homepage is unchanged until a later validated implementation and authorized deployment.
+
 ## v0.4.4 release source and validation — 2026-10-28
 
 Status: IMPLEMENTED AND EXACT-SHA RELEASE-PREPARATION VALIDATED. GitHub Release and Vercel Production outcomes require separate verification.
