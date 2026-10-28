@@ -670,7 +670,15 @@ Boundary evidence added in the existing owners (synthetic PDFs are generated in 
 - `test/e2e/heic-converter.spec.ts`: both real conversion tests now decode the downloaded file. A container reader (PNG IHDR, JPEG SOF) confirms 480x320 and the type, the served blob type and size equal the saved file, and the file is decoded natively and compared with the decoded source preview over a pixel grid (mean difference 0 for PNG and about 1.6 for JPEG quality 60; a mirrored copy differs by about 39, so orientation errors are detected).
 - `src/module/tool/image/imageFeedback.test.ts`: the HEIC decoded-area limit is exact (6000x5000 and 30,000,000x1 pass, 30,000,001x1 fails with its actual pixel count), the worker error response carries dimensions only for a genuinely oversized area, and the 25 MiB byte limit has its own boundary.
 
-Not established: an oversized (over 30 MP) HEIC rejected by the real decoder in a browser. No retained fixture of that size with provenance exists, so that item is `UNIT_ONLY` (`BROWSER_OVERSIZE_UNVERIFIED`).
+Not established (as of Batch 6; superseded by the hosted CI correction below): an oversized (over 30 MP) HEIC rejected by the real decoder in a browser. No retained fixture of that size with provenance existed, so that item was `UNIT_ONLY` (`BROWSER_OVERSIZE_UNVERIFIED`).
+
+### Hosted CI correction - 2026-10-28
+
+- Real oversized HEIC: `test/fixtures/images/heic-over-30mp.heic` (CC0, 8256 x 5504 = 45,441,024 pixels, 4,479,456 bytes, SHA-256 `0e366a98...96ce6e`, provenance and license in `test/fixtures/images/README.md` and `heic-over-30mp-LICENSE.txt`) is consumed by `test/e2e/heic-converter.spec.ts`, which asserts the tool-owned 30 MP alert and no output, result, preview or conversion in the real worker. The small MIT `heic-source.heic` stays the positive fixture.
+- Hosted boundary: the Split 20-group test requires 20 real downloads. Hosted Linux Chromium 153 delivered 10 `download` events per page and none for the 11th click (run 40590174147), so downloads run in two pages of one context, ten each, with a finite 20 s per-output wait that reports the group ordinal. The root cause is not proven; the hosted exact-SHA run is the evidence.
+- Calculator URL: the `expr` query is asserted with `expect.poll` for each of the 12 expressions, because the URL lags the visible result.
+- Tests that choose a file immediately after `goto` must wait for hydration (Themes button enabled) first; otherwise the file can be dropped silently.
+- Local Windows results are not a substitute for hosted Linux. Details and run identities: [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
 Host note: on the Windows host used here, `net::ERR_NO_BUFFER_SPACE` and unusual multi-second stalls appear in unrelated tests of the plain host suite as well as in the container run, so they are not specific to Docker or to `image-converter.spec.ts`. Windows non-paged pool grew from about 2.16 GB to 2.39 GB during the session and the cumulative TCPv4 connection-failure counter kept rising, while TIME_WAIT never exceeded about 850 sockets (ephemeral-port exhaustion is not indicated). The root cause is not proven.
 

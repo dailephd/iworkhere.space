@@ -58,7 +58,10 @@ test.describe("calculator journey", () => {
             await expression.press(input.length % 2 ? "Enter" : "=");
             await expect(result, input).toHaveText(output);
             await expect(expression).toHaveValue(input);
-            expect(new URL(page.url()).searchParams.get("expr")).toBe(input);
+            // The query lags the visible state; poll this exact input so the previous expression's URL cannot satisfy it.
+            await expect.poll(() => new URL(page.url()).searchParams.get("expr"), {
+                message: `Calculator URL must synchronize for ${input}`,
+            }).toBe(input);
         }
     });
 

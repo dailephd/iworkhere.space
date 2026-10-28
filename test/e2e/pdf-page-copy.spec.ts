@@ -49,6 +49,8 @@ async function observe(page: Page) {
     return requests;
 }
 const resources = (page: Page) => page.evaluate(() => (window as unknown as { pdfToolResources: { created: string[]; revoked: string[]; workers: string[] } }).pdfToolResources);
+// Files chosen before hydration can be dropped silently (the container run lost ten files this way); Themes enables once hydrated.
+async function waitForHydration(page: Page) { await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled(); }
 async function noOverflow(page: Page) { expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true); }
 
 test("Merge: real ordered local PDFs, keyboard controls, verified download and lifecycle", async ({ page }, info) => {
@@ -195,7 +197,7 @@ async function expectRejected(page: Page, message: string, names: string[]) {
 test.describe("Merge PDF limit boundaries", () => {
     test.setTimeout(180_000);
     test("10-file collection: 10 merge in order, an 11th and an over-count batch are rejected atomically", async ({ page }, info) => {
-        await observe(page); await page.goto("/tool/merge-pdf");
+        await observe(page); await page.goto("/tool/merge-pdf"); await waitForHydration(page);
         const input = page.getByLabel("Choose PDFs", { exact: true });
         const names = Array.from({ length: 10 }, (_, index) => `f${String(index + 1).padStart(2, "0")}.pdf`);
         await input.setInputFiles(await Promise.all(names.map(async (name, index) => named(name, await syntheticPdf(`F${String(index + 1).padStart(2, "0")}`, 1)))));
@@ -213,7 +215,7 @@ test.describe("Merge PDF limit boundaries", () => {
     });
 
     test("per-file 10 MiB: exactly 10 MiB merges, one extra byte is rejected without losing prior files", async ({ page }, info) => {
-        await observe(page); await page.goto("/tool/merge-pdf");
+        await observe(page); await page.goto("/tool/merge-pdf"); await waitForHydration(page);
         const input = page.getByLabel("Choose PDFs", { exact: true });
         const exact = await syntheticPdf("BIG", 1, 10 * MIB);
         expect(exact.length).toBe(10 * MIB);
@@ -229,7 +231,7 @@ test.describe("Merge PDF limit boundaries", () => {
     });
 
     test("aggregate 25 MiB: exactly 25 MiB merges, one extra byte is rejected without losing prior files", async ({ page }, info) => {
-        await observe(page); await page.goto("/tool/merge-pdf");
+        await observe(page); await page.goto("/tool/merge-pdf"); await waitForHydration(page);
         const input = page.getByLabel("Choose PDFs", { exact: true });
         const first = await syntheticPdf("A", 1, 10 * MIB), second = await syntheticPdf("B", 1, 10 * MIB);
         await input.setInputFiles([named("a.pdf", first), named("b.pdf", second), named("c.pdf", await syntheticPdf("C", 1, 5 * MIB))]);
@@ -245,7 +247,7 @@ test.describe("Merge PDF limit boundaries", () => {
     });
 
     test("100-page output: 50 + 50 pages merge in order, one more page is rejected without losing prior files", async ({ page }, info) => {
-        await observe(page); await page.goto("/tool/merge-pdf");
+        await observe(page); await page.goto("/tool/merge-pdf"); await waitForHydration(page);
         const input = page.getByLabel("Choose PDFs", { exact: true });
         await input.setInputFiles([named("front.pdf", await syntheticPdf("FRONT", 50)), named("back.pdf", await syntheticPdf("BACK", 50))]);
         await expect(mergeList(page)).toHaveCount(2);
@@ -267,36 +269,69 @@ test.describe("Merge PDF limit boundaries", () => {
     });
 });
 
-test("Split: 20 output groups are accepted, the 21st is refused, and every ordered download is independently verified", async ({ page }, info) => {
-    test.setTimeout(180_000);
-    await observe(page); await page.goto("/tool/split-pdf");
+// Hosted Linux Chromium 153 delivered exactly ten download events per page and then no event for the eleventh click, on desktop and mobile
+// (run 40590174147: link, blob href and filename intact, no page or console error). Downloads therefore run in two pages of the same
+// browser context, ten per page; every one of the twenty clicks still has to produce its own download that is saved and read back.
+const SPLIT_DOWNLOAD_PER_PAGE = 10;
+const SPLIT_OUTPUT_DOWNLOAD_TIMEOUT_MS = 20_000;
+const splitExpression = ["1-3", "5,2", "10-12,1", "25", ...Array.from({ length: 16 }, (_, index) => String(index + 5))];
+const splitExpectedPage = [[1, 2, 3], [5, 2], [10, 11, 12, 1], [25], ...Array.from({ length: 16 }, (_, index) => [index + 5])];
+
+async function splitTwentyGroups(page: Page, verifyLimit: boolean) {
+    await observe(page); await page.goto("/tool/split-pdf"); await waitForHydration(page);
     await page.getByLabel("Choose PDF", { exact: true }).setInputFiles(named("split-limit.pdf", await syntheticPdf("S", 25)));
-    const expression = ["1-3", "5,2", "10-12,1", "25", ...Array.from({ length: 16 }, (_, index) => String(index + 5))];
-    const expectedPage = [[1, 2, 3], [5, 2], [10, 11, 12, 1], [25], ...Array.from({ length: 16 }, (_, index) => [index + 5])];
     const add = page.getByRole("button", { name: "Add output group", exact: true });
-    await page.getByLabel("Pages for output group 1", { exact: true }).fill(expression[0]);
+    await page.getByLabel("Pages for output group 1", { exact: true }).fill(splitExpression[0]);
     for (let group = 2; group <= 20; group++) {
         await add.click();
         const field = page.getByLabel(`Pages for output group ${group}`, { exact: true });
-        await expect(field).toBeFocused(); await field.fill(expression[group - 1]);
+        await expect(field).toBeFocused(); await field.fill(splitExpression[group - 1]);
     }
     await expect(page.getByLabel(/^Pages for output group \d+$/)).toHaveCount(20);
-    await expect(add).toBeDisabled();
-    await add.evaluate(element => (element as HTMLButtonElement).click());
-    await expect(page.getByLabel("Pages for output group 21", { exact: true })).toHaveCount(0);
-    await expect(page.getByLabel(/^Pages for output group \d+$/)).toHaveCount(20);
+    if (verifyLimit) {
+        await expect(add).toBeDisabled();
+        await add.evaluate(element => (element as HTMLButtonElement).click());
+        await expect(page.getByLabel("Pages for output group 21", { exact: true })).toHaveCount(0);
+        await expect(page.getByLabel(/^Pages for output group \d+$/)).toHaveCount(20);
+    }
     await page.getByRole("button", { name: "Split PDF", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Split PDFs ready" })).toBeFocused({ timeout: 30_000 });
-    const result = page.getByRole("region", { name: "Split PDFs ready" });
-    await expect(result.getByRole("link")).toHaveCount(20);
-    for (let group = 1; group <= 20; group++) {
-        const pending = page.waitForEvent("download");
-        await page.getByRole("link", { name: `Download output group ${group}`, exact: true }).click();
-        const output = await pending;
-        expect(output.suggestedFilename()).toMatch(new RegExp(`^split-limit-split-${String(group).padStart(2, "0")}-pages-`));
-        const destination = info.outputPath(output.suggestedFilename()); await output.saveAs(destination);
-        const text = (await inspect(await readFile(destination))).map(value => value.text.trim());
-        expect(text, `output group ${group} (${expression[group - 1]})`).toEqual(expectedPage[group - 1].map(value => `S-P${String(value).padStart(3, "0")}`));
-    }
+    await expect(page.getByRole("region", { name: "Split PDFs ready" }).getByRole("link")).toHaveCount(20);
+}
+
+async function verifySplitDownload(page: Page, info: TestInfo, group: number, completed: number[]) {
+    const link = page.getByRole("link", { name: `Download output group ${group}`, exact: true });
+    const pending = page.waitForEvent("download", { timeout: SPLIT_OUTPUT_DOWNLOAD_TIMEOUT_MS });
+    // A missed event must name the group instead of consuming the whole-test deadline.
+    const missed = pending.catch(async () => {
+        const state = await resources(page);
+        throw new Error(`No download event for output group ${group} after groups [${completed.join(",")}] completed on this page: `
+            + `href scheme ${((await link.getAttribute("href")) ?? "").split(":")[0]}, created ${state.created.length}, revoked ${state.revoked.length}`);
+    });
+    await link.click();
+    const output = await missed;
+    expect(output.suggestedFilename()).toMatch(new RegExp(`^split-limit-split-${String(group).padStart(2, "0")}-pages-`));
+    const destination = info.outputPath(output.suggestedFilename()); await output.saveAs(destination);
+    const text = (await inspect(await readFile(destination))).map(value => value.text.trim());
+    expect(text, `output group ${group} (${splitExpression[group - 1]})`).toEqual(splitExpectedPage[group - 1].map(value => `S-P${String(value).padStart(3, "0")}`));
+    completed.push(group);
+}
+
+test("Split: 20 output groups are accepted, the 21st is refused, and every ordered download is independently verified", async ({ page }, info) => {
+    test.setTimeout(120_000);
+    await splitTwentyGroups(page, true);
+    const completed: number[] = [];
+    for (let group = 1; group <= SPLIT_DOWNLOAD_PER_PAGE; group++) await verifySplitDownload(page, info, group, completed);
     await noOverflow(page);
+
+    const second = await page.context().newPage();
+    const secondFailure: string[] = [];
+    second.on("pageerror", error => secondFailure.push(`pageerror: ${error.message}`));
+    second.on("console", message => { if (message.type() === "error") secondFailure.push(`console: ${message.text()}`); });
+    await splitTwentyGroups(second, false);
+    const secondCompleted: number[] = [];
+    for (let group = SPLIT_DOWNLOAD_PER_PAGE + 1; group <= 20; group++) await verifySplitDownload(second, info, group, secondCompleted);
+    await noOverflow(second);
+    expect(secondFailure, "No page or console errors on the second Split page").toEqual([]);
+    expect([...completed, ...secondCompleted]).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
 });

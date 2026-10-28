@@ -8,6 +8,12 @@ Inspected source: master at 59396b224157ad290e768c7f70998a9c947bda42.
 The application package remains 0.4.3; the dashboard remains 0.1.0.
 The v0.4.3 GitHub Release was separately verified as published on 2026-10-21;
 later master maintenance is not assumed to be a new numbered release.
+Historical v0.4.3 identity (verified against Git and GitHub on 2026-10-28, ported from the
+open PR #41): the annotated tag `v0.4.3` (tag object `7dd9e1457b0b961b2b97f4da76dff5145af21bb7`)
+targets commit `da1c6b48f2319ffa85f17b725d958980eabc7235`, the PR #40 merge commit on `master`
+(merged 2026-10-21T19:10:09Z); the GitHub Release was published 2026-10-21T19:28:44Z. The release
+tag, the merge and the source Vercel deployed are distinct facts: this check did not verify
+which source production serves.
 
 The immediate next scope is [v0.4.4 — Site Quality & Search Recovery](plans/v0.4.4-implementation-plan.md),
 before the unchanged v0.5.0/v0.6.0 catalogs. All nine new priorities are included
@@ -772,3 +778,5 @@ Status: NEEDS_CORRECTION, NOT RELEASE READY, NOTHING COMMITTED BY BATCH 6. The p
 Passed: `npm run verify` (typecheck, lint, 2,004 unit tests, build); controlled preview-denial ads (6 passed, 2 skipped by mode); controlled enabled stubbed ads (4 passed, 4 skipped by mode); support-enabled subset (84 passed on rerun). Two complete default-off browser runs each ended 851 passed, 6 skipped by mode and 1 failed, with a different transient host-network failure each time (`net::ERR_NO_BUFFER_SPACE`, then a 33 s stall in a test that takes 9 s); neither is counted as a pass. The container gate first failed before its browser pass because `script/publicRouteInventory.ts` expected 30 sitemap URLs while the application serves 35; that helper and its test were then corrected under a one-time scope extension (35 URLs asserted, parity with the sitemap). The corrected container run passed build, health, HTTP, shutdown and cleanup, but its browser pass again had one `ERR_NO_BUFFER_SPACE` failure, and a third full host run had two failures, so no complete browser or container run is green yet.
 
 Closed gaps: browser evidence for the Merge 10-file, 10 MiB, 25 MiB and 100-page limits, the Split 20-group limit, and a decode of downloaded HEIC JPEG and PNG output. Still open: an over-30-MP HEIC through the real decoder in a browser (unit evidence only), a green container gate, a green complete browser run, hosted CI for the exact commit, and the unmerged PR #48 and PR #41 integration. See the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+
+Hosted CI correction (2026-10-28): hosted validation of `89f6728` passed 7 of 9 jobs; a test-only correction (Split download pages, calculator URL polling, hydration waits, a real over-30 MP HEIC browser test) passed local `verify`, full E2E and container on the final tree. Actual candidate readiness: **NOT_RELEASE_READY until the exact-SHA hosted run of the correction commit is green** (8 workflows, 9 jobs); no push to `master`, tag, release, deployment, ad activation or AdSense step has occurred.

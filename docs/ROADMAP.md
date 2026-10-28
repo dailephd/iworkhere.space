@@ -1134,7 +1134,9 @@ should freeze their implementation plan before coding prompts are issued.
 The new category migration replaces public Everyday with Converters (converter),
 keeps Length/Weight and all tool URLs, moves QR to Developer, and permanently
 redirects /category/everyday. This records a later decision; the historical v0.4
-decision is unchanged. Migration release assignment remains TBD.
+decision is unchanged. The migration shipped in v0.4.1 (verified from tag source: the
+`v0.4.0` category definition is `everyday`, the `v0.4.1` definition is `converter`); only the
+converter waves below remain proposals without approved release assignments.
 
 Planner approval is requested for a separate v0.7.0 converter wave:
 Temperature, Volume, Area, Speed and Data Storage. A second wave is proposed for

@@ -14,6 +14,23 @@ Provenance sources at that exact commit: [LICENSE](https://github.com/su-enginee
 
 No real-alpha or metadata-preservation proof is claimed. This test-fixture license is separate from the production decoder release-license gate. Earlier rejected fixture evidence remains in the ignored Batch 5 reports; those superseded binaries are not committed.
 
+## HEIC fixture - real oversized (over 30 megapixel) rejection
+
+Local fixture: `heic-over-30mp.heic`. Purpose: prove in a real browser that the actual HEIC converter worker rejects a genuinely oversized decoded image with the tool-owned 30 MP message and produces no result. It does not replace `heic-source.heic`, which stays the positive fixture.
+
+Source: [aaron-rust/hdr-sample-images](https://github.com/aaron-rust/hdr-sample-images), pinned commit `df0d5df406ad0dbe2124d6f2a3700fe73dd3ead7`, upstream path `different_file_formats_in_sdr_and_hdr/3B_HEIC_SDR.heic`. The file is the real binary, not an LFS pointer. The upstream LFS pointer for that path at that commit is `oid sha256:0e366a983db397b1c1fbcb638e51ecbb6f2163f03f1e652f62ec8e192d96ce6e`, `size 4479456`; the local file's SHA-256 equals that oid and its length equals that size.
+
+| Field | Evidence |
+| --- | --- |
+| Identity | SHA-256 `0e366a983db397b1c1fbcb638e51ecbb6f2163f03f1e652f62ec8e192d96ce6e`; **4,479,456 bytes** (about 4.27 MiB, under the tool's 25 MiB source limit) |
+| Format | HEIC, ISO BMFF `ftyp` major brand `heix`, compatible `mif1`, `heix`, `miaf` |
+| Dimensions | `ispe` box and actual worker decode both **8256 x 5504 = 45,441,024 pixels** (limit 30,000,000) |
+| License | CC0 1.0 Universal; the upstream README grants CC0 for all image files. Legal code and origin notice in `heic-over-30mp-LICENSE.txt` (LICENSE tail byte-identical to the pinned upstream file) |
+| Storage | Ordinary Git blob. `.gitattributes` has no LFS filter for this path; Git detects the binary by content |
+| Consumer | `test/e2e/heic-converter.spec.ts`, test "real over-30 MP HEIC is rejected ..." |
+
+Provenance was verified from the retained Batch 5 evidence (ignored `.my-dev-kit-context/reports/batch-5-corrected/`) and against the public GitHub repository (license SPDX `CC0-1.0`, commit, path, pointer). Redistribution in this public repository is permitted by CC0. The earlier "Do not commit large photographs" guidance is deliberately excepted here by the v0.4.4 planner decision: a real over-limit decode cannot be produced by a tiny file. This license is separate from the production decoder release-license gate.
+
 Fixtures enter this directory when a real tool test first needs them. Batch 1
 adds the convention only; no conversion or image product fixture is implied.
 
