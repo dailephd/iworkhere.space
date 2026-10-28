@@ -120,7 +120,7 @@ describe("calculator and time arithmetic guides", () => {
             headings: ["Basic arithmetic", "Operator precedence and parentheses", "Negative numbers", "Invalid expressions and numeric limits", "Sharing expressions and privacy"],
             instruction: ["Enter an expression in Expression", "Press Enter or =", "Result area", "Select C to clear"],
             related: ["time-arithmetic", "length-converter", "weight-converter"],
-            text: ["2 + 3 * 4 gives 14", "(2 + 3) * 4 gives 20", "7 / 2 gives 3.5", "Result is not finite.", "expr query parameter", "sensitive information"],
+            text: ["2 + 3 * 4 gives 14", "(2 + 3) * 4 gives 20", "7 / 2 gives 3.5", "2 * -3 gives -6", "1--2 gives 3", "Enter an expression to calculate.", "Result is not finite.", "expr query parameter", "sensitive information"],
         },
         "time-arithmetic": {
             h1: "Time Arithmetic",

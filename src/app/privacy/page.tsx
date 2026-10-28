@@ -13,7 +13,7 @@ export default function PrivacyPage() {
         <article className="max-w-3xl space-y-8 text-text [&_p]:leading-7">
             <header className="space-y-2">
                 <h1 className="text-2xl font-semibold">Privacy Policy</h1>
-                <p className="text-sm text-text-muted">Last updated: October 21, 2026</p>
+                <p className="text-sm text-text-muted">Last updated: October 27, 2026</p>
                 <p>This policy explains information processing on iworkhere.space, including its browser tools and the services used to operate and improve the website.</p>
             </header>
 
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
 
             <section className="space-y-3">
                 <h2 className="text-xl font-semibold">Browser storage and offline use</h2>
-                <p>We use local storage on your device to remember your theme and up to ten recently used tool names. These preferences do not contain tool inputs or results. The website also caches pages and static resources in your browser for offline use; cached page addresses can include URL parameters.</p>
+                <p>We use local storage on your device to remember your theme and up to ten recently used tool names. These preferences do not contain tool inputs or results. The website also keeps eligible pages and static resources in your browser’s cache for offline use. It caches only page addresses without URL parameters and excludes requests that include query strings, so URL state such as a calculator expression is not stored in that cache.</p>
                 <p>You can remove these preferences and offline caches using your browser’s controls for clearing this site’s data. Blocking local storage may prevent preferences from being remembered. Our application measurements do not use tracking cookies.</p>
             </section>
 

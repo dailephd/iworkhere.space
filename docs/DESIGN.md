@@ -6,7 +6,7 @@ Header: one semantic `<header>` is fixed to the top of the viewport (`fixed inse
 
 Footer: one semantic `<footer>` in ordinary document flow, rendered by `AppShell` after the main content and the optional footer advertising slot. `AppShell` is a `flex min-h-screen flex-col` container whose content region grows, so a short page ends with the footer at the bottom of the viewport and a long page reaches the footer only by scrolling to the end. The footer is never fixed or sticky, has no spacer, no `--footer-clearance` variable, no viewport tracking and no software-keyboard handling. Copyright, Contact Us, Privacy Policy and the conditional Report Issues trigger remain. The links form one horizontal row on the trailing side, like the header, and wrap in order only when the width requires it, so the footer stays one line tall on desktop.
 
-Browser tab title: every page uses the exact title `iworkhere` (`BROWSER_TITLE` in `src/lib/seo.ts`). Descriptions, canonical URLs, robots rules and the page-specific Open Graph and Twitter titles are unchanged. Primary navigation order is Home, All tools, each populated category in registry order, then About.
+Browser tab title: each page uses its unbranded title plus the single suffix " - iworkhere" (`buildBrowserTitle` in `src/lib/seo.ts`), for example "Merge PDF Files Online - iworkhere". Descriptions, canonical URLs, robots rules and page-specific Open Graph and Twitter titles remain present. Historical: the October 24 implementation used the uniform title `iworkhere` (`BROWSER_TITLE`) on every page; v0.4.4 Batch 1 replaced it. Current primary navigation is Home, All tools, populated categories, then About.
 
 Superseded history: the retractable header (Show navigation / Hide navigation), the fixed collapsible footer, `FooterViewportControl` and `--footer-clearance` described in the v0.4.2 and v0.4.3 sections below record behavior at release time and are no longer current.
 
@@ -15,6 +15,37 @@ Slugify uses a visible Text label explicitly associated with `slugify-input`. It
 This document is the canonical authority for product visual design, styling, interaction presentation, responsive behavior, and accessibility-oriented visual rules. It combines accepted design intent with current repository architecture and behavior. Architecture and code-ownership rules remain in `docs/architecture.md`, `AGENTS.md`, and `CLAUDE.md`.
 
 The UI/discovery revision is defined in [UI, discovery, and measured growth](plans/ui-discovery-growth-plan.md). The user approved Delivery 1 (homepage, compact navigation, Image Resizer, and current theme/material behavior) on 2026-10-03. Delivery 2 image-family rollout and search foundation was implemented, validated, merged, and publicly deployed on 2026-10-04. The visual/layout acceptance remains recorded in the plan and launch evidence; no new design-system scope was added.
+
+## Planned v0.4.4 quality and guide presentation — 2026-10-26
+
+Status: planned; no application styling or content change is claimed by this
+documentation update. The [implementation plan](plans/v0.4.4-implementation-plan.md)
+defines exact requirements and path ownership.
+
+Restore distinct browser titles through the existing SEO owner with the
+single suffix " - iworkhere"; the merge page must be titled
+"Merge PDF Files Online - iworkhere". Preserve page-specific social metadata,
+canonicals and robots. This is the approved replacement for the uniform-title
+rule, not a header/logo redesign.
+
+Add Guides after All tools in primary navigation; retain populated categories
+in order and About last. The home workflow section follows the existing five
+featured tasks and precedes the catalog. Keep those five tasks stable even
+when the example collection grows. Tool pages continue to put the functioning
+tool before worked examples and guidance; relevant task-guide links follow
+that guidance.
+
+The guide hub and four detail pages use current semantic text, panel, link,
+focus and spacing tokens. Detail pages present starting material, expected
+outcome, ordered steps, measured example, verification and limitations in a
+readable article. All content is server-visible; downloads and tool handoffs
+are explicit visitor actions. No new palette, independent scrolling surface,
+hero illustration, animation, CMS or processing UI is added. Pages remain
+ad-free. Preserve the fixed header, normal-flow footer and approved About copy.
+
+Verify mobile/desktop reading order, reachable controls, visible keyboard
+focus and header clearance for anchors. Do not restore historical retractable
+footer behavior when extending examples or links.
 
 ## Diagnostic details
 

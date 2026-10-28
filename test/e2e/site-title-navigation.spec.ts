@@ -1,6 +1,6 @@
 import { test, expect } from "./support/fixture";
 
-// The sitemap is the existing list of public routes: 5 site pages, 18 tools and 7 categories.
+// The sitemap is the existing list of public routes: 5 site pages, 18 tools, 7 categories, the guide hub and 4 guides.
 async function publicPath(request: import("@playwright/test").APIRequestContext): Promise<string[]> {
     const response = await request.get("/sitemap.xml");
     expect(response.ok()).toBe(true);
@@ -8,48 +8,108 @@ async function publicPath(request: import("@playwright/test").APIRequestContext)
     return [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
 }
 
-test("every public URL has the exact browser title and its own canonical path and description", async ({ page, request }) => {
+// Independent expectation for all 35 sitemap identities; production code keeps no second title table.
+const expectedTitle: Record<string, string> = {
+    "/": "Browser Tools for PDFs, Images and Text - iworkhere",
+    "/discover": "All Tools - iworkhere",
+    "/about": "About - iworkhere",
+    "/contact": "Contact Us - iworkhere",
+    "/privacy": "Privacy Policy - iworkhere",
+    "/category/document": "PDF Tools - iworkhere",
+    "/category/image": "Image Tools - iworkhere",
+    "/category/text": "Text Tools - iworkhere",
+    "/category/math": "Math Tools - iworkhere",
+    "/category/converter": "Converters - iworkhere",
+    "/category/time": "Time Tools - iworkhere",
+    "/category/developer": "Developer Tools - iworkhere",
+    "/tool/merge-pdf": "Merge PDF Files Online - iworkhere",
+    "/tool/split-pdf": "Split PDF Pages Online - iworkhere",
+    "/tool/images-to-pdf": "Images to PDF Converter - iworkhere",
+    "/tool/pdf-to-image": "PDF to JPG and PNG Converter - iworkhere",
+    "/tool/compress-pdf": "Compress PDF Files Online - iworkhere",
+    "/tool/slugify": "Slug Generator - iworkhere",
+    "/tool/calculator": "Online Calculator - iworkhere",
+    "/tool/length-converter": "Length Converter - iworkhere",
+    "/tool/html-text-extractor": "HTML to Text Converter - iworkhere",
+    "/tool/weight-converter": "Weight Converter - iworkhere",
+    "/tool/time-arithmetic": "Add and Subtract Time - iworkhere",
+    "/tool/image-resizer": "Image Resizer - iworkhere",
+    "/tool/image-compressor": "Image Compressor - iworkhere",
+    "/tool/image-converter": "JPG, PNG and WebP Converter - iworkhere",
+    "/tool/heic-converter": "HEIC to JPG and PNG Converter - iworkhere",
+    "/tool/json-formatter": "JSON Formatter and Validator - iworkhere",
+    "/tool/word-character-counter": "Word and Character Counter - iworkhere",
+    "/tool/qr-code-generator": "QR Code Generator - iworkhere",
+    "/guide": "Practical File Workflows - iworkhere",
+    "/guide/assemble-pdf-packet": "Assemble an Ordered PDF Packet - iworkhere",
+    "/guide/prepare-image-for-upload": "Prepare an Image for an Upload - iworkhere",
+    "/guide/heic-photos-to-pdf": "Turn HEIC Photos into a PDF - iworkhere",
+    "/guide/pdf-pages-for-slides": "Prepare PDF Pages for Slides - iworkhere",
+};
+const notFoundTitle = "Page Not Found - iworkhere";
+
+test("every public URL has its descriptive browser title in initial HTML and the live DOM, with its own canonical path and description", async ({ page, request }) => {
     const pathList = await publicPath(request);
-    expect(pathList).toHaveLength(30);
-    expect(new Set(pathList).size).toBe(30);
+    expect(pathList).toHaveLength(35);
+    expect(new Set(pathList).size).toBe(35);
+    expect([...pathList].sort()).toEqual(Object.keys(expectedTitle).sort());
+    expect(new Set(Object.values(expectedTitle)).size).toBe(35);
     const descriptionList = new Set<string>();
     for (const path of pathList) {
+        const html = await (await request.get(path)).text();
+        expect(html.match(/<title>([^<]*)<\/title>/g), path).toEqual([`<title>${expectedTitle[path]}</title>`]);
         await page.goto(path);
-        expect(await page.title(), path).toBe("iworkhere");
-        expect(await page.evaluate(() => document.title)).toBe("iworkhere");
+        expect(await page.title(), path).toBe(expectedTitle[path]);
+        expect(await page.evaluate(() => document.title)).toBe(expectedTitle[path]);
         await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", path === "/" ? "https://iworkhere.space" : `https://iworkhere.space${path}`);
         const description = await page.locator('meta[name="description"]').getAttribute("content");
         expect(description, path).toBeTruthy();
         descriptionList.add(description!);
-        await expect(page.locator('meta[property="og:title"]')).not.toHaveAttribute("content", "iworkhere");
+        await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", expect.stringMatching(/ — iworkhere\.space$/));
     }
     expect(descriptionList.size, "page-specific descriptions").toBeGreaterThanOrEqual(25);
 });
 
-test("the browser title stays correct after client-side navigation", async ({ page }) => {
+test("the browser title stays correct after client-side navigation, reload, history and query state", async ({ page }) => {
     await page.goto("/");
+    await expect.poll(() => page.title()).toBe(expectedTitle["/"]);
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
     for (const name of ["All tools", "About"]) {
         await navigation.getByRole("link", { name, exact: true }).click();
         await expect(page).toHaveURL(name === "About" ? /\/about$/ : /\/discover$/);
-        await expect.poll(() => page.title()).toBe("iworkhere");
+        await expect.poll(() => page.title()).toBe(expectedTitle[name === "About" ? "/about" : "/discover"]);
     }
     await page.getByRole("contentinfo").getByRole("link", { name: "Privacy Policy", exact: true }).click();
     await expect(page).toHaveURL(/\/privacy$/);
-    await expect.poll(() => page.title()).toBe("iworkhere");
+    await expect.poll(() => page.title()).toBe(expectedTitle["/privacy"]);
+    await page.reload();
+    await expect.poll(() => page.title()).toBe(expectedTitle["/privacy"]);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/about$/);
+    await expect.poll(() => page.title()).toBe(expectedTitle["/about"]);
+    await page.goForward();
+    await expect(page).toHaveURL(/\/privacy$/);
+    await expect.poll(() => page.title()).toBe(expectedTitle["/privacy"]);
 });
 
-test("primary navigation is Home, All tools, every populated category in registry order, then About", async ({ page, request }) => {
+test("a query-bearing tool URL keeps its title and a query-free canonical", async ({ page }) => {
+    await page.goto("/tool/calculator?a=10&b=2");
+    await expect.poll(() => page.title()).toBe(expectedTitle["/tool/calculator"]);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/tool/calculator");
+});
+
+test("primary navigation is Home, All tools, Guides, every populated category in registry order, then About", async ({ page, request }) => {
     const categoryPath = (await publicPath(request)).filter(path => path.startsWith("/category/"));
     expect(categoryPath).toHaveLength(7);
     await page.goto("/");
     const hrefList = await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link").evaluateAll(list => list.map(link => link.getAttribute("href")));
     expect(hrefList[0]).toBe("/");
     expect(hrefList[1]).toBe("/discover");
-    expect(hrefList.slice(2, -1).sort()).toEqual([...categoryPath].sort());
+    expect(hrefList[2]).toBe("/guide");
+    expect(hrefList.slice(3, -1).sort()).toEqual([...categoryPath].sort());
     expect(hrefList.at(-1)).toBe("/about");
     expect(hrefList.filter(href => href === "/about")).toHaveLength(1);
-    expect(hrefList).toHaveLength(10);
+    expect(hrefList).toHaveLength(11);
 });
 
 test("About is the last primary navigation stop in keyboard order and is highlighted on its page", async ({ page }) => {
@@ -89,7 +149,7 @@ test("a directly requested invalid URL returns 404 with the exact title and noin
     const { context, page, unexpected } = await openInvalidPage(browser, testInfo.project.use.viewport ?? null);
     const response = await page.goto("/no-such-page");
     expect(response?.status()).toBe(404);
-    expect(await page.title()).toBe("iworkhere");
+    expect(await page.title()).toBe(notFoundTitle);
     await expectOnlyNoindex(page);
     await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
     const sitemap = await (await request.get("/sitemap.xml")).text();
@@ -104,7 +164,7 @@ test("client-side navigation to an invalid URL keeps the exact title and noindex
     await page.evaluate(() => (window as unknown as { next: { router: { push(href: string): void } } }).next.router.push("/no-such-page"));
     await expect(page).toHaveURL(/\/no-such-page$/);
     await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
-    await expect.poll(() => page.title()).toBe("iworkhere");
+    await expect.poll(() => page.title()).toBe(notFoundTitle);
     await expectOnlyNoindex(page);
     expect(unexpected).toEqual([]);
     await context.close();

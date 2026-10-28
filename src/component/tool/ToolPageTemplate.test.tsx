@@ -109,6 +109,15 @@ it("does not carry a failed tool state into another registered tool or an inelig
     expect(initialize).toHaveBeenCalledTimes(2);
 });
 
+it("keeps a healthy tool free of advertising on a non-production deployment even with the enabled production flag", async () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    await act(async () => root.render(page()));
+    expect(element.textContent).toContain("Working utility content");
+    expect(element.querySelectorAll("ins.adsbygoogle, #google-adsense, aside")).toHaveLength(0);
+    expect(element.textContent).not.toContain("Advertisement");
+    expect(initialize).not.toHaveBeenCalled();
+});
+
 it("keeps both healthy and failed tools free of advertising when the global flag is disabled", async () => {
     vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
     await act(async () => root.render(page()));
@@ -120,7 +129,8 @@ it("keeps both healthy and failed tools free of advertising when the global flag
     expect(initialize).not.toHaveBeenCalled();
 });
 
-const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
+// Nine tool pages carry a worked example: the five v0.4.3 tools and the four added in v0.4.4.
+const WITH_EXAMPLE = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter", "merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
 function featuredPage(slug: string, withExample = true) {
     const tool = getToolBySlug(slug)!;
     return <ToolPageTemplate tool={tool} guide={getToolGuide(tool.id)} breadcrumb={[{ label: "Home", href: "/" }, { label: tool.name }]} relatedTool={[]}
@@ -128,15 +138,15 @@ function featuredPage(slug: string, withExample = true) {
         toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />;
 }
 
-it("gives exactly the five featured tools an example and every other registered tool none", async () => {
+it("gives exactly the nine example tools an example and every other registered tool none", async () => {
     for (const tool of tool_definition_list) {
         const result = (await ToolPage({ params: Promise.resolve({ slug: tool.slug }) })) as React.ReactElement<{ example?: { toolId: string } }>;
-        expect(result.props.example?.toolId, tool.id).toBe(FEATURED.includes(tool.id) ? tool.id : undefined);
+        expect(result.props.example?.toolId, tool.id).toBe(WITH_EXAMPLE.includes(tool.id) ? tool.id : undefined);
     }
-    expect(tool_definition_list.filter(tool => FEATURED.includes(tool.id))).toHaveLength(FEATURED.length);
+    expect(tool_definition_list.filter(tool => WITH_EXAMPLE.includes(tool.id))).toHaveLength(WITH_EXAMPLE.length);
 });
 
-it.each(FEATURED)("renders the %s example after the working tool and before the guide, keeping page structure", async slug => {
+it.each(WITH_EXAMPLE)("renders the %s example after the working tool and before the guide, keeping page structure", async slug => {
     await act(async () => root.render(featuredPage(slug)));
     const tool = [...element.querySelectorAll("p")].find(value => value.textContent === "Working utility content")!;
     expect(tool).toBeDefined();
@@ -154,16 +164,18 @@ it.each(FEATURED)("renders the %s example after the working tool and before the 
     expect(guide.querySelectorAll("h2").length).toBeGreaterThan(1);
 });
 
-it.each(FEATURED)("renders the %s page without any example section when no example is supplied", async slug => {
+it.each(WITH_EXAMPLE)("renders the %s page without any example section when no example is supplied", async slug => {
     await act(async () => root.render(featuredPage(slug, false)));
     expect(element.textContent).not.toContain("Worked example");
     expect(element.querySelector('section[aria-labelledby$="-example-heading"]')).toBeNull();
     expect(element.querySelector('section[aria-label="Tool guide"]')).not.toBeNull();
 });
 
-it("renders an unfeatured tool with no example section or placeholder", async () => {
-    await act(async () => root.render(featuredPage("json-formatter")));
+it.each(["json-formatter", "word-character-counter", "qr-code-generator"])("renders the guided %s page with no example section or placeholder, even though its guide has its own example", async slug => {
+    // Their guides carry an input-and-output example, but "Worked example" names only the tool-page panel.
+    await act(async () => root.render(featuredPage(slug)));
     expect(element.textContent).not.toContain("Worked example");
+    expect(element.querySelector('section[aria-labelledby$="-example-heading"]')).toBeNull();
     expect(element.querySelectorAll('a[href^="/examples/"], img[src^="/examples/"]')).toHaveLength(0);
 });
 
@@ -187,4 +199,54 @@ it("replaces the whole page, example included, with the ad-free fallback when th
     await act(async () => root.render(featuredPage("compress-pdf")));
     expectAdFreeFallback();
     expect(element.textContent).not.toContain("Worked example");
+});
+
+const GUIDE_LINK_TOOL: Record<string, string[]> = {
+    "split-pdf": ["assemble-pdf-packet"], "merge-pdf": ["assemble-pdf-packet"], "compress-pdf": ["assemble-pdf-packet"],
+    "images-to-pdf": ["assemble-pdf-packet", "heic-photos-to-pdf"], "image-converter": ["prepare-image-for-upload"],
+    "image-resizer": ["prepare-image-for-upload", "pdf-pages-for-slides"], "image-compressor": ["prepare-image-for-upload"],
+    "heic-converter": ["heic-photos-to-pdf"], "pdf-to-image": ["pdf-pages-for-slides"],
+};
+
+it("resolves task-guide links for exactly the participating tools, with titles from the guide owner", async () => {
+    for (const tool of tool_definition_list) {
+        const result = (await ToolPage({ params: Promise.resolve({ slug: tool.slug }) })) as React.ReactElement<{ taskGuideLink?: { title: string; href: string; summary: string }[] }>;
+        const link = result.props.taskGuideLink ?? [];
+        expect(link.map(one => one.href), tool.id).toEqual((GUIDE_LINK_TOOL[tool.id] ?? []).map(slug => `/guide/${slug}`));
+        for (const one of link) {
+            expect(one.title.length).toBeGreaterThan(10);
+            expect(one.summary.length).toBeGreaterThan(20);
+        }
+    }
+});
+
+it("renders task-guide links in their own labelled section after the tool guidance and keeps the page ad-free", async () => {
+    vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
+    const tool = getToolBySlug("images-to-pdf")!;
+    await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]} guide={getToolGuide(tool.id)}
+        taskGuideLink={[{ title: "Assemble an Ordered PDF Packet", href: "/guide/assemble-pdf-packet", summary: "One ordered PDF." }]}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+    const guide = element.querySelector('section[aria-label="Tool guide"]')!;
+    const section = element.querySelector("section[data-task-guide-link]")!;
+    expect(section.querySelector("h2")?.textContent).toBe("Use this tool in a workflow");
+    expect(guide.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(guide.contains(section)).toBe(false);
+    expect(section.querySelector("a")!.getAttribute("href")).toBe("/guide/assemble-pdf-packet");
+    expect(element.querySelectorAll("h1")).toHaveLength(1);
+    expect(element.querySelectorAll("ins.adsbygoogle, #google-adsense, aside, script")).toHaveLength(0);
+});
+
+it("renders no workflow section without links and replaces it with the fallback when the tool fails", async () => {
+    const tool = getToolBySlug("json-formatter")!;
+    await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]} taskGuideLink={[]}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+    expect(element.querySelector("section[data-task-guide-link]")).toBeNull();
+    shouldThrow = true;
+    await act(async () => root.unmount());
+    root = createRoot(element);
+    await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]}
+        taskGuideLink={[{ title: "Prepare an Image for an Upload", href: "/guide/prepare-image-for-upload", summary: "A checked image." }]}
+        toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+    expectAdFreeFallback();
+    expect(element.querySelector("section[data-task-guide-link]")).toBeNull();
 });

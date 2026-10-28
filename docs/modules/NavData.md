@@ -34,3 +34,7 @@ Manual review and updates are encouraged to add implementation details.
 
 `defaultNavItem` is now Home (`/`), All tools (`/discover`) and About (`/about`); the root layout appends one entry per available
 category. Contact Us is deliberately not a navigation item: it lives in the footer action group.
+
+## v0.4.4 Batch 5 primary navigation order
+
+`defaultNavItem` is Home (`/`), All tools (`/discover`) and Guides (`/guide`). `src/app/layout.tsx` appends the registry-populated categories in their existing order (document, text, math, converter, time, image, developer) and then `aboutNavItem`, so the primary navigation has 11 links and About is last. The footer and contact order are unchanged.

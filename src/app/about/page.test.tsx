@@ -61,7 +61,7 @@ describe("about page", () => {
     });
 
     it("keeps the canonical page metadata and updates the description", () => {
-        expect(metadata.title).toBe("iworkhere");
+        expect(metadata.title).toBe("About - iworkhere");
         expect(metadata.description).toBe("Learn about iworkhere.space, its browser-based tools for files and data, local processing, and the company behind the site.");
         expect(metadata.alternates).toEqual({ canonical: "https://iworkhere.space/about" });
         expect(metadata.openGraph).toMatchObject({ url: "https://iworkhere.space/about", title: "About — iworkhere.space" });

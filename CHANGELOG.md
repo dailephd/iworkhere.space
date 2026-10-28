@@ -1,6 +1,13 @@
 # Changelog
 
-## v0.4.3 — Utility Value, Trust & Discoverability
+## v0.4.4 — Site Quality & Search Recovery — 2026-10-28
+
+- Restored descriptive browser titles, corrected calculator, converter and time arithmetic, added a Vercel preview advertising guard, a rewritten service worker (network-first HTML, allowlisted static cache), four more verified file examples (nine in total), the `/guide` hub with four task guides, and 35 canonical sitemap URLs.
+- Added browser boundary tests for the Merge PDF file, size and page limits, the Split PDF 20-group limit, and a decode of downloaded HEIC output. An over-30-megapixel HEIC remains unit-tested only.
+- Verified local builds, the full default-off browser suite, preview-denied and stubbed-enabled advertising modes, and the production-container gate. Updated Next.js to 16.4.3 and resolved production and development dependency advisories; both npm audits reported zero vulnerabilities. All eight required GitHub Actions workflows and nine jobs passed on the release-preparation source. GitHub Release and Vercel Production deployment identities are verified separately.
+- Corrected CalculatorTool query synchronization with a guarded render-time state adjustment and added regression coverage for external query changes, optional setters, query-field preservation, expression evaluation and result-state retention.
+
+## v0.4.3 — Utility Value, Trust & Discoverability — 2026-10-21
 
 - Added a task-first homepage, improved Discover navigation, and distinct task
   guidance across the seven populated categories while retaining all 18

@@ -33,6 +33,8 @@ async function expectFixedFooterKeepsActionsReachable(page: Page, actions: Locat
     expect(await hrefs(), "The footer leaves the processed result untouched").toEqual(before);
 }
 
+// The tool's own previews only: the page's worked-example section legitimately shows its sample images (marked data-example-asset).
+const toolImage = (page: Page) => page.getByRole("img").and(page.locator(":not([data-example-asset])"));
 const fixturePath = (extension: string) => path.resolve(`test/fixtures/images/compressor-source.${extension}`);
 async function selectSource(page: Page, extension = "jpg") {
     await page.getByLabel("Choose image").setInputFiles(fixturePath(extension));
@@ -138,7 +140,7 @@ test("Quality, repetition, replacement, Reset and unmount release owned URLs", a
     await compress(page); await page.getByRole("button", { name: "Reset", exact: true }).click();
     expect((await urls(page)).revoked.slice().sort()).toEqual((await urls(page)).created.slice().sort());
     await expect(page.getByLabel("Choose image")).toHaveValue("");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(toolImage(page)).toHaveCount(0);
     await selectSource(page); await expect(page.getByLabel("Quality", { exact: true })).toHaveValue("80"); await compress(page);
     await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
@@ -183,7 +185,7 @@ test("unsupported, empty and corrupt files fail recoverably", async ({ page }) =
     await expect(alert).toContainText("non-empty");
     await input.setInputFiles({ name: "corrupt.jpg", mimeType: "image/jpeg", buffer: Buffer.from([255, 216, 255, 0, 1]) });
     await expect(alert).toContainText("could not be decoded");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(toolImage(page)).toHaveCount(0);
     await selectSource(page); await compress(page);
 });
 
@@ -191,7 +193,7 @@ test("oversized source is rejected before decode", async ({ page }) => {
     await page.goto("/tool/image-compressor");
     await page.getByLabel("Choose image").setInputFiles({ name: "large.jpg", mimeType: "image/jpeg", buffer: Buffer.alloc(26_214_401) });
     await expect(page.getByRole("main").getByRole("alert")).toContainText("maximum file size is 25 MiB");
-    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(toolImage(page)).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Compress image", exact: true })).toBeDisabled();
 });
 

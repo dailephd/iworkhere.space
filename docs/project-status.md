@@ -1,5 +1,106 @@
 # PROJECT STATUS
 
+## v0.4.4 release source and validation — 2026-10-28
+
+Status: IMPLEMENTED AND EXACT-SHA RELEASE-PREPARATION VALIDATED. GitHub Release and Vercel Production outcomes require separate verification.
+
+The v0.4.4 implementation scope and release-facing documentation are reconciled
+on `release/v0.4.4`. The CalculatorTool React Hooks lint violation was fixed by
+guarded render-time synchronization of external query expressions while
+preserving local editing and result state. Its focused regression tests,
+typecheck, lint and `npm run verify` pass. The complete default-off browser run
+passed (854 passed, 6 mode skips); the production-container run passed; preview
+denial passed (6 passed, 2 mode skips); and enabled advertising passed with
+stubbed Google endpoints (4 passed, 4 mode skips). Both production and full npm
+audits report zero vulnerabilities. No install scripts were approved.
+
+The release-preparation candidate `f6bee013b8cafa3253f568128be94e192a791ea6`
+was committed and pushed on `release/v0.4.4`. Eight GitHub Actions workflows
+and nine required jobs passed on that immutable SHA through PR #49. A later
+release-documentation commit requires validation at its own SHA before merge;
+the merged `master` commit also requires its own checks. Production deployment,
+GitHub tag, and GitHub Release must each be verified from their actual records.
+Live advertising activation and AdSense submission are not part of this release.
+
+The 2026-10-28 draft PR triggered Vercel preview deployments contrary to the
+release-preparation no-deployment condition. The main preview was canceled;
+the observability preview reached READY and was reportedly removed, but its
+removal was not independently proven at the reconciliation checkpoint. Historical
+policy compliance remains FAIL; the project owner accepted a one-time exception
+for those specific non-production previews. This does not waive future
+preview or production deployment controls. The v0.5.0/v0.6.0 roadmap is
+unchanged. The existing local preparation report remains the historical
+validation and incident evidence authority:
+`.my-dev-kit-workflow/tmp/v0.4.4/release-prep/release-prep-report.txt`.
+
+## Immediate v0.4.4 planning checkpoint — 2026-10-26
+
+Status: PLANNING COMPLETE; APPLICATION IMPLEMENTATION NOT STARTED by this update.
+
+Inspected source: master at 59396b224157ad290e768c7f70998a9c947bda42.
+The application package remains 0.4.3; the dashboard remains 0.1.0.
+The v0.4.3 GitHub Release was separately verified as published on 2026-10-21;
+later master maintenance is not assumed to be a new numbered release.
+Historical v0.4.3 identity (verified against Git and GitHub on 2026-10-28, ported from the
+open PR #41): the annotated tag `v0.4.3` (tag object `7dd9e1457b0b961b2b97f4da76dff5145af21bb7`)
+targets commit `da1c6b48f2319ffa85f17b725d958980eabc7235`, the PR #40 merge commit on `master`
+(merged 2026-10-21T19:10:09Z); the GitHub Release was published 2026-10-21T19:28:44Z. The release
+tag, the merge and the source Vercel deployed are distinct facts: this check did not verify
+which source production serves.
+
+The immediate next scope is [v0.4.4 — Site Quality & Search Recovery](plans/v0.4.4-implementation-plan.md),
+before the unchanged v0.5.0/v0.6.0 catalogs. All nine new priorities are included
+now, with browser-title restoration first. The [dated quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+records the evidence and limits; the plan specifies exact owners, paths,
+six implementation batches and acceptance gates.
+
+Planning refresh on 2026-10-27 confirmed that master remains at the inspected
+commit and reread the official Google guidance. The corrected plan explicitly uses
+C:/Users/daile/Projects/iworkhere.space, selects DIRECT_IMPLEMENTATION for
+Batches 1-5, and includes the advertising-versus-content layout check. The
+October 26 HTTP observations below have not been relabeled as new measurements.
+
+Source findings include the uniform browser-title contract and incorrect
+signed calculator arithmetic currently preserved by a guide test. The source
+already contains 18 tools/guides, seven category guides, five measured
+examples and the existing trust pages. Live HTTP checks on 2026-10-26 found
+30/30 sitemap pages reachable with canonical URLs and index/follow metadata;
+all 30 HTML titles were iworkhere. The invalid-route probe returned 404/noindex.
+These HTTP observations do not identify the production deployment SHA.
+
+This update changes planning documentation only. It does not claim application
+fixes, four new guide pages, nine file examples, 35 deployed URLs, a new package
+version, release, deployment, ad activation or review submission. Real search
+query/traffic and field-performance data were unavailable. The next action is
+the detailed plan's implementation preflight, starting with title recovery.
+
+Preserve the current fixed header, document-flow footer and approved About
+copy. The title statement in the October 24 snapshot below remains a description
+of current code until v0.4.4 implements the explicit new requirement.
+
+## v0.4.4 Batch 3 implementation checkpoint — 2026-10-27
+
+Status: LOCAL COMMIT WITH CONTAINER GATE DEFERRED. The package remains 0.4.3. No
+push, release, deployment, ad activation or AdSense change. This is not release
+readiness: `npm run test:container` was not run (Docker daemon unavailable) and
+must pass for the final candidate before release.
+
+Implemented on `feature/v0.4.4-site-quality` after Batch 2 (6706c50):
+a preview guard in `adsenseEnabled` (optional deployment-environment argument,
+passed from `process.env.VERCEL_ENV` at the server `AdSenseEligiblePage` gate),
+a rewritten `public/sw.js` (cache `iworkhere-shell-v0.4.4`, network-first clean
+HTML, allowlisted static prefixes only, owned-cache eviction), and the Privacy
+caching sentence and date (October 27, 2026).
+
+Evidence: unit 1,892 passed (verify, default-off); preview-denial E2E 8 passed,
+2 skipped by mode; controlled enabled ads E2E 4 passed, 4 skipped by mode;
+service-worker E2E 12 passed. The favicon test decoded the unversioned
+`/favicon.ico`, which fails under the shared fixture's Playwright routing
+independent of the worker (the old broad cache had masked it); it now decodes the
+versioned href from the page's icon link. Complete default-off E2E after that
+fix: 768 passed, 6 skipped by mode, 0 failed. Container gate not run (Docker
+daemon unavailable). Merge/Split/HEIC Batch 2 coverage evidence remains an open gap.
+
 ## Current site chrome — 2026-10-24
 
 The header is fixed to the top of the viewport with no Show/Hide navigation mechanism, and the footer is ordinary document-flow content at the end of the page. `FooterViewportControl` and the `--footer-clearance` variable are removed; `HeaderViewportControl` keeps only the fixed placement and measured height footprint. Every page has the browser title `iworkhere`, About is the last primary navigation link, and the default appearance remains Violet & Graphite with System mode. Visitor-facing copy was reviewed across the public pages and all 18 tools. Earlier retractable-chrome and fixed-footer notes are historical.
@@ -653,3 +754,62 @@ The candidate passed category/layout validation and desktop/mobile Observer
 acceptance; the original canonical Observer baseline remains preserved. Proposed
 v0.7/v0.8 converter expansion remains subject to planner approval. The v0.4.0
 category decision remains a historical record.
+
+## v0.4.4 Batch 1 checkpoint — 2026-10-27
+
+Browser title recovery is implemented in the local working tree on
+`feature/v0.4.4-site-quality` (uncommitted, unreleased; package version remains
+0.4.3). `buildPageMetadata` now emits the unbranded title plus " - iworkhere" for
+the 18 tools, five fixed pages, seven categories and the not-found page. This
+checkpoint does not claim the v0.4.4 release or later batches complete.
+
+## v0.4.4 Batch 4 checkpoint — 2026-10-27
+
+Four verified tool examples are implemented on `feature/v0.4.4-site-quality`
+(local, unreleased, not pushed; package version remains 0.4.3; the staged v0.4.4
+PR #48 remains an integration dependency and PR #41 overlaps documentation).
+Merge PDF, Split PDF, Image Compressor and HEIC → JPG / PNG Converter now have a
+worked example beside the five v0.4.3 examples: nine in total, with exactly five
+featured on the home page (`ValueExample.featuredOnHome`,
+`getFeaturedValueExample()`). The original five records and the v0.4.3 assets are
+unchanged.
+
+The sources and outputs are under `public/examples/v0.4.4/` with a SHA-256
+manifest, README and the HEIC `LICENSE.txt`. `script/v044ExampleFixtures.ts`
+produces every output by driving the real tool page in Chromium and saving its
+actual download. The HEIC input is not project-authored: it is the synthetic MIT
+fixture `asym-base.heic` from the su-engineering/heic-web project (commit
+`3261b10a31625dcb395b82081b3e9f7d10c9fc2c`), verified by SHA-256 and Git blob id
+before it is copied. That permission covers the test fixture only; the
+production decoder release-license gate in `docs/modules/HeicConverter.md` is
+separate and unchanged. The JSON Formatter, Word and Character Counter and QR
+Code Generator guides gained a short example each, verified against the real
+tools. Merge and Split PDF page identity is verified by PDF.js text and rendered
+pixels; PDF output bytes vary between runs, so the committed SHA-256 values
+identify the committed files while page content is the reproducible part.
+
+Evidence is recorded in `docs/TESTING.md` (v0.4.4 Batch 4). Open items carried to
+Batch 6: the container gate ran twice and did not pass (one `net::ERR_NO_BUFFER_SPACE` browser failure per run in an unrelated image-converter spec, everything else green), so it stays release-blocking until a green exact-candidate run; browser-level coverage of the Merge
+10-file / 25 MiB / 100-page limits, the Split 20-group limit, the HEIC
+30-megapixel limit and a decode of the downloaded HEIC output is still absent,
+so the 18 journeys do not all have independent coverage; the Compress PDF,
+Images to PDF, PDF to JPG / PNG and image tools were not re-audited here. Batch
+5 (four task guides and a hub) needs a separately scoped prompt.
+
+## v0.4.4 Batch 5 implementation checkpoint — 2026-10-27
+
+Status: LOCAL COMMIT, VALIDATED (unit 2,003; full default-off E2E 842 passed, 6 skipped by mode, 0 failed) ON `feature/v0.4.4-site-quality` after Batch 4 (cece08c); package remains 0.4.3. No push, merge, release, deployment, ad activation or AdSense change. This is not release readiness.
+
+Added the `/guide` hub "Practical File Workflows" and four guides (assemble-pdf-packet, prepare-image-for-upload, heic-photos-to-pdf, pdf-pages-for-slides), links in primary navigation (Guides after All tools), a server-rendered home workflow section, the document and image category pages and nine tool pages, and five sitemap URLs (35 total). Planner-authorized documentation-list extension: `docs/modules/NavData.md` was edited only to reconcile the new Home / All tools / Guides / categories / About order.
+
+Inherited release blocker, unchanged by this batch: the Batch 4 `npm run test:container` gate was run twice and failed both times (807 browser tests passed, one `net::ERR_NO_BUFFER_SPACE` navigation failure each, in different image-converter scenarios); host socket exhaustion is a hypothesis only. It must be re-run and resolved on the exact Batch 6 candidate. Merge 10-file/25 MiB/100-page, Split 20-group, HEIC 30-megapixel and downloaded HEIC decode limit evidence also remains for Batch 6; the guide workflows add positive evidence only for the small samples they use.
+
+## v0.4.4 Batch 6 checkpoint - 2026-10-27
+
+Status: NEEDS_CORRECTION, NOT RELEASE READY, NOTHING COMMITTED BY BATCH 6. The package remains 0.4.3. No push, merge, release, deployment, ad activation or AdSense action. Hosted CI was not run for this local candidate.
+
+Passed: `npm run verify` (typecheck, lint, 2,004 unit tests, build); controlled preview-denial ads (6 passed, 2 skipped by mode); controlled enabled stubbed ads (4 passed, 4 skipped by mode); support-enabled subset (84 passed on rerun). Two complete default-off browser runs each ended 851 passed, 6 skipped by mode and 1 failed, with a different transient host-network failure each time (`net::ERR_NO_BUFFER_SPACE`, then a 33 s stall in a test that takes 9 s); neither is counted as a pass. The container gate first failed before its browser pass because `script/publicRouteInventory.ts` expected 30 sitemap URLs while the application serves 35; that helper and its test were then corrected under a one-time scope extension (35 URLs asserted, parity with the sitemap). The corrected container run passed build, health, HTTP, shutdown and cleanup, but its browser pass again had one `ERR_NO_BUFFER_SPACE` failure, and a third full host run had two failures, so no complete browser or container run is green yet.
+
+Closed gaps: browser evidence for the Merge 10-file, 10 MiB, 25 MiB and 100-page limits, the Split 20-group limit, and a decode of downloaded HEIC JPEG and PNG output. Still open: an over-30-MP HEIC through the real decoder in a browser (unit evidence only), a green container gate, a green complete browser run, hosted CI for the exact commit, and the unmerged PR #48 and PR #41 integration. See the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+
+Hosted CI correction (2026-10-28): hosted validation of `89f6728` passed 7 of 9 jobs; a test-only correction (Split download pages, calculator URL polling, hydration waits, a real over-30 MP HEIC browser test) passed local `verify`, full E2E and container on the final tree. Actual candidate readiness: **NOT_RELEASE_READY until the exact-SHA hosted run of the correction commit is green** (8 workflows, 9 jobs); no push to `master`, tag, release, deployment, ad activation or AdSense step has occurred.

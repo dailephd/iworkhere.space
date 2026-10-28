@@ -285,6 +285,15 @@ E2E tests verify what users actually experience in a browser.
 
 - In production builds, `/sw.js` is served with the correct content type.
 - `ServiceWorkerRegister` does not register the SW in development mode.
+- Registration alone is not sufficient evidence. Browser tests must read
+  Cache Storage keys and prove clean pages are cached, query-bearing, RSC,
+  API, root-file and error responses are not, an online refresh replaces stale
+  HTML, offline serves only the same cached page, activation removes only owned
+  stale caches, and the warmed HEIC bootstrap works offline.
+- Advertising has three separate build modes (default-off, preview denial with
+  `NEXT_PUBLIC_ADSENSE_ENABLED=true` plus `VERCEL_ENV=preview`, and enabled with
+  `E2E_ADS_ENABLED=true`). Set the same variables for build and runtime; one
+  mode's result is not evidence for another. See ADVERTISING.md.
 
 ---
 
@@ -616,3 +625,61 @@ worktree changes present; the reports do not attest a hosted exact-SHA run.
 
 These local reports do not establish hosted CI, production deployment, Resend
 configuration, inbox delivery, Search Console indexing or AdSense approval.
+
+## v0.4.4 Batch 4 - worked-example evidence
+
+Nine tool pages carry a worked example: the five v0.4.3 tools and, from this batch, Merge PDF, Split PDF, Image Compressor and HEIC → JPG / PNG Converter. Only the five original tasks are featured on the home page (`ValueExample.featuredOnHome`, `getFeaturedValueExample()`).
+
+What the tests read, rather than trust:
+
+- `src/module/tool/valueExamples.test.ts` reads both example manifests and the committed files. For every v0.4.4 file it checks byte count, SHA-256 and magic bytes against the declared media type; image dimensions parsed from the JPEG, PNG and HEIF headers (an ISO base media box walk to the `ispe` property, independent of the generator); and, for the PDFs, PDF.js page text and a hash of each page's rendered pixels, in order. Merge output pages must be A1, A2, B1, B2, B3 and render exactly like their source pages; Split results must be P3, P1 and P2, P3 with overlap on page 3. Replaced, truncated, mistyped and missing files are proven to be detected. The recorded group expressions, quality and download names are checked against the tools' own `parsePageSelection`, `splitPdfFilename`, `mergePdfFilename`, `imageCompressorFilename`, `heicFilename` and quality rules.
+- The HEIC source must equal `test/fixtures/images/heic-source.heic` byte for byte (SHA-256 and Git blob id), and `LICENSE.txt` must say the file is not project-authored and end with the pinned upstream MIT text unchanged. The decoded PNG is checked at seven known points.
+- `src/module/tool/guideExample.test.tsx` runs the JSON, word-counter and QR guide examples through the real components or logic; the QR PNG is decoded by the test-only `jsqr` reader back to the same text.
+- `test/e2e/value-examples.spec.ts` serves every v0.4.4 file from the production build and checks its identity and content type, decodes the JPEG and PNG outputs natively and samples their pixels, and re-runs every recorded operation on the real tool with the committed sources. `test/e2e/tool-value-examples.spec.ts` covers the nine pages, the home page's five tasks, no unsolicited sample request or download, and overflow at desktop and mobile widths.
+
+Things that are easy to get wrong:
+
+- The example panel's links and images carry `data-example-asset`. A spec that asserts "no download" or "no image" for a tool must exclude them (`a[download]:not([data-example-asset])`, `getByRole("img").and(page.locator(":not([data-example-asset])"))`).
+- "Worked example" is the accessible name of the tool-page panel only. Guide sections use other headings, so a page without an example never contains that phrase.
+- A guide paragraph must not contain a long unbroken token: it cannot wrap on a 390 px viewport. `json-formatter.spec.ts` caught this.
+- pdf-lib output bytes differ between runs even when every page is identical, so reproduction checks compare page text and rendered pixels, never PDF bytes. JPEG and PNG outputs came from Chromium's encoders and are compared by decoded pixels.
+
+| Gate | Report identity | Result |
+| --- | --- | --- |
+| `npm run verify` | `test-report/2026-10-27T14-13-05-884Z-b4152759/` | Typecheck, lint, test and build passed; 1,971 unit tests passed, 0 skipped. |
+| Focused E2E (value examples, tool pages, Merge/Split, HEIC) | `test-report/e2e/2026-10-27T14-17-19-088Z-19398f9b/` | 124 passed. |
+| Public E2E, default-off | `test-report/e2e/2026-10-27T14-21-38-267Z-c1971992/` | 808 passed, 6 skipped, 0 unexpected, 0 flaky. The skips are the ads-enabled preview and support-enabled Contact tests, which this configuration does not run. |
+| Container | `test-report/container/2026-10-27T14-41-14-361Z-01cf74b2/` and `test-report/container/2026-10-27T15-01-46-814Z-2db5925a/` | NOT PASSED, release-blocking until a green exact-candidate run in Batch 6. Both runs built the image and passed health, 42 HTTP smoke routes, the service worker, shutdown and cleanup; each browser pass had 807 passed, 6 skipped and 1 failure, a `net::ERR_NO_BUFFER_SPACE` on `page.goto` in `image-converter.spec.ts` (a different test each time; the same spec passes in the standard run). The cause is probably host socket exhaustion, but that is not proven. |
+
+Not claimed: that all 18 tool journeys have independent coverage. The existing Merge, Split and HEIC specs assert real ordered downloads inspected with PDF.js (text, size and rotation), invalidation and URL revocation, the 25 MiB and empty precheck, content sniffing and race handling, but not the 10-file, 25 MiB and 100-page Merge limits or the 20-group Split limit in a browser, the 30-megapixel HEIC limit, or a decode of the downloaded HEIC output bytes. The new example checks add page-level rendering and pixel evidence for the positive paths only.
+
+## v0.4.4 Batch 5 task-guide acceptance
+
+- Unit/contract: `src/module/content/taskGuide.test.ts` (records, queries, copy isolation, route metadata, notFound, example projection), `src/component/content/TaskGuidePage.test.tsx` (server markup, no client state), and updated `layout`, `page`, `category/[category]/page`, `sitemap` and `ToolPageTemplate` tests (navigation order of 11 links, five featured tasks plus four workflows, category guide lists, 35 sitemap identities, tool-page links).
+- Browser: `test/e2e/task-guides.spec.ts` runs at 1280x720 and 390x844 against the default-off production build. It checks server HTML, metadata, 404/noindex, the 35-URL sitemap, navigation, links from home, categories and all 18 tool pages, sample file bytes (SHA-256), no eager download or request, keyboard focus and overflow, and reproduces all four workflows with the real tools. Each handoff is a real browser download selected again with the file chooser, and the final files are read by independent readers (PDF.js text and raster, pdf-lib embedded filters, native image decode). Downloads are saved to a short temporary directory because the per-test output path can exceed the Windows 260-character limit.
+- The Batch 4 container gate failed twice (807 passed, one `net::ERR_NO_BUFFER_SPACE` each); it is inherited and must be rerun and resolved on the exact release candidate in Batch 6.
+
+## v0.4.4 Batch 6 - boundary evidence and whole-site gates
+
+Status: NOT RELEASE READY. The candidate is `feature/v0.4.4-site-quality` at f846c92 plus uncommitted Batch 6 test additions. Details and run identities are in the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+
+Boundary evidence added in the existing owners (synthetic PDFs are generated in memory, never uploaded, and every produced file is read back with PDF.js text extraction, independent of the application's own verification):
+
+- `test/e2e/pdf-page-copy.spec.ts`, `Merge PDF limit boundaries`: ten files merge in order and an 11th, or a batch that would make 11, is rejected atomically; a PDF of exactly 10 MiB merges and 10 MiB + 1 byte is rejected without dropping accepted files; 10 + 10 + 5 MiB (exactly 25 MiB) merges and one more byte is rejected; 50 + 50 pages produce a 100-page file in the expected label order and one more page, a 50 + 51 batch and a single 101-page file are rejected. A rejection keeps the earlier files in order and offers no result.
+- Same file, `Split: 20 output groups`: groups 1-20 are filled with ordered, overlapping expressions, the Add button is disabled at 20, a forced click adds no 21st group, and all 20 downloads are read with PDF.js against a table written in the test.
+- `test/e2e/heic-converter.spec.ts`: both real conversion tests now decode the downloaded file. A container reader (PNG IHDR, JPEG SOF) confirms 480x320 and the type, the served blob type and size equal the saved file, and the file is decoded natively and compared with the decoded source preview over a pixel grid (mean difference 0 for PNG and about 1.6 for JPEG quality 60; a mirrored copy differs by about 39, so orientation errors are detected).
+- `src/module/tool/image/imageFeedback.test.ts`: the HEIC decoded-area limit is exact (6000x5000 and 30,000,000x1 pass, 30,000,001x1 fails with its actual pixel count), the worker error response carries dimensions only for a genuinely oversized area, and the 25 MiB byte limit has its own boundary.
+
+Not established (as of Batch 6; superseded by the hosted CI correction below): an oversized (over 30 MP) HEIC rejected by the real decoder in a browser. No retained fixture of that size with provenance existed, so that item was `UNIT_ONLY` (`BROWSER_OVERSIZE_UNVERIFIED`).
+
+### Hosted CI correction - 2026-10-28
+
+- Real oversized HEIC: `test/fixtures/images/heic-over-30mp.heic` (CC0, 8256 x 5504 = 45,441,024 pixels, 4,479,456 bytes, SHA-256 `0e366a98...96ce6e`, provenance and license in `test/fixtures/images/README.md` and `heic-over-30mp-LICENSE.txt`) is consumed by `test/e2e/heic-converter.spec.ts`, which asserts the tool-owned 30 MP alert and no output, result, preview or conversion in the real worker. The small MIT `heic-source.heic` stays the positive fixture.
+- Hosted boundary: the Split 20-group test requires 20 real downloads. Hosted Linux Chromium 153 delivered 10 `download` events per page and none for the 11th click (run 40590174147), so downloads run in two pages of one context, ten each, with a finite 20 s per-output wait that reports the group ordinal. The root cause is not proven; the hosted exact-SHA run is the evidence.
+- Calculator URL: the `expr` query is asserted with `expect.poll` for each of the 12 expressions, because the URL lags the visible result.
+- Tests that choose a file immediately after `goto` must wait for hydration (Themes button enabled) first; otherwise the file can be dropped silently.
+- Local Windows results are not a substitute for hosted Linux. Details and run identities: [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+
+Host note: on the Windows host used here, `net::ERR_NO_BUFFER_SPACE` and unusual multi-second stalls appear in unrelated tests of the plain host suite as well as in the container run, so they are not specific to Docker or to `image-converter.spec.ts`. Windows non-paged pool grew from about 2.16 GB to 2.39 GB during the session and the cumulative TCPv4 connection-failure counter kept rising, while TIME_WAIT never exceeded about 850 sockets (ephemeral-port exhaustion is not indicated). The root cause is not proven.
+
+Container gate: `script/publicRouteInventory.ts` listed 30 public URLs while the application serves 35; it now appends `/guide` and the four task-guide URLs derived from `getAllTaskGuide()`, and `script/publicRouteInventory.test.ts` asserts all 35, the exact guide routes, parity with `src/app/sitemap.ts` and rejection of the legacy list or any missing or replaced guide route (9 tests with `sitemap.test.ts`). The corrected container run `2026-10-27T19-06-50-347Z-e4996ca8` passed image build, health, HTTP smoke, shutdown (no OOM) and cleanup, but its nested browser pass ended 851 passed, 6 skipped, 1 failed (`net::ERR_NO_BUFFER_SPACE` console error), so the gate is still not green. The full default-off browser run `2026-10-27T18-44-41-424Z-cd1ad17b` ended 850 passed, 6 skipped, 2 failed (`ERR_NO_BUFFER_SPACE` on a navigation, and the new Split 20-group test, whose 5 s wait for the result heading expired).

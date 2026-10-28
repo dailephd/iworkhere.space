@@ -8,7 +8,7 @@ import type { ToolSearchItem } from "@/component/common/ToolSearch"
 const categoryLabel = getAvailableCategory().map((category) => getToolCategoryLabel(category))
 
 export const metadata = buildPageMetadata({
-    title: "All tools",
+    title: "All Tools",
     description: `Search all ${getAllTool().length} browser tools by name, description, category or tag, or browse by category: ${categoryLabel.slice(0, -1).join(", ")} and ${categoryLabel[categoryLabel.length - 1]}.`,
     canonicalPath: "/discover",
 })

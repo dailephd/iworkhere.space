@@ -54,6 +54,10 @@ describe("discover page content", () => {
 });
 
 describe("discover metadata", () => {
+    it("uses the descriptive browser title with one suffix", () => {
+        expect(metadata.title).toBe("All Tools - iworkhere");
+    });
+
     it("lists the current populated categories and no retired wording", () => {
         const description = String(metadata.description);
         expect(description).toContain(`Search all ${getAllTool().length} browser tools`);

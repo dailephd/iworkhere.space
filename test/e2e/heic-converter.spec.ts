@@ -4,6 +4,8 @@ import type { Page } from "@playwright/test";
 import { test, expect } from "./support/fixture";
 
 const fixture = path.resolve("test/fixtures/images/heic-source.heic");
+// Real CC0 HEIC, 8256 x 5504 = 45,441,024 pixels (provenance in test/fixtures/images/README.md).
+const oversizedFixture = path.resolve("test/fixtures/images/heic-over-30mp.heic");
 
 interface WorkerRecord { terminated: boolean; operation?: string; url: string }
 interface Control {
@@ -58,6 +60,8 @@ async function instrument(page: Page) {
     });
 }
 
+// A file chosen before hydration is dropped silently and no worker starts; Themes enables once hydrated.
+async function waitForHydration(page: Page) { await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled(); }
 async function snapshot(page: Page) {
     return page.evaluate(() => {
         const control = (window as unknown as InstrumentedWindow).heicControl;
@@ -84,6 +88,78 @@ async function decoded(page: Page, alt: string) {
     }, url);
 }
 
+interface ImageHeader { type: string; width: number; height: number }
+// Independent container reader: judges the downloaded bytes without the browser decoder or application code.
+function imageHeader(bytes: Buffer): ImageHeader | null {
+    const png = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    if (png.every((value, index) => bytes[index] === value) && bytes.toString("ascii", 12, 16) === "IHDR") {
+        return { type: "image/png", width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+    }
+    if (bytes[0] !== 0xff || bytes[1] !== 0xd8 || bytes[2] !== 0xff) return null;
+    let offset = 2;
+    while (offset + 9 < bytes.length && bytes[offset] === 0xff) {
+        const marker = bytes[offset + 1];
+        if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+            return { type: "image/jpeg", width: bytes.readUInt16BE(offset + 7), height: bytes.readUInt16BE(offset + 5) };
+        }
+        offset += 2 + bytes.readUInt16BE(offset + 2);
+    }
+    return null;
+}
+
+async function sourcePreviewBase64(page: Page): Promise<string> {
+    const url = await page.getByAltText("Selected HEIC source preview").getAttribute("src");
+    return page.evaluate(async source => {
+        const buffer = new Uint8Array(await (await fetch(source!)).arrayBuffer());
+        let binary = "";
+        for (const value of buffer) binary += String.fromCharCode(value);
+        return btoa(binary);
+    }, url);
+}
+
+async function expectDownloadedOutput(page: Page, savedPath: string, target: "jpeg" | "png", sourcePreview: string) {
+    const bytes = readFileSync(savedPath);
+    expect(bytes.length).toBeGreaterThan(0);
+    expect(imageHeader(bytes)).toEqual({ type: `image/${target}`, width: 480, height: 320 });
+    const link = await page.getByRole("link", { name: "Download converted image" }).getAttribute("href");
+    const served = await page.evaluate(async href => { const blob = await (await fetch(href!)).blob(); return { type: blob.type, bytes: blob.size }; }, link);
+    expect(served).toEqual({ type: `image/${target}`, bytes: bytes.length });
+    const comparison = await page.evaluate(async ({ base64, mime, sourceBase64 }) => {
+        const raster = async (blob: Blob) => {
+            const bitmap = await createImageBitmap(blob);
+            const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+            const context = canvas.getContext("2d")!;
+            context.drawImage(bitmap, 0, 0);
+            const result = { width: bitmap.width, height: bitmap.height, data: context.getImageData(0, 0, bitmap.width, bitmap.height).data };
+            bitmap.close();
+            return result;
+        };
+        const output = await raster(new Blob([Uint8Array.from(atob(base64), character => character.charCodeAt(0))], { type: mime }));
+        const reference = await raster(new Blob([Uint8Array.from(atob(sourceBase64), character => character.charCodeAt(0))], { type: "image/png" }));
+        const at = (image: typeof output, x: number, y: number) => { const index = (y * image.width + x) * 4; return [image.data[index], image.data[index + 1], image.data[index + 2], image.data[index + 3]]; };
+        let direct = 0, mirrored = 0, samples = 0;
+        const colors = new Set<string>();
+        for (let y = 0; y < output.height; y += 5) {
+            for (let x = 0; x < output.width; x += 5) {
+                const pixel = at(output, x, y), same = at(reference, x, y), flipped = at(reference, output.width - 1 - x, y);
+                for (let channel = 0; channel < 3; channel++) { direct += Math.abs(pixel[channel] - same[channel]); mirrored += Math.abs(pixel[channel] - flipped[channel]); }
+                colors.add(pixel.slice(0, 3).map(value => value >> 5).join(","));
+                samples += 3;
+            }
+        }
+        return { output: { width: output.width, height: output.height }, reference: { width: reference.width, height: reference.height },
+            meanDirect: direct / samples, meanMirrored: mirrored / samples, colorBucket: colors.size, alpha: at(output, 240, 160)[3] };
+    }, { base64: bytes.toString("base64"), mime: `image/${target}`, sourceBase64: sourcePreview });
+    expect(comparison.output).toEqual({ width: 480, height: 320 });
+    expect(comparison.reference).toEqual({ width: 480, height: 320 });
+    expect(comparison.alpha).toBe(255);
+    // Several distinct colors prove a non-blank picture; a mirrored copy of the asymmetric source must be a clearly worse match.
+    expect(comparison.colorBucket).toBeGreaterThan(3);
+    expect(comparison.meanDirect).toBeLessThan(target === "png" ? 1.5 : 16);
+    expect(comparison.meanMirrored).toBeGreaterThan(comparison.meanDirect + 5);
+    return comparison;
+}
+
 function expectApplicationWorkerUrls(page: Page, workers: WorkerRecord[]) {
     const applicationOrigin = new URL(page.url()).origin;
     expect(workers.map(worker => new URL(worker.url).origin)).toEqual(workers.map(() => applicationOrigin));
@@ -94,7 +170,7 @@ test.describe("HEIC converter", () => {
     for (const target of ["jpeg", "png"] as const) {
         test(`real ${target} inspection, conversion, download and containment`, async ({ page }, testInfo) => {
             await instrument(page);
-            await page.goto("/tool/heic-converter");
+            await page.goto("/tool/heic-converter"); await waitForHydration(page);
             expect((await snapshot(page)).workers).toHaveLength(0);
             await select(page);
             expect(await decoded(page, "Selected HEIC source preview")).toMatchObject({ type: "image/png", width: 480, height: 320 });
@@ -104,6 +180,7 @@ test.describe("HEIC converter", () => {
             await page.getByLabel("Output format").selectOption(target);
             if (target === "jpeg") await page.getByLabel("Quality", { exact: true }).fill("60");
             else await expect(page.getByLabel("Quality", { exact: true })).toHaveCount(0);
+            const sourcePreview = await sourcePreviewBase64(page);
             await page.getByRole("button", { name: "Convert image", exact: true }).click();
             await expect(page.getByRole("heading", { name: "Converted image ready" })).toBeVisible();
             const output = await decoded(page, "Converted image preview");
@@ -113,8 +190,11 @@ test.describe("HEIC converter", () => {
             await page.getByRole("link", { name: "Download converted image" }).click();
             const download = await downloadPromise;
             expect(download.suggestedFilename()).toBe(`heic-source-converted.${target === "jpeg" ? "jpg" : "png"}`);
-            await download.saveAs(testInfo.outputPath(download.suggestedFilename()));
+            const savedPath = testInfo.outputPath(download.suggestedFilename());
+            await download.saveAs(savedPath);
             expect(await download.failure()).toBeNull();
+            const downloaded = await expectDownloadedOutput(page, savedPath, target, sourcePreview);
+            await testInfo.attach("downloaded-output-comparison", { body: JSON.stringify(downloaded), contentType: "application/json" });
             const workers = (await snapshot(page)).workers;
             expect(workers).toMatchObject([
                 { operation: "inspect", terminated: true }, { operation: "convert", terminated: true },
@@ -141,7 +221,7 @@ test.describe("HEIC converter", () => {
 
     test("size precheck prevents worker creation", async ({ page }) => {
         await instrument(page);
-        await page.goto("/tool/heic-converter");
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: "oversize.heic", mimeType: "image/heic", buffer: Buffer.alloc(26_214_401) });
         await expect(page.getByRole("main").getByRole("alert")).toBeVisible();
         expect((await snapshot(page)).workers).toHaveLength(0);
@@ -150,9 +230,38 @@ test.describe("HEIC converter", () => {
         expect((await snapshot(page)).workers).toHaveLength(0);
     });
 
+    test("real over-30 MP HEIC is rejected with the tool-owned message and produces no output", async ({ page }) => {
+        test.setTimeout(120_000);
+        await instrument(page);
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
+        await page.getByLabel("Choose HEIC image").setInputFiles(oversizedFixture);
+        const alert = page.getByRole("main").getByRole("alert");
+        await expect(alert).toHaveText("This HEIC image is 8256 × 5504 px (45,441,024 pixels). The maximum is 30,000,000 pixels (30 MP). Choose a smaller HEIC or HEIF image.", { timeout: 60_000 });
+        await expect.poll(async () => (await snapshot(page)).workers.at(-1)?.terminated).toBe(true);
+        const rejected = await snapshot(page);
+        expect(rejected.workers).toHaveLength(1);
+        expect(rejected.urls, "no PNG/JPEG result or preview URL exists for the rejected source").toEqual([]);
+
+        // No tool-owned result or preview; the example panel's own download links are marked data-example-asset and are not counted.
+        await expect(page.getByRole("heading", { name: "Converted image ready" })).toHaveCount(0);
+        await expect(page.getByRole("link", { name: "Download converted image", exact: true })).toHaveCount(0);
+        await expect(page.getByRole("main").locator("a[download]:not([data-example-asset])")).toHaveCount(0);
+        await expect(page.getByAltText("Converted image preview")).toHaveCount(0);
+        await expect(page.getByAltText("Selected HEIC source preview")).toHaveCount(0);
+
+        // The rejected source cannot be converted: the control is disabled, and a forced submit starts no worker and yields no result.
+        await expect(page.getByRole("button", { name: "Convert image", exact: true })).toBeDisabled();
+        await page.locator("form[aria-labelledby=heic-controls-title]").evaluate(form => (form as HTMLFormElement).requestSubmit());
+        await expect(alert).toHaveCount(1);
+        const afterSubmit = await snapshot(page);
+        expect(afterSubmit.workers).toHaveLength(1);
+        expect(afterSubmit.urls).toEqual([]);
+        await expect(page.getByRole("heading", { name: "Converted image ready" })).toHaveCount(0);
+    });
+
     test("content detection rejects fake HEIC and accepts misleading metadata", async ({ page }) => {
         await instrument(page);
-        await page.goto("/tool/heic-converter");
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: "fake.heic", mimeType: "image/heic", buffer: readFileSync("test/fixtures/images/compressor-source.jpg") });
         await expect(page.getByRole("main").getByRole("alert")).toHaveText("This file is not valid HEIC or HEIF content. Choose a HEIC or HEIF image.");
         await expect(page.getByAltText("Selected HEIC source preview")).toHaveCount(0);
@@ -165,7 +274,7 @@ test.describe("HEIC converter", () => {
     for (const action of ["reset", "replace", "navigate"] as const) {
         test(`pending inspection ${action} terminates worker and ignores late response`, async ({ page }) => {
             await instrument(page);
-            await page.goto("/tool/heic-converter");
+            await page.goto("/tool/heic-converter"); await waitForHydration(page);
             await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.hold = true; });
             await page.getByLabel("Choose HEIC image").setInputFiles(fixture);
             await expect.poll(async () => (await snapshot(page)).held).toBe(1);
@@ -183,7 +292,7 @@ test.describe("HEIC converter", () => {
 
     test("result and preview URL ownership survives changes, Reset and unmount", async ({ page }) => {
         await instrument(page);
-        await page.goto("/tool/heic-converter");
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
         await select(page);
         await page.getByRole("button", { name: "Convert image", exact: true }).click();
         await expect(page.getByAltText("Converted image preview")).toBeVisible();
@@ -219,7 +328,7 @@ test.describe("HEIC converter", () => {
 
     test("cancelled conversion cannot adopt late output or emit execution telemetry", async ({ page }) => {
         await instrument(page);
-        await page.goto("/tool/heic-converter");
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
         await select(page);
         const count = await page.evaluate(() => JSON.parse(localStorage.getItem("analytic_event_count") ?? "{}").tool_executed ?? 0);
         await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.hold = true; });
@@ -237,7 +346,7 @@ test.describe("HEIC converter", () => {
 
     test("settings are guarded during conversion and invalidate results without alerts", async ({ page }) => {
         await instrument(page);
-        await page.goto("/tool/heic-converter");
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
         await select(page);
         await page.evaluate(() => { (window as unknown as InstrumentedWindow).heicControl.hold = true; });
         await page.getByRole("button", { name: "Convert image", exact: true }).click();
@@ -258,7 +367,7 @@ test.describe("HEIC converter", () => {
         const marker = "PRIVATE_HEIC_MARKER_731";
         const requests: { url: string; body: string; method: string }[] = [];
         page.on("request", request => requests.push({ url: request.url(), body: request.postData() ?? "", method: request.method() }));
-        await page.goto("/tool/heic-converter");
+        await page.goto("/tool/heic-converter"); await waitForHydration(page);
         await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("analytic_event_count") ?? "{}").tool_opened ?? 0)).toBe(1);
         const storageBefore = await page.evaluate(() => ({ local: { ...localStorage }, session: { ...sessionStorage } }));
         await page.getByLabel("Choose HEIC image").setInputFiles({ name: `${marker}.heic`, mimeType: "image/heic", buffer: readFileSync(fixture) });

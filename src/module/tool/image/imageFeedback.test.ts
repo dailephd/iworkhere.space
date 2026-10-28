@@ -67,3 +67,17 @@ it.each([
     expect(readHeicResponse({ id: 3, status: "error", category: "source-dimension-limit", ...fields }, request)).toBeNull();
     expect(readHeicResponse({ id: 3, status: "error", category: "decode-failed", ...fields }, request)).toBeNull();
 });
+it("HEIC decoded-area limit is exact at 30,000,000 pixels and separate from the 25 MiB byte limit", () => {
+    // Area: the boundary itself is accepted, one pixel more is rejected with the actual count.
+    expect(validateImageFileDimension({ width: 6000, height: 5000 })).toBeNull();
+    expect(validateImageFileDimension({ width: 30_000_000, height: 1 })).toBeNull();
+    expect(validateImageFileDimension({ width: 30_000_001, height: 1 })).toBe("This image is 30000001 \u00d7 1 px (30,000,001 pixels). The maximum is 30,000,000 pixels (30 MP). Choose a smaller image.");
+    // The worker reports dimensions only when the area is genuinely oversized; an in-limit area never becomes a limit message.
+    expect(heicErrorResponse(5, "source-dimension-limit", { width: 6000, height: 5000 })).toEqual({ id: 5, status: "error", category: "source-dimension-limit" });
+    expect(heicErrorResponse(5, "source-dimension-limit", { width: 30_000_001, height: 1 })).toEqual({ id: 5, status: "error", category: "source-dimension-limit", sourceWidth: 30_000_001, sourceHeight: 1 });
+    expect(new HeicProcessingError("source-dimension-limit", { width: 30_000_001, height: 1 }).message).toContain("(30,000,001 pixels)");
+    expect(new HeicProcessingError("source-dimension-limit", { width: 6000, height: 5000 }).message).toContain("invalid dimensions");
+    // Bytes: an independent limit with its own boundary, so a small-file/huge-area HEIC is governed by area only.
+    expect(validateImageFileSize(25 * 1024 * 1024)).toBeNull();
+    expect(validateImageFileSize(25 * 1024 * 1024 + 1)).toContain("The maximum file size is 25 MiB");
+});

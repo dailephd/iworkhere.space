@@ -34,6 +34,39 @@ describe("centralized AdSense", () => {
         expect(adsenseEnabled("true", "test")).toBe(false);
         expect(adsenseEnabled("true", "production")).toBe(true);
     });
+    it.each(["preview", "development", "staging", ""])("denies a supplied non-production deployment environment %j even with the flag and production mode", environment => {
+        expect(adsenseEnabled("true", "production", environment)).toBe(false);
+    });
+    it("permits only the production deployment environment, and only with the exact flag and production mode", () => {
+        expect(adsenseEnabled("true", "production", "production")).toBe(true);
+        expect(adsenseEnabled("false", "production", "production")).toBe(false);
+        expect(adsenseEnabled("TRUE", "production", "production")).toBe(false);
+        expect(adsenseEnabled("true", "development", "production")).toBe(false);
+        expect(adsenseEnabled("true", "test", "production")).toBe(false);
+    });
+    it("keeps the standalone two-argument behavior when no deployment environment is supplied", () => {
+        expect(adsenseEnabled("true", "production")).toBe(true);
+        expect(adsenseEnabled("true", "production", undefined)).toBe(true);
+        expect(adsenseEnabled("true", "development")).toBe(false);
+        expect(adsenseEnabled("false", "production")).toBe(false);
+    });
+    it.each(["preview", "development", ""])("server gate renders no script, slot, label or placeholder for VERCEL_ENV %j despite an enabled production build", environment => {
+        enable();
+        vi.stubEnv("VERCEL_ENV", environment);
+        const html = renderToStaticMarkup(<AdSenseEligiblePage><h1>JSON Formatter</h1></AdSenseEligiblePage>);
+        expect(html).toBe("<h1>JSON Formatter</h1>");
+        expect(html).not.toContain("google-adsense");
+        expect(html).not.toContain("adsbygoogle");
+        expect(html).not.toContain("Advertisement");
+        expect(html).not.toContain("advertising area");
+    });
+    it("server gate composes both slots and the script for VERCEL_ENV production", () => {
+        enable();
+        vi.stubEnv("VERCEL_ENV", "production");
+        const html = renderToStaticMarkup(<AdSenseEligiblePage><h1>JSON Formatter</h1></AdSenseEligiblePage>);
+        expect(html.match(/id="google-adsense"/g)).toHaveLength(1);
+        expect(html.match(/Advertisement/g)).toHaveLength(2);
+    });
     it("renders no script, slot, label or empty placeholder when disabled", () => {
         vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");
         const html = renderToStaticMarkup(<AdSenseEligiblePage><h1>JSON Formatter</h1></AdSenseEligiblePage>);

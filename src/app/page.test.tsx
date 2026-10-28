@@ -7,10 +7,11 @@ vi.mock("next/link", () => ({ default: ({ children, ...props }: { children: unkn
 
 import HomePage, { metadata } from "./page";
 import { getAvailableCategory, getAllTool } from "@/module/tool/metadata";
-import { getAllValueExample } from "@/module/tool/valueExamples";
+import { getAllValueExample, getFeaturedValueExample } from "@/module/tool/valueExamples";
 import { getToolCategoryLabel } from "@/module/tool/category";
 
 const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
+const ADDED = ["merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
 
 function render(): HTMLElement {
     const host = document.createElement("div");
@@ -37,10 +38,13 @@ describe("home page task-first content", () => {
         const host = render();
         const item = [...host.querySelectorAll<HTMLElement>("[data-featured-task]")];
         expect(item.map(one => one.getAttribute("data-featured-task"))).toEqual(FEATURED);
-        expect(getAllValueExample().map(example => example.toolId)).toEqual(FEATURED);
+        // Nine tools have worked examples, but only the five original tasks are presented on the home page.
+        expect(getAllValueExample().map(example => example.toolId)).toEqual([...FEATURED, ...ADDED]);
+        expect(getFeaturedValueExample().map(example => example.toolId)).toEqual(FEATURED);
+        for (const slug of ADDED) expect(host.querySelector(`[data-featured-task="${slug}"]`), slug).toBeNull();
         for (const [index, one] of item.entries()) {
             const tool = getAllTool().find(value => value.slug === FEATURED[index])!;
-            const example = getAllValueExample()[index];
+            const example = getFeaturedValueExample()[index];
             const link = one.querySelectorAll("a");
             expect(link).toHaveLength(1);
             expect(link[0].getAttribute("href")).toBe(`/tool/${tool.slug}`);
@@ -90,9 +94,39 @@ describe("home page task-first content", () => {
 });
 
 describe("home page metadata", () => {
+    it("uses the descriptive browser title with one suffix", () => {
+        expect(metadata.title).toBe("Browser Tools for PDFs, Images and Text - iworkhere");
+    });
+
     it("describes the real utilities and keeps the canonical home URL", () => {
         expect(metadata.description).toContain("PDFs, images, text, unit conversion, calculation, time values and developer tasks");
         expect(metadata.description).not.toMatch(/everyday|offline/i);
         expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/");
+    });
+});
+
+describe("home practical file workflows", () => {
+    const SLUG = ["assemble-pdf-packet", "prepare-image-for-upload", "heic-photos-to-pdf", "pdf-pages-for-slides"];
+
+    it("lists the four guides in a server section after the five featured tasks and before the catalog", () => {
+        const host = render();
+        const section = host.querySelector("[data-workflow-section]")!;
+        const featured = host.querySelector("[data-featured-task-section]")!;
+        expect(section).not.toBeNull();
+        expect([...section.querySelectorAll("[data-workflow]")].map(one => one.getAttribute("data-workflow"))).toEqual(SLUG);
+        expect([...section.querySelectorAll("a")].map(one => one.getAttribute("href"))).toEqual(SLUG.map(slug => `/guide/${slug}`));
+        expect(featured.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        const firstCard = host.querySelector("a.catalog-card")!;
+        expect(section.compareDocumentPosition(firstCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(host.querySelectorAll("h1")).toHaveLength(1);
+    });
+
+    it("keeps exactly five featured tasks and the unchanged 18-card catalog, with no guide inside either", () => {
+        const host = render();
+        expect(host.querySelectorAll("[data-featured-task]")).toHaveLength(5);
+        expect(host.querySelectorAll('a.catalog-card[href^="/tool/"]')).toHaveLength(18);
+        expect(host.querySelectorAll('[data-featured-task] a[href^="/guide/"], a.catalog-card[href^="/guide/"]')).toHaveLength(0);
+        expect(host.querySelectorAll('a[href^="/guide/"]')).toHaveLength(4);
+        expect(host.querySelector("[data-workflow-section]")!.textContent).toContain("you download and re-select files between steps");
     });
 });

@@ -60,7 +60,7 @@ describe("category route", () => {
     });
     it("builds canonical metadata for developer from the category owner", async () => {
         const metadata = await generateMetadata({ params: Promise.resolve({ category: "developer" }) });
-        expect(metadata.title).toBe("iworkhere");
+        expect(metadata.title).toBe("Developer Tools - iworkhere");
         expect(metadata.openGraph).toMatchObject({ title: "Developer Tools — iworkhere.space" });
         expect(metadata.description).toBe("Format and validate JSON, and generate QR codes.");
     });
@@ -81,7 +81,7 @@ it("renders only the two converters and emits converter canonical metadata", asy
     expect(html).toContain('href="/tool/weight-converter"');
     expect(html).not.toContain("qr-code-generator");
     const metadata = await generateMetadata({ params });
-    expect(metadata.title).toBe("iworkhere");
+    expect(metadata.title).toBe("Converters - iworkhere");
     expect(metadata.openGraph).toMatchObject({ title: "Converters — iworkhere.space" });
     expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/category/converter");
 });
@@ -135,5 +135,25 @@ describe("category task guidance", () => {
     it("builds Time metadata from the corrected category description", async () => {
         const metadata = await generateMetadata({ params: Promise.resolve({ category: "time" }) });
         expect(metadata.description).toBe("Add and subtract durations written as HH:MM.");
+    });
+});
+
+describe("category workflow guides", () => {
+    const guideHref = async (category: string) => {
+        const html = renderToStaticMarkup(await CategoryPage({ params: Promise.resolve({ category }) }));
+        return [...html.matchAll(/href="(\/guide\/[^"]+)"/g)].map(match => match[1]);
+    };
+
+    it("offers the two PDF guides on the document page only", async () => {
+        expect(await guideHref("document")).toEqual(["/guide/assemble-pdf-packet", "/guide/pdf-pages-for-slides"]);
+    });
+    it("offers the two picture guides on the image page only", async () => {
+        expect(await guideHref("image")).toEqual(["/guide/prepare-image-for-upload", "/guide/heic-photos-to-pdf"]);
+    });
+    it("lists no guide on any other category page", async () => {
+        for (const definition of tool_category_definition_list) {
+            if (definition.id === "document" || definition.id === "image") continue;
+            expect(await guideHref(definition.id), definition.id).toEqual([]);
+        }
     });
 });

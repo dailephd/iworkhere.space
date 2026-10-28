@@ -1,0 +1,419 @@
+{
+  "schema": "iworkhere.space/value-examples/1",
+  "version": "0.4.4",
+  "generator": "script/v044ExampleFixtures.ts",
+  "upstream": [
+    {
+      "path": "public/examples/v0.4.4/heic-converter/source.heic",
+      "repository": "https://github.com/su-engineering/heic-web",
+      "commit": "3261b10a31625dcb395b82081b3e9f7d10c9fc2c",
+      "upstreamPath": "test/fixtures/generated/asym-base.heic",
+      "gitBlob": "c6da5cea205f31fe2eab42c704583ee35f1dd27f",
+      "license": "MIT",
+      "licensePath": "public/examples/v0.4.4/heic-converter/LICENSE.txt"
+    }
+  ],
+  "operation": [
+    {
+      "id": "merge-pdf-result",
+      "exampleId": "merge-pdf-example",
+      "toolId": "merge-pdf",
+      "summary": "Merge the two sample PDFs, source 1 first, into one PDF.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose PDFs",
+          "asset": [
+            "public/examples/v0.4.4/merge-pdf/source-001.pdf",
+            "public/examples/v0.4.4/merge-pdf/source-002.pdf"
+          ]
+        },
+        {
+          "kind": "press-button",
+          "control": "Merge PDF",
+          "waitForHeading": "Merged PDF ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download merged PDF",
+          "filename": "source-001-merged.pdf",
+          "saveAs": "public/examples/v0.4.4/merge-pdf/result.pdf"
+        }
+      ]
+    },
+    {
+      "id": "split-pdf-result",
+      "exampleId": "split-pdf-example",
+      "toolId": "split-pdf",
+      "summary": "Split the four-page sample into two output groups: pages 3,1 and pages 2-3.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose PDF",
+          "asset": [
+            "public/examples/v0.4.4/split-pdf/source.pdf"
+          ]
+        },
+        {
+          "kind": "set-text",
+          "control": "Pages for output group 1",
+          "value": "3,1"
+        },
+        {
+          "kind": "click-button",
+          "control": "Add output group"
+        },
+        {
+          "kind": "set-text",
+          "control": "Pages for output group 2",
+          "value": "2-3"
+        },
+        {
+          "kind": "press-button",
+          "control": "Split PDF",
+          "waitForHeading": "Split PDFs ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download output group 1",
+          "filename": "source-split-01-pages-3_1.pdf",
+          "saveAs": "public/examples/v0.4.4/split-pdf/result-001.pdf"
+        },
+        {
+          "kind": "download",
+          "control": "Download output group 2",
+          "filename": "source-split-02-pages-2-3.pdf",
+          "saveAs": "public/examples/v0.4.4/split-pdf/result-002.pdf"
+        }
+      ]
+    },
+    {
+      "id": "image-compressor-compressed",
+      "exampleId": "image-compressor-example",
+      "toolId": "image-compressor",
+      "summary": "Compress the JPEG at Quality 40.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose image",
+          "asset": [
+            "public/examples/v0.4.4/image-compressor/source.jpg"
+          ]
+        },
+        {
+          "kind": "set-text",
+          "control": "Quality",
+          "value": "40"
+        },
+        {
+          "kind": "press-button",
+          "control": "Compress image",
+          "waitForHeading": "Compressed image ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download compressed image",
+          "filename": "source-compressed.jpg",
+          "saveAs": "public/examples/v0.4.4/image-compressor/compressed.jpg"
+        }
+      ]
+    },
+    {
+      "id": "heic-converter-jpeg",
+      "exampleId": "heic-converter-example",
+      "toolId": "heic-converter",
+      "summary": "Convert the HEIC image to JPEG at Quality 90.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose HEIC image",
+          "asset": [
+            "public/examples/v0.4.4/heic-converter/source.heic"
+          ]
+        },
+        {
+          "kind": "choose-option",
+          "control": "Output format",
+          "value": "jpeg"
+        },
+        {
+          "kind": "set-text",
+          "control": "Quality",
+          "value": "90"
+        },
+        {
+          "kind": "press-button",
+          "control": "Convert image",
+          "waitForHeading": "Converted image ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download converted image",
+          "filename": "source-converted.jpg",
+          "saveAs": "public/examples/v0.4.4/heic-converter/converted.jpg"
+        }
+      ]
+    },
+    {
+      "id": "heic-converter-png",
+      "exampleId": "heic-converter-example",
+      "toolId": "heic-converter",
+      "summary": "Convert the HEIC image to PNG.",
+      "step": [
+        {
+          "kind": "choose-files",
+          "control": "Choose HEIC image",
+          "asset": [
+            "public/examples/v0.4.4/heic-converter/source.heic"
+          ]
+        },
+        {
+          "kind": "choose-option",
+          "control": "Output format",
+          "value": "png"
+        },
+        {
+          "kind": "press-button",
+          "control": "Convert image",
+          "waitForHeading": "Converted image ready"
+        },
+        {
+          "kind": "download",
+          "control": "Download converted image",
+          "filename": "source-converted.png",
+          "saveAs": "public/examples/v0.4.4/heic-converter/converted.png"
+        }
+      ]
+    }
+  ],
+  "asset": [
+    {
+      "path": "public/examples/v0.4.4/heic-converter/converted.jpg",
+      "exampleId": "heic-converter-example",
+      "role": "output",
+      "operation": "heic-converter-jpeg",
+      "origin": "tool-download",
+      "mediaType": "image/jpeg",
+      "bytes": 6079,
+      "sha256": "33a68b48aa8b13dbe29a00d239420ca111fccc1124e3b364ebc99d2ff581f48e",
+      "width": 480,
+      "height": 320
+    },
+    {
+      "path": "public/examples/v0.4.4/heic-converter/converted.png",
+      "exampleId": "heic-converter-example",
+      "role": "output",
+      "operation": "heic-converter-png",
+      "origin": "tool-download",
+      "mediaType": "image/png",
+      "bytes": 9522,
+      "sha256": "ecb5690dcc36e2e3d100bfac9d136ac2067153bf1dd30d5b08f8218d7427e092",
+      "width": 480,
+      "height": 320
+    },
+    {
+      "path": "public/examples/v0.4.4/heic-converter/source.heic",
+      "exampleId": "heic-converter-example",
+      "role": "source",
+      "operation": null,
+      "origin": "upstream-fixture",
+      "mediaType": "image/heic",
+      "bytes": 3554,
+      "sha256": "b8cc78079ada0b88066eb6e406735946064b51f5690389eebd556614a1133119",
+      "width": 480,
+      "height": 320
+    },
+    {
+      "path": "public/examples/v0.4.4/image-compressor/compressed.jpg",
+      "exampleId": "image-compressor-example",
+      "role": "output",
+      "operation": "image-compressor-compressed",
+      "origin": "tool-download",
+      "mediaType": "image/jpeg",
+      "bytes": 31132,
+      "sha256": "8f77de8a017191816e6e3b1247357dc884bcc93f26e3fceef7d852daf71a0cf0",
+      "width": 960,
+      "height": 640
+    },
+    {
+      "path": "public/examples/v0.4.4/image-compressor/source.jpg",
+      "exampleId": "image-compressor-example",
+      "role": "source",
+      "operation": null,
+      "origin": "project-generated",
+      "mediaType": "image/jpeg",
+      "bytes": 141841,
+      "sha256": "9b9ce0f2453b17f111ef8d2c4a9bfa2e7f9e63fc2ed66ba18015a80f60c859a1",
+      "width": 960,
+      "height": 640
+    },
+    {
+      "path": "public/examples/v0.4.4/merge-pdf/result.pdf",
+      "exampleId": "merge-pdf-example",
+      "role": "output",
+      "operation": "merge-pdf-result",
+      "origin": "tool-download",
+      "mediaType": "application/pdf",
+      "bytes": 2163,
+      "sha256": "c7e7863b402b5185115f4ba439ea9f649f3a48693a959e2caa5e5b36679f03c5",
+      "pageCount": 5,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 420,
+          "height": 300,
+          "rotation": 0
+        },
+        {
+          "width": 420,
+          "height": 300,
+          "rotation": 0
+        },
+        {
+          "width": 420,
+          "height": 300,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.4/merge-pdf/source-001.pdf",
+      "exampleId": "merge-pdf-example",
+      "role": "source",
+      "operation": null,
+      "origin": "project-generated",
+      "mediaType": "application/pdf",
+      "bytes": 1928,
+      "sha256": "8e157f33b9d1fd86a04dd93e375b7edf7282b66f7d47fa983072aea56c4d59d6",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.4/merge-pdf/source-002.pdf",
+      "exampleId": "merge-pdf-example",
+      "role": "source",
+      "operation": null,
+      "origin": "project-generated",
+      "mediaType": "application/pdf",
+      "bytes": 2467,
+      "sha256": "749fe800165ea4dfdaf58ecf30175892701a87eff8b89bac35fe78ab18b26e33",
+      "pageCount": 3,
+      "page": [
+        {
+          "width": 420,
+          "height": 300,
+          "rotation": 0
+        },
+        {
+          "width": 420,
+          "height": 300,
+          "rotation": 0
+        },
+        {
+          "width": 420,
+          "height": 300,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.4/split-pdf/result-001.pdf",
+      "exampleId": "split-pdf-example",
+      "role": "output",
+      "operation": "split-pdf-result",
+      "origin": "tool-download",
+      "mediaType": "application/pdf",
+      "bytes": 1281,
+      "sha256": "8e846c71eaef4551577ecabd36ded5f8b74979420803cbd8f4c9f53c7af37977",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.4/split-pdf/result-002.pdf",
+      "exampleId": "split-pdf-example",
+      "role": "output",
+      "operation": "split-pdf-result",
+      "origin": "tool-download",
+      "mediaType": "application/pdf",
+      "bytes": 1284,
+      "sha256": "2a8ae48f2f8ca5ad781a48041bc82379d9ffd2c76a03d6c6c527bcc99395f079",
+      "pageCount": 2,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "path": "public/examples/v0.4.4/split-pdf/source.pdf",
+      "exampleId": "split-pdf-example",
+      "role": "source",
+      "operation": null,
+      "origin": "project-generated",
+      "mediaType": "application/pdf",
+      "bytes": 3018,
+      "sha256": "2e7266600570d628ca5a4c639a2ca10be4c4604391a52ead6554b1333946e137",
+      "pageCount": 4,
+      "page": [
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        },
+        {
+          "width": 300,
+          "height": 400,
+          "rotation": 0
+        }
+      ]
+    }
+  ]
+}

@@ -14,10 +14,13 @@ test("privacy is public, server-rendered and reachable from home and tools", asy
         await expect(page).toHaveURL(/\/privacy$/);
         await expect(page.getByRole("heading", { level: 1, name: "Privacy Policy" })).toBeVisible();
     }
-    await expect(page).toHaveTitle("iworkhere");
+    await expect(page).toHaveTitle("Privacy Policy - iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/privacy");
     await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /site measurements/);
     await expect(page.getByRole("link", { name: "Google Ad Settings", exact: true })).toHaveAttribute("href", "https://adssettings.google.com/");
+    await expect(page.getByText("Last updated: October 27, 2026")).toBeVisible();
+    await expect(page.getByText("excludes requests that include query strings")).toBeVisible();
+    await expect(page.getByText("cached page addresses can include URL parameters")).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);

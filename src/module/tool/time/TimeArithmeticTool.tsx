@@ -67,6 +67,15 @@ export function TimeArithmeticTool({ toolId }: ToolComponentProp) {
             }
         }
 
+        if (arithmeticResult.error === "result-out-of-range") {
+            return {
+                result: "",
+                leftError: "",
+                rightError: "",
+                generalError: "The result is too large to calculate exactly.",
+            }
+        }
+
         return {
             result: "",
             leftError: "",

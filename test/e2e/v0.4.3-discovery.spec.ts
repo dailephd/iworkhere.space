@@ -66,12 +66,17 @@ test.describe("home page task entry points", () => {
         });
     }
 
-    test("keyboard order reaches the featured tasks, then search, with the tool cards still reachable in order", async ({ page }) => {
+    test("keyboard order reaches the featured tasks, then the four workflow links, then search, with the tool cards still reachable in order", async ({ page }) => {
         await page.goto("/");
         const first = page.locator("[data-featured-task] a").first();
         await first.focus();
         for (const one of FEATURED) {
             await expect(page.locator(`[data-featured-task="${one.slug}"] a`)).toBeFocused();
+            await page.keyboard.press("Tab");
+        }
+        // v0.4.4 Batch 5: the server-rendered workflow links sit between the featured tasks and the search field.
+        for (const slug of ["assemble-pdf-packet", "prepare-image-for-upload", "heic-photos-to-pdf", "pdf-pages-for-slides"]) {
+            await expect(page.locator(`[data-workflow="${slug}"] a`)).toBeFocused();
             await page.keyboard.press("Tab");
         }
         await expect(page.getByLabel("Search", { exact: true })).toBeFocused();
@@ -197,10 +202,12 @@ test.describe("tool example panel accessibility", () => {
         await expect(pdf).toHaveCount(2);
     });
 
-    test("the thirteen tools without an example still render no example panel", async ({ page }) => {
+    test("the nine tools without an example still render no example panel", async ({ page }) => {
+        // v0.4.4 Batch 4 added examples to four more tools; they are not home-page tasks, so FEATURED stays at five.
+        const added = ["merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
         const registry = readFileSync(resolve(process.cwd(), "src/module/tool/registry.ts"), "utf8");
-        const slugs = [...registry.matchAll(/slug:\s*"([^"]+)"/g)].map(match => match[1]).filter(slug => !FEATURED.some(one => one.slug === slug));
-        expect(slugs).toHaveLength(TOOL_COUNT - FEATURED.length);
+        const slugs = [...registry.matchAll(/slug:\s*"([^"]+)"/g)].map(match => match[1]).filter(slug => !FEATURED.some(one => one.slug === slug) && !added.includes(slug));
+        expect(slugs).toHaveLength(TOOL_COUNT - FEATURED.length - added.length);
         for (const slug of slugs) {
             await page.goto(`/tool/${slug}`);
             await expect(page.getByRole("region", { name: "Worked example", exact: true })).toHaveCount(0);

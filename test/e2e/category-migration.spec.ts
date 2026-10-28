@@ -14,7 +14,7 @@ test("historical category redirects permanently and converter SEO is canonical",
     ]);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/category/converter");
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", "https://iworkhere.space/category/converter");
-    await expect(page).toHaveTitle("iworkhere");
+    await expect(page).toHaveTitle("Converters - iworkhere");
     await expect(page.locator('a[href="/category/everyday"]')).toHaveCount(0);
     const sitemap = await (await request.get("/sitemap.xml")).text();
     expect(sitemap.split("<loc>https://iworkhere.space/category/converter</loc>")).toHaveLength(2);

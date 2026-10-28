@@ -1,0 +1,29 @@
+Upstream fixture notice
+-----------------------
+source.heic is NOT project-authored. It is the synthetic test fixture test/fixtures/generated/asym-base.heic
+from https://github.com/su-engineering/heic-web, pinned to commit 3261b10a31625dcb395b82081b3e9f7d10c9fc2c.
+Git blob c6da5cea205f31fe2eab42c704583ee35f1dd27f; 3,554 bytes; SHA-256 b8cc78079ada0b88066eb6e406735946064b51f5690389eebd556614a1133119.
+It is used and redistributed under the MIT License reproduced below, unchanged, from that commit.
+converted.jpg and converted.png are outputs of the HEIC converter tool run on that fixture; the project adds no claim over the fixture itself.
+
+MIT License
+
+Copyright (c) 2026 SU Engineering
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

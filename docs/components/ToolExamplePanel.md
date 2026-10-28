@@ -8,12 +8,12 @@
 
 ## Purpose
 
-Shows one verified, source-grounded demonstration (v0.4.3 Batch 2) beneath the real tool on the tool page of five existing utilities: `compress-pdf`, `pdf-to-image`, `images-to-pdf`, `image-resizer` and `image-converter`. It is supporting evidence. It never replaces, wraps or re-implements the working tool.
+Shows one verified, source-grounded demonstration (v0.4.3 Batch 2) beneath the real tool on the tool page of nine existing utilities: the five from v0.4.3 (`compress-pdf`, `pdf-to-image`, `images-to-pdf`, `image-resizer` and `image-converter`) and, from v0.4.4 Batch 4, `merge-pdf`, `split-pdf`, `image-compressor` and `heic-converter`. It is supporting evidence. It never replaces, wraps or re-implements the working tool.
 
 ## Source data ownership
 
-- The only data source is a `ValueExample` record from `src/module/tool/valueExamples.ts` (Batch 1 owner). That module reads measured facts from `public/examples/v0.4.3/manifest.json` and its own tests re-verify the committed bytes.
-- The tool route calls `getValueExample(tool.id)` and passes the result to `ToolPageTemplate`. Neither the route nor the component lists the five tool ids, duplicates manifest records, or holds a second lookup registry.
+- The only data source is a `ValueExample` record from `src/module/tool/valueExamples.ts` (Batch 1 owner). That module reads measured facts from the immutable `public/examples/v0.4.3/manifest.json` and `public/examples/v0.4.4/manifest.json`, and its own tests re-verify the committed bytes.
+- The tool route calls `getValueExample(tool.id)` and passes the result to `ToolPageTemplate`. Neither the route nor the component lists the tool ids, duplicates manifest records, or holds a second lookup registry.
 - Every sentence, byte count, dimension, page size, rotation, format and URL shown is read from the record. The component contains only labels (headings, role words, media-type display names) and layout. No measurement, percentage or guarantee is computed or written in JSX.
 - `ToolDefinition`, the registry and the example data owner are unchanged.
 
@@ -49,7 +49,8 @@ The panel never claims an operation the tool does not offer, never presents one 
 
 ## Same-origin asset links
 
-- Link and image URLs are `asset.url` from the record, which begin with `/examples/v0.4.3/` and resolve to committed files in `public/`. No third-party or remote sample host is referenced.
+- Link and image URLs are `asset.url` from the record, which begin with `/examples/v0.4.3/` or `/examples/v0.4.4/` and resolve to committed files in `public/`. No third-party or remote sample host is referenced.
+- A file type browsers cannot display (HEIC) is never rendered as an inline image: `PREVIEW_TYPE` limits inline previews to PNG, JPEG and WebP, and, like a PDF, a HEIC link name carries the file's description. The HEIC source is an upstream fixture, and the record's `provenance.permission` says so instead of the original-to-iworkhere.space wording.
 - Downloads are visitor-initiated links (`download` attribute with the file's name and its `type`, plus a `data-example-asset` marker so tests of a tool's own result downloads can tell the two apart). Nothing downloads, opens or fetches on load.
 - Image assets (PNG, JPEG, WebP) show a native `<img loading="lazy" decoding="async">` preview with `width`/`height` from the record and CSS that preserves the aspect ratio and prevents horizontal overflow. These files are small and each is shown once. PDFs get a labelled link only, with no inline viewer and no PDF rendering dependency.
 - The panel remains complete and usable when a preview image fails to load, because every fact and link is text.
@@ -69,6 +70,6 @@ The working tool remains first, unchanged and prominent. The panel adds no proce
 
 ## Tests
 
-- `ToolExamplePanel.test.tsx`: all five records render; every fact on screen matches the record; same-origin links only; unique link names; no H1, no client markers, no script or ad elements; preview dimensions.
-- `ToolPageTemplate.test.tsx`: panel appears after the tool UI and before the guide only when `example` is supplied; unchanged structure otherwise; the five featured tools are exactly those with a record.
-- `test/e2e/tool-value-examples.spec.ts`: the five real pages, an unrelated tool, link and media-type resolution, visitor-triggered downloads, no unsolicited download, no overflow at desktop and mobile, tool reachability, footer clearance, no runtime errors, no external sample host.
+- `ToolExamplePanel.test.tsx`: all nine records render, five of them featured on the home page; every fact on screen matches the record; same-origin links only; unique link names; no H1, no client markers, no script or ad elements; preview dimensions.
+- `ToolPageTemplate.test.tsx`: panel appears after the tool UI and before the guide only when `example` is supplied; unchanged structure otherwise; the nine tools with a record are exactly those given an example.
+- `test/e2e/tool-value-examples.spec.ts`: the nine real pages, the home page's five tasks, an unrelated tool, link and media-type resolution, visitor-triggered downloads, no unsolicited download, no overflow at desktop and mobile, tool reachability, footer clearance, no runtime errors, no external sample host.

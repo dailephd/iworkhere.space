@@ -9,6 +9,7 @@ export type TimeArithmeticError =
     | "invalid-left"
     | "invalid-right"
     | "negative-result"
+    | "result-out-of-range"
 
 export type TimeArithmeticResult =
     | { ok: true; value: string }
@@ -25,8 +26,9 @@ export function parseTime(input: string): TimeParts | null {
     const hours = Number.parseInt(hoursText, 10)
     const minutes = Number.parseInt(minutesText, 10)
 
-    if (!Number.isInteger(hours) || !Number.isInteger(minutes)) return null
+    if (!Number.isSafeInteger(hours) || !Number.isSafeInteger(minutes)) return null
     if (hours < 0 || minutes < 0 || minutes > 59) return null
+    if (!Number.isSafeInteger(toTotalMinutes({ hours, minutes }))) return null
 
     return { hours, minutes }
 }
@@ -77,6 +79,10 @@ export function calculateTime(
         operation === "add"
             ? leftMinutes + rightMinutes
             : leftMinutes - rightMinutes
+
+    if (!Number.isSafeInteger(totalMinutes)) {
+        return { ok: false, error: "result-out-of-range" }
+    }
 
     if (totalMinutes < 0) {
         return { ok: false, error: "negative-result" }

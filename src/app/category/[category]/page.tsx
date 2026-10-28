@@ -4,6 +4,14 @@ import { getToolByCategory } from "@/module/tool/registry";
 import { buildCategoryMetadata } from "@/lib/seo";
 import { getToolCategoryDefinition, isToolCategory } from "@/module/tool/category";
 import Link from "next/link";
+import { getTaskGuide } from "@/module/content/taskGuide";
+import type { TaskGuideSlug } from "@/module/content/taskGuide";
+
+/* Which guides each category page offers. Guide titles and addresses come from the task-guide owner; other categories list none. */
+const CATEGORY_GUIDE_SLUG: Record<string, TaskGuideSlug[]> = {
+    document: ["assemble-pdf-packet", "pdf-pages-for-slides"],
+    image: ["prepare-image-for-upload", "heic-photos-to-pdf"],
+};
 
 interface CategoryPageProp {
     params: Promise<{ category: string }>;
@@ -30,6 +38,11 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
     const choiceList = definition.guidance.choice.flatMap((choice) => {
         const tool = toolList.find((one) => one.id === choice.toolId);
         return tool ? [{ name: tool.name, when: choice.when }] : [];
+    });
+
+    const guideList = (CATEGORY_GUIDE_SLUG[category] ?? []).flatMap((slug) => {
+        const guide = getTaskGuide(slug);
+        return guide ? [{ slug: guide.slug, title: guide.title, summary: guide.expectedOutcome }] : [];
     });
 
     return (
@@ -67,6 +80,22 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
                             ))}
                         </ul>
                     </section>
+
+                    {guideList.length > 0 && (
+                        <section aria-labelledby="category-workflow-title" data-category-guide className="space-y-3">
+                            <h2 id="category-workflow-title" className="text-lg font-semibold text-[var(--text)]">Step-by-step workflows</h2>
+                            <ul className="grid gap-3 sm:grid-cols-2">
+                                {guideList.map((guide) => (
+                                    <li key={guide.slug} className="rounded-xl border border-border bg-surface p-4">
+                                        <Link className="block space-y-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]" href={`/guide/${guide.slug}`}>
+                                            <h3 className="font-medium text-[var(--text)]">{guide.title}</h3>
+                                            <p className="text-sm text-[var(--text-muted)]">{guide.summary}</p>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
                 </>
             )}
         </div>

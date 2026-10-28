@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BROWSER_TITLE } from "@/lib/seo";
+import { buildBrowserTitle } from "@/lib/seo";
 
-/** Missing pages keep the uniform browser title and are never indexed or listed in the sitemap. */
+/** Missing pages use a descriptive browser title and are never indexed or listed in the sitemap. */
 export const metadata: Metadata = {
-    title: BROWSER_TITLE,
+    title: buildBrowserTitle("Page Not Found"),
     robots: { index: false, follow: false },
 };
 

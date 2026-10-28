@@ -3,19 +3,20 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The current application version is v0.4.3. It includes 18 registered utilities
-across seven populated categories, five original verified worked examples, a
+The v0.4.4 application release contains 18 registered utilities
+across seven populated categories, nine verified worked file examples, a
 task-first homepage, improved Discover navigation and category guidance,
-publisher About and Contact pages, privacy improvements, and 30 canonical
-public routes. The existing fixed, retractable site chrome retains its
-conditional Report Issues action. Contact uses the direct Resend integration
+publisher About and Contact pages, privacy improvements, and 35 canonical
+public routes. The header is fixed and the footer is ordinary document-flow
+content with its conditional Report Issues action. Contact uses the direct
+Resend integration
 with a sender and recipient configured externally; Production delivery was
 verified on 2026-10-21. The v0.4.2 issue-reporting entry remains conditional on
 `NEXT_PUBLIC_SUPPORT_ENABLED=true`; Report Issues and advertising remain
 default-off. Source integration, GitHub Release publication, and Vercel
 Production deployment are distinct release records. Production deploys from
 `master`.
-The preceding v0.4.2 release introduced a homepage that grouped tools by
+The earlier v0.4.1 release introduced a homepage that grouped tools by
 category. The current application retains those utilities and Calculator accepts
 keyboard `=`; the existing appearance system includes six named palettes with
 Light, Dark and System modes plus fixed-dark One Dark; and Converters owns
@@ -32,6 +33,23 @@ measures automatic page views only in
 public Production with URL query/hash redaction; application observability is
 separate and no Vercel custom events are sent. See [deployment documentation](docs/DEPLOYMENT.md)
 and [the changelog](CHANGELOG.md).
+
+## v0.4.4 — Site Quality & Search Recovery
+
+[v0.4.4 — Site Quality & Search Recovery](docs/plans/v0.4.4-implementation-plan.md)
+is implemented in application version `0.4.4`. The release-preparation
+source passed local verification, security-clean production and full dependency
+audits, default-off, preview-denial and stubbed-enabled advertising checks,
+browser tests, and the production-container gate. All eight GitHub Actions
+workflows and nine required jobs passed for the validated release-preparation
+commit `f6bee013b8cafa3253f568128be94e192a791ea6`. GitHub Release
+publication and Vercel Production deployment have independent identity and
+verification requirements; source validation does not establish either. The
+[October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
+the original findings and their limits. The [roadmap](docs/ROADMAP.md) retains
+the planned v0.5.0/v0.6.0 catalogs. The `/guide` hub and four task guides are
+documented in [Practical File Workflows](docs/modules/TaskGuide.md), and the
+implementation history remains in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
 ## Getting Started
 

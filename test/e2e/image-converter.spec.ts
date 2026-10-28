@@ -63,7 +63,7 @@ async function inspectResult(page: Page) {
 test("Converter registry, SEO, category and discovery", async ({ page }) => {
     expect((await page.goto("/tool/image-converter"))?.status()).toBe(200);
     await expect(page.getByRole("heading", { level: 1, name: "JPG / PNG / WebP Converter", exact: true })).toBeVisible();
-    await expect(page).toHaveTitle("iworkhere");
+    await expect(page).toHaveTitle("JPG, PNG and WebP Converter - iworkhere");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/tool\/image-converter$/);
     await page.goto("/category/image");
     const links = page.getByRole("main").locator('a[href^="/tool/"]');

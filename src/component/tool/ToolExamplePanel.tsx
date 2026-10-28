@@ -13,6 +13,7 @@ const MEDIA_TYPE_LABEL: Record<string, string> = {
     "image/png": "PNG",
     "image/jpeg": "JPEG",
     "image/webp": "WebP",
+    "image/heic": "HEIC",
 };
 const ROLE_LABEL: Record<ValueExampleAsset["role"], string> = { source: "source", output: "result" };
 const LINK_CLASS = "inline-block rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 underline underline-offset-4";
@@ -20,7 +21,9 @@ const LINK_CLASS = "inline-block rounded-lg border border-secondary-action-borde
 const formatLabel = (asset: ValueExampleAsset) => MEDIA_TYPE_LABEL[asset.mediaType] ?? asset.mediaType;
 const fileName = (asset: ValueExampleAsset) => asset.url.slice(asset.url.lastIndexOf("/") + 1);
 const byteText = (asset: ValueExampleAsset) => `${asset.bytes.toLocaleString("en-US")} bytes`;
-const isImage = (asset: ValueExampleAsset) => asset.mediaType.startsWith("image/");
+// Browsers decode these natively; HEIC is offered as a download only, so it gets no inline preview.
+const PREVIEW_TYPE = ["image/png", "image/jpeg", "image/webp"];
+const isPreviewable = (asset: ValueExampleAsset) => PREVIEW_TYPE.includes(asset.mediaType);
 const capitalized = (text: string) => text[0].toUpperCase() + text.slice(1);
 
 function ExampleAssetFact({ asset }: ExampleAssetItemProp) {
@@ -53,7 +56,7 @@ function ExampleAssetItem({ asset }: ExampleAssetItemProp) {
 
     return (
         <li className="min-w-0 space-y-3 rounded-lg border border-preview-border bg-preview-bg p-3">
-            {isImage(asset) ? <figure className="min-w-0 space-y-2">
+            {isPreviewable(asset) ? <figure className="min-w-0 space-y-2">
                 {/* eslint-disable-next-line @next/next/no-img-element -- small committed static asset with explicit width and height; the optimizer adds nothing */}
                 <img
                     src={asset.url}
@@ -76,7 +79,7 @@ function ExampleAssetItem({ asset }: ExampleAssetItemProp) {
                 <ExampleAssetFact asset={asset} />
             </div>}
             <a href={asset.url} download={name} type={asset.mediaType} data-example-asset={asset.role} className={LINK_CLASS}>
-                Download {role} {format}: {name}{isImage(asset) ? "" : ` (${asset.description})`}
+                Download {role} {format}: {name}{isPreviewable(asset) ? "" : ` (${asset.description})`}
             </a>
         </li>
     );

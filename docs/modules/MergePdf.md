@@ -43,3 +43,7 @@ Only `tool_executed` with toolId/slug is emitted after verified success. Ordinar
 application asset traffic and separately enabled observability remain possible.
 
 Adjacent unit/component tests and real fixture browser tests own acceptance.
+
+## Limit evidence (v0.4.4 Batch 6)
+
+`test/e2e/pdf-page-copy.spec.ts` (`Merge PDF limit boundaries`) exercises the 10-file, 10 MiB per-file, 25 MiB aggregate and 100-page limits at, and one unit beyond, each boundary in a real browser. Accepted outputs are read back with PDF.js for page count and order; a rejected addition leaves earlier files in order and produces no result.

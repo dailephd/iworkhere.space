@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 const SITE_NAME = "iworkhere.space"
-/** Every page uses this exact browser tab title; page-specific wording stays in social titles. */
-export const BROWSER_TITLE = "iworkhere"
+/** Appended exactly once to every unbranded page title to form the HTML browser title. */
+const BROWSER_TITLE_SUFFIX = " - iworkhere"
 export const SITE_URL = "https://iworkhere.space"
 
 export interface IndexEnvironment {
@@ -13,6 +13,10 @@ export interface IndexEnvironment {
 export function isIndexable(environment: IndexEnvironment = process.env): boolean {
     if (environment.VERCEL_ENV) return environment.VERCEL_ENV === "production"
     return environment.NODE_ENV === "production"
+}
+
+export function buildBrowserTitle(title: string): string {
+    return `${title}${BROWSER_TITLE_SUFFIX}`
 }
 
 export function canonicalUrl(path: string): string {
@@ -31,7 +35,7 @@ export function buildPageMetadata(seo: SeoInput): Metadata {
     const canonical = canonicalUrl(seo.canonicalPath)
 
     return {
-        title: BROWSER_TITLE,
+        title: buildBrowserTitle(seo.title),
         description,
         robots: { index: isIndexable(), follow: isIndexable() },
         alternates: {

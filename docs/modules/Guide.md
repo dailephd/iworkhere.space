@@ -40,3 +40,18 @@ the fixed ECC M / black-on-white / 512 × 512 PNG / four-module quiet-zone
 settings, the 2048 UTF-8 byte limit and local generation (related IDs
 `length-converter`, `weight-converter`, so the page shows `Related converter
 tools`).
+
+v0.4.4 Batch 4 adds one concise example section to each of the three
+guides whose behavior is easiest to misjudge (headed `Check it with this input`, `Counting examples` and `Example and what to do if it will not scan`, never `Worked example`, which names the tool-page panel). `json-formatter` shows a document
+with a 20-digit integer, `1.50E+2`, a `\u00e9` escape and a repeated member name
+that Minify JSON returns unchanged and Format JSON only re-indents, next to the
+`{"a":1,}` error at line 1, column 8. `word-character-counter` states the actual
+counts for `Don’t`, a combining-accent `é`, an emoji family (one character, zero
+words) and `Hello world` followed by a line break (2 words, 12 characters, 10
+without whitespace, 2 lines). `qr-code-generator` encodes a known URL and gives
+a recovery action when a code will not scan. The inputs are the exported
+`JSON_GUIDE_EXAMPLE`, `COUNTER_GUIDE_DECOMPOSED`, `COUNTER_GUIDE_FAMILY` and
+`QR_GUIDE_EXAMPLE` constants, so `guideExample.test.tsx` runs the exact text the
+page shows through the real components or logic: the JSON and counter tools in
+jsdom, and the QR output decoded by the test-only `jsqr` reader back to the same
+payload. The other guides are unchanged.
