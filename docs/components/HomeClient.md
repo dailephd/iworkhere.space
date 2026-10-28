@@ -77,3 +77,7 @@ The prospective homepage remains server-composed from `src/app/page.tsx` plus th
 
 The existing ToolSearch supports case-insensitive substring matching on name, description, category, and tags only. The new copy must not promise natural-language intent mapping. This is a visual/catalog-discovery change to be implemented separately, not a claim about current deployed behavior.
 
+### Visual-continuity and Dark/One Dark correction (2026-10-28; candidate review)
+
+The first locally rendered Colorfield screenshots show the catalog styled with icons and colored category boards, but the five featured task cards and four task-guide cards remain on the old beige/plain-card visual system. Dark screenshots show muddy hero fills and dark category/card colors with conflicting undertones. The approved correction is documented in `docs/DESIGN.md` under "Screenshot-reviewed typography, secondary-section and dark-color correction". The implementer must preserve HomeClient's registry-derived catalog, functional ToolSearch and canonical names/descriptions, and apply the same material and typography to the whole homepage. Use the global public DM Sans font owner, homepage-specific category/secondary presentation variables and separate deliberate Dark/One Dark color treatments. The local screenshot is not verification that current GitHub source implements this.
+
