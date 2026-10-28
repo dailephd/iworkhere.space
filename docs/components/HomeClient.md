@@ -68,3 +68,12 @@ The five featured tasks (`compress-pdf`, `pdf-to-image`, `images-to-pdf`, `image
 ### Practical file workflows section (v0.4.4 Batch 5)
 
 `src/app/page.tsx` (server) renders a compact "Practical file workflows" section (`data-workflow-section`) after the five featured tasks and before `HomeClient`. It lists the four guides from `getAllTaskGuide()` (title as a link to `/guide/<slug>` and the expected outcome). `HomeClient` is unchanged and remains the only client owner of search and the 18-tool catalog; guide records are never passed to it, the five-featured projection is unchanged, and the catalog card count stays 18.
+
+### Approved Colorfield homepage presentation (2026-10-28; implementation pending)
+
+The user selected an adaptation of Colorfield design 03 to the **existing** homepage rather than replacement of the site layout. `docs/DESIGN.md` ("Approved homepage Colorfield adaptation") owns the binding detailed visual, copy, ordering, theme, accessibility and acceptance contract. Historical v0.4.3/v0.4.4 task-first ordering recorded above remains historical until the new candidate is implemented and verified.
+
+The prospective homepage remains server-composed from `src/app/page.tsx` plus the current `HomeClient` for category/search presentation. Keep all registered tools in the canonical sections exactly once, with a tool-specific decorative icon, registry name, and visible registry description. Distinguish the category sections with visibly colored pastel surfaces and light solid cards. Do not duplicate tool metadata, create a second search owner, or change global `SectionIsland` behavior merely to style the home page. New display order: compact coral introduction, real search, category chips, complete catalog, preserved five featured tasks, then four guides. Remove the public-facing tool/count numerals from home copy, hero and category boards; keep programmatic catalog-size assertions.
+
+The existing ToolSearch supports case-insensitive substring matching on name, description, category, and tags only. The new copy must not promise natural-language intent mapping. This is a visual/catalog-discovery change to be implemented separately, not a claim about current deployed behavior.
+
