@@ -1,5 +1,13 @@
 # PROJECT STATUS
 
+## Homepage Colorfield design decision — 2026-10-28
+
+Status: approved visual direction, **NOT IMPLEMENTED**. On the dedicated documentation branch `design/homepage-colorfield-20261028`, the user approved adapting the existing category-based homepage to the colorful Colorfield 03 concept. The next bounded implementation removes displayed tool/category totals, moves search and the complete icon/name/description catalog ahead of featured examples and guides, and introduces a coral introduction plus strong per-category pastel panels. This is not a new catalog release or permission to change the v0.5.0/v0.6.0 roadmap. The exact visual and validation contract is in [DESIGN.md](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28), with component boundaries in [HomeClient.md](components/HomeClient.md). The current Production homepage is unchanged until a later validated implementation and authorized deployment.
+
+## Local Colorfield screenshot review — 2026-10-28
+
+A local implementation candidate is visible in eight screenshots supplied by the user, but its source is not on the accessible GitHub design branch; it has not been verified or deployed by this documentation update. The user rejected the lower-page visual discontinuity, current system-font presentation and the muddy/discordant Amber Dark and Cobalt Dark examples, plus required validation of other Dark and One Dark treatments. The corrective design contract is now recorded in `DESIGN.md` ("Screenshot-reviewed typography, secondary-section and dark-color correction") and `components/HomeClient.md`. The next action is a **bounded correction in the existing project-contained isolated worktree**, preserving its local implementation and all original-checkout changes. Do not recreate the Colorfield implementation from the remote documentation branch or merge/publish based on screenshot evidence.
+
 ## v0.4.4 release source and validation — 2026-10-28
 
 Status: IMPLEMENTED AND EXACT-SHA RELEASE-PREPARATION VALIDATED. GitHub Release and Vercel Production outcomes require separate verification.
