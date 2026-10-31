@@ -165,7 +165,7 @@ describe("registry invariants", () => {
     it("registers Converter with its exact offline contract", () => {
         expect(getToolBySlug("image-converter")).toMatchObject({
             id: "image-converter", slug: "image-converter", name: "JPG / PNG / WebP Converter", category: "image",
-            description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+            description: "Convert an image between JPEG, PNG and WebP.",
             seo: { title: "JPG, PNG and WebP Converter", description: "Convert JPEG, PNG, and WebP images locally in your browser.", canonicalPath: "/tool/image-converter" },
             capability: ["client-only", "offline"], tag: ["image", "converter", "jpg", "png", "webp"],
             statePolicy: { persist: "none", shareableQuery: false },
@@ -177,7 +177,7 @@ describe("registry invariants", () => {
         const tool = getToolBySlug("json-formatter")
         expect(tool).toMatchObject({
             id: "json-formatter", slug: "json-formatter", name: "JSON Formatter / Validator", category: "developer",
-            description: "Format, minify, and validate strict JSON locally in your browser.",
+            description: "Format, minify or validate strict JSON text.",
             seo: { title: "JSON Formatter and Validator", description: "Format, minify, and validate strict JSON locally in your browser without uploading your data.", canonicalPath: "/tool/json-formatter" },
             capability: ["client-only", "offline"], tag: ["json", "developer", "format", "validate", "minify", "utility"],
             statePolicy: { persist: "none", shareableQuery: false },
@@ -190,7 +190,7 @@ describe("registry invariants", () => {
         const tool = getToolBySlug("word-character-counter")
         expect(tool).toMatchObject({
             id: "word-character-counter", slug: "word-character-counter", name: "Word / Character Counter", category: "text",
-            description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.",
+            description: "Count words, characters, characters without whitespace and lines in text.",
             seo: { title: "Word and Character Counter", description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.", canonicalPath: "/tool/word-character-counter" },
             capability: ["client-only", "offline"], tag: ["text", "word", "character", "counter", "utility"],
             statePolicy: { persist: "none", shareableQuery: false },
@@ -203,7 +203,7 @@ describe("registry invariants", () => {
         const tool = getToolBySlug("qr-code-generator")
         expect(tool).toMatchObject({
             id: "qr-code-generator", slug: "qr-code-generator", name: "QR Code Generator", category: "developer",
-            description: "Generate a QR code from text or a URL locally in your browser.",
+            description: "Turn text or a URL into a downloadable QR code PNG.",
             seo: { title: "QR Code Generator", description: "Generate a QR code from text or a URL locally in your browser and download it as a PNG.", canonicalPath: "/tool/qr-code-generator" },
             capability: ["client-only", "offline"], tag: ["qr", "code", "generator", "url", "developer", "utility"],
             statePolicy: { persist: "none", shareableQuery: false },
@@ -220,7 +220,7 @@ describe("registry invariants", () => {
     it("registers HEIC with its exact local offline contract", () => {
         expect(getToolBySlug("heic-converter")).toMatchObject({
             id: "heic-converter", slug: "heic-converter", name: "HEIC → JPG / PNG Converter", category: "image",
-            description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+            description: "Turn a HEIC or HEIF photo into a JPEG or PNG image.",
             seo: { title: "HEIC to JPG and PNG Converter", description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.", canonicalPath: "/tool/heic-converter" },
             capability: ["client-only", "offline"], tag: ["image", "converter", "heic", "heif", "jpg", "png"],
             statePolicy: { persist: "none", shareableQuery: false },

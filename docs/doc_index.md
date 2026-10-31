@@ -287,7 +287,7 @@ new modules or changing layer boundaries.
 
 ### DESIGN.md
 
-**New approved, unimplemented direction (2026-10-28):** [Colorfield homepage adaptation](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28) preserves the existing registry-driven catalog, makes its icon/name/description cards visually colorful, removes visitor-facing tool counts, and places the catalog above featured tasks and guides. Its implementation is separate from historical v0.4.4 and the frozen future utility catalog roadmap. See [HomeClient component contract](components/HomeClient.md).
+**Approved direction (2026-10-28), since carried forward by the unreleased sitewide redesign candidate (Home is the 18-tool catalog without featured-task cards; see project-status.md):** [Colorfield homepage adaptation](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28) preserves the existing registry-driven catalog, makes its icon/name/description cards visually colorful, removes visitor-facing tool counts, and places the catalog above featured tasks and guides. Its implementation is separate from historical v0.4.4 and the frozen future utility catalog roadmap. See [HomeClient component contract](components/HomeClient.md).
 **Summary:** The canonical product design and styling contract, including
 visual identity, themes, layout, scrolling, accessibility, performance, and
 current implementation boundaries. Separates the current implemented shell from the completed, user-approved

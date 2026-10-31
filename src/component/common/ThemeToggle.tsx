@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { isColorMode, listColorModes, listPalettes } from "@/module/theme/themeRegistry";
+import { DEFAULT_APPEARANCE, isColorMode, listColorModes, listPalettes } from "@/module/theme/themeRegistry";
 import { useAppearance } from "./ThemeProvider";
 
 export function ThemeToggle() {
@@ -49,14 +49,25 @@ export function ThemeToggle() {
                 <legend className="mb-2 text-sm font-semibold">Palette</legend>
                 {listPalettes().map(palette => <label key={palette.id} className="flex min-h-10 cursor-pointer items-center gap-3 rounded-lg px-2 text-sm hover:bg-[var(--accent-soft)]">
                     <input type="radio" name={`${id}-palette`} value={palette.id} checked={preference.palette === palette.id}
+                        aria-describedby={palette.id === DEFAULT_APPEARANCE.palette ? `${id}-default` : undefined}
                         onChange={() => selectPalette(palette.id)} className="accent-[var(--accent)]" />
-                    {palette.label}
+                    <span aria-hidden="true" data-palette-swatch={palette.id} data-swatch={palette.id}
+                        className="palette-swatch flex h-6 w-12 shrink-0 overflow-hidden rounded-md border border-[var(--input-border)]">
+                        <span data-swatch-part="hero" className="flex-1 bg-[var(--swatch-hero)]" />
+                        <span data-swatch-part="section" className="flex-1 bg-[var(--swatch-section)]" />
+                        <span data-swatch-part="action" className="flex-1 bg-[var(--swatch-action)]" />
+                    </span>
+                    <span className="min-w-0">{palette.label}</span>
+                    {palette.id === DEFAULT_APPEARANCE.palette && <span id={`${id}-default`} aria-hidden="true" className="rounded-full border border-[var(--input-border)] px-2 text-xs text-[var(--text-muted)]">Default</span>}
                 </label>)}
             </fieldset>
-            <fieldset className="mt-4 space-y-1" disabled={preference.palette === "onedark"}>
+            <fieldset className="mt-4 space-y-1" disabled={preference.palette === "onedark"}
+                aria-describedby={preference.palette === "onedark" ? `${id}-fixed` : undefined}>
                 <legend className="mb-2 text-sm font-semibold">Color mode</legend>
+                {preference.palette === "onedark" && <p id={`${id}-fixed`} className="text-sm text-[var(--text-muted)]">One Dark uses a fixed dark appearance; color mode does not apply.</p>}
                 {listColorModes().map(mode => <label key={mode.id} className="flex min-h-10 items-center gap-3 rounded-lg px-2 text-sm">
                     <input type="radio" name={`${id}-mode`} value={mode.id} checked={preference.mode === mode.id}
+                        disabled={preference.palette === "onedark"}
                         onChange={() => { if (isColorMode(mode.id)) selectMode(mode.id); }} className="accent-[var(--accent)]" />
                     {mode.label}
                 </label>)}

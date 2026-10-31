@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ToolComponentProp } from "../type";
+import { ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent, captureError } from "@/module/observability";
 
 const slug = "qr-code-generator";
@@ -121,11 +122,11 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
         inputRef.current?.focus();
     }, [discardResult]);
 
-    const buttonClass = "rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-alt)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50";
-    const primaryClass = "rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--contrast)] hover:bg-[var(--accent-hover)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50";
+    const buttonClass = "tool-action-secondary";
+    const primaryClass = "tool-action-primary";
 
     return (
-        <div className="flex flex-col gap-4">
+        <ToolSurface kind="work" aria-label="QR code generator" className="flex flex-col gap-4 space-y-0">
             <div className="flex min-w-0 flex-col gap-2">
                 <label htmlFor="qr-input" className="text-sm font-medium text-[var(--text)]">
                     Text or URL
@@ -140,12 +141,12 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
                     autoComplete="off"
                     autoCapitalize="off"
                     aria-invalid={error ? true : undefined}
-                    className="h-40 w-full resize-y rounded-xl border border-[var(--input-border)] bg-[var(--input-bg)] p-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--border)] focus:outline-none"
+                    className="tool-control h-40 resize-y text-sm"
                 />
             </div>
 
             <div role="alert" className="min-h-0">
-                {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
+                {error && <p data-tone="error" className="tool-feedback text-sm">{error}</p>}
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -153,7 +154,7 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
                     Generate QR code
                 </button>
                 {downloadUrl && (
-                    <a href={downloadUrl} download="qr-code.png" className={buttonClass}>
+                    <a href={downloadUrl} download="qr-code.png" className="tool-action-primary">
                         Download PNG
                     </a>
                 )}
@@ -163,7 +164,7 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
             </div>
 
             {downloadUrl && (
-                <div className="flex justify-center rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3">
+                <ToolSurface kind="preview" aria-label="QR code preview" className="flex justify-center p-3">
                     {/* eslint-disable-next-line @next/next/no-img-element -- local blob URL; next/image cannot optimize it */}
                     <img
                         src={downloadUrl}
@@ -172,8 +173,8 @@ export function QrCodeGeneratorTool({ toolId }: ToolComponentProp) {
                         height={PREVIEW_SIZE}
                         className="h-auto w-full max-w-xs"
                     />
-                </div>
+                </ToolSurface>
             )}
-        </div>
+        </ToolSurface>
     );
 }

@@ -47,9 +47,36 @@ publication and Vercel Production deployment have independent identity and
 verification requirements; source validation does not establish either. The
 [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
 the original findings and their limits. The [roadmap](docs/ROADMAP.md) retains
-the planned v0.5.0/v0.6.0 catalogs. The `/guide` hub and four task guides are
+the planned v0.5.0/v0.6.0 catalogs. The four original manual task guides are
+superseded on the local candidate (see below); their authored data remains
 documented in [Practical File Workflows](docs/modules/TaskGuide.md), and the
 implementation history remains in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+
+## Sitewide redesign (local candidate, unreleased)
+
+The working tree for `feature/homepage-colorfield-refresh` (version still
+`0.4.4`, uncommitted, not deployed) contains a sitewide redesign. It has not
+been released or published; its acceptance evidence is a local report, not a
+hosted CI result. Current behavior:
+
+- Home (`/`) is the searchable catalog of the 18 individual tools in seven
+  categories; it has no task, guide or workflow cards. `/discover` is the
+  single-list search page, and each category has a page under `/category/<id>`.
+- `/workflows` and four detail pages (`prepare-image-for-upload`,
+  `heic-photos-to-pdf`, `assemble-pdf-packet`, `pdf-pages-for-slides`) are
+  working, browser-local workflows with one Process action each, run through
+  one typed dispatcher in `src/module/workflow/`. Files are not uploaded.
+- `/guide` is an interactive finder (a fixed decision graph in
+  `src/module/content/toolFinder.ts`) that recommends a tool or a workflow. The
+  four former `/guide/<slug>` URLs permanently redirect (HTTP 308) to the
+  matching workflow; any other `/guide/<slug>` is a 404.
+- The public sitemap lists 36 canonical URLs (Home, Discover, About, Contact,
+  Privacy, `/guide`, `/workflows`, 4 workflow pages, 18 tools, 7 categories).
+- Seven palettes (Original, Mineral, Oxblood, Signal, Cobalt, Amber, One Dark)
+  resolve to 13 appearances: six palettes in light and dark, plus fixed-dark
+  One Dark; System follows the operating system. Themes may differ in color,
+  typography, material and decoration, but not in content, DOM semantics or
+  control reachability. See [the design contract](docs/DESIGN.md).
 
 ## Getting Started
 

@@ -18,7 +18,7 @@ test("Word / Character Counter route, SEO, breadcrumb, guide and related links a
     expect(html).toContain('rel="canonical" href="https://iworkhere.space/tool/word-character-counter"');
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html).toContain('href="/category/text"');
-    for (const text of ["How to use", "Word counting", "Character counting", "Whitespace and lines", "Limits and local processing", "Intl.Segmenter", "1 MiB", "Related text tools"]) expect(html).toContain(text);
+    for (const text of ["How to use", "Word counting", "Character counting", "Whitespace and lines", "Limits and local processing", "Intl.Segmenter", "1 MiB", "Related tools"]) expect(html).toContain(text);
     for (const href of ["/tool/slugify", "/tool/html-text-extractor"]) expect(html).toContain(`href="${href}"`);
     await page.goto("/tool/word-character-counter", { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { level: 1, name: "Word / Character Counter", exact: true })).toBeVisible();
@@ -80,7 +80,7 @@ test("text category, discovery search, home and sitemap include the counter and 
     await expect(page).toHaveURL(/\/tool\/word-character-counter$/);
 
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(35);
+    expect(xml.match(/<loc>/g)).toHaveLength(36); expect(xml.split("<loc>https://iworkhere.space/workflows</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/tool/word-character-counter</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/category/text</loc>")).toHaveLength(2);
     expect(xml.split("<loc>https://iworkhere.space/category/developer</loc>")).toHaveLength(2);

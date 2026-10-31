@@ -11,6 +11,7 @@ function assertNoAdRegions(props: AppShellProps) {
 }
 
 const { availableCategory } = vi.hoisted(() => ({ availableCategory: vi.fn((): string[] => []) }));
+vi.mock("next/font/google", () => ({ DM_Sans: () => ({ variable: "site-font-dm-sans-test" }) }));
 vi.mock("@/module/tool/metadata", () => ({ getAvailableCategory: availableCategory }));
 vi.mock("@/component/common/ThemeProvider", () => ({ ThemeProvider: ({ children }: { children: ReactNode }) => children }));
 const { coordinator } = vi.hoisted(() => ({ coordinator: vi.fn() }));
@@ -33,13 +34,22 @@ it("composes exactly one Vercel Analytics wrapper", () => {
     expect(html).not.toContain("Show footer");
 });
 
-it("orders primary navigation as Home, All tools, Guides, registry categories, then About", () => {
+it("orders the four primary destinations as Home, All tools, Workflows, Guides with no About and no category links", () => {
     availableCategory.mockReturnValueOnce(["document", "image"]);
     renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
     const navItem = (appShell.mock.calls[0][0] as AppShellProps).navItem!;
-    expect(navItem.map(item => item.href)).toEqual(["/", "/discover", "/guide", "/category/document", "/category/image", "/about"]);
-    expect(navItem.find(item => item.href === "/guide")?.label).toBe("Guides");
-    expect(navItem.filter(item => item.href === "/about")).toHaveLength(1);
+    expect(navItem.map(item => item.href)).toEqual(["/", "/discover", "/workflows", "/guide"]);
+    expect(navItem.map(item => item.label)).toEqual(["Home", "All tools", "Workflows", "Guides"]);
+    expect(navItem.some(item => item.href === "/about")).toBe(false);
+    expect(navItem.filter(item => item.href === "/discover")).toHaveLength(1);
+});
+
+it("derives the separate category destinations from the registry with canonical titles", () => {
+    availableCategory.mockReturnValueOnce(["document", "converter", "developer"]);
+    renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
+    const categoryNavItem = (appShell.mock.calls[0][0] as AppShellProps).categoryNavItem!;
+    expect(categoryNavItem.map(item => item.href)).toEqual(["/category/document", "/category/converter", "/category/developer"]);
+    expect(categoryNavItem.map(item => item.label)).toEqual(["PDF Tools", "Converters", "Developer Tools"]);
 });
 
 it("uses the descriptive browser title for the root default metadata", () => {
@@ -95,4 +105,13 @@ it("composes exactly one reporting entry in the footer slot with a serializable 
     expect(props.source.tool).toEqual([{ id: "merge-pdf", slug: "merge-pdf", name: "Merge PDF" }]);
     expect(JSON.parse(JSON.stringify(props))).toEqual(props);
     assertNoAdRegions(appShell.mock.calls[0][0]);
+});
+
+it("applies the self-hosted DM Sans variable class to the root html element and keeps the appearance attributes", () => {
+    const html = renderToStaticMarkup(<RootLayout><h1>Workspace</h1></RootLayout>);
+    const root = html.match(/<html[^>]*>/)![0];
+    expect(root).toContain("site-font-dm-sans-test");
+    expect(root).toContain("data-palette=");
+    expect(root).toContain("data-theme=");
+    expect(html).not.toContain("fonts.googleapis.com");
 });

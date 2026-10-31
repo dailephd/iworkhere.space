@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { formatPdfBytes, PdfFileError } from "./pdfFile";
 import { inspectPdfFile, type PdfFileInspection } from "./pdfFile.client";
@@ -11,8 +12,8 @@ import { startMergePdfOperation, type PdfLibOperation } from "./pdfLib.client";
 import { verifyPdfLibOutput } from "./pdfLibVerification.client";
 
 interface MergePdfResult { url: string; filename: string; pageCount: number; size: number }
-const PANEL = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
-const SECONDARY = "material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 disabled:opacity-50";
+const PANEL = toolSurfaceClassName("work", "space-y-4");
+const SECONDARY = "tool-action-secondary";
 
 export function MergePdfTool({ toolId }: ToolComponentProp) {
     const [item, setItem] = useState<OrderedFileItem<PdfFileInspection>[]>([]);
@@ -103,10 +104,10 @@ export function MergePdfTool({ toolId }: ToolComponentProp) {
     }
     return <div className="min-w-0 space-y-4">
         <p className="text-sm text-text-muted">PDF processing stays in your browser. Your PDF is not uploaded for processing.</p>
-        <section className={PANEL} aria-labelledby="merge-source-title">
-            <h2 id="merge-source-title" className="font-semibold text-category-document">Source PDFs</h2>
+        <ToolSurface kind="work" className="space-y-4" aria-labelledby="merge-source-title">
+            <h2 id="merge-source-title" className="tool-heading">Source PDFs</h2>
             <label htmlFor="merge-source" className="block font-medium">Choose PDFs</label>
-            <input id="merge-source" ref={fileInput} type="file" multiple accept="application/pdf,.pdf" onChange={select} className="block w-full min-w-0 rounded-lg border border-input-border bg-input-bg p-2" />
+            <input id="merge-source" ref={fileInput} type="file" multiple accept="application/pdf,.pdf" onChange={select} className="tool-file-input" />
             <p className="text-sm text-text-muted">2–10 PDFs; 10 MiB per file, 25 MiB and 100 pages combined. You can add more files after choosing the first batch.</p>
             <ol aria-label="PDF merge order" className="space-y-3">{item.map((value, index) => <li key={value.id} className="min-w-0 space-y-2 rounded-lg border border-panel-border p-3">
                 <p className="break-all">{index + 1}. {value.file.name}</p>
@@ -117,20 +118,20 @@ export function MergePdfTool({ toolId }: ToolComponentProp) {
                     <button type="button" className={SECONDARY} aria-label={`Remove PDF ${index + 1}: ${value.file.name}`} onClick={() => remove(value.id)}>Remove</button>
                 </div>
             </li>)}</ol>
-        </section>
+        </ToolSurface>
         <form aria-label="Merge actions" onSubmit={merge} className={PANEL}>
             <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={item.length < 2 || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Merge PDF</button>
+                <button type="submit" disabled={item.length < 2 || selecting || processing} className="tool-action-primary">Merge PDF</button>
                 <button type="button" className={SECONDARY} onClick={reset}>Reset</button>
             </div>
             <p className="text-sm text-text-muted">Static pages only. Metadata, bookmarks, forms and signatures may not be preserved.</p>
         </form>
         {(selecting || processing) && <p role="status">{selecting ? "Inspecting PDFs…" : "Merging and verifying PDF…"}</p>}
-        {error && <p ref={alert} tabIndex={-1} role="alert" className="break-words rounded-lg border border-error-border bg-error-bg p-3 text-error-text">{error}</p>}
-        {result && <section aria-labelledby="merge-result-title" className="min-w-0 space-y-3 rounded-xl border border-result-border bg-result-bg p-4">
+        {error && <p ref={alert} tabIndex={-1} role="alert" data-tone="error" className="tool-feedback break-words">{error}</p>}
+        {result && <ToolSurface kind="result" aria-labelledby="merge-result-title">
             <h2 id="merge-result-title" ref={resultHeading} tabIndex={-1} className="font-semibold">Merged PDF ready</h2>
             <p role="status">{result.pageCount} pages · {formatPdfBytes(result.size)}</p>
-            <a href={result.url} download={result.filename} className="inline-block min-h-11 rounded-lg bg-accent px-4 py-2 text-[var(--contrast)]">Download merged PDF</a>
-        </section>}
+            <a href={result.url} download={result.filename} className="tool-action-primary">Download merged PDF</a>
+        </ToolSurface>}
     </div>;
 }

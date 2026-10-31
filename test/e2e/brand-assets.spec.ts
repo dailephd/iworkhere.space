@@ -183,7 +183,7 @@ for (const theme of ["light", "dark", "onedark"] as const) {
         await expect(mark).toHaveAttribute("aria-hidden", "true");
         await expect(mark.locator("path[data-logo-part]")).toHaveCount(4);
         await expect(navigation).toBeVisible();
-        await expect(header.getByRole("link", { name: "Search tools", exact: true })).toBeVisible();
+        await expect(header.getByRole("button", { name: "Search tools", exact: true })).toBeVisible();
         await expect(header.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
 
         const geometry = await page.evaluate(() => {
@@ -218,7 +218,8 @@ for (const theme of ["light", "dark", "onedark"] as const) {
         await page.keyboard.press("Tab");
         await expect(brand).toBeFocused();
         await page.keyboard.press("Tab");
-        await expect(navigation.getByRole("link").first()).toBeFocused();
+        // Below 1024px the first navigation stop is the Menu button; the destinations are inside it.
+        await expect(mobile ? navigation.getByRole("button", { name: "Menu", exact: true }) : navigation.getByRole("link").first()).toBeFocused();
         await testInfo.attach(`${theme}-${mobile ? "mobile" : "desktop"}-header`, {
             body: await header.screenshot(),
             contentType: "image/png",

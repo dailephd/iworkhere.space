@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { formatPdfBytes, MAX_PDF_PAGES, MAX_SPLIT_OUTPUT_GROUPS, PdfFileError } from "./pdfFile";
 import { inspectPdfFile, type PdfFileInspection } from "./pdfFile.client";
@@ -13,8 +14,8 @@ import { verifyPdfLibOutput } from "./pdfLibVerification.client";
 interface SplitPdfSource extends PdfFileInspection { file: File }
 interface SplitPdfGroup { id: string; expression: string }
 interface SplitPdfResult { id: string; url: string; filename: string; pageCount: number; size: number }
-const PANEL = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
-const SECONDARY = "material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 disabled:opacity-50";
+const PANEL = toolSurfaceClassName("work", "space-y-4");
+const SECONDARY = "tool-action-secondary";
 
 export function SplitPdfTool({ toolId }: ToolComponentProp) {
     const [source, setSource] = useState<SplitPdfSource | null>(null);
@@ -125,40 +126,40 @@ export function SplitPdfTool({ toolId }: ToolComponentProp) {
     }
     return <div className="min-w-0 space-y-4">
         <p className="text-sm text-text-muted">PDF processing stays in your browser. Your PDF is not uploaded for processing.</p>
-        <section className={PANEL} aria-labelledby="split-source-title">
-            <h2 id="split-source-title" className="font-semibold text-category-document">Source PDF</h2>
+        <ToolSurface kind="work" className="space-y-4" aria-labelledby="split-source-title">
+            <h2 id="split-source-title" className="tool-heading">Source PDF</h2>
             <label htmlFor="split-source" className="block font-medium">Choose PDF</label>
-            <input id="split-source" ref={fileInput} type="file" accept="application/pdf,.pdf" onChange={select} className="block w-full min-w-0 rounded-lg border border-input-border bg-input-bg p-2" />
+            <input id="split-source" ref={fileInput} type="file" accept="application/pdf,.pdf" onChange={select} className="tool-file-input" />
             <p className="text-sm text-text-muted">One PDF, at most 10 MiB and 100 pages. Encrypted PDFs are unsupported.</p>
             {source && <p className="break-all">{source.file.name} · {source.inspection.pageCount} pages · {formatPdfBytes(source.file.size)}</p>}
-        </section>
+        </ToolSurface>
         <form aria-label="Split output groups" onSubmit={split} className={PANEL} noValidate>
-            <h2 className="font-semibold text-category-document">Output groups</h2>
+            <h2 className="tool-heading">Output groups</h2>
             <p className="text-sm text-text-muted">Use pages such as 1-3 or 4,6. Requested order is kept; repeated pages within one group are included once. Groups may overlap.</p>
             {group.map((value, index) => <div key={value.id} className="min-w-0 space-y-2 rounded-lg border border-panel-border p-3">
                 <label htmlFor={value.id} className="block font-medium">Pages for output group {index + 1}</label>
                 <div className="flex min-w-0 flex-wrap gap-2">
-                    <input id={value.id} value={value.expression} onChange={event => edit(value.id, event.target.value)} aria-invalid={!parsed[index].ok} aria-describedby={!parsed[index].ok ? `${value.id}-error` : undefined} className="min-w-0 flex-1 rounded-lg border border-input-border bg-input-bg px-3 py-2 text-text" />
+                    <input id={value.id} value={value.expression} onChange={event => edit(value.id, event.target.value)} aria-invalid={!parsed[index].ok} aria-describedby={!parsed[index].ok ? `${value.id}-error` : undefined} className="tool-control flex-1" />
                     <button type="button" disabled={group.length === 1} aria-label={`Remove output group ${index + 1}`} onClick={() => remove(value.id)} className={SECONDARY}>Remove group</button>
                 </div>
-                {!parsed[index].ok && <p id={`${value.id}-error`} role="alert" className="text-sm text-error-text">Enter valid pages from 1 to {source?.inspection.pageCount}, using ascending ranges or comma-separated pages.</p>}
+                {!parsed[index].ok && <p id={`${value.id}-error`} role="alert" className="text-sm text-danger">Enter valid pages from 1 to {source?.inspection.pageCount}, using ascending ranges or comma-separated pages.</p>}
             </div>)}
             <button type="button" onClick={add} disabled={!source || group.length >= MAX_SPLIT_OUTPUT_GROUPS} className={SECONDARY}>Add output group</button>
             <p className="text-sm text-text-muted">Up to 20 output groups. Downloads are individual PDFs.</p>
             <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={!valid || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Split PDF</button>
+                <button type="submit" disabled={!valid || selecting || processing} className="tool-action-primary">Split PDF</button>
                 <button type="button" className={SECONDARY} onClick={reset}>Reset</button>
             </div>
         </form>
         {(selecting || processing) && <p role="status">{selecting ? "Inspecting PDF…" : "Splitting and verifying PDFs…"}</p>}
-        {error && <p ref={alert} tabIndex={-1} role="alert" className="break-words rounded-lg border border-error-border bg-error-bg p-3 text-error-text">{error}</p>}
-        {result.length > 0 && <section aria-labelledby="split-result-title" className="min-w-0 space-y-3 rounded-xl border border-result-border bg-result-bg p-4">
+        {error && <p ref={alert} tabIndex={-1} role="alert" data-tone="error" className="tool-feedback break-words">{error}</p>}
+        {result.length > 0 && <ToolSurface kind="result" aria-labelledby="split-result-title">
             <h2 id="split-result-title" ref={resultHeading} tabIndex={-1} className="font-semibold">Split PDFs ready</h2>
-            <p role="status">{result.length} PDFs verified. Download each file individually.</p>
+            <p role="status">{result.length === 1 ? "1 PDF verified" : `${result.length} PDFs verified`}. Download {result.length === 1 ? "the file" : "each file individually"}.</p>
             <ol className="space-y-3">{result.map((value, index) => <li key={value.id} className="min-w-0 space-y-2">
                 <p className="break-all">{value.filename}</p><p className="text-sm">{value.pageCount} pages · {formatPdfBytes(value.size)}</p>
-                <a href={value.url} download={value.filename} className="inline-block min-h-11 rounded-lg bg-accent px-4 py-2 text-[var(--contrast)]">Download output group {index + 1}</a>
+                <a href={value.url} download={value.filename} className="tool-action-primary">Download output group {index + 1}</a>
             </li>)}</ol>
-        </section>}
+        </ToolSurface>}
     </div>;
 }

@@ -68,6 +68,21 @@ describe("Image Resizer local lifecycle and telemetry", () => {
         expect(host.querySelector<HTMLInputElement>('input[type="number"]')?.value).toBe("");
     });
 
+    it("states the truthful quality semantics of the kept format and never offers a quality control (AUD-039)", async () => {
+        await select();
+        expect(host.querySelector<HTMLInputElement>('input[type="range"]')).toBeNull();
+        expect(host.textContent).toContain("re-encoded at a fixed quality of 92; this tool has no quality setting.");
+        expect(host.textContent).not.toContain("is lossless");
+    });
+
+    it("states that PNG output is lossless when the kept format is PNG (AUD-039)", async () => {
+        operation.format.mockResolvedValue("png");
+        await select();
+        expect(host.querySelector<HTMLInputElement>('input[type="range"]')).toBeNull();
+        expect(host.textContent).toContain("PNG output is lossless, so no quality setting applies.");
+        expect(host.textContent).not.toContain("fixed quality of 92");
+    });
+
     it("keeps unexpected browser operation failures recoverable without telemetry or query writes", async () => {
         await select(); operation.resize.mockRejectedValueOnce(new Error("private browser details")); await submit();
         expect(host.querySelector('[role="alert"]')?.textContent).toContain("unexpected browser error occurred while resizing");

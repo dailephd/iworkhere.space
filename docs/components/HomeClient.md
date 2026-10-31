@@ -69,11 +69,23 @@ The five featured tasks (`compress-pdf`, `pdf-to-image`, `images-to-pdf`, `image
 
 `src/app/page.tsx` (server) renders a compact "Practical file workflows" section (`data-workflow-section`) after the five featured tasks and before `HomeClient`. It lists the four guides from `getAllTaskGuide()` (title as a link to `/guide/<slug>` and the expected outcome). `HomeClient` is unchanged and remains the only client owner of search and the 18-tool catalog; guide records are never passed to it, the five-featured projection is unchanged, and the catalog card count stays 18.
 
-### Approved Colorfield homepage presentation (2026-10-28; implementation pending)
+### Approved Colorfield homepage presentation (2026-10-28; implemented as a visual candidate, pending user review)
 
 The user selected an adaptation of Colorfield design 03 to the **existing** homepage rather than replacement of the site layout. `docs/DESIGN.md` ("Approved homepage Colorfield adaptation") owns the binding detailed visual, copy, ordering, theme, accessibility and acceptance contract. Historical v0.4.3/v0.4.4 task-first ordering recorded above remains historical until the new candidate is implemented and verified.
 
 The prospective homepage remains server-composed from `src/app/page.tsx` plus the current `HomeClient` for category/search presentation. Keep all registered tools in the canonical sections exactly once, with a tool-specific decorative icon, registry name, and visible registry description. Distinguish the category sections with visibly colored pastel surfaces and light solid cards. Do not duplicate tool metadata, create a second search owner, or change global `SectionIsland` behavior merely to style the home page. New display order: compact coral introduction, real search, category chips, complete catalog, preserved five featured tasks, then four guides. Remove the public-facing tool/count numerals from home copy, hero and category boards; keep programmatic catalog-size assertions.
 
 The existing ToolSearch supports case-insensitive substring matching on name, description, category, and tags only. The new copy must not promise natural-language intent mapping. This is a visual/catalog-discovery change to be implemented separately, not a claim about current deployed behavior.
+
+## Typography and secondary sections (2026-10-28)
+
+The homepage uses the sitewide DM Sans face. Featured tasks and workflow guides (rendered by `src/app/page.tsx` as children of HomeClient) use `.home-support` panels with whole-card `.home-card` links and the same icon/title/description layout as the catalog; dark palettes derive boards, cards and hero from the active palette (see DESIGN.md). Data attributes, copy and destinations are unchanged.
+
+## Sitewide redesign update (Prompts 7-8, 2026-10-31)
+
+The 2026-10-28 featured-task and workflow-guide sections described above no longer render. `src/app/page.tsx` is the individual utility catalog only (no task, guide or workflow cards); `HomeClient` remains the only client owner of search and the 18-tool catalog, grouped by the seven canonical categories. Search uses the pure matcher `src/component/common/toolSearchMatch.ts`, which scores name, slug, description, category label and tags using a small fixed lexical normalization and filler-word removal (no synonyms or fuzzy matching), so it is no longer substring-only. Workflows and the Guide finder are separate header destinations (`/workflows`, `/guide`).
+
+### Board layout (P09 correction, 2026-10-31)
+
+The seven category boards render in one vertical column at every viewport width, in canonical category order (`flex flex-col gap-4` around the `data-home-board` wrappers in `HomeClient.tsx`); there is no outer multi-column board grid. The tool cards inside a board use a responsive grid (`sm:grid-cols-2 lg:grid-cols-3`: one column at 390 px, two at 768 px, three at 1440 px). Witnesses: `test/e2e/home-grid-workflow-card.spec.ts` (boards stack at 1440, 1280, 768 and 390 px) and the unchanged vertical-order assertion in `test/e2e/theme-pilot.spec.ts`. Single-tool boards (Math, Time) leave unused board width on wide screens by design.
 

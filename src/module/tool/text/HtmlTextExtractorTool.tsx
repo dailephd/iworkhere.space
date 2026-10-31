@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import type { ToolComponentProp } from "../type";
+import { ToolSurface } from "@/component/tool/ToolSurface";
 import { extractHtmlText } from "./extractHtmlText";
 import { trackEvent, captureError } from "@/module/observability";
 
@@ -10,15 +11,23 @@ export function HtmlTextExtractorTool({ toolId }: ToolComponentProp) {
     const [output, setOutput] = useState("");
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [notice, setNotice] = useState<string | null>(null);
 
     const slug = "html-text-extractor";
 
     const handleConvert = useCallback(() => {
         setError(null);
+        setNotice(null);
         setCopied(false);
+        if (input.trim().length === 0) {
+            setOutput("");
+            setError("Enter HTML to extract text.");
+            return;
+        }
         try {
             const result = extractHtmlText(input);
             setOutput(result);
+            if (result.length === 0) setNotice("No visible text was found in this HTML.");
             trackEvent("tool_executed", { toolId, slug });
         } catch (e) {
             captureError(e, { toolId, boundary: "HtmlTextExtractorTool.handleConvert" });
@@ -39,7 +48,7 @@ export function HtmlTextExtractorTool({ toolId }: ToolComponentProp) {
     }, [output, toolId]);
 
     return (
-        <div className="flex flex-col gap-4">
+        <ToolSurface kind="work" aria-label="HTML text extractor" className="flex flex-col gap-4 space-y-0">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-2">
                     <label
@@ -53,7 +62,7 @@ export function HtmlTextExtractorTool({ toolId }: ToolComponentProp) {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Paste your HTML here..."
-                        className="h-64 resize-y rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--border)] focus:outline-none"
+                        className="tool-control h-64 resize-y font-mono text-sm"
                     />
                 </div>
 
@@ -69,20 +78,23 @@ export function HtmlTextExtractorTool({ toolId }: ToolComponentProp) {
                         value={output}
                         readOnly
                         placeholder="Extracted text will appear here..."
-                        className="h-64 resize-y rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-3 font-mono text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
+                        className="tool-control h-64 resize-y font-mono text-sm"
                     />
                 </div>
             </div>
 
             {error && (
-                <p className="text-sm text-[var(--danger)]">{error}</p>
+                <p role="alert" data-tone="error" className="tool-feedback text-sm">{error}</p>
+            )}
+            {notice && (
+                <p role="status" data-tone="warning" className="tool-feedback text-sm">{notice}</p>
             )}
 
             <div className="flex gap-3">
                 <button
                     type="button"
                     onClick={handleConvert}
-                    className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--contrast)] hover:bg-[var(--accent-hover)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none"
+                    className="tool-action-primary"
                 >
                     Convert
                 </button>
@@ -90,11 +102,11 @@ export function HtmlTextExtractorTool({ toolId }: ToolComponentProp) {
                     type="button"
                     onClick={handleCopy}
                     disabled={!output}
-                    className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-alt)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                    className="tool-action-secondary"
                 >
                     {copied ? "Copied!" : "Copy"}
                 </button>
             </div>
-        </div>
+        </ToolSurface>
     );
 }

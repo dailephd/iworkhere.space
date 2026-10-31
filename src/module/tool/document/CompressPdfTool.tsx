@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { formatPdfBytes, pdfFileBasename } from "./pdfFile";
 import { inspectPdfFile, type PdfFileInspection } from "./pdfFile.client";
 import { compressPdf, compressPdfErrorMessage } from "./compressPdf.client";
 interface CompressPdfSource extends PdfFileInspection { file: File }
 interface CompressPdfResult { url: string; filename: string; size: number; savedBytes: number; percentage: number }
-const PANEL = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
-const INPUT = "block w-full min-w-0 rounded-lg border border-input-border bg-input-bg px-3 py-2 text-text";
-const SECONDARY = "material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2";
+const PANEL = toolSurfaceClassName("work", "space-y-4");
+const SECONDARY = "tool-action-secondary";
 
 export function CompressPdfTool({ toolId }: ToolComponentProp) {
     const [source, setSource] = useState<CompressPdfSource | null>(null);
@@ -63,25 +63,25 @@ export function CompressPdfTool({ toolId }: ToolComponentProp) {
     }
     return <div className="min-w-0 space-y-4">
         <p className="text-sm text-text-muted">Your PDF is processed locally in your browser. Document bytes are not uploaded for compression.</p>
-        <section className={PANEL} aria-labelledby="compress-pdf-source-title">
-            <h2 id="compress-pdf-source-title" className="font-semibold text-category-document">Source PDF</h2>
+        <ToolSurface kind="work" className="space-y-4" aria-labelledby="compress-pdf-source-title">
+            <h2 id="compress-pdf-source-title" className="tool-heading">Source PDF</h2>
             <label htmlFor="compress-pdf-source" className="block font-medium">Choose PDF</label>
-            <input id="compress-pdf-source" ref={fileInput} type="file" accept="application/pdf,.pdf" onChange={select} className={INPUT} />
+            <input id="compress-pdf-source" ref={fileInput} type="file" accept="application/pdf,.pdf" onChange={select} className="tool-file-input" />
             <p className="text-sm text-text-muted">One PDF, at most 10 MiB and 100 pages. Encrypted PDFs are unsupported.</p>
             {source && <p className="break-all">{source.file.name} · {source.inspection.pageCount} pages · {formatPdfBytes(source.bytes.length)}</p>}
-        </section>
+        </ToolSurface>
         <form aria-label="Compression actions" onSubmit={compress} className={PANEL} noValidate>
-            <h2 className="font-semibold text-category-document">Lossless structural compression</h2>
+            <h2 className="tool-heading">Lossless structural compression</h2>
             <p>Optimize PDF objects and streams without rasterizing pages or intentionally reducing image quality. Already optimized PDFs may not become smaller.</p>
-            <div className="flex flex-wrap gap-3"><button type="submit" disabled={!source || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Compress PDF</button><button type="button" className={SECONDARY} onClick={reset}>Reset</button></div>
+            <div className="flex flex-wrap gap-3"><button type="submit" disabled={!source || selecting || processing} className="tool-action-primary">Compress PDF</button><button type="button" className={SECONDARY} onClick={reset}>Reset</button></div>
         </form>
         {(selecting || processing) && <p role="status">{selecting ? "Inspecting PDF…" : "Compressing and independently verifying PDF…"}</p>}
-        {error && <p ref={alert} tabIndex={-1} role="alert" className="break-words rounded-lg border border-error-border bg-error-bg p-3 text-error-text">{error}</p>}
-        {noReduction && <section aria-labelledby="compress-pdf-no-reduction" className={PANEL}>
+        {error && <p ref={alert} tabIndex={-1} role="alert" data-tone="error" className="tool-feedback break-words">{error}</p>}
+        {noReduction && <ToolSurface kind="feedback" tone="warning" aria-labelledby="compress-pdf-no-reduction">
             <h2 id="compress-pdf-no-reduction" ref={resultHeading} tabIndex={-1} className="font-semibold">NO REDUCTION ACHIEVED</h2>
             <p role="status">This PDF is already efficiently structured for this lossless compression method. The generated version was not smaller, so the original is kept.</p>
-        </section>}
-        {result && source && <section aria-labelledby="compress-pdf-result-title" className="min-w-0 space-y-3 rounded-xl border border-result-border bg-result-bg p-4">
+        </ToolSurface>}
+        {result && source && <ToolSurface kind="result" aria-labelledby="compress-pdf-result-title">
             <h2 id="compress-pdf-result-title" ref={resultHeading} tabIndex={-1} className="font-semibold">Smaller PDF ready</h2>
             <p role="status">The smaller PDF passed independent page verification.</p>
             <dl className="grid min-w-0 gap-3 sm:grid-cols-2">
@@ -91,7 +91,7 @@ export function CompressPdfTool({ toolId }: ToolComponentProp) {
                 <div><dt>Percentage saved</dt><dd>{result.percentage.toFixed(2)}%</dd></div>
             </dl>
             <p className="break-all">{result.filename}</p>
-            <a href={result.url} download={result.filename} className="inline-block min-h-11 rounded-lg bg-accent px-4 py-2 text-[var(--contrast)]">Download compressed PDF</a>
-        </section>}
+            <a href={result.url} download={result.filename} className="tool-action-primary">Download compressed PDF</a>
+        </ToolSurface>}
     </div>;
 }

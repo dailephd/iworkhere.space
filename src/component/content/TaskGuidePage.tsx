@@ -1,3 +1,5 @@
+import { PageHeader } from "@/component/common/PageHeader";
+
 export interface TaskGuideLink {
     title: string;
     href: string;
@@ -33,7 +35,7 @@ export interface TaskGuidePageProp {
 }
 
 const LINK_CLASS = "inline-block rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring";
-const PANEL_CLASS = "min-w-0 space-y-3 rounded-xl border border-panel-border bg-panel-bg p-4 sm:p-6";
+const PANEL_CLASS = "ds-surface min-w-0 space-y-3 rounded-xl border p-4 sm:p-6";
 
 function FileLinkList({ heading, link }: { heading: string; link: { title: string; href: string }[] }) {
     return (
@@ -53,9 +55,7 @@ function FileLinkList({ heading, link }: { heading: string; link: { title: strin
 export function TaskGuidePage({ title, description, startingMaterial, expectedOutcome, reviewedOn, step, example, verification, limitation, relatedToolLink }: TaskGuidePageProp) {
     return (
         <article className="min-w-0 space-y-6">
-            <header className="space-y-3">
-                <h1 className="text-3xl font-semibold text-text">{title}</h1>
-                <p className="text-text-muted">{description}</p>
+            <PageHeader title={title} description={description}>
                 <dl className={`${PANEL_CLASS} grid gap-x-4 gap-y-2 sm:grid-cols-[auto_minmax(0,1fr)]`}>
                     <dt className="font-medium text-text">Start with</dt>
                     <dd className="text-text-muted">{startingMaterial}</dd>
@@ -65,7 +65,7 @@ export function TaskGuidePage({ title, description, startingMaterial, expectedOu
                     <dd className="text-text-muted"><time dateTime={reviewedOn}>{reviewedOn}</time></dd>
                 </dl>
                 <p className="text-sm text-text-muted">Each tool works on its own in your browser. A file you download from one tool is not passed to the next: you select it again yourself.</p>
-            </header>
+            </PageHeader>
 
             <section aria-labelledby="guide-step-title" className="min-w-0 space-y-3">
                 <h2 id="guide-step-title" className="text-xl font-semibold">Steps</h2>

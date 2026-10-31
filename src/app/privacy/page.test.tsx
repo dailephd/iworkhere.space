@@ -47,3 +47,30 @@ describe("public privacy policy", () => {
         expect(html).toContain("URLs may be kept in browser history, sent when a page is requested, or disclosed when you share a link");
     });
 });
+describe("privacy in-page navigation (AUD-034)", () => {
+    const html = renderToStaticMarkup(<PrivacyPage />);
+    const nav = html.match(/<nav aria-label="On this page"[\s\S]*?<\/nav>/)![0];
+    const target = [...nav.matchAll(/href="#([^"]+)"/g)].map((one) => one[1]);
+
+    it("lists every H2 section once, in page order, in a labelled navigation landmark", () => {
+        const heading = [...html.matchAll(/<h2 id="([^"]+)"[^>]*>([^<]+)<\/h2>/g)].map((one) => ({ id: one[1], title: one[2] }));
+        expect(heading).toHaveLength(8);
+        expect(target).toEqual(heading.map((one) => one.id));
+        expect(new Set(target).size).toBe(target.length);
+        for (const one of heading) expect(nav).toContain(`>${one.title}</a>`);
+        expect(html.match(/<nav\b/g)).toHaveLength(1);
+    });
+
+    it("gives every target a stable id, fixed-header clearance and focusability, and keeps all policy paragraphs and links", () => {
+        for (const id of target) {
+            expect(html.match(new RegExp(`id="${id}"`, "g")), id).toHaveLength(1);
+            const open = html.match(new RegExp(`<h2 id="${id}"[^>]*>`))![0];
+            expect(open).toContain('tabindex="-1"');
+            expect(open).toContain("scroll-mt-24");
+        }
+        expect(html).toContain("Last updated: October 27, 2026");
+        expect(html.match(/<section\b/g)).toHaveLength(8);
+        expect(html.match(/<p\b/g)!.length).toBe(25 + 1); // 25 original policy paragraphs at HEAD plus the "On this page" label
+        for (const url of ["https://www.cloudflare.com/privacypolicy/", "https://resend.com/legal/privacy-policy", "https://vercel.com/legal/privacy-policy", "https://neon.com/privacy-policy", "https://adssettings.google.com/", "https://www.aboutads.info/"]) expect(html).toContain(`href="${url}"`);
+    });
+});

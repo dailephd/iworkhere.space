@@ -1,6 +1,6 @@
 import { test, expect } from "./support/fixture";
 
-// The sitemap is the existing list of public routes: 5 site pages, 18 tools, 7 categories, the guide hub and 4 guides.
+// The sitemap is the existing list of public routes: 5 site pages, 18 tools, 7 categories, the Workflows hub, its 4 workflows, and the guide hub (the 4 former manual guides now redirect and are not listed).
 async function publicPath(request: import("@playwright/test").APIRequestContext): Promise<string[]> {
     const response = await request.get("/sitemap.xml");
     expect(response.ok()).toBe(true);
@@ -8,7 +8,7 @@ async function publicPath(request: import("@playwright/test").APIRequestContext)
     return [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]).pathname);
 }
 
-// Independent expectation for all 35 sitemap identities; production code keeps no second title table.
+// Independent expectation for all 36 sitemap identities; production code keeps no second title table.
 const expectedTitle: Record<string, string> = {
     "/": "Browser Tools for PDFs, Images and Text - iworkhere",
     "/discover": "All Tools - iworkhere",
@@ -40,20 +40,21 @@ const expectedTitle: Record<string, string> = {
     "/tool/json-formatter": "JSON Formatter and Validator - iworkhere",
     "/tool/word-character-counter": "Word and Character Counter - iworkhere",
     "/tool/qr-code-generator": "QR Code Generator - iworkhere",
-    "/guide": "Practical File Workflows - iworkhere",
-    "/guide/assemble-pdf-packet": "Assemble an Ordered PDF Packet - iworkhere",
-    "/guide/prepare-image-for-upload": "Prepare an Image for an Upload - iworkhere",
-    "/guide/heic-photos-to-pdf": "Turn HEIC Photos into a PDF - iworkhere",
-    "/guide/pdf-pages-for-slides": "Prepare PDF Pages for Slides - iworkhere",
+    "/workflows": "Workflows - iworkhere",
+    "/workflows/prepare-image-for-upload": "Prepare an Image for Upload - iworkhere",
+    "/workflows/heic-photos-to-pdf": "HEIC Photos to PDF - iworkhere",
+    "/workflows/assemble-pdf-packet": "Assemble a PDF Packet - iworkhere",
+    "/workflows/pdf-pages-for-slides": "PDF Pages for Slides - iworkhere",
+    "/guide": "Find the Right Tool or Workflow - iworkhere",
 };
 const notFoundTitle = "Page Not Found - iworkhere";
 
 test("every public URL has its descriptive browser title in initial HTML and the live DOM, with its own canonical path and description", async ({ page, request }) => {
     const pathList = await publicPath(request);
-    expect(pathList).toHaveLength(35);
-    expect(new Set(pathList).size).toBe(35);
+    expect(pathList).toHaveLength(36);
+    expect(new Set(pathList).size).toBe(36);
     expect([...pathList].sort()).toEqual(Object.keys(expectedTitle).sort());
-    expect(new Set(Object.values(expectedTitle)).size).toBe(35);
+    expect(new Set(Object.values(expectedTitle)).size).toBe(36);
     const descriptionList = new Set<string>();
     for (const path of pathList) {
         const html = await (await request.get(path)).text();
@@ -74,11 +75,13 @@ test("the browser title stays correct after client-side navigation, reload, hist
     await page.goto("/");
     await expect.poll(() => page.title()).toBe(expectedTitle["/"]);
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
-    for (const name of ["All tools", "About"]) {
-        await navigation.getByRole("link", { name, exact: true }).click();
-        await expect(page).toHaveURL(name === "About" ? /\/about$/ : /\/discover$/);
-        await expect.poll(() => page.title()).toBe(expectedTitle[name === "About" ? "/about" : "/discover"]);
-    }
+    await revealNavigation(page);
+    await navigation.getByRole("link", { name: "All tools", exact: true }).click();
+    await expect(page).toHaveURL(/\/discover$/);
+    await expect.poll(() => page.title()).toBe(expectedTitle["/discover"]);
+    await page.getByRole("contentinfo").getByRole("link", { name: "About", exact: true }).click();
+    await expect(page).toHaveURL(/\/about$/);
+    await expect.poll(() => page.title()).toBe(expectedTitle["/about"]);
     await page.getByRole("contentinfo").getByRole("link", { name: "Privacy Policy", exact: true }).click();
     await expect(page).toHaveURL(/\/privacy$/);
     await expect.poll(() => page.title()).toBe(expectedTitle["/privacy"]);
@@ -98,30 +101,40 @@ test("a query-bearing tool URL keeps its title and a query-free canonical", asyn
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://iworkhere.space/tool/calculator");
 });
 
-test("primary navigation is Home, All tools, Guides, every populated category in registry order, then About", async ({ page, request }) => {
+// Below 1024px every destination sits inside the Menu, so open it before reading the links.
+async function revealNavigation(page: import("@playwright/test").Page) {
+    if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
+}
+
+test("primary navigation is Home, All tools, Workflows, Guides, with the populated categories in a separate list in registry order", async ({ page, request }) => {
     const categoryPath = (await publicPath(request)).filter(path => path.startsWith("/category/"));
     expect(categoryPath).toHaveLength(7);
     await page.goto("/");
-    const hrefList = await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link").evaluateAll(list => list.map(link => link.getAttribute("href")));
-    expect(hrefList[0]).toBe("/");
-    expect(hrefList[1]).toBe("/discover");
-    expect(hrefList[2]).toBe("/guide");
-    expect(hrefList.slice(3, -1).sort()).toEqual([...categoryPath].sort());
-    expect(hrefList.at(-1)).toBe("/about");
-    expect(hrefList.filter(href => href === "/about")).toHaveLength(1);
-    expect(hrefList).toHaveLength(11);
+    await revealNavigation(page);
+    const primary = await page.locator('nav[aria-label="Primary navigation"] [data-primary-nav-list] > li > a').evaluateAll(list => list.map(link => link.getAttribute("href")));
+    expect(primary).toEqual(["/", "/discover", "/workflows", "/guide"]);
+    const category = await page.locator('nav[aria-label="Primary navigation"] [data-category-nav-list] a').evaluateAll(list => list.map(link => link.getAttribute("href")));
+    expect(category).toHaveLength(7);
+    expect([...category].sort()).toEqual([...categoryPath].sort());
+    // Hidden desktop dropdown links are not in the role tree, so count the DOM anchors: four primary plus seven categories.
+    await expect(page.locator('nav[aria-label="Primary navigation"] a')).toHaveCount(11);
 });
 
-test("About is the last primary navigation stop in keyboard order and is highlighted on its page", async ({ page }) => {
+test("Guides is the last primary link in keyboard order, the category disclosure follows it, and About is only in the footer", async ({ page }) => {
     await page.goto("/about");
+    await revealNavigation(page);
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
-    const about = navigation.getByRole("link", { name: "About", exact: true });
-    await expect(about).toHaveAttribute("aria-current", "page");
-    await about.focus();
+    await expect(navigation.locator('a[href="/about"]')).toHaveCount(0);
+    const guides = navigation.getByRole("link", { name: "Guides", exact: true });
+    await guides.focus();
     await page.keyboard.press("Tab");
-    expect(await page.evaluate(() => !!document.activeElement?.closest('nav[aria-label="Primary navigation"]'))).toBe(false);
+    // After Guides the next stop is still inside navigation: the Categories disclosure on desktop, the first category link in the Menu.
+    expect(await page.evaluate(() => !!document.activeElement?.closest('nav[aria-label="Primary navigation"]'))).toBe(true);
+    if ((page.viewportSize()?.width ?? 1280) >= 1024) await expect(page.getByRole("button", { name: "Categories", exact: true })).toBeFocused();
+    else await expect(navigation.locator('[data-category-nav-list] a').first()).toBeFocused();
     await page.keyboard.press("Shift+Tab");
-    await expect(about).toBeFocused();
+    await expect(guides).toBeFocused();
+    await expect(page.getByRole("contentinfo").getByRole("link", { name: "About", exact: true })).toHaveCount(1);
 });
 
 const expected404 = "Failed to load resource: the server responded with a status of 404 (Not Found)";

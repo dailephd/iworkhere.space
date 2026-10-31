@@ -25,7 +25,10 @@ describe("contact page", () => {
     });
 
     it("explains the channel and separates it from optional issue reporting without a dead link", () => {
-        for (const text of ["Resend", "site operator", "Report Issues", "separate system", "does not create a report", "requires JavaScript", "do not promise a reply"]) expect(html).toContain(text);
+        // Reporting is off by default here, so the page must not send visitors to an invisible footer control (AUD-033).
+        for (const text of ["Resend", "site operator", "use the form below and name the tool", "requires JavaScript", "do not promise a reply"]) expect(html).toContain(text);
+        expect(html).not.toContain("Report Issues");
+        expect(html).not.toContain("separate system");
         expect(html).not.toContain('href="#report"');
         // The only buttons are the form's own Submit and Clear message; there is no report trigger.
         expect(html.match(/<button\b/g)).toHaveLength(2);
@@ -33,13 +36,19 @@ describe("contact page", () => {
         expect(html).not.toContain("Report a problem or suggestion");
     });
 
-    it("renders the same server markup whether or not issue reporting is enabled", () => {
+    it("names the footer Report Issues control only when issue reporting is enabled, and keeps the form either way", () => {
         vi.stubEnv("NEXT_PUBLIC_SUPPORT_ENABLED", "true");
         const enabled = renderToStaticMarkup(<ContactPage />);
         vi.stubEnv("NEXT_PUBLIC_SUPPORT_ENABLED", "false");
         const disabled = renderToStaticMarkup(<ContactPage />);
-        expect(enabled).toBe(disabled);
-        expect(enabled).toContain("<form");
+        expect(enabled).toContain("Report Issues control in the footer");
+        expect(enabled).toContain("separate system");
+        expect(disabled).not.toContain("Report Issues");
+        expect(disabled).toContain("use the form below and name the tool");
+        for (const markup of [enabled, disabled]) {
+            expect(markup).toContain("<form");
+            expect(markup.match(/<button\b/g)).toHaveLength(2);
+        }
     });
 
     it("links to the Privacy Policy and the About page, and discloses no address", () => {

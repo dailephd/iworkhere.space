@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import type { ToolComponentProp } from "../type";
+import { ToolSurface } from "@/component/tool/ToolSurface";
 import { transformJson, type JsonFormatError, type JsonFormatMode } from "./jsonFormat";
 import { trackEvent, captureError } from "@/module/observability";
 
@@ -62,11 +63,11 @@ export function JsonFormatterTool({ toolId }: ToolComponentProp) {
         inputRef.current?.focus();
     }, []);
 
-    const buttonClass = "rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-alt)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50";
-    const primaryClass = "rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--contrast)] hover:bg-[var(--accent-hover)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none";
+    const buttonClass = "tool-action-secondary";
+    const primaryClass = "tool-action-primary";
 
     return (
-        <div className="flex flex-col gap-4">
+        <ToolSurface kind="work" aria-label="JSON formatter" className="flex flex-col gap-4 space-y-0">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="flex min-w-0 flex-col gap-2">
                     <label htmlFor="json-input" className="text-sm font-medium text-[var(--text)]">
@@ -82,7 +83,7 @@ export function JsonFormatterTool({ toolId }: ToolComponentProp) {
                         autoComplete="off"
                         autoCapitalize="off"
                         aria-invalid={error ? true : undefined}
-                        className="h-64 w-full resize-y rounded-xl border border-[var(--input-border)] bg-[var(--input-bg)] p-3 font-mono text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--border)] focus:outline-none"
+                        className="tool-control h-64 resize-y font-mono text-sm"
                     />
                 </div>
 
@@ -96,13 +97,13 @@ export function JsonFormatterTool({ toolId }: ToolComponentProp) {
                         readOnly
                         placeholder="Formatted or minified JSON will appear here..."
                         spellCheck={false}
-                        className="h-64 w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-3 font-mono text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none"
+                        className="tool-control h-64 resize-y font-mono text-sm"
                     />
                 </div>
             </div>
 
             <div role="alert" className="min-h-0">
-                {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
+                {error && <p data-tone="error" className="tool-feedback text-sm">{error}</p>}
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -119,6 +120,6 @@ export function JsonFormatterTool({ toolId }: ToolComponentProp) {
                     Reset
                 </button>
             </div>
-        </div>
+        </ToolSurface>
     );
 }

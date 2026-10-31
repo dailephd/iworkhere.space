@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test } from "vitest";
-import { applyAppearance, setTheme, getThemeFromDom } from "./themeRuntime.client";
+import { applyAppearance, setTheme, getThemeFromDom, THEME_INIT_SCRIPT } from "./themeRuntime.client";
 import { listThemes, listPalettes, type ColorMode } from "./themeRegistry";
 
 beforeEach(() => {
@@ -38,6 +38,20 @@ describe("theme runtime", () => {
         expect(getThemeFromDom()).toBe("system");
         expect(document.documentElement.dataset.theme).toBe("light");
         expect(document.documentElement.dataset.palette).toBe("original");
+    });
+    test.each(["system", "light", "dark"])("pre-paint script renders fixed dark for palette onedark with retained mode %s", mode => {
+        localStorage.setItem("palette", JSON.stringify("onedark")); localStorage.setItem("theme", JSON.stringify(mode));
+        new Function(THEME_INIT_SCRIPT)();
+        expect(document.documentElement.dataset.palette).toBe("onedark");
+        expect(document.documentElement.dataset.theme).toBe("onedark");
+        expect(document.documentElement.classList.contains("dark")).toBe(true);
+        expect(localStorage.getItem("theme")).toBe(JSON.stringify(mode));
+    });
+    test("pre-paint script keeps supporting legacy theme onedark", () => {
+        localStorage.setItem("theme", JSON.stringify("onedark"));
+        new Function(THEME_INIT_SCRIPT)();
+        expect(document.documentElement.dataset.theme).toBe("onedark");
+        expect(document.documentElement.dataset.palette).toBe("onedark");
     });
     test("absent DOM theme resolves default System", () => expect(getThemeFromDom()).toBe("system"));
 });

@@ -1,4 +1,3 @@
-import { getAllTaskGuide } from "../src/module/content/taskGuide";
 import { getAllTool, getAvailableCategory } from "../src/module/tool/metadata";
 
 const canonicalOrigin = "https://iworkhere.space";
@@ -12,8 +11,12 @@ export function getExpectedPublicSitemapUrls(): string[] {
     `${canonicalOrigin}/contact`,
     ...getAllTool().map(tool => `${canonicalOrigin}${tool.seo.canonicalPath}`),
     ...getAvailableCategory().map(category => `${canonicalOrigin}/category/${category}`),
+    `${canonicalOrigin}/workflows`,
+    `${canonicalOrigin}/workflows/prepare-image-for-upload`,
+    `${canonicalOrigin}/workflows/heic-photos-to-pdf`,
+    `${canonicalOrigin}/workflows/assemble-pdf-packet`,
+    `${canonicalOrigin}/workflows/pdf-pages-for-slides`,
     `${canonicalOrigin}/guide`,
-    ...getAllTaskGuide().map(guide => `${canonicalOrigin}/guide/${guide.slug}`),
   ];
 }
 

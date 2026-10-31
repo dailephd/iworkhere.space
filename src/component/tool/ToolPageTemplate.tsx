@@ -7,6 +7,8 @@ import type { ValueExample } from "@/module/tool/valueExamples";
 import type { TaskGuideLink } from "@/component/content/TaskGuidePage";
 import { ToolErrorBoundary } from "./ToolErrorBoundary";
 import { ToolExamplePanel } from "./ToolExamplePanel";
+import { PageHeader } from "@/component/common/PageHeader";
+import { getToolCategoryLabel } from "@/module/tool/category";
 
 interface ToolPageTemplateProp {
     tool: ToolDefinition;
@@ -27,47 +29,39 @@ export function ToolPageTemplate({
                                      relatedTool,
                                      taskGuideLink,
                                  }: ToolPageTemplateProp) {
-    const relatedCategory =
-        relatedTool.length > 0 && relatedTool.every((related) => related.category === relatedTool[0].category)
-            ? relatedTool[0].category
-            : undefined;
-    const relatedHeading = relatedCategory ? `Related ${relatedCategory} tools` : "Related tools";
-
     return (
         <ToolErrorBoundary key={tool.id} toolId={tool.id}>
             <AdSenseEligiblePage>
                 <section className="min-w-0 space-y-6">
-                    <header className="space-y-2">
-                        <nav aria-label="Breadcrumb" className="text-sm text-text-muted">
-                            <ol className="flex flex-wrap items-center gap-2">
-                                {breadcrumb.map((item, index) => <li key={item.label} className="flex items-center gap-2">
-                                    {index > 0 && <span aria-hidden="true">/</span>}
-                                    {item.href ? <a href={item.href} className="rounded hover:text-text">{item.label}</a> : <span aria-current="page">{item.label}</span>}
-                                </li>)}
-                            </ol>
-                        </nav>
-                        <h1 className="text-3xl font-semibold text-text">{tool.name}</h1>
-                        <p className="text-text-muted">{tool.description}</p>
-                    </header>
-                    <div>{toolUi}</div>
-                    {example && <ToolExamplePanel example={example} />}
-                    {guide && <section aria-label="Tool guide" className="min-w-0 space-y-5 rounded-xl border border-panel-border bg-panel-bg p-4 sm:p-6">
-                        <section className="space-y-2">
-                            <h2 className="text-xl font-semibold">How to use</h2>
-                            <ol className="list-decimal space-y-2 pl-5 text-text-muted">{guide.instruction.map(text => <li key={text}>{text}</li>)}</ol>
+                    <PageHeader
+                        title={tool.name}
+                        description={tool.description}
+                        breadcrumb={breadcrumb}
+                        categoryId={tool.category}
+                        categoryTitle={getToolCategoryLabel(tool.category)}
+                    />
+                    <div data-category={tool.category} data-tool-ui>{toolUi}</div>
+                    {guide ? <section aria-label="Tool guide" className="min-w-0 space-y-6">
+                        <section aria-labelledby="tool-how-to-use-title" data-tool-guide className="min-w-0 space-y-2 section-island rounded-xl border p-4 sm:p-6">
+                            <h2 id="tool-how-to-use-title" className="text-xl font-semibold">How to use</h2>
+                            <ol className="max-w-[75ch] list-decimal space-y-2 pl-5 text-text-muted">{guide.instruction.map(text => <li key={text}>{text}</li>)}</ol>
                         </section>
-                        {guide.section.map(section => <section key={section.heading} className="space-y-2">
-                            <h2 className="text-xl font-semibold">{section.heading}</h2>
-                            <p className="text-text-muted">{section.text}</p>
-                        </section>)}
-                        <section className="space-y-2">
-                            <h2 className="text-xl font-semibold">{relatedHeading}</h2>
+                        {example && <ToolExamplePanel example={example} />}
+                        {guide.section.length > 0 && <section aria-labelledby="tool-reference-title" data-tool-reference className="min-w-0 space-y-4 section-island rounded-xl border p-4 sm:p-6">
+                            <h2 id="tool-reference-title" className="text-xl font-semibold">Details and limits</h2>
+                            {guide.section.map(section => <section key={section.heading} className="space-y-2">
+                                <h3 className="text-lg font-semibold">{section.heading}</h3>
+                                <p className="max-w-[75ch] text-text-muted">{section.text}</p>
+                            </section>)}
+                        </section>}
+                        {relatedTool.length > 0 && <section aria-labelledby="tool-related-title" data-tool-related className="min-w-0 space-y-2 section-island rounded-xl border p-4 sm:p-6">
+                            <h2 id="tool-related-title" className="text-xl font-semibold">Related tools</h2>
                             <ul className="flex flex-wrap gap-3">{relatedTool.map(related => <li key={related.id}>
                                 <a href={related.seo.canonicalPath} className="inline-block rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 underline underline-offset-4">{related.name}</a>
                             </li>)}</ul>
-                        </section>
-                    </section>}
-                    {taskGuideLink && taskGuideLink.length > 0 && <section aria-labelledby="tool-task-guide-title" data-task-guide-link className="min-w-0 space-y-2 rounded-xl border border-panel-border bg-panel-bg p-4 sm:p-6">
+                        </section>}
+                    </section> : example && <ToolExamplePanel example={example} />}
+                    {taskGuideLink && taskGuideLink.length > 0 && <section aria-labelledby="tool-task-guide-title" data-task-guide-link className="min-w-0 space-y-2 section-island rounded-xl border p-4 sm:p-6">
                         <h2 id="tool-task-guide-title" className="text-xl font-semibold">Use this tool in a workflow</h2>
                         <ul className="space-y-2">{taskGuideLink.map(link => <li key={link.href} className="min-w-0">
                             <a href={link.href} className="underline underline-offset-4">{link.title}</a>

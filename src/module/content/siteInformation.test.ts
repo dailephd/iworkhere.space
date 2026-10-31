@@ -25,8 +25,12 @@ describe("site information", () => {
 
     it("keeps the Contact and Report Issues distinction and never exposes an address", () => {
         expect(site.contact.purpose).toContain("Resend");
-        expect(site.contact.reportDistinction).toContain("Report Issues");
-        expect(site.contact.reportDistinction).toContain("separate system");
+        // The footer control is named only when it is actually visible (AUD-033); otherwise the visible form is the path.
+        const withControl = getSiteInformation({ reportControlVisible: true }).contact.reportDistinction;
+        expect(withControl).toContain("Report Issues");
+        expect(withControl).toContain("separate system");
+        expect(site.contact.reportDistinction).not.toContain("Report Issues");
+        expect(site.contact.reportDistinction).toContain("use the form below");
         expect(everyString(site).join("\n")).not.toContain("@");
         expect(everyString(site).join("\n")).not.toMatch(/https?:\/\//);
     });

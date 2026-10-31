@@ -19,8 +19,12 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         const rightAdvertisingArea = page.getByRole("complementary", { name: "Right advertising area" });
         const rightBanner = page.getByText("Right banner", { exact: true });
         const footerBanner = page.getByText("Footer banner", { exact: true });
+        await expect(siteHeader.getByRole("button", { name: "Search tools", exact: true })).toBeVisible();
+        await expect(siteHeader.getByRole("link", { name: "Search tools", exact: true })).toHaveCount(0);
         if (desktop) {
-            await expect(siteHeader.getByRole("link", { name: "Search tools", exact: true })).toBeVisible();
+            await expect(navigation.getByRole("link", { name: "Home", exact: true })).toBeVisible();
+        } else {
+            await expect(siteHeader.getByRole("button", { name: "Menu", exact: true })).toBeVisible();
         }
         await expect(rightAdvertisingArea).toHaveCount(0);
         await expect(rightBanner).toHaveCount(0);
@@ -79,6 +83,8 @@ for (const route of ["/", "/discover", "/category/text", "/tool/calculator", "/t
         expect(fixedFooter).toEqual({ position: "static", anchored: true, mainEndsAboveFooter: true });
         const scroll = await page.evaluate(() => ({ y: window.scrollY, maximum: document.documentElement.scrollHeight - window.innerHeight }));
         expect(scroll.y).toBeGreaterThanOrEqual(Math.max(0, scroll.maximum - 1));
+        // Below 1024px the destinations are inside the Menu, which stays reachable because the header is fixed.
+        if (!desktop) await siteHeader.getByRole("button", { name: "Menu", exact: true }).click();
         await navigation.getByRole("link", { name: "All tools", exact: true }).click();
         await expect(page).toHaveURL(/\/discover$/);
     });

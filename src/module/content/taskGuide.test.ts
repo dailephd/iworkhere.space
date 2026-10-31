@@ -128,55 +128,61 @@ describe("task guide queries", () => {
     });
 });
 
-describe("guide routes", () => {
-    it("builds metadata with the browser-title suffix, the guide canonical path and matching descriptions", async () => {
-        const { generateMetadata } = await import("@/app/guide/[slug]/page");
-        for (const [index, slug] of SLUG.entries()) {
-            const meta = await generateMetadata({ params: Promise.resolve({ slug }) });
-            expect(meta.title).toBe(`${TITLE[index]} - iworkhere`);
-            expect(meta.alternates?.canonical).toBe(`https://iworkhere.space/guide/${slug}`);
-            expect(meta.description).toBe(getTaskGuide(slug)!.description);
-            expect(meta.openGraph?.url).toBe(`https://iworkhere.space/guide/${slug}`);
+
+describe("legacy guide routes", () => {
+    async function redirectOf(run: () => Promise<unknown>): Promise<{ digest: string } | undefined> {
+        try { await run(); } catch (error) { return error as { digest: string }; }
+        return undefined;
+    }
+
+    it("permanently redirects each former manual guide to the workflow with the same slug, from both the page and its metadata", async () => {
+        const { default: GuideDetailPage, generateMetadata } = await import("@/app/guide/[slug]/page");
+        for (const slug of SLUG) {
+            const expected = `NEXT_REDIRECT;replace;/workflows/${slug};308;`;
+            expect((await redirectOf(() => GuideDetailPage({ params: Promise.resolve({ slug }) })))?.digest, `page ${slug}`).toBe(expected);
+            expect((await redirectOf(() => generateMetadata({ params: Promise.resolve({ slug }) })))?.digest, `metadata ${slug}`).toBe(expected);
         }
-        expect(await generateMetadata({ params: Promise.resolve({ slug: "unknown" }) })).toEqual({});
     });
 
-    it("builds the hub metadata for Practical File Workflows", async () => {
+    it("keeps unknown, malformed and differently cased slugs as 404 with no metadata and no redirect", async () => {
+        const { default: GuideDetailPage, generateMetadata } = await import("@/app/guide/[slug]/page");
+        for (const slug of ["unknown", "", "ASSEMBLE-PDF-PACKET", "assemble-pdf-packet/", "../assemble-pdf-packet", "__proto__", "assemble-pdf-packet?x=1"]) {
+            const failure = await redirectOf(() => GuideDetailPage({ params: Promise.resolve({ slug }) }));
+            expect(failure?.digest ?? "", slug).toMatch(/NEXT_HTTP_ERROR_FALLBACK;404|NEXT_NOT_FOUND/);
+            expect(await generateMetadata({ params: Promise.resolve({ slug }) }), slug).toEqual({});
+        }
+    });
+
+    it("keeps the authored manual records available as source data after the public route is superseded", () => {
+        expect(getAllTaskGuide().map(guide => guide.slug)).toEqual(SLUG);
+        for (const guide of getAllTaskGuide()) {
+            expect(guide.step.length).toBeGreaterThan(0);
+            expect(guide.verification.length).toBeGreaterThan(0);
+            expect(guide.limitation.length).toBeGreaterThan(0);
+        }
+    });
+});
+
+describe("guide hub route", () => {
+    it("builds the unbranded finder title with the site suffix exactly once and the /guide canonical", async () => {
         const { metadata } = await import("@/app/guide/page");
-        expect(metadata.title).toBe("Practical File Workflows - iworkhere");
+        expect(metadata.title).toBe("Find the Right Tool or Workflow - iworkhere");
+        expect(String(metadata.title).match(/iworkhere/g)).toHaveLength(1);
         expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/guide");
         expect(String(metadata.description).length).toBeGreaterThan(50);
     });
 
-    it("returns notFound for an unsupported slug and resolves a supported one to a guide page", async () => {
-        const { default: GuideDetailPage } = await import("@/app/guide/[slug]/page");
-        await expect(GuideDetailPage({ params: Promise.resolve({ slug: "unknown" }) })).rejects.toThrow();
-        const page = await GuideDetailPage({ params: Promise.resolve({ slug: "pdf-pages-for-slides" }) }) as { props: { step: { toolLink?: { href: string } }[]; example: { toolLink: { href: string } }[]; relatedToolLink: { title: string }[] } };
-        expect(page.props.step.flatMap(step => step.toolLink ? [step.toolLink.href] : [])).toEqual(["/tool/pdf-to-image", "/tool/image-resizer"]);
-        expect(page.props.example.map(one => one.toolLink.href)).toEqual(["/tool/pdf-to-image", "/tool/image-resizer"]);
-        expect(page.props.relatedToolLink.map(one => one.title)).toEqual(["PDF to JPG / PNG", "Image Resizer"]);
-    });
-
-    it("projects each guide example from the verified value-example owner with accurate file facts", async () => {
-        const { default: GuideDetailPage } = await import("@/app/guide/[slug]/page");
-        const page = await GuideDetailPage({ params: Promise.resolve({ slug: "assemble-pdf-packet" }) }) as { props: { example: { outcome: string; sourceLink: { title: string; href: string }[]; outputLink: { title: string; href: string }[] }[] } };
-        const merge = page.props.example[1];
-        expect(merge.outcome).toContain("A1, A2, B1, B2 and B3");
-        expect(merge.outputLink[0].href).toBe("/examples/v0.4.4/merge-pdf/result.pdf");
-        expect(merge.outputLink[0].title).toMatch(/^Download result PDF: result\.pdf \(5 pages, [\d,]+ bytes\)$/);
-        expect(merge.sourceLink.map(one => one.href)).toEqual(["/examples/v0.4.4/merge-pdf/source-001.pdf", "/examples/v0.4.4/merge-pdf/source-002.pdf"]);
-        const split = page.props.example[0];
-        expect(split.outputLink.map(one => one.href)).toEqual(["/examples/v0.4.4/split-pdf/result-001.pdf", "/examples/v0.4.4/split-pdf/result-002.pdf"]);
-    });
-
-    it("renders the hub with one H1 and a link to each detail route", async () => {
+    it("renders one H1, the root choice group and plain discovery links without scripts, ads or manual-guide links", async () => {
         const { renderToStaticMarkup } = await import("react-dom/server");
         const { default: GuideHubPage } = await import("@/app/guide/page");
         const html = renderToStaticMarkup(GuideHubPage());
         expect(html.match(/<h1/g)).toHaveLength(1);
-        expect(html).toContain("Practical File Workflows");
-        for (const slug of SLUG) expect(html).toContain(`href="/guide/${slug}"`);
-        expect(html).toContain("download and then select again");
-        expect(html).not.toMatch(/adsbygoogle|<script/);
+        expect(html).toContain("Find the Right Tool or Workflow");
+        expect(html).toContain("What do you need to do?");
+        for (const label of ["Image", "PDF", "Text", "Converters", "Developer", "Math", "Time"]) expect(html).toContain(`>${label}</button>`);
+        expect(html).toContain('href="/discover"');
+        expect(html).toContain('href="/workflows"');
+        expect(html).not.toContain("/guide/");
+        expect(html).not.toMatch(/adsbygoogle|<script|type="file"|<form/);
     });
 });

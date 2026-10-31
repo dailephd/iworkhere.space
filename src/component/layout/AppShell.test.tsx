@@ -5,7 +5,7 @@ import AppShell from "./AppShell";
 import { ThemeProvider } from "@/component/common/ThemeProvider";
 
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: vi.fn() }) }));
 
 describe("AppShell", () => {
     it("omits absent banner regions and preserves the main landmark and skip target", () => {

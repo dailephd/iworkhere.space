@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { ImageSourcePanel } from "@/component/tool/image/ImageSourcePanel";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { IMAGE_FILE_ENCODING, formatImageFileBytes, validateImageFileSize, type ImageFileDimension, type ImageFileFormat } from "./imageFile";
 import { ImageFileError, inspectImageFile, readImageFileFormat } from "./imageFile.client";
@@ -13,7 +14,7 @@ import { convertImage } from "./imageConverter.client";
 type ImageConverterState = "idle" | "selected" | "processing" | "success" | "validation failure" | "processing failure";
 interface ImageConverterSource extends ImageFileDimension { file: File; format: ImageFileFormat; url: string }
 interface ImageConverterOutcome { outputBytes: number; format: ImageFileFormat; url: string; filename: string }
-const SURFACE_CLASS = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
+const SURFACE_CLASS = toolSurfaceClassName("work", "space-y-4");
 
 export function ImageConverterTool({ toolId }: ToolComponentProp) {
     const [state, setState] = useState<ImageConverterState>("idle");
@@ -134,7 +135,7 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
 
     const busy = state === "processing";
     return <div className="min-w-0 space-y-4">
-        <p className="text-sm text-accent-secondary">Processed locally in your browser. Your image is not uploaded.</p>
+        <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
         <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(280px,320px)_minmax(0,1fr)] lg:items-start">
         <div className="contents order-1 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
         <div className="order-1 min-w-0 lg:order-none">
@@ -143,10 +144,10 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
                 formattedBytes: formatImageFileBytes(source.file.size), formatLabel: IMAGE_FILE_ENCODING[source.format].label, previewUrl: source.url } : null} />
         </div>
         <form onSubmit={convert} className={`order-3 ${SURFACE_CLASS} lg:order-none`} aria-labelledby="converter-controls-title" noValidate>
-            <h2 id="converter-controls-title" className="font-semibold text-category-image">Conversion settings</h2>
+            <h2 id="converter-controls-title" className="tool-heading">Conversion settings</h2>
             <div className="space-y-2"><label htmlFor="converter-output-format" className="block font-medium">Output format</label>
                 <select id="converter-output-format" value={output ?? ""} disabled={!source || busy} onChange={event => changeOutput(event.target.value as ImageFileFormat)}
-                    className="w-full rounded-lg border border-input-border bg-input-bg px-3 py-2 text-text">
+                    className="tool-control">
                     {!source && <option value="">Choose an image first</option>}
                     {source && imageConverterOutputOptions(source.format).map(format => <option key={format} value={format}>{IMAGE_FILE_ENCODING[format].label}</option>)}
                 </select>
@@ -158,16 +159,17 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
                 <p className="text-sm">Current quality: {quality}</p>
                 <p className="text-sm text-text-muted">Lower quality may reduce visual fidelity.</p>
             </>}
+            {output && !imageConverterSupportsQuality(output) && <p className="text-sm text-text-muted">{IMAGE_FILE_ENCODING[output].label} output is lossless, so no quality setting applies.</p>}
             {output === "jpeg" && <p className="text-sm text-text-muted">Transparent pixels are placed on a white background for JPEG.</p>}
             <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={!source || busy} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !selecting ? "Converting…" : "Convert image"}</button>
-                <button type="button" onClick={reset} className="material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-4 py-2">Reset</button>
+                <button type="submit" disabled={!source || busy} className="tool-action-primary">{busy && !selecting ? "Converting…" : "Convert image"}</button>
+                <button type="button" onClick={reset} className="tool-action-secondary">Reset</button>
             </div>
             <p className="text-sm text-text-muted">The output keeps the original dimensions. Metadata preservation is not guaranteed.</p>
         </form>
         </div>
         <div className="contents order-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
-        <section aria-label="Image preview and result" data-surface={outcome?.url ? "result-stage" : "preview-stage"} className={`material-glass order-2 flex min-h-[300px] min-w-0 items-center justify-center overflow-hidden rounded-xl border ${outcome?.url ? "border-result-border bg-result-bg" : "border-preview-border bg-preview-bg"} p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6`}>
+        <ToolSurface kind={outcome?.url ? "result" : "preview"} aria-label="Image preview and result" className="order-2 flex min-h-[300px] items-center justify-center overflow-hidden p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6">
             {outcome?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={outcome.url} alt="Converted image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
@@ -175,11 +177,11 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={source.url} alt="Selected source image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
             ) : <p className="max-w-xs text-center text-sm text-text-muted">Choose an image to see its preview here. Your image stays in this browser.</p>}
-        </section>
+        </ToolSurface>
 
-        {error && <div role="alert" className="order-5 rounded-xl border border-danger bg-danger-soft p-4 text-danger lg:order-none">{error}</div>}
-        {outcome && source && <section className="material-raised order-4 min-w-0 space-y-4 rounded-xl border border-result-border bg-result-bg p-4 lg:order-none" aria-labelledby="converter-result-title" aria-live="polite">
-            <h2 id="converter-result-title" className="font-semibold text-category-image">Converted image ready</h2>
+        {error && <div role="alert" data-tone="error" className="tool-feedback order-5 lg:order-none">{error}</div>}
+        {outcome && source && <ToolSurface kind="result" className="order-4 space-y-4 lg:order-none" aria-labelledby="converter-result-title" aria-live="polite">
+            <h2 id="converter-result-title" className="tool-heading">Converted image ready</h2>
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
                 <div><dt className="text-text-muted">Source format</dt><dd>{IMAGE_FILE_ENCODING[source.format].label}</dd></div>
                 <div><dt className="text-text-muted">Output format</dt><dd>{IMAGE_FILE_ENCODING[outcome.format].label}</dd></div>
@@ -187,8 +189,8 @@ export function ImageConverterTool({ toolId }: ToolComponentProp) {
                 <div><dt className="text-text-muted">Output size</dt><dd>{formatImageFileBytes(outcome.outputBytes)} ({outcome.outputBytes} bytes)</dd></div>
                 <div><dt className="text-text-muted">Source and output dimensions</dt><dd>{source.width} × {source.height} px</dd></div>
             </dl>
-            <a href={outcome.url} download={outcome.filename} className="material-primary inline-block min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download converted image</a>
-        </section>}
+            <a href={outcome.url} download={outcome.filename} className="tool-action-primary">Download converted image</a>
+        </ToolSurface>}
         </div>
         </div>
     </div>;

@@ -4,11 +4,12 @@ import { getToolByCategory } from "@/module/tool/registry";
 import { buildCategoryMetadata } from "@/lib/seo";
 import { getToolCategoryDefinition, isToolCategory } from "@/module/tool/category";
 import Link from "next/link";
-import { getTaskGuide } from "@/module/content/taskGuide";
-import type { TaskGuideSlug } from "@/module/content/taskGuide";
+import { HomeToolIcon, HomeWorkflowIcon } from "@/app/HomeToolIcon";
+import { getOperationalWorkflow } from "@/module/workflow/registry";
+import type { WorkflowSlug } from "@/module/workflow/type";
 
-/* Which guides each category page offers. Guide titles and addresses come from the task-guide owner; other categories list none. */
-const CATEGORY_GUIDE_SLUG: Record<string, TaskGuideSlug[]> = {
+/* Which workflows each category page offers. Titles and addresses come from the workflow registry; other categories list none. */
+const CATEGORY_GUIDE_SLUG: Record<string, WorkflowSlug[]> = {
     document: ["assemble-pdf-packet", "pdf-pages-for-slides"],
     image: ["prepare-image-for-upload", "heic-photos-to-pdf"],
 };
@@ -40,14 +41,17 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
         return tool ? [{ name: tool.name, when: choice.when }] : [];
     });
 
+    // A one-tool category shows its tool first; repeating the task sentence and a one-item choice list would restate the card.
+    const isSingleTool = toolList.length === 1;
+
     const guideList = (CATEGORY_GUIDE_SLUG[category] ?? []).flatMap((slug) => {
-        const guide = getTaskGuide(slug);
-        return guide ? [{ slug: guide.slug, title: guide.title, summary: guide.expectedOutcome }] : [];
+        const workflow = getOperationalWorkflow(slug);
+        return workflow ? [{ slug: workflow.slug, title: workflow.title, summary: workflow.description, href: workflow.canonicalPath }] : [];
     });
 
     return (
-        <div className="space-y-6">
-            <div className="space-y-2">
+        <div className="space-y-6" data-category={category}>
+            <div className="space-y-2 border-l-4 border-[var(--category-color)] pl-4">
                 <h1 className="text-2xl font-semibold tracking-tight">{definition.title}</h1>
                 <p>{definition.description}</p>
             </div>
@@ -56,44 +60,57 @@ export default async function CategoryPage({ params }: CategoryPageProp) {
                 <p>No tool available in this category yet.</p>
             ) : (
                 <>
-                    <section aria-labelledby="category-guidance-title" className="space-y-3 rounded-xl border border-border bg-surface p-4">
-                        <h2 id="category-guidance-title" className="text-lg font-semibold text-[var(--text)]">Choosing a tool</h2>
-                        <p>{definition.guidance.task}</p>
-                        <ul className="list-disc space-y-1 pl-5 text-[var(--text-muted)]">
-                            {choiceList.map((choice) => (
-                                <li key={choice.name}><strong className="font-medium text-[var(--text)]">{choice.name}</strong>: {choice.when}</li>
-                            ))}
-                        </ul>
-                        <p className="text-sm text-[var(--text-muted)]"><strong className="font-medium text-[var(--text)]">Keep in mind:</strong> {definition.guidance.limitation}</p>
-                    </section>
 
-                    <section aria-labelledby="category-tool-title" className="space-y-3">
-                        <h2 id="category-tool-title" className="text-lg font-semibold text-[var(--text)]">Available tools</h2>
+                    <section aria-labelledby="category-tool-title" data-category={category} className="ds-board">
+                      <div className="ds-section space-y-3">
+                        <h2 id="category-tool-title">Available tools</h2>
                         <ul className="grid gap-3 sm:grid-cols-2">
                             {toolList.map((tool) => (
-                                <li key={tool.id} className="rounded-xl border border-border bg-surface p-4 transition-colors hover:border-[var(--accent)]">
-                                    <Link className="block space-y-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]" href={`/tool/${tool.slug}`}>
-                                        <h3 className="font-medium text-[var(--text)]">{tool.name}</h3>
-                                        <p className="text-sm text-[var(--text-muted)]">{tool.description}</p>
+                                <li key={tool.id} className="min-w-0">
+                                    <Link className="ds-card home-card flex h-full items-start gap-3 rounded-xl border p-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring" href={`/tool/${tool.slug}`}>
+                                        <HomeToolIcon slug={tool.slug} />
+                                        <div className="min-w-0">
+                                            <h3>{tool.name}</h3>
+                                            <p className="mt-1">{tool.description}</p>
+                                        </div>
                                     </Link>
                                 </li>
                             ))}
                         </ul>
+                      </div>
+                    </section>
+
+                    <section aria-labelledby="category-guidance-title" className="ds-surface space-y-3 rounded-xl border p-4">
+                        <h2 id="category-guidance-title" className="text-lg font-semibold text-[var(--text)]">{isSingleTool ? "Before you use it" : "Choosing a tool"}</h2>
+                        {!isSingleTool && <>
+                            <p>{definition.guidance.task}</p>
+                            <ul className="list-disc space-y-1 pl-5 text-[var(--text-muted)]">
+                                {choiceList.map((choice) => (
+                                    <li key={choice.name}><strong className="font-medium text-[var(--text)]">{choice.name}</strong>: {choice.when}</li>
+                                ))}
+                            </ul>
+                        </>}
+                        <p className="text-sm text-[var(--text-muted)]"><strong className="font-medium text-[var(--text)]">Keep in mind:</strong> {definition.guidance.limitation}</p>
                     </section>
 
                     {guideList.length > 0 && (
-                        <section aria-labelledby="category-workflow-title" data-category-guide className="space-y-3">
-                            <h2 id="category-workflow-title" className="text-lg font-semibold text-[var(--text)]">Step-by-step workflows</h2>
+                        <section aria-labelledby="category-workflow-title" data-category-guide data-category={category} className="ds-board">
+                          <div className="ds-section space-y-3">
+                            <h2 id="category-workflow-title">Automated workflows</h2>
                             <ul className="grid gap-3 sm:grid-cols-2">
                                 {guideList.map((guide) => (
-                                    <li key={guide.slug} className="rounded-xl border border-border bg-surface p-4">
-                                        <Link className="block space-y-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]" href={`/guide/${guide.slug}`}>
-                                            <h3 className="font-medium text-[var(--text)]">{guide.title}</h3>
-                                            <p className="text-sm text-[var(--text-muted)]">{guide.summary}</p>
+                                    <li key={guide.slug} className="min-w-0">
+                                        <Link className="ds-card home-card flex h-full items-start gap-3 rounded-xl border p-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring" href={guide.href}>
+                                            <HomeWorkflowIcon />
+                                            <div className="min-w-0">
+                                                <h3>{guide.title}</h3>
+                                                <p className="mt-1">{guide.summary}</p>
+                                            </div>
                                         </Link>
                                     </li>
                                 ))}
                             </ul>
+                          </div>
                         </section>
                     )}
                 </>

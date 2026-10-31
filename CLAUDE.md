@@ -158,9 +158,13 @@ companion keyed by existing ToolId. It is not another identity registry and must
 not enter client catalog payloads. Related IDs resolve through metadata.ts;
 generic lib/seo never imports guide data.
 
+The Guide finder is owned by `src/module/content/toolFinder.ts` (frozen decision graph that stores only ToolId and WorkflowSlug references) and `src/module/content/ToolFinderClient.tsx` (in-memory path stack, Back, Start over, focus). `src/app/guide/page.tsx` resolves targets from the registries. Search is owned by `src/component/common/ToolSearch.tsx` with the pure matcher `src/component/common/toolSearchMatch.ts`; neither holds a second tool list.
+
+The Guide finder is owned by `src/module/content/toolFinder.ts` (frozen decision graph that stores only ToolId and WorkflowSlug references) and `src/module/content/ToolFinderClient.tsx` (in-memory path stack, Back, Start over, focus). `src/app/guide/page.tsx` resolves targets from the registries. Search is owned by `src/component/common/ToolSearch.tsx` with the pure matcher `src/component/common/toolSearchMatch.ts`; neither holds a second tool list.
+
 ### Layout composition
 
-AppShell provides the responsive grid layout with slots for navigation, header and footer banners, and side panels. Navigation items are defined in src/app/navData.ts. The root layout.tsx wraps all pages in AppShell.
+AppShell provides the responsive grid layout with slots for navigation, header and footer banners, and side panels. Navigation items are defined in src/app/navData.ts (the five primary items only; layout.tsx derives the separate category items from getAvailableCategory() and getToolCategoryLabel, the canonical definition title, and passes them as categoryNavItem). HeaderSearch is the Search utility that focuses the existing #tool-search input. UtilityCard is a presentation-only whole-card link used by the Home catalog and must not import registry or category modules. The root layout.tsx wraps all pages in AppShell.
 
 ### URL state sharing
 
@@ -231,7 +235,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 - Use Tailwind classes for styling
 - Use only existing CSS variable tokens
 - Themes define palette; components consume semantic visual roles; category colors provide catalog identity
-- Theme switch changes color only
+- Themes may vary color, typography, spacing, shape, materials, decorative graphics and nonessential motion through the existing theme and shared presentation owners. They must preserve content and control order, route and processing contracts, theme persistence, responsive usability and all required accessibility checks. Theme changes must not steal focus, clear input/results or obscure controls. Identical geometry across different artistic themes is not required. (Supersedes the earlier "Theme switch changes color only" rule; 8V closeout 2026-10-31.)
 - Subtle shadow only
 - No surprise animations
 - Update `docs/DESIGN.md` before design or styling system changes
@@ -304,7 +308,7 @@ Agents must assume CI will enforce all four.
 
 ### Island/material pilot
 
-SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry stays theme-independent. See DESIGN.md for fallbacks and contrast.
+SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry may differ between artistic themes (see the Styling Rules theme rule). See DESIGN.md for fallbacks and contrast.
 
 ## Production integration policy
 
@@ -335,3 +339,13 @@ General contact and publisher content (v0.4.3): `src/module/content/` owns the t
 `src/module/contact/` owns the public general-contact contract, validation, bounded body reader, origin checks and the server-only
 Resend email sender. General contact is separate from support reporting: the support-reporting backend remains the existing v0.4.2 owner
 (`src/module/support/`). Contact message content never enters observability, and no contact database is introduced.
+
+Browser-local workflows (Prompt 6): `src/module/workflow/` owns the four workflows (prepare-image-for-upload, heic-photos-to-pdf,
+assemble-pdf-packet, pdf-pages-for-slides). `registry.ts` is the only source of workflow identity and status; `type.ts` is the frozen public
+request/result contract; `runner.client.ts` is the single dispatcher and orchestrates stages; `adapters.client.ts` is the only bridge to the
+existing image, HEIC, PDF.js, pdf-lib and QPDF owners, which keep their limits and are reused, never copied. `WorkflowClient.tsx` alone owns the
+run lifecycle (one AbortController and generation per run, result object URLs revoked on edit, reset and unmount); the three `*Form.tsx` files own
+fields, ordering and request construction only. Packet assembly is the additive `assemble` operation of the existing pdf-lib worker
+(`pdfLib.workerType.ts`, `pdfLib.client.ts`, `pdfLib.worker.ts`); do not add a second PDF worker or engine, and never rasterize PDF pages to build a
+PDF. A failed or cancelled run returns `outputs: []` and a success requires an independent re-read of the final output. File bytes, names and page
+mappings stay in browser memory and local Blob URLs: no upload, storage, query string or telemetry. See docs/architecture.md and docs/DESIGN.md.

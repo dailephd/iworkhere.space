@@ -102,7 +102,7 @@ export function ToolExamplePanel({ example }: ToolExamplePanelProp) {
     const headingId = `${example.id}-heading`;
 
     return (
-        <section aria-labelledby={headingId} className="min-w-0 space-y-5 rounded-xl border border-panel-border bg-panel-bg p-4 sm:p-6">
+        <section aria-labelledby={headingId} className="min-w-0 space-y-5 section-island rounded-xl border p-4 sm:p-6">
             <div className="space-y-2">
                 <h2 id={headingId} className="text-xl font-semibold">Worked example</h2>
                 <p className="text-text">{example.task}</p>

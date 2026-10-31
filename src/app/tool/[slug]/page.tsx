@@ -8,6 +8,7 @@ import { getToolGuide } from "@/module/tool/guide";
 import { getValueExample } from "@/module/tool/valueExamples";
 import { getToolBreadcrumb, getToolByIdList } from "@/module/tool/metadata";
 import { getTaskGuideForTool } from "@/module/content/taskGuide";
+import { getOperationalWorkflow } from "@/module/workflow/registry";
 
 interface ToolPageProp {
     params: Promise<{ slug: string }>;
@@ -33,7 +34,10 @@ export default async function ToolPage({ params }: ToolPageProp) {
             example={getValueExample(tool.id)}
             breadcrumb={getToolBreadcrumb(tool)}
             relatedTool={getToolByIdList(guide?.relatedToolId ?? [])}
-            taskGuideLink={getTaskGuideForTool(tool.id).map(taskGuide => ({ title: taskGuide.title, href: `/guide/${taskGuide.slug}`, summary: taskGuide.expectedOutcome }))}
+            taskGuideLink={getTaskGuideForTool(tool.id).flatMap(taskGuide => {
+                const workflow = getOperationalWorkflow(taskGuide.slug);
+                return workflow ? [{ title: workflow.title, href: workflow.canonicalPath, summary: workflow.description }] : [];
+            })}
             toolUi={
                 <ToolClientFrame
                     toolId={tool.id}

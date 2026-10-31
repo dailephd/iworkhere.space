@@ -13,12 +13,12 @@ test("JSON Formatter route, SEO, breadcrumb, guide and related links are server-
     expect(html).toContain('href="/category/developer"');
     for (const text of ["How to use", "Strict JSON", "RFC 8259", "Your values are not changed", "1 MiB", "is processed in this browser and is not uploaded"]) expect(html).toContain(text);
     for (const href of ["/tool/html-text-extractor", "/tool/slugify"]) expect(html).toContain(`href="${href}"`);
-    expect(html).toContain("Related text tools");
+    expect(html).toContain("Related tools");
     expect(html).not.toContain("Related developer tools");
     await page.goto("/tool/json-formatter", { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { level: 1, name: "JSON Formatter / Validator", exact: true })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Developer" })).toHaveAttribute("href", "/category/developer");
-    await expect(page.getByRole("heading", { level: 2, name: "Related text tools", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Related tools", exact: true })).toBeVisible();
     await expect(page.getByRole("main").getByRole("link", { name: /Slugify/ }).first()).toHaveAttribute("href", "/tool/slugify");
 });
 
@@ -92,7 +92,7 @@ test("developer category, discovery search, home chip and sitemap include JSON F
     await expect(page.locator('a[data-category="developer"][href="/category/developer"]')).toHaveCount(1);
 
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(35);
+    expect(xml.match(/<loc>/g)).toHaveLength(36); expect(xml.split("<loc>https://iworkhere.space/workflows</loc>")).toHaveLength(2);
     for (const route of ["/tool/json-formatter", "/category/developer"]) expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);
     expect((await request.get("/category/unknown")).status()).toBe(404);

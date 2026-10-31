@@ -625,11 +625,20 @@ registry and runtime ownership.
 
 ---
 
+## Sitewide navigation and Home composition (Prompt 2 of 9, CURRENT on the local candidate)
+
+- `src/app/navData.ts` owns the five primary `NavItem` definitions. `src/app/layout.tsx` derives the separate category `NavItem[]` from `getAvailableCategory()` and `getToolCategoryLabel` (now the canonical definition title) and passes both arrays to `AppShell` (`navItem`, optional `categoryNavItem`) and on to `Header`.
+- `VerticalNav` (client) keeps the nav landmark and gains optional `categoryItem`: the desktop Categories disclosure and the mobile Menu overlay are component-local state; no second routing mechanism. `HeaderSearch` (new, client, `src/component/layout/`) is the generic Search utility targeting the existing `#tool-search` input. `ToolSearch` only gains the hash-triggered focus handoff.
+- `src/component/common/UtilityCard.tsx` (new) is a presentation-only whole-card Link taking `href`, `title`, `description`, `categoryId` and `categoryTitle`; it imports no registry, category or workflow module. `HomeClient` maps registry data into it.
+- `src/app/workflows/page.tsx` is a Server Component that lists the registry's four workflows as operational links (Prompt 6 made all four operational); a coming-soon section renders only for a non-operational registry entry. It processes nothing; see "Workflow runtime (Prompt 5)".
+- `sitemap.ts` and `script/publicRouteInventory.ts` add the /workflows hub together (36 URLs) and the operational workflow detail URLs: one with Prompt 5 (37 URLs) and four with Prompt 6 (40 URLs). `sitemap.ts` is registry-driven; the inventory keeps its own independent literal list.
+
 ## Navigation wiring
 
 - `NavItem` type in `src/component/layout/type.ts` includes optional `href`
 - `navData.ts` defines items with real route hrefs: Home (`/`), Discover
   (`/discover`)
+- (Superseded by the Prompt 2 section above for the header: five primary items plus a separate category list.)
 - `VerticalNav` is a Client Component that renders `Link` from `next/link` for
   items with `href`
 - Active state determined by `usePathname()` match against `href`
@@ -817,3 +826,46 @@ Status: implemented. No new structural node: the registry → metadata → route
 ## v0.4.4 Batch 5 implementation status (2026-10-27)
 
 The task-guide node described above is implemented locally on `feature/v0.4.4-site-quality`: `src/module/content/taskGuide.ts` ([spec](modules/TaskGuide.md)), `src/app/guide/page.tsx`, `src/app/guide/[slug]/page.tsx`, and the presentation-only `src/component/content/TaskGuidePage.tsx` ([spec](components/TaskGuidePage.md)). The home page, document and image category pages, tool pages (`taskGuideLink`), navigation and sitemap compose it as planned (35 canonical URLs, 11 navigation links). Dependency direction is unchanged: `app` routes import `module/content`, `module/tool` and the component; the component imports no module; `lib/seo` imports nothing from content. `ToolPageTemplate` takes only a type-only import of `TaskGuideLink`.
+
+## Workflow runtime (Prompt 5)
+
+Status: first workflow IMPLEMENTED on the local candidate in Prompt 5; the other three became operational in Prompt 6 (see "Multi-file workflows (Prompt 6)" below).
+
+- `src/module/workflow/type.ts` owns the frozen public contract (WorkflowSlug, WorkflowRequest, WorkflowProgress, WorkflowArtifact, WorkflowCheck, WorkflowFailure, WorkflowRunResult, WorkflowRunOption). It declares no functions.
+- `src/module/workflow/registry.ts` is the single source of workflow identity and status: exactly four slugs in a fixed order, all operational since Prompt 6. It is distinct from the tool registry.
+- `src/module/workflow/runner.client.ts` exports `runWorkflow(request, option)` and `inspectWorkflowSource(file)`. Dispatch is an explicit switch on slug over all four workflows (the Prompt 5 "not available yet" path no longer exists). The first workflow runs validate, inspect, convert, resize, compress, verify and complete with one central encode counter capped at 12, abort checkpoints between non-interruptible canvas operations, and independent verification of the final blob from its own bytes (sniffed format, decoded width and height, byte length, pixel limit). A compliant source is returned unchanged. No compliant candidate yields UNMET_REQUIREMENT with measured checks and no output.
+- `src/module/workflow/adapters.client.ts` is the only bridge to the existing processors: `src/module/tool/image/` (convertImage, resizeImage, compressImage, decodeImageFile, readImageFileFormat, the imageFile limits and the HEIC worker client) and, since Prompt 6, `src/module/tool/document/` (PDF inspection, the pdf-lib client, the PDF.js renderer and QPDF compression). Those processors are unchanged except for the additive `assemble` operation. Adapters map their errors to frozen failure codes and never forward unexpected error text.
+- `src/module/workflow/WorkflowClient.tsx` owns the first workflow's form, a monotonic generation token, the AbortController and the result object URLs (revoked on edit, new file, reset and unmount) for every workflow. `src/component/workflow/StageStepper.tsx` is display-only. `src/app/workflows/[slug]/page.tsx` composes the route, uses `dynamicParams = false` and `generateStaticParams` from operational workflows, and 404s every other slug.
+- No API route, upload, storage key or telemetry event is added. Search, guides and tool registry are untouched.
+
+### Multi-file workflows (Prompt 6)
+
+Status: IMPLEMENTED on the local candidate (unreleased, uncommitted). All four workflows are operational through the one existing dispatcher; there is no second runner, registry or route builder.
+
+- `runWorkflow` dispatches on the slug to `runPrepareImage`, `runHeicToPdf`, `runPacket` or `runSlides`. The three new runs share `createRunContext`, which takes stage order and count from the registry, emits progress, turns an abort checkpoint, an `AbortError` or an aborted signal into CANCELLED, and turns every other failure into one typed `WorkflowFailure` with `outputs: []`. A run succeeds only after the final output is re-read and inspected independently of the code that wrote it.
+- HEIC photos to PDF: validate (1 to 20 files, 25 MiB each and together, JPEG quality on the existing 10 to 100 step 5 scale), inspect and convert each photo through the existing HEIC worker contract (`startHeicOperation`), measure each encoded blob from its own bytes, then place one image per page with the existing `startImagesToPdfOperation`. The PDF is re-read with the PDF.js document reader; page count and each page's size and rotation must match.
+- Assemble PDF packet: validation and inspection of every source (`inspectPdfFile` for PDFs, the existing format sniffing and decode for JPEG and PNG), page references checked against real page counts, public source ids mapped to worker-local ids `s0`, `s1`, ... in first-use order (file names never reach the worker), assembly by the new `assemble` operation, optional QPDF compression through the existing `compressPdf` (skipped above its 10 MiB boundary, kept as the verified uncompressed packet when it does not shrink it, a failure when its own verification fails), and a final inspection of whichever bytes are returned.
+- PDF pages for slides: validation (1 to 20 unique pages, DPI 72/150/300, JPEG fraction 0.50 to 1.00, optional byte limit), `inspectPdfFile`, page existence check, rendering by the existing `convertPdfToImages` (no second renderer), and a per-image check of page identity, sniffed format, decoded size against the DPI-scaled page size (within one pixel) and the optional byte limit. Any missed limit returns no image at all.
+- The pdf-lib worker boundary gains one additive discriminant, `assemble` (`PdfLibAssembleRequest` with `PdfPacketSource` and `PdfPacketPageRef` in `pdfLib.workerType.ts`; `startAssemblePdfOperation` in `pdfLib.client.ts`; the handler in `pdfLib.worker.ts`). `readPdfLibRequest` validates it strictly (distinct ids of 1 to 64 letters, digits, `_` or `-`; at most 10 PDFs and 20 images; 25 MiB in total; PDF header; image signature, declared kind and size; 1 to 100 page references to known ids; one-based integer pages, image pages only 1) and the worker revalidates page bounds against the real documents. It loads each referenced PDF once through the existing strict loader, copies pages with `copyPages` in array order (a repeated reference yields a fresh page), embeds JPEG and PNG with `embedJpg` and `embedPng` and reuses the existing save, transfer, timeout and cancellation path. The foundation, merge, split and images-to-pdf operations and their limits are unchanged, and no PDF page is ever rasterized to build a packet.
+- UI ownership: `WorkflowClient.tsx` keeps the single generation token, AbortController and result object URLs (one per output, revoked on edit, reset and unmount). `HeicPhotosToPdfForm.tsx`, `PdfPacketForm.tsx` and `PdfPagesForSlidesForm.tsx` own fields, ordering and request construction only and report a typed draft request or a hint; they never process, download or hold a URL.
+- Known limits recorded honestly: Firefox and Safari engines are not exercised (the Playwright projects are Chromium); the PDF dependency still recovers a damaged cross-reference table as it does for merge and split; a packet whose output would exceed 25 MiB fails with the worker's rejected-response message rather than a size-specific code.
+
+## Interactive Guide finder and legacy Guide redirects (Prompt 7)
+
+Status: IMPLEMENTED on the local candidate (unreleased, uncommitted).
+
+- `src/module/content/toolFinder.ts` is the only owner of the authored decision graph: 28 frozen nodes (the root `start`, five task questions and 22 recommendations), `GuideTarget` references by `ToolId` or `WorkflowSlug`, `getAllGuideNode` and `getGuideNode`. It stores no names, paths, categories or capabilities.
+- `src/app/guide/page.tsx` (Server Component) owns the route metadata ("Find the Right Tool or Workflow", canonical `/guide`) and resolves every recommendation: tools through `getToolByIdList` and their `seo.canonicalPath`, workflows through `getOperationalWorkflow` and `canonicalPath`. A missing or non-operational target throws; it is never silently dropped. The resolved plain data goes to `src/module/content/ToolFinderClient.tsx`.
+- `ToolFinderClient` (client) owns only the in-memory path stack, Back, Start over, focus and the polite announcement. It imports graph types only, makes no network call, uses no storage and no URL state, and does not import any processor.
+- `src/app/guide/[slug]/page.tsx` no longer renders a guide. For exactly the four former slugs it issues `permanentRedirect` (HTTP 308) to the operational `/workflows/<slug>` from both `generateMetadata` and the page, so no obsolete self-canonical HTML exists; every other slug is `notFound`. `taskGuide.ts`, `TaskGuidePage.tsx` and the example assets remain unchanged as historical source data (their route-level projection code was removed with the old page).
+- Tool and category pages link directly to the workflow routes through `getOperationalWorkflow`, using the existing task-guide relation only to decide which tools and categories participate. `src/app/sitemap.ts` and `script/publicRouteInventory.ts` drop the four redirecting URLs: 36 canonical URLs (5 base, 18 tools, 7 categories, `/workflows`, 4 workflow details, `/guide`).
+- Resolved in Prompt 8: `src/app/workflows/[slug]/page.tsx` no longer links to its own redirecting `/guide/<slug>` URL; it links to `/guide` as "Find another tool or workflow", and `src/app/workflows/page.tsx` describes the finder instead of manual guides.
+
+### Search owner and projection (Prompt 8)
+
+- `src/component/common/toolSearchMatch.ts` is a pure matcher over display-ready items (name, slug, description, canonical category label, category id, registered tags). `ToolSearch` (client) owns the query and tag state, renders the labelled input, one tag `<select>`, a polite atomic status region and the single result list. Home passes its category entries and 18-card catalog as `idleContent`, shown only while the query and tag are blank; `/discover` renders the same component with results first and the category overview after.
+- The `categoryLabel` on each `ToolSearchItem` comes from `getToolCategoryLabel` in the Server Component projections (`src/app/page.tsx`, `src/app/discover/page.tsx`). No new registry, route, storage key or telemetry event is added; the query never leaves the browser.
+
+## Theme ownership and variation (8V closeout, 2026-10-31)
+
+Theme ownership stays with `src/style/theme.css` (palette tokens and art-direction variables) and `src/app/global.css` (shared presentation). Themes may vary color, typography, spacing, shape, materials, decorative graphics and nonessential motion through those owners and the existing shared components. They must preserve content and control order, route and processing contracts, theme persistence, responsive usability and all required accessibility checks. Theme changes must not steal focus, clear input/results or obscure controls. Identical geometry across different artistic themes is not required. This supersedes the earlier "theme switch changes color only" rule. At 390x844 the first catalog card on Home must lie fully inside the first viewport in all 13 appearances (asserted in `test/e2e/sitewide-theme-art-direction.spec.ts`).

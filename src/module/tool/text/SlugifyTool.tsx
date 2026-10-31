@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import type { ToolComponentProp } from "../type";
+import { ToolSurface } from "@/component/tool/ToolSurface";
 
 export function SlugifyTool({ toolId }: ToolComponentProp) {
     const [value, setValue] = useState("");
+    const slug = slugify(value);
 
     return (
-        <div className="space-y-2">
+        <ToolSurface kind="work" aria-label="Slugify text">
             <label htmlFor="slugify-input" className="block text-sm font-medium text-[var(--text)]">
                 Text
             </label>
@@ -16,10 +18,14 @@ export function SlugifyTool({ toolId }: ToolComponentProp) {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="Enter text"
-                className="w-full rounded-xl border border-[var(--input-border)] bg-[var(--input-bg)] px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-muted)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
+                className="tool-control"
             />
-            <output>{slugify(value)}</output>
-        </div>
+            {slug && <div className="space-y-1">
+                <p id="slugify-result-label" className="block text-sm font-medium text-[var(--text)]">Generated slug</p>
+                <output htmlFor="slugify-input" aria-labelledby="slugify-result-label" className="tool-result block break-all">{slug}</output>
+            </div>}
+            {value && !slug && <p role="status" className="tool-feedback text-sm">No slug was generated. Slugify keeps only ASCII letters and numbers, so try input that includes some.</p>}
+        </ToolSurface>
     );
 }
 

@@ -1,4 +1,4 @@
-﻿import { test as base, expect, type Locator, type Page, type Request } from "@playwright/test";
+import { test as base, expect, type Locator, type Page, type Request } from "@playwright/test";
 import { getConsoleFailure } from "./support/browserDiagnostic";
 
 // Same guarantees as ./support/fixture (no page errors, console errors, hydration diagnostics or advertising requests), with one
@@ -88,16 +88,17 @@ test("About renders the publisher information, links and metadata with no advert
     expect(await noHorizontalOverflow(page)).toBe(true);
 });
 
-test("About is reachable from the primary navigation by keyboard", async ({ page }) => {
+test("About is reachable from the footer by keyboard and is absent from the primary navigation", async ({ page }) => {
     await page.goto("/");
-    const about = page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "About", exact: true });
+    if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
+    await expect(page.getByRole("navigation", { name: "Primary navigation" }).locator('a[href="/about"]')).toHaveCount(0);
+    const about = actions(page).getByRole("link", { name: "About", exact: true });
     await expect(about).toHaveAttribute("href", "/about");
     await about.focus();
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/about$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("About iworkhere.space");
-    // The footer group does not gain an About row.
-    await expect(actions(page).getByRole("link", { name: "About" })).toHaveCount(0);
+    await expect(footer(page).locator('a[href="/about"]')).toHaveCount(1);
 });
 
 test("Contact renders one H1, the form, metadata and a privacy path, and discloses no address", async ({ page, request }) => {
@@ -118,7 +119,7 @@ test("Contact renders one H1, the form, metadata and a privacy path, and disclos
 
 test("sitemap lists About and Contact exactly once and no API route", async ({ request }) => {
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(35);
+    expect(xml.match(/<loc>/g)).toHaveLength(36);
     expect(xml.match(/<loc>https:\/\/iworkhere\.space\/about<\/loc>/g)).toHaveLength(1);
     expect(xml.match(/<loc>https:\/\/iworkhere\.space\/contact<\/loc>/g)).toHaveLength(1);
     expect(xml).not.toContain("/api/");
@@ -337,19 +338,19 @@ test("contact works the same with reporting disabled or enabled and adds no seco
 
 // --- Footer ------------------------------------------------------------------------------------
 
-test("the expanded footer lays out Contact Us, Report Issues (when enabled) and Privacy Policy in DOM and visual order on one row", async ({ page }) => {
+test("the expanded footer lays out About, Contact Us, Report Issues (when enabled) and Privacy Policy in DOM and visual order on one row", async ({ page }) => {
     await page.goto("/contact");
     await expect(footer(page)).toHaveCount(1);
     await expect(page.locator("footer")).toHaveCount(1);
     await expect(actions(page)).toHaveCount(1);
-    const expected = supportEnabled ? ["Contact Us", "Report Issues", "Privacy Policy"] : ["Contact Us", "Privacy Policy"];
+    const expected = supportEnabled ? ["About", "Contact Us", "Report Issues", "Privacy Policy"] : ["About", "Contact Us", "Privacy Policy"];
 
     // DOM order: the children of the one group, by their visible text.
     const domOrder = await actions(page).evaluate(group => [...group.children].map(child => (child as HTMLElement).innerText.trim()));
     expect(domOrder).toEqual(expected);
 
     // Visual order: strictly increasing lefts on one shared row (desktop); on narrow screens items may wrap but never reorder.
-    const boxes = [await geometry(contactLink(page))];
+    const boxes = [await geometry(footer(page).getByRole("link", { name: "About", exact: true })), await geometry(contactLink(page))];
     if (supportEnabled) boxes.push(await geometry(reportButton(page)));
     boxes.push(await geometry(privacyLink(page)));
     for (let index = 1; index < boxes.length; index += 1) {

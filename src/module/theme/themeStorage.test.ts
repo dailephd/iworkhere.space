@@ -34,6 +34,26 @@ describe("appearance storage", () => {
     test("preserves the existing One Dark preference", () => {
         storeTheme("onedark"); expect(loadAppearance()).toEqual({ palette: "onedark", mode: "dark" });
     });
+    test.each(["system", "light", "dark"] as const)("One Dark keeps the retained ordinary mode %s in storage and on load", mode => {
+        storeAppearance({ palette: "oxblood", mode });
+        storeAppearance({ palette: "onedark", mode });
+        expect(localStorage.getItem("palette")).toBe(JSON.stringify("onedark"));
+        expect(localStorage.getItem("theme")).toBe(JSON.stringify(mode));
+        expect(loadAppearance()).toEqual({ palette: "onedark", mode });
+        storeAppearance({ palette: "cobalt", mode: loadAppearance().mode });
+        expect(loadAppearance()).toEqual({ palette: "cobalt", mode });
+    });
+    test("legacy theme onedark with an ordinary or absent palette loads One Dark with the conservative dark mode", () => {
+        storeTheme("onedark"); storage.set("palette", "amber");
+        expect(loadAppearance()).toEqual({ palette: "onedark", mode: "dark" });
+    });
+    test("palette onedark without a usable mode falls back to dark", () => {
+        storage.set("palette", "onedark");
+        expect(loadAppearance()).toEqual({ palette: "onedark", mode: "dark" });
+        storage.set("theme", 42);
+        expect(loadAppearance()).toEqual({ palette: "onedark", mode: "dark" });
+        expect(localStorage.getItem("theme")).toBeNull();
+    });
     test("invalid palette does not discard a valid mode", () => {
         storage.set("palette", "unknown"); storeTheme("dark");
         expect(loadAppearance()).toEqual({ palette: "original", mode: "dark" });

@@ -7,7 +7,7 @@ test("verification is available while ads and telemetry remain disabled", async 
     await expect(page.locator('meta[name="google-adsense-account"]')).toHaveAttribute("content", "ca-pub-7976885058339852");
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
     await expect(page.getByText("Footer banner", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("complementary", { name: "Right advertising area" })).toHaveCount(0);
     expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
