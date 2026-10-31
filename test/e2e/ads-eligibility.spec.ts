@@ -1,5 +1,15 @@
+import type { Page } from "@playwright/test";
 import { expect, test } from "./support/fixture";
 import { getConsoleFailure } from "./support/browserDiagnostic";
+
+/* Categories live in the header Categories disclosure (desktop) or the Menu panel (narrow screens), not in the always-visible primary links. */
+async function openDeveloperCategory(page: Page): Promise<void> {
+    const link = page.locator('[data-category-nav-list] a[href="/category/developer"]');
+    const menu = page.getByRole("button", { name: "Menu", exact: true });
+    if (await menu.isVisible()) await menu.click();
+    if (!(await link.isVisible())) await page.getByRole("button", { name: "Categories", exact: true }).click();
+    await link.click();
+}
 
 const enabledTestMode = process.env.E2E_ADS_ENABLED === "true";
 
@@ -38,7 +48,7 @@ test("disabled mode emits no advertising on tools, navigation pages or errors", 
     await page.goto("/tool/json-formatter");
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
 
     const privacyResponse = await request.get("/privacy");
@@ -55,7 +65,7 @@ test("disabled mode emits no advertising on tools, navigation pages or errors", 
     await expect(page.getByRole("heading", { name: "Tool inputs and local processing" })).toBeVisible();
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
     await expect(page.locator('aside[aria-label*="advertising area"]')).toHaveCount(0);
     await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
     expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
@@ -92,7 +102,7 @@ test("preview deployment denies advertising on valid tools even with the enabled
     await expect(page.getByLabel("JSON input")).toBeVisible();
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
     await expect(page.locator('aside[aria-label*="advertising area"]')).toHaveCount(0);
     await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
     expect(await page.evaluate(() => window.adsbygoogle)).toBeUndefined();
@@ -101,7 +111,7 @@ test("preview deployment denies advertising on valid tools even with the enabled
     await page.goto("/tool/word-character-counter");
     await expect(page.getByLabel("Text", { exact: true })).toBeVisible();
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
 
     for (const [route, status] of [["/", 200], ["/privacy", 200], ["/tool/__f02-missing-tool", 404], ["/__f02-missing-route", 404]] as const) {
         const response = await request.get(route);
@@ -181,7 +191,7 @@ test("enabled mode limits manual ads to registered tool pages across client navi
     expect(eligibleHtml).toContain('href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7976885058339852"');
     expect(eligibleHtml).toContain('data-ad-slot="4100977160"');
     expect(eligibleHtml).toContain('data-ad-slot="2496999884"');
-    expect(eligibleHtml.match(/Advertisement/g)).toHaveLength(2);
+    expect(eligibleHtml.match(/Advertisements/g)).toHaveLength(2);
 
     const privacyResponse = await request.get("/privacy");
     expect(privacyResponse.status()).toBe(200);
@@ -215,7 +225,7 @@ test("enabled mode limits manual ads to registered tool pages across client navi
     await expect(page.getByRole("heading", { name: "Privacy Policy", level: 1 })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Tool inputs and local processing" })).toBeVisible();
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
     await expect(page.locator('aside[aria-label*="advertising area"]')).toHaveCount(0);
     await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
     await expect(page.locator('script[src*="adsbygoogle.js"]')).toHaveCount(1);
@@ -227,10 +237,10 @@ test("enabled mode limits manual ads to registered tool pages across client navi
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 
     const initialInitializationCount = await page.evaluate(() => window.__adInitializationCount);
-    await page.locator('nav[aria-label="Primary navigation"] a[href="/category/developer"]').click();
+    await openDeveloperCategory(page);
     await expect(page).toHaveURL(/\/category\/developer$/);
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
-    await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => window.__adInitializationCount)).toBe(initialInitializationCount);
     expect(await page.evaluate(() => window.__adScriptLoadCount)).toBe(1);
     expect(await page.evaluate(() => window.adsbygoogle)).toBeDefined();
@@ -242,7 +252,7 @@ test("enabled mode limits manual ads to registered tool pages across client navi
     await expect.poll(() => page.evaluate(() => window.__adInitializationCount)).toBe(initialInitializationCount + perPageInitializationCount);
 
     const secondPageInitializationCount = await page.evaluate(() => window.__adInitializationCount);
-    await page.locator('nav[aria-label="Primary navigation"] a[href="/category/developer"]').click();
+    await openDeveloperCategory(page);
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
     await page.locator('main a[href="/tool/json-formatter"]').click();
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(2);
@@ -323,7 +333,7 @@ test("tool render failures remove ads atomically and retry and navigation recove
     };
     const expectNoFrame = async () => {
         await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
-        await expect(page.getByText("Advertisement", { exact: true })).toHaveCount(0);
+        await expect(page.getByText("Advertisements", { exact: true })).toHaveCount(0);
         await expect(page.locator('aside[aria-label="Right advertising area"]')).toHaveCount(0);
         await expect(page.locator("main .mb-6.border-y")).toHaveCount(0);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);

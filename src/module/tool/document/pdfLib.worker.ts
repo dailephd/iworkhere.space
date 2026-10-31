@@ -1,4 +1,4 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, type PDFImage } from "pdf-lib";
 import { readPdfLibRequest, type PdfLibResponse } from "./pdfLib.workerType";
 import { MAX_AGGREGATE_PAGES, validatePdfBytes, validatePdfPageCount } from "./pdfFile";
 import { validateImageFileDimension } from "../image/imageFile";
@@ -28,6 +28,36 @@ scope.onmessage = async event => {
             for (const source of request.image) {
                 const image = source.format === "jpeg" ? await output.embedJpg(source.bytes) : await output.embedPng(source.bytes);
                 if (validateImageFileDimension(image) || image.width !== source.width || image.height !== source.height) throw new Error("Unsupported image dimensions");
+                const page = output.addPage([image.width, image.height]);
+                page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+            }
+            const bytes = await save(output);
+            scope.postMessage({ id: request.id, status: "success", bytes }, [bytes.buffer]);
+            return;
+        }
+        if (request.operation === "assemble") {
+            const output = await PDFDocument.create();
+            const sourceById = new Map(request.sources.map(source => [source.id, source]));
+            const documentById = new Map<string, PDFDocument>();
+            const imageById = new Map<string, PDFImage>();
+            for (const reference of request.pageOrder) {
+                const source = sourceById.get(reference.sourceId);
+                if (!source) throw new Error("Unknown source reference");
+                if (source.kind === "pdf") {
+                    let document = documentById.get(source.id);
+                    if (!document) { document = await load(source.bytes); documentById.set(source.id, document); }
+                    if (reference.pageNumber > document.getPageCount()) throw new Error("Unsupported page selection");
+                    const [page] = await output.copyPages(document, [reference.pageNumber - 1]);
+                    output.addPage(page);
+                    continue;
+                }
+                if (reference.pageNumber !== 1) throw new Error("Unsupported page selection");
+                let image = imageById.get(source.id);
+                if (!image) {
+                    image = source.kind === "jpeg" ? await output.embedJpg(source.bytes) : await output.embedPng(source.bytes);
+                    if (validateImageFileDimension(image) || image.width !== source.width || image.height !== source.height) throw new Error("Unsupported image dimensions");
+                    imageById.set(source.id, image);
+                }
                 const page = output.addPage([image.width, image.height]);
                 page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
             }

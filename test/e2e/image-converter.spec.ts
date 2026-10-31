@@ -163,6 +163,8 @@ test("format, quality, repetition, replacement, Reset and unmount revoke URLs", 
     await expect(page.getByLabel("Choose image")).toHaveValue("");
     await expect(page.getByRole("img").and(page.locator(":not([data-example-asset])"))).toHaveCount(0);
     await selectSource(page); await convert(page);
+    // Below 1024px the primary links are inside the Menu.
+    if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
     await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
     await expect.poll(async () => { const log = await urls(page); return log.revoked.length === log.created.length; }).toBe(true);

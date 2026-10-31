@@ -21,7 +21,7 @@ import { QrCodeGeneratorTool } from "./everyday/QrCodeGeneratorTool";
 export const tool_definition_list: ToolDefinition[] = [
     {
         id: "merge-pdf", slug: "merge-pdf", name: "Merge PDF",
-        description: "Merge multiple PDF files into one PDF locally in your browser.",
+        description: "Combine several PDF files into one PDF, in the order you choose.",
         category: "document",
         seo: { title: "Merge PDF Files Online", description: "Merge 2 to 10 PDF files into one PDF locally in your browser.", canonicalPath: "/tool/merge-pdf" },
         capability: ["client-only", "offline"],
@@ -31,7 +31,7 @@ export const tool_definition_list: ToolDefinition[] = [
     },
     {
         id: "split-pdf", slug: "split-pdf", name: "Split PDF",
-        description: "Split selected pages from a PDF into separate PDF files locally in your browser.",
+        description: "Turn page ranges from one PDF into separate PDF files.",
         category: "document",
         seo: { title: "Split PDF Pages Online", description: "Split a PDF into up to 20 page groups locally in your browser.", canonicalPath: "/tool/split-pdf" },
         capability: ["client-only", "offline"],
@@ -41,7 +41,7 @@ export const tool_definition_list: ToolDefinition[] = [
     },
     {
         id: "images-to-pdf", slug: "images-to-pdf", name: "Images to PDF",
-        description: "Combine JPEG and PNG images into one PDF locally in your browser.",
+        description: "Turn JPEG and PNG images into one PDF, one image per page.",
         category: "document",
         seo: { title: "Images to PDF Converter", description: "Combine up to 20 JPEG and PNG images into one PDF locally in your browser.", canonicalPath: "/tool/images-to-pdf" },
         capability: ["client-only", "offline"],
@@ -51,7 +51,7 @@ export const tool_definition_list: ToolDefinition[] = [
     },
     {
         id: "pdf-to-image", slug: "pdf-to-image", name: "PDF to JPG / PNG",
-        description: "Convert selected PDF pages to JPG or PNG images locally in your browser.",
+        description: "Turn selected PDF pages into JPG or PNG images.",
         category: "document",
         seo: { title: "PDF to JPG and PNG Converter", description: "Convert selected PDF pages to JPG or PNG images locally in your browser.", canonicalPath: "/tool/pdf-to-image" },
         capability: ["client-only", "offline"],
@@ -61,7 +61,7 @@ export const tool_definition_list: ToolDefinition[] = [
     },
     {
         id: "compress-pdf", slug: "compress-pdf", name: "Compress PDF",
-        description: "Compress PDF structure locally in your browser without rasterizing pages.",
+        description: "Reduce a PDF's size by restructuring it, without rasterizing pages.",
         category: "document",
         seo: { title: "Compress PDF Files Online", description: "Compress PDF structure locally in your browser with lossless QPDF optimization.", canonicalPath: "/tool/compress-pdf" },
         capability: ["client-only", "offline"],
@@ -73,7 +73,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "slugify",
         slug: "slugify",
         name: "Slugify Text",
-        description: "Convert text into URL-safe slugs.",
+        description: "Turn a title or phrase into a lowercase, hyphenated URL slug.",
         category: "text",
         seo: {
             title: "Slug Generator",
@@ -90,7 +90,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "calculator",
         slug: "calculator",
         name: "Calculator",
-        description: "Evaluate simple math expressions.",
+        description: "Evaluate an arithmetic expression with + - * / and parentheses.",
         category: "math",
         seo: {
             title: "Online Calculator",
@@ -98,7 +98,7 @@ export const tool_definition_list: ToolDefinition[] = [
             canonicalPath: "/tool/calculator",
         },
         capability: ["client-only", "offline"],
-        tag: ["math", "utility"],
+        tag: ["math", "calculate", "utility"],
         popularity: 20,
         statePolicy: {
             persist: "none",
@@ -114,7 +114,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "length-converter",
         slug: "length-converter",
         name: "Length Converter",
-        description: "Convert between common length units.",
+        description: "Convert a length between units such as meters, feet and miles.",
         category: "converter",
         seo: {
             title: "Length Converter",
@@ -131,7 +131,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "html-text-extractor",
         slug: "html-text-extractor",
         name: "HTML Text Extractor",
-        description: "Extract visible text from HTML and preserve line breaks.",
+        description: "Extract plain text from pasted HTML, keeping its line breaks.",
         category: "text",
         seo: {
             title: "HTML to Text Converter",
@@ -139,7 +139,7 @@ export const tool_definition_list: ToolDefinition[] = [
             canonicalPath: "/tool/html-text-extractor",
         },
         capability: ["client-only", "offline"],
-        tag: ["text", "html", "utility"],
+        tag: ["text", "html", "extract", "utility"],
         popularity: 14,
         Component: HtmlTextExtractorTool,
     },
@@ -148,7 +148,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "weight-converter",
         slug: "weight-converter",
         name: "Weight Converter",
-        description: "Convert between common weight units.",
+        description: "Convert a mass between grams, kilograms, pounds and ounces.",
         category: "converter",
         seo: {
             title: "Weight Converter",
@@ -165,7 +165,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "time-arithmetic",
         slug: "time-arithmetic",
         name: "Time Arithmetic",
-        description: "Add and subtract durations written as HH:MM.",
+        description: "Add or subtract two HH:MM durations to get a new duration.",
         category: "time",
         seo: {
             title: "Add and Subtract Time",
@@ -185,7 +185,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "image-resizer",
         slug: "image-resizer",
         name: "Image Resizer",
-        description: "Resize JPEG, PNG, and WebP images locally in your browser.",
+        description: "Change the pixel width and height of a JPEG, PNG or WebP image.",
         category: "image",
         seo: {
             title: "Image Resizer",
@@ -201,7 +201,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "image-compressor",
         slug: "image-compressor",
         name: "Image Compressor",
-        description: "Compress JPEG, PNG, and WebP images locally in your browser.",
+        description: "Reduce the file size of a JPEG, PNG or WebP image.",
         category: "image",
         seo: {
             title: "Image Compressor",
@@ -217,7 +217,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "image-converter",
         slug: "image-converter",
         name: "JPG / PNG / WebP Converter",
-        description: "Convert JPEG, PNG, and WebP images locally in your browser.",
+        description: "Convert an image between JPEG, PNG and WebP.",
         category: "image",
         seo: {
             title: "JPG, PNG and WebP Converter",
@@ -233,7 +233,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "heic-converter",
         slug: "heic-converter",
         name: "HEIC → JPG / PNG Converter",
-        description: "Convert HEIC and HEIF images to JPEG or PNG locally in your browser.",
+        description: "Turn a HEIC or HEIF photo into a JPEG or PNG image.",
         category: "image",
         seo: {
             title: "HEIC to JPG and PNG Converter",
@@ -249,7 +249,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "json-formatter",
         slug: "json-formatter",
         name: "JSON Formatter / Validator",
-        description: "Format, minify, and validate strict JSON locally in your browser.",
+        description: "Format, minify or validate strict JSON text.",
         category: "developer",
         seo: {
             title: "JSON Formatter and Validator",
@@ -265,7 +265,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "word-character-counter",
         slug: "word-character-counter",
         name: "Word / Character Counter",
-        description: "Count words, Unicode characters, characters excluding whitespace, and lines locally in your browser.",
+        description: "Count words, characters, characters without whitespace and lines in text.",
         category: "text",
         seo: {
             title: "Word and Character Counter",
@@ -281,7 +281,7 @@ export const tool_definition_list: ToolDefinition[] = [
         id: "qr-code-generator",
         slug: "qr-code-generator",
         name: "QR Code Generator",
-        description: "Generate a QR code from text or a URL locally in your browser.",
+        description: "Turn text or a URL into a downloadable QR code PNG.",
         category: "developer",
         seo: {
             title: "QR Code Generator",

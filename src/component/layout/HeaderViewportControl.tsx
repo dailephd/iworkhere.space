@@ -8,8 +8,14 @@ interface HeaderViewportControlProp {
 }
 
 const HEIGHT_PROPERTY = "--header-height";
-// Without JavaScript the header stays in ordinary document flow and remains fully readable.
-const NO_SCRIPT_STYLE = "[data-site-header]{position:static!important}[data-header-footprint]{min-height:0!important}";
+// Without JavaScript the header stays in ordinary document flow and remains fully readable: the Menu and Categories
+// buttons cannot open anything, so every destination is shown inline and the header row may wrap.
+const NO_SCRIPT_STYLE = "[data-site-header]{position:static!important}[data-header-footprint]{min-height:0!important}"
+    + "[data-site-header]>div{height:auto!important;flex-wrap:wrap!important;padding-top:.5rem;padding-bottom:.5rem}"
+    + "[data-menu-button],[data-category-button]{display:none!important}"
+    + "[data-nav-panel]{display:block!important;position:static!important;max-height:none!important;overflow:visible!important}"
+    + "[data-category-nav]{display:block!important;position:static!important;width:auto!important;border:0!important;padding:0!important}"
+    + "[data-primary-nav-list]{flex-direction:row!important;flex-wrap:wrap!important}";
 
 /**
  * Keeps the single header fixed to the top of the viewport and reserves its exact rendered height in document flow,

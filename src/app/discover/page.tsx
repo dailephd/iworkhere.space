@@ -26,6 +26,7 @@ export default function DiscoverPage() {
         name: one.name,
         description: one.description,
         category: one.category,
+        categoryLabel: getToolCategoryLabel(one.category),
         tag: one.tag,
     }))
 
@@ -36,23 +37,27 @@ export default function DiscoverPage() {
                     All tools
                 </h1>
                 <p className="text-[var(--text-muted)]">
-                    Search for a tool by name or task, or browse by category. The list below shows all {allTool.length} tools together. Search matches names, descriptions, categories and tags, for example merge, compress, resize or convert.
+                    Search by tool name or task, for example resize image or merge PDF, or browse by category below.
                 </p>
             </section>
 
-            <section aria-labelledby="discover-category-title" className="space-y-3">
-                <h2 id="discover-category-title" className="text-xl font-semibold text-[var(--text)]">Browse by category</h2>
+            <DiscoverClient item={item} />
+
+            <section aria-labelledby="discover-category-title" className="ds-board">
+            <div className="ds-section space-y-3">
+                <h2 id="discover-category-title">Browse by category</h2>
                 <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {categoryItem.map((category) => (
-                        <li key={category.id} className="min-w-0 space-y-1 rounded-xl border border-card-border bg-card-bg p-4">
-                            <Link href={`/category/${category.id}`} className="font-semibold text-text underline underline-offset-4 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring">{category.label}</Link>
-                            <p className="text-sm text-text-muted">{category.description}</p>
+                        <li key={category.id} className="min-w-0">
+                            <Link href={`/category/${category.id}`} data-category={category.id} aria-labelledby={`discover-category-${category.id}-name`} className="ds-card home-card block h-full rounded-xl border p-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring">
+                                <h3 id={`discover-category-${category.id}-name`}>{category.label}</h3>
+                                <p className="mt-1">{category.description}</p>
+                            </Link>
                         </li>
                     ))}
                 </ul>
+            </div>
             </section>
-
-            <DiscoverClient item={item} />
         </div>
     )
 }

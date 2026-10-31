@@ -15,8 +15,11 @@ export function Footer({ action }: FooterProps = {}) {
                 <p>
                     © 2026 iworkhere.space created by dailephd LLC
                 </p>
-                {/* One compact horizontal group, like the header: Contact Us, then the optional report action, then Privacy Policy. */}
+                {/* One compact horizontal group, like the header: About, Contact Us, then the optional report action, then Privacy Policy. */}
                 <div data-footer-actions className="flex flex-wrap items-center gap-x-4">
+                    <a href="/about" className={quietLink}>
+                        About
+                    </a>
                     <a href="/contact" className={quietLink}>
                         Contact Us
                     </a>

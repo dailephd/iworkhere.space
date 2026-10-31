@@ -333,3 +333,7 @@ Response bodies are `{ ok: true }` or `{ ok: false, error, field? }`; see [API](
 ## Diagnostic hotfix
 
 ErrorDiagnostic: UUID id; ISO reporter timestamp; 64-hex SHA-256 fingerprint; client/server origin; warn/error severity; canonical DiagnosticError; explicit DiagnosticContext; server-added DeploymentContext. /api/log accepts client origin only, rejects additional fields and browser deployment claims, limits payload to 64 KiB. error_diagnostic contains received/reported times, searchable name/message/stack/cause/component/path/tool/boundary/category/fingerprint and bounded contexts. See additive 002 SQL and OBSERVABILITY.md.
+
+## Workflow contract note (sitewide redesign candidate)
+
+The workflow types (`WorkflowSlug`, `WorkflowRequest`, `WorkflowProgress`, `WorkflowArtifact`, `WorkflowCheck`, `WorkflowFailure`, `WorkflowRunResult`) in `src/module/workflow/type.ts` are in-browser TypeScript contracts only. They are not database tables, not API payloads and not persisted: no workflow input, file name or output is stored, sent to a server or included in telemetry. Theme persistence keeps the existing storage keys; the seven palette IDs and selected mode are unchanged by the redesign.

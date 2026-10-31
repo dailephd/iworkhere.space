@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { ImageSourcePanel } from "@/component/tool/image/ImageSourcePanel";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { DEFAULT_QUALITY, imageCompressorFilename, imageCompressorSavings, validateImageCompressorQuality,
     type ImageCompressorSavings } from "./imageCompressor";
@@ -15,7 +16,7 @@ import { compressImage } from "./imageCompressor.client";
 type ImageCompressorState = "idle" | "selected" | "processing" | "success" | "validation failure" | "processing failure";
 interface ImageCompressorSource extends ImageCompressorDimension { file: File; format: ImageCompressorFormat; url: string }
 interface ImageCompressorOutcome extends ImageCompressorSavings { outputBytes: number; url: string | null; filename: string }
-const SURFACE_CLASS = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
+const SURFACE_CLASS = toolSurfaceClassName("work", "space-y-4");
 
 export function ImageCompressorTool({ toolId }: ToolComponentProp) {
     const [state, setState] = useState<ImageCompressorState>("idle");
@@ -122,7 +123,7 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
 
     const busy = state === "processing";
     return <div className="min-w-0 space-y-4">
-        <p className="text-sm text-accent-secondary">Processed locally in your browser. Your image is not uploaded.</p>
+        <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
         <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(280px,320px)_minmax(0,1fr)] lg:items-start">
         <div className="contents order-1 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
         <div className="order-1 min-w-0 lg:order-none">
@@ -131,7 +132,7 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
                 formattedBytes: formatImageCompressorBytes(source.file.size), formatLabel: IMAGE_COMPRESSOR_ENCODING[source.format].label, previewUrl: source.url } : null} />
         </div>
         <form onSubmit={compress} className={`order-3 ${SURFACE_CLASS} lg:order-none`} aria-labelledby="compressor-controls-title" noValidate>
-            <h2 id="compressor-controls-title" className="font-semibold text-category-image">Compression settings</h2>
+            <h2 id="compressor-controls-title" className="tool-heading">Compression settings</h2>
             {source && source.format !== "png" && <>
                 <label className="block space-y-2"><span className="block font-medium">Quality</span>
                     <input type="range" min="10" max="100" step="5" value={quality} onChange={event => changeQuality(Number(event.target.value))} disabled={busy} className="block w-full accent-accent" />
@@ -141,14 +142,14 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
             </>}
             {source?.format === "png" && <p className="text-sm text-text-muted">PNG uses lossless browser re-encoding. Some PNG files may not become smaller.</p>}
             <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={!source || busy} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !selecting ? "Compressing…" : "Compress image"}</button>
-                <button type="button" onClick={reset} className="material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-4 py-2">Reset</button>
+                <button type="submit" disabled={!source || busy} className="tool-action-primary">{busy && !selecting ? "Compressing…" : "Compress image"}</button>
+                <button type="button" onClick={reset} className="tool-action-secondary">Reset</button>
             </div>
             <p className="text-sm text-text-muted">The output keeps the original image format and dimensions. Metadata preservation is not guaranteed.</p>
         </form>
         </div>
         <div className="contents order-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
-        <section aria-label="Image preview and result" data-surface={outcome?.url ? "result-stage" : "preview-stage"} className={`material-glass order-2 flex min-h-[300px] min-w-0 items-center justify-center overflow-hidden rounded-xl border ${outcome?.url ? "border-result-border bg-result-bg" : "border-preview-border bg-preview-bg"} p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6`}>
+        <ToolSurface kind={outcome?.url ? "result" : "preview"} aria-label="Image preview and result" className="order-2 flex min-h-[300px] items-center justify-center overflow-hidden p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6">
             {outcome?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={outcome.url} alt="Compressed image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
@@ -156,11 +157,11 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={source.url} alt="Selected source image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
             ) : <p className="max-w-xs text-center text-sm text-text-muted">Choose an image to see its preview here. Your image stays in this browser.</p>}
-        </section>
+        </ToolSurface>
 
-        {error && <div role="alert" className="order-5 rounded-xl border border-danger bg-danger-soft p-4 text-danger lg:order-none">{error}</div>}
-        {outcome && source && <section className="material-raised order-4 min-w-0 space-y-4 rounded-xl border border-result-border bg-result-bg p-4 lg:order-none" aria-labelledby="compressor-result-title" aria-live="polite">
-            <h2 id="compressor-result-title" className="font-semibold text-category-image">{outcome.reduced ? "Compressed image ready" : "No smaller file produced"}</h2>
+        {error && <div role="alert" data-tone="error" className="tool-feedback order-5 lg:order-none">{error}</div>}
+        {outcome && source && <ToolSurface kind="result" className="order-4 space-y-4 lg:order-none" aria-labelledby="compressor-result-title" aria-live="polite">
+            <h2 id="compressor-result-title" className="tool-heading">{outcome.reduced ? "Compressed image ready" : "No smaller file produced"}</h2>
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
                 <div><dt className="text-text-muted">Source size</dt><dd>{formatImageCompressorBytes(source.file.size)} ({source.file.size} bytes)</dd></div>
                 <div><dt className="text-text-muted">{outcome.reduced ? "Compressed size" : "Candidate encoded size"}</dt><dd>{formatImageCompressorBytes(outcome.outputBytes)} ({outcome.outputBytes} bytes)</dd></div>
@@ -170,9 +171,9 @@ export function ImageCompressorTool({ toolId }: ToolComponentProp) {
             </dl>
             {!outcome.reduced && <p>This browser and these settings did not produce a smaller file. {source.format === "png" ? "Native lossless PNG re-encoding cannot reduce every PNG." : "Try lowering Quality."}</p>}
             {outcome.reduced && outcome.url && <>
-                <a href={outcome.url} download={outcome.filename} className="material-primary inline-block min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download compressed image</a>
+                <a href={outcome.url} download={outcome.filename} className="tool-action-primary">Download compressed image</a>
             </>}
-        </section>}
+        </ToolSurface>}
         </div>
         </div>
     </div>;

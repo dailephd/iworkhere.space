@@ -65,7 +65,7 @@ describe("centralized AdSense", () => {
         vi.stubEnv("VERCEL_ENV", "production");
         const html = renderToStaticMarkup(<AdSenseEligiblePage><h1>JSON Formatter</h1></AdSenseEligiblePage>);
         expect(html.match(/id="google-adsense"/g)).toHaveLength(1);
-        expect(html.match(/Advertisement/g)).toHaveLength(2);
+        expect(html.match(/Advertisements/g)).toHaveLength(2);
     });
     it("renders no script, slot, label or empty placeholder when disabled", () => {
         vi.stubEnv("NEXT_PUBLIC_ADSENSE_ENABLED", "false");

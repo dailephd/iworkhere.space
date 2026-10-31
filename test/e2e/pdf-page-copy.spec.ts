@@ -104,12 +104,12 @@ test("Split: multiple ordered groups, overlap, verified individual downloads and
     await info.attach("split-local-evidence", { body: JSON.stringify(log), contentType: "application/json" });
 });
 
-test("document registry discovery, search, initial SEO/guides and 35 canonical sitemap URLs", async ({ page, request }) => {
+test("document registry discovery, search, initial SEO/guides and 36 canonical sitemap URLs", async ({ page, request }) => {
     for (const [slug, name, related] of [["merge-pdf", "Merge PDF", "split-pdf"], ["split-pdf", "Split PDF", "merge-pdf"]]) {
         const html = await (await request.get(`/tool/${slug}`)).text();
         expect(html).toContain(`<h1`); expect(html).toContain(name); expect(html).toContain("How to use");
         expect(html).toContain("Static-page fidelity"); expect(html).toContain("Your PDF is processed in this browser");
-        expect(html).toContain("Related document tools"); expect(html).toContain(`href="/tool/${related}"`);
+        expect(html).toContain("Related tools"); expect(html).toContain(`href="/tool/${related}"`);
         expect(html).toContain(`rel="canonical" href="https://iworkhere.space/tool/${slug}"`);
         expect(html).toContain(`property="og:url" content="https://iworkhere.space/tool/${slug}"`);
         expect(html).toContain('aria-label="Breadcrumb"'); expect(html).toContain('href="/category/document"');
@@ -118,11 +118,11 @@ test("document registry discovery, search, initial SEO/guides and 35 canonical s
     await page.goto("/category/document", { waitUntil: "networkidle" }); const category = page.getByRole("main").locator('a[href^="/tool/"]');
     await expect(category).toHaveCount(5); await expect(category).toContainText(["Merge PDF", "Split PDF", "Images to PDF", "PDF to JPG / PNG", "Compress PDF"]);
     await page.goto("/", { waitUntil: "networkidle" });
-    const other = page.getByRole("region", { name: "Document tools" });
+    const other = page.getByRole("region", { name: "PDF Tools", exact: true });
     for (const slug of ["merge-pdf", "split-pdf"]) await expect(other.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     await page.goto("/discover", { waitUntil: "networkidle" }); await page.getByLabel("Search", { exact: true }).fill("pdf");
     await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(5);
-    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(35);
+    const xml = await (await request.get("/sitemap.xml")).text(); expect(xml.match(/<loc>/g)).toHaveLength(36); expect(xml.split("<loc>https://iworkhere.space/workflows</loc>")).toHaveLength(2);
     for (const route of ["/tool/merge-pdf", "/tool/split-pdf", "/category/document"]) expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/vercel\.app|<loc>[^<]*[?#]/);
 });

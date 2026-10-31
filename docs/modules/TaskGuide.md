@@ -1,5 +1,7 @@
 # Module: TaskGuide
 
+> **Status (Prompt 7, 2026-10-31): superseded, data retained.** The four authored manual guides no longer have a canonical route. `/guide/<slug>` for these four slugs now returns an HTTP 308 permanent redirect to the working `/workflows/<slug>` (`src/app/guide/[slug]/page.tsx`); `/guide` is the interactive finder owned by `src/module/content/toolFinder.ts`. `taskGuide.ts` and `TaskGuidePage` remain as historical implementation and as the relation that decides which tool and category pages link to a workflow. Statements below about guide routes, sitemap entries and Home sections describe v0.4.4 Batch 5, not the current candidate.
+
 **Kind:** Module
 
 ## Representative File

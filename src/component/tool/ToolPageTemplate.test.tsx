@@ -4,9 +4,12 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ToolPageTemplate } from "./ToolPageTemplate";
 import { ToolClientFrame } from "./ToolClientFrame";
+import { ToolSurface, toolSurfaceClassName } from "./ToolSurface";
+import { getToolCategoryLabel } from "@/module/tool/category";
 import ToolPage from "@/app/tool/[slug]/page";
 import { getToolGuide } from "@/module/tool/guide";
 import { getToolBySlug, tool_definition_list } from "@/module/tool/registry";
+import { getToolByIdList } from "@/module/tool/metadata";
 import { getValueExample } from "@/module/tool/valueExamples";
 import { captureError, trackEvent } from "@/module/observability";
 import { reportClientErrorMetric } from "@/module/observability/errorMetric.client";
@@ -133,7 +136,7 @@ it("keeps both healthy and failed tools free of advertising when the global flag
 const WITH_EXAMPLE = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter", "merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
 function featuredPage(slug: string, withExample = true) {
     const tool = getToolBySlug(slug)!;
-    return <ToolPageTemplate tool={tool} guide={getToolGuide(tool.id)} breadcrumb={[{ label: "Home", href: "/" }, { label: tool.name }]} relatedTool={[]}
+    return <ToolPageTemplate tool={tool} guide={getToolGuide(tool.id)} breadcrumb={[{ label: "Home", href: "/" }, { label: tool.name }]} relatedTool={getToolByIdList(getToolGuide(tool.id)?.relatedToolId ?? [])}
         example={withExample ? getValueExample(tool.id) : undefined}
         toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />;
 }
@@ -146,22 +149,28 @@ it("gives exactly the nine example tools an example and every other registered t
     expect(tool_definition_list.filter(tool => WITH_EXAMPLE.includes(tool.id))).toHaveLength(WITH_EXAMPLE.length);
 });
 
-it.each(WITH_EXAMPLE)("renders the %s example after the working tool and before the guide, keeping page structure", async slug => {
+it.each(WITH_EXAMPLE)("renders the %s page as tool, How to use, Worked example, then details and Related tools", async slug => {
     await act(async () => root.render(featuredPage(slug)));
     const tool = [...element.querySelectorAll("p")].find(value => value.textContent === "Working utility content")!;
     expect(tool).toBeDefined();
     const panel = element.querySelector('section[aria-labelledby$="-example-heading"]')!;
     const guide = element.querySelector('section[aria-label="Tool guide"]')!;
+    const howTo = guide.querySelector("#tool-how-to-use-title")!;
+    const reference = guide.querySelector("#tool-reference-title")!;
+    const related = guide.querySelector("#tool-related-title")!;
     expect(panel).not.toBeNull();
     expect(guide).not.toBeNull();
-    expect(tool.compareDocumentPosition(panel) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(panel.compareDocumentPosition(guide) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(panel.parentElement).toBe(guide.parentElement);
-    expect(guide.contains(panel)).toBe(false);
+    const follows = (earlier: Element, later: Element) => Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(follows(tool, howTo)).toBe(true);
+    expect(follows(howTo, panel)).toBe(true);
+    expect(follows(panel, reference)).toBe(true);
+    expect(follows(reference, related)).toBe(true);
+    expect(guide.contains(panel)).toBe(true);
     expect(element.querySelectorAll("h1")).toHaveLength(1);
     expect(element.querySelector('nav[aria-label="Breadcrumb"]')).not.toBeNull();
     expect(guide.querySelector("h2")?.textContent).toBe("How to use");
-    expect(guide.querySelectorAll("h2").length).toBeGreaterThan(1);
+    expect([...guide.querySelectorAll("h2")].map(one => one.textContent)).toEqual(["How to use", "Worked example", "Details and limits", "Related tools"]);
+    expect(guide.querySelectorAll("h3").length).toBeGreaterThan(1);
 });
 
 it.each(WITH_EXAMPLE)("renders the %s page without any example section when no example is supplied", async slug => {
@@ -208,11 +217,11 @@ const GUIDE_LINK_TOOL: Record<string, string[]> = {
     "heic-converter": ["heic-photos-to-pdf"], "pdf-to-image": ["pdf-pages-for-slides"],
 };
 
-it("resolves task-guide links for exactly the participating tools, with titles from the guide owner", async () => {
+it("resolves workflow links for exactly the participating tools, pointing directly at the operational workflow routes", async () => {
     for (const tool of tool_definition_list) {
         const result = (await ToolPage({ params: Promise.resolve({ slug: tool.slug }) })) as React.ReactElement<{ taskGuideLink?: { title: string; href: string; summary: string }[] }>;
         const link = result.props.taskGuideLink ?? [];
-        expect(link.map(one => one.href), tool.id).toEqual((GUIDE_LINK_TOOL[tool.id] ?? []).map(slug => `/guide/${slug}`));
+        expect(link.map(one => one.href), tool.id).toEqual((GUIDE_LINK_TOOL[tool.id] ?? []).map(slug => `/workflows/${slug}`));
         for (const one of link) {
             expect(one.title.length).toBeGreaterThan(10);
             expect(one.summary.length).toBeGreaterThan(20);
@@ -234,6 +243,42 @@ it("renders task-guide links in their own labelled section after the tool guidan
     expect(section.querySelector("a")!.getAttribute("href")).toBe("/guide/assemble-pdf-packet");
     expect(element.querySelectorAll("h1")).toHaveLength(1);
     expect(element.querySelectorAll("ins.adsbygoogle, #google-adsense, aside, script")).toHaveLength(0);
+});
+
+it("shows the canonical category cue for every registered tool, from the registry category only (AUD-013)", async () => {
+    expect(tool_definition_list).toHaveLength(18);
+    for (const tool of tool_definition_list) {
+        await act(async () => root.render(<ToolPageTemplate tool={tool} breadcrumb={[]} relatedTool={[]}
+            toolUi={<ToolClientFrame toolId={tool.id} ToolComponent={RecoverableTool} />} />));
+        const header = element.querySelector("header[data-category]");
+        expect(header?.getAttribute("data-category"), tool.id).toBe(tool.category);
+        expect(header?.querySelector("[data-category-cue]")?.textContent, tool.id).toBe(getToolCategoryLabel(tool.category));
+        expect(element.querySelectorAll("h1"), tool.id).toHaveLength(1);
+        expect(element.querySelector("h1")?.textContent, tool.id).toBe(tool.name);
+    }
+});
+
+it("ToolSurface applies one role class per kind, labels its section from the title and never adds an H1", async () => {
+    await act(async () => root.render(<div>
+        <ToolSurface kind="work" title="Source" description="Pick a file">content</ToolSurface>
+        <ToolSurface kind="preview" aria-label="Preview">preview</ToolSurface>
+        <ToolSurface kind="result" aria-labelledby="own-heading"><h2 id="own-heading">Done</h2></ToolSurface>
+        <ToolSurface kind="feedback" tone="error" role="alert">bad input</ToolSurface>
+        <ToolSurface kind="feedback" tone="warning">careful</ToolSurface>
+    </div>));
+    const section = [...element.querySelectorAll("section")];
+    expect(section.map(one => one.className.split(" ")[0])).toEqual(["tool-work", "tool-preview", "tool-result", "tool-feedback", "tool-feedback"]);
+    const work = section[0];
+    expect(work.getAttribute("aria-labelledby")).toBe(work.querySelector("h2")?.id);
+    expect(work.querySelector("h2")?.textContent).toBe("Source");
+    expect(section[1].getAttribute("aria-label")).toBe("Preview");
+    expect(section[2].getAttribute("aria-labelledby")).toBe("own-heading");
+    expect(section[3].getAttribute("data-tone")).toBe("error");
+    expect(section[3].getAttribute("role")).toBe("alert");
+    expect(section[4].getAttribute("data-tone")).toBe("warning");
+    expect(work.getAttribute("data-tone")).toBeNull();
+    expect(element.querySelectorAll("h1")).toHaveLength(0);
+    expect(toolSurfaceClassName("work", "space-y-4")).toBe("tool-work min-w-0 space-y-4");
 });
 
 it("renders no workflow section without links and replaces it with the fallback when the tool fails", async () => {

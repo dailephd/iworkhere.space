@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react"
 import type { ToolComponentProp } from "../type"
+import { ToolSurface } from "@/component/tool/ToolSurface"
 import { trackEvent } from "@/module/observability"
 
 type LengthUnit = "m" | "km" | "cm" | "mm" | "inch" | "ft" | "yd" | "mile"
@@ -69,7 +70,8 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <ToolSurface kind="work" aria-label="Length conversion">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-end">
                 <div className="space-y-2">
                     <label htmlFor="length-value" className="text-sm text-[var(--text-muted)]">
                         Value
@@ -79,7 +81,7 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
                         type="number"
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
-                        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2"
+                        className="tool-control"
                     />
                 </div>
 
@@ -91,7 +93,7 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
                         id="length-from"
                         value={fromUnit}
                         onChange={(e) => setFromUnit(e.target.value as LengthUnit)}
-                        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2"
+                        className="tool-control"
                     >
                         {(Object.keys(UNIT_LABELS) as LengthUnit[]).map((u) => (
                             <option key={u} value={u}>
@@ -109,7 +111,7 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
                         id="length-to"
                         value={toUnit}
                         onChange={(e) => setToUnit(e.target.value as LengthUnit)}
-                        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2"
+                        className="tool-control"
                     >
                         {(Object.keys(UNIT_LABELS) as LengthUnit[]).map((u) => (
                             <option key={u} value={u}>
@@ -119,19 +121,20 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
                     </select>
                 </div>
             </div>
+            </ToolSurface>
 
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+            <ToolSurface kind="result" aria-label="Length result">
                 <div className="text-sm text-[var(--text-muted)]">Result</div>
                 {result.ok ? (
                     <div className="mt-2 text-2xl font-semibold text-[var(--text)]">
                         {result.text} <span className="text-sm font-normal text-[var(--text-muted)]">{toUnit}</span>
                     </div>
                 ) : (
-                    <div role="alert" className="mt-2 text-sm text-[var(--text)]">
+                    <div role="alert" data-tone="error" className="tool-feedback mt-2 text-sm">
                         {result.error}
                     </div>
                 )}
-            </div>
+            </ToolSurface>
         </div>
     )
 }

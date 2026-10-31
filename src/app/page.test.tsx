@@ -7,11 +7,7 @@ vi.mock("next/link", () => ({ default: ({ children, ...props }: { children: unkn
 
 import HomePage, { metadata } from "./page";
 import { getAvailableCategory, getAllTool } from "@/module/tool/metadata";
-import { getAllValueExample, getFeaturedValueExample } from "@/module/tool/valueExamples";
-import { getToolCategoryLabel } from "@/module/tool/category";
-
-const FEATURED = ["compress-pdf", "pdf-to-image", "images-to-pdf", "image-resizer", "image-converter"];
-const ADDED = ["merge-pdf", "split-pdf", "image-compressor", "heic-converter"];
+import { getToolCategoryDefinition, getToolCategoryLabel } from "@/module/tool/category";
 
 function render(): HTMLElement {
     const host = document.createElement("div");
@@ -19,77 +15,108 @@ function render(): HTMLElement {
     return host;
 }
 
-describe("home page task-first content", () => {
-    it("keeps one H1 and replaces the generic introduction with a truthful capability statement", () => {
+function precedes(first: Element, second: Element): boolean {
+    return (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+}
+
+describe("home page introduction", () => {
+    it("has one H1 and at most one short factual supporting sentence", () => {
         const host = render();
         expect(host.querySelectorAll("h1")).toHaveLength(1);
-        const text = host.querySelector("h1")!.parentElement!.textContent ?? "";
-        expect(text).toContain(`${getAllTool().length} browser tools`);
-        for (const word of ["PDFs", "images", "text", "unit conversion", "calculation", "time values", "JSON"]) expect(text).toContain(word);
+        const hero = host.querySelector("[data-home-hero]")!;
+        expect(hero.contains(host.querySelector("h1"))).toBe(true);
+        expect(hero.querySelectorAll("p")).toHaveLength(1);
+        expect(hero.textContent).not.toContain("Small tasks. Big difference.");
+    });
+
+    it("states browser-local file handling without overclaiming", () => {
+        const text = render().querySelector("[data-home-hero]")!.textContent ?? "";
         expect(text).toContain("processed in your browser and are not uploaded");
-        expect(text).toContain("each tool page lists its limits");
-        expect(text).toContain("Not every conversion is lossless");
-        expect(text).toContain("not every file gets smaller");
         expect(text).not.toMatch(/works offline|everything works offline|collects no|no data|all files|any file|certif|always (?:smaller|lossless)/i);
-        expect(text).not.toContain("everyday");
     });
 
-    it("features exactly the five verified tasks, each linked once to its registered tool", () => {
+    it("shows no tool or category totals anywhere on the home page", () => {
         const host = render();
-        const item = [...host.querySelectorAll<HTMLElement>("[data-featured-task]")];
-        expect(item.map(one => one.getAttribute("data-featured-task"))).toEqual(FEATURED);
-        // Nine tools have worked examples, but only the five original tasks are presented on the home page.
-        expect(getAllValueExample().map(example => example.toolId)).toEqual([...FEATURED, ...ADDED]);
-        expect(getFeaturedValueExample().map(example => example.toolId)).toEqual(FEATURED);
-        for (const slug of ADDED) expect(host.querySelector(`[data-featured-task="${slug}"]`), slug).toBeNull();
-        for (const [index, one] of item.entries()) {
-            const tool = getAllTool().find(value => value.slug === FEATURED[index])!;
-            const example = getFeaturedValueExample()[index];
-            const link = one.querySelectorAll("a");
-            expect(link).toHaveLength(1);
-            expect(link[0].getAttribute("href")).toBe(`/tool/${tool.slug}`);
-            expect(link[0].textContent).toBe(tool.name);
-            expect(one.textContent).toContain(example.task);
-            expect(one.textContent).toContain(example.whyThisTool);
-            expect(one.textContent).toContain(example.limitation[0]);
-            expect(one.querySelector("h3")?.contains(link[0])).toBe(true);
-        }
+        const text = host.textContent ?? "";
+        expect(text).not.toMatch(/\d+\s+browser tools/i);
+        expect(text).not.toMatch(/\d+\s*\/\s*\d+\s*tools?/i);
+        expect(text).not.toMatch(/\b\d+\s+(?:tools?|categories)\b/i);
+        expect(text).not.toContain(String(getAllTool().length));
+        expect(text).not.toContain(String(getAvailableCategory().length));
+        expect(host.querySelector("[data-status-panel]")).toBeNull();
     });
+});
 
-    it("makes no usage-ranking claim about the featured tasks", () => {
-        const section = render().querySelector("[data-featured-task-section]")!;
-        expect(section.textContent).toContain("Five common jobs");
-        expect(section.textContent).not.toMatch(/most popular|trending|recommended for you|top rated|most downloaded|bestsell/i);
-    });
-
-    it("does not register featured links as catalog cards, so all tool cards still appear exactly once", () => {
+describe("home page information order", () => {
+    it("orders hero, search, category links, then the catalog", () => {
         const host = render();
-        expect(host.querySelectorAll("[data-featured-task] .catalog-card, [data-featured-task].catalog-card")).toHaveLength(0);
+        const hero = host.querySelector("[data-home-hero]")!;
+        const search = host.querySelector("input#tool-search")!;
+        const chips = host.querySelector("#home-categories-title")!;
+        const firstCard = host.querySelector("a.catalog-card")!;
+        expect(precedes(hero, search)).toBe(true);
+        expect(precedes(search, chips)).toBe(true);
+        expect(precedes(chips, firstCard)).toBe(true);
+    });
+});
+
+describe("home page catalog", () => {
+    it("lists every registered tool once as a whole-card link with its exact name and description", () => {
+        const host = render();
         const card = [...host.querySelectorAll<HTMLAnchorElement>('a.catalog-card[href^="/tool/"]')];
-        const registered = getAllTool().map(tool => `/tool/${tool.slug}`);
+        const registered = getAllTool();
+        expect(registered).toHaveLength(18);
         expect(card).toHaveLength(registered.length);
-        expect([...card.map(one => one.getAttribute("href"))].sort()).toEqual([...registered].sort());
         expect(new Set(card.map(one => one.getAttribute("href"))).size).toBe(registered.length);
-        for (const one of card) expect(one.closest('[data-surface="section-island"]')).not.toBeNull();
-        expect(host.querySelectorAll("[data-featured-task] a")).toHaveLength(FEATURED.length);
-    });
-
-    it("keeps search, the category chips and one section island for each populated category", () => {
-        const host = render();
-        expect(host.querySelector('input[type="search"], input[id*="search" i], [role="search"]')).not.toBeNull();
-        const island = [...host.querySelectorAll('[data-surface="section-island"]')];
-        expect(island).toHaveLength(getAvailableCategory().length);
-        for (const category of getAvailableCategory()) {
-            const chip = host.querySelector(`a[data-category="${category}"][href="/category/${category}"]`);
-            expect(chip?.textContent, category).toBe(getToolCategoryLabel(category));
+        for (const tool of registered) {
+            const one = card.find(value => value.getAttribute("href") === `/tool/${tool.slug}`)!;
+            expect(one, tool.slug).toBeDefined();
+            expect(one.querySelector("h3")?.textContent).toBe(tool.name);
+            expect(one.querySelector("p")?.textContent).toBe(tool.description);
+            expect(one.getAttribute("data-category")).toBe(tool.category);
+            expect(one.querySelector("a")).toBeNull();
+            expect(one.querySelector("svg")).toBeNull();
+            expect(one.closest('[data-surface="section-island"]')).not.toBeNull();
         }
-        expect(host.querySelector('a[href="/discover"]')?.textContent).toBe("All tools");
     });
 
-    it("places the task section before search and the category sections", () => {
-        const html = renderToStaticMarkup(createElement(HomePage));
-        expect(html.indexOf("data-featured-task-section")).toBeLessThan(html.indexOf('data-surface="section-island"'));
-        expect(html.indexOf("data-featured-task-section")).toBeLessThan(html.indexOf("home-categories-title"));
+    it("shows one board per populated category in canonical order with its canonical title and description", () => {
+        const host = render();
+        const board = [...host.querySelectorAll<HTMLElement>("[data-home-board]")];
+        const category = getAvailableCategory();
+        expect(board.map(one => one.getAttribute("data-home-board"))).toEqual(category);
+        expect(host.querySelectorAll('[data-surface="section-island"]')).toHaveLength(category.length);
+        const link = [...host.querySelectorAll("#home-categories-title ~ ul a")];
+        expect(link.map(one => one.getAttribute("href"))).toEqual(category.map(id => `/category/${id}`));
+        for (const [index, id] of category.entries()) {
+            const definition = getToolCategoryDefinition(id);
+            expect(board[index].querySelector("h2")?.textContent, id).toBe(definition.title);
+            expect(board[index].textContent, id).toContain(definition.description);
+            expect(link[index].textContent, id).toBe(getToolCategoryLabel(id));
+            expect(link[index].textContent, id).toBe(definition.title);
+        }
+    });
+
+    it("keeps the existing search field with an honest label and placeholder", () => {
+        const input = render().querySelector<HTMLInputElement>('input[type="search"]')!;
+        expect(input.getAttribute("placeholder")).toBe("Search tools or tasks");
+        expect(input.getAttribute("placeholder")).not.toMatch(/describe|\bask\b|\bai\b|intelligent|semantic/i);
+    });
+});
+
+describe("home page is catalog-only", () => {
+    it("renders no featured task, workflow or guide cards and no guide links", () => {
+        const host = render();
+        const text = host.textContent ?? "";
+        expect(host.querySelector("[data-featured-task-section]")).toBeNull();
+        expect(host.querySelector("[data-featured-task]")).toBeNull();
+        expect(host.querySelector("[data-workflow-section]")).toBeNull();
+        expect(host.querySelector("[data-workflow]")).toBeNull();
+        expect(host.querySelector(".home-support")).toBeNull();
+        expect(text).not.toContain("Start with a common task");
+        expect(text).not.toContain("Practical file workflows");
+        expect(host.querySelectorAll('a[href^="/guide"], a[href^="/workflows"]')).toHaveLength(0);
+        expect(host.querySelectorAll("a[href]")).toHaveLength(getAllTool().length + getAvailableCategory().length);
     });
 });
 
@@ -102,31 +129,5 @@ describe("home page metadata", () => {
         expect(metadata.description).toContain("PDFs, images, text, unit conversion, calculation, time values and developer tasks");
         expect(metadata.description).not.toMatch(/everyday|offline/i);
         expect(metadata.alternates?.canonical).toBe("https://iworkhere.space/");
-    });
-});
-
-describe("home practical file workflows", () => {
-    const SLUG = ["assemble-pdf-packet", "prepare-image-for-upload", "heic-photos-to-pdf", "pdf-pages-for-slides"];
-
-    it("lists the four guides in a server section after the five featured tasks and before the catalog", () => {
-        const host = render();
-        const section = host.querySelector("[data-workflow-section]")!;
-        const featured = host.querySelector("[data-featured-task-section]")!;
-        expect(section).not.toBeNull();
-        expect([...section.querySelectorAll("[data-workflow]")].map(one => one.getAttribute("data-workflow"))).toEqual(SLUG);
-        expect([...section.querySelectorAll("a")].map(one => one.getAttribute("href"))).toEqual(SLUG.map(slug => `/guide/${slug}`));
-        expect(featured.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-        const firstCard = host.querySelector("a.catalog-card")!;
-        expect(section.compareDocumentPosition(firstCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-        expect(host.querySelectorAll("h1")).toHaveLength(1);
-    });
-
-    it("keeps exactly five featured tasks and the unchanged 18-card catalog, with no guide inside either", () => {
-        const host = render();
-        expect(host.querySelectorAll("[data-featured-task]")).toHaveLength(5);
-        expect(host.querySelectorAll('a.catalog-card[href^="/tool/"]')).toHaveLength(18);
-        expect(host.querySelectorAll('[data-featured-task] a[href^="/guide/"], a.catalog-card[href^="/guide/"]')).toHaveLength(0);
-        expect(host.querySelectorAll('a[href^="/guide/"]')).toHaveLength(4);
-        expect(host.querySelector("[data-workflow-section]")!.textContent).toContain("you download and re-select files between steps");
     });
 });

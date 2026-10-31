@@ -142,6 +142,8 @@ test("Quality, repetition, replacement, Reset and unmount release owned URLs", a
     await expect(page.getByLabel("Choose image")).toHaveValue("");
     await expect(toolImage(page)).toHaveCount(0);
     await selectSource(page); await expect(page.getByLabel("Quality", { exact: true })).toHaveValue("80"); await compress(page);
+    // Below 1024px the primary links are inside the Menu.
+    if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
     await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
     await expect.poll(async () => (await urls(page)).revoked.length).toBe(8);

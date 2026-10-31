@@ -1,12 +1,10 @@
-import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import type { Locator, Page, TestInfo } from "@playwright/test";
 import { PDFDict, PDFDocument, PDFName, PDFRef } from "pdf-lib";
 import { test, expect } from "./support/fixture";
-import manifest043 from "../../public/examples/v0.4.3/manifest.json";
-import manifest044 from "../../public/examples/v0.4.4/manifest.json";
+import { tool_category_definition_list } from "../../src/module/tool/category";
 import { inspectCompressedArtifact } from "../compressPdfVerification";
 import { inspectImagePdf } from "../imagesToPdfVerification";
 import { referencePdfRaster } from "../pdfToImageVerification";
@@ -29,17 +27,20 @@ const GUIDE_FOR_TOOL: Record<string, string[]> = {
     "heic-converter": ["heic-photos-to-pdf"], "pdf-to-image": ["pdf-pages-for-slides"],
 };
 const SITE_TITLE_SUFFIX = " - iworkhere";
+// Below 1024px every navigation destination sits inside the Menu, so open it before reading or clicking links.
+async function revealNavigation(page: Page) {
+    if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
+}
 /** Set from the reproduced result of the prepare-image-for-upload workflow; that test records the measured bytes as an annotation. */
 const EXPECTED_UPLOAD_RULE_MET = true;
-const manifest = { asset: [...manifest043.asset, ...manifest044.asset] };
 const sample = (file: string) => path.resolve("public/examples", file);
 const metaContent = (html: string, name: string) => html.match(new RegExp(`<meta name="${name}" content="([^"]*)"`))?.[1];
 const noOverflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
 
 test.describe("guide routes, metadata and discovery", () => {
-    test("the hub and each guide server-render one H1, aligned metadata and no advertising", async ({ request }) => {
+    test("the finder hub server-renders one H1, aligned metadata and no advertising", async ({ request }) => {
         const descriptionSeen = new Set<string>();
-        const route: [string, string][] = [["/guide", "Practical File Workflows"], ...GUIDE.map((guide): [string, string] => [`/guide/${guide.slug}`, guide.title])];
+        const route: [string, string][] = [["/guide", "Find the Right Tool or Workflow"]];
         for (const [route_, title] of route) {
             const response = await request.get(route_);
             expect(response.status(), route_).toBe(200);
@@ -73,84 +74,75 @@ test.describe("guide routes, metadata and discovery", () => {
         expect(sitemap).not.toContain("unknown-guide");
     });
 
-    test("the sitemap lists exactly 35 unique canonical URLs, with the hub and four guides added", async ({ request }) => {
+    test("the sitemap lists exactly 36 unique canonical URLs: the original 31, including the guide hub and no redirecting guide page, plus the Workflows hub and its four live workflows", async ({ request }) => {
         const xml = await (await request.get("/sitemap.xml")).text();
         const location = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
         const expected = [
-            ...FIXED, ...TOOL.map(slug => `/tool/${slug}`), ...CATEGORY.map(category => `/category/${category}`), "/guide", ...GUIDE.map(guide => `/guide/${guide.slug}`),
+            ...FIXED, ...TOOL.map(slug => `/tool/${slug}`), ...CATEGORY.map(category => `/category/${category}`), "/workflows",
+            "/workflows/prepare-image-for-upload", "/workflows/heic-photos-to-pdf", "/workflows/assemble-pdf-packet", "/workflows/pdf-pages-for-slides",
+            "/guide",
         ].map(value => `https://iworkhere.space${value}`);
-        expect(location).toHaveLength(35);
-        expect(new Set(location).size).toBe(35);
+        expect(location).toHaveLength(36);
+        expect(new Set(location).size).toBe(36);
         expect([...location].sort()).toEqual([...expected].sort());
         for (const value of location) expect(value).not.toMatch(/[?#]|dashboard|api\/|examples/);
     });
 
-    test("primary navigation is Home, All tools, Guides, the seven categories in order, then About", async ({ page }) => {
+    test("primary navigation is Home, All tools, Workflows, Guides, and the seven categories are a separate list in order", async ({ page }) => {
         await page.goto("/");
-        const link = page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link");
-        expect(await link.evaluateAll(list => list.map(item => item.getAttribute("href")))).toEqual(["/", "/discover", "/guide", ...CATEGORY.map(category => `/category/${category}`), "/about"]);
-        expect(await link.evaluateAll(list => list.map(item => item.textContent?.trim()))).toEqual(["Home", "All tools", "Guides", "Document", "Text", "Math", "Converters", "Time", "Image", "Developer", "About"]);
+        await revealNavigation(page);
+        const primary = page.locator('nav[aria-label="Primary navigation"] [data-primary-nav-list] > li > a');
+        expect(await primary.evaluateAll(list => list.map(item => item.getAttribute("href")))).toEqual(["/", "/discover", "/workflows", "/guide"]);
+        expect(await primary.evaluateAll(list => list.map(item => item.textContent?.trim()))).toEqual(["Home", "All tools", "Workflows", "Guides"]);
+        const category = page.locator('nav[aria-label="Primary navigation"] [data-category-nav-list] a');
+        expect(await category.evaluateAll(list => list.map(item => item.getAttribute("href")))).toEqual(CATEGORY.map(id => `/category/${id}`));
+        expect(await category.evaluateAll(list => list.map(item => item.textContent?.trim()))).toEqual(CATEGORY.map(id => tool_category_definition_list.find(definition => definition.id === id)!.title));
     });
 
-    test("Guides in the navigation opens the hub, shows it as current and leads to every guide and back", async ({ page }) => {
+    test("Guides in the navigation opens the finder hub and shows it as current", async ({ page }) => {
         await page.goto("/");
         const navigation = page.getByRole("navigation", { name: "Primary navigation" });
+        await revealNavigation(page);
         await navigation.getByRole("link", { name: "Guides", exact: true }).click();
         await expect(page).toHaveURL(/\/guide$/);
-        await expect(page.getByRole("heading", { level: 1, name: "Practical File Workflows" })).toBeVisible();
+        await expect(page.getByRole("heading", { level: 1, name: "Find the Right Tool or Workflow" })).toBeVisible();
+        await revealNavigation(page);
         await expect(navigation.getByRole("link", { name: "Guides", exact: true })).toHaveAttribute("aria-current", "page");
-        for (const guide of GUIDE) {
-            const card = page.locator(`[data-guide="${guide.slug}"]`);
-            await expect(card.getByRole("heading", { level: 2 })).toHaveText(guide.title);
-            for (const field of ["Start with", "You end with", "Main limit"]) await expect(card.getByText(field, { exact: true })).toBeVisible();
-            expect(await card.locator('a[href^="/tool/"]').evaluateAll(list => list.map(item => item.getAttribute("href"))).then(list => list.sort())).toEqual(guide.tool.map(slug => `/tool/${slug}`).sort());
-            await card.getByRole("link", { name: guide.title, exact: true }).click();
-            await expect(page).toHaveURL(new RegExp(`/guide/${guide.slug}$`));
-            await expect(page.getByRole("heading", { level: 1, name: guide.title })).toBeVisible();
-            await page.goBack();
-            await expect(page.getByRole("heading", { level: 1, name: "Practical File Workflows" })).toBeVisible();
-        }
-        await page.goForward();
-        await expect(page).toHaveURL(/\/guide\/pdf-pages-for-slides$/);
-        await page.reload();
-        await expect(page.getByRole("heading", { level: 1, name: "Prepare PDF Pages for Slides" })).toBeVisible();
+        // Close the Menu again (Escape) so its overlay does not cover the guide cards below.
+        await page.keyboard.press("Escape");
+        await expect(page.locator("[data-guide-finder]")).toBeVisible();
+        await expect(page.locator("[data-guide-finder] h2")).toHaveText("What do you need to do?");
+        await expect(page.getByRole("main").locator('a[href^="/guide/"]')).toHaveCount(0);
     });
-
-    test("the home page keeps five featured tasks and the 18-tool catalog and shows the four workflows between them", async ({ page }) => {
+    test("the home page is the 18-tool catalog only: no featured tasks or workflow cards, and the guide hub recommends the four workflows instead of listing manual guides", async ({ page }) => {
         await page.goto("/");
-        await expect(page.locator("[data-featured-task]")).toHaveCount(5);
         await expect(page.getByRole("main").locator('a.catalog-card[href^="/tool/"]')).toHaveCount(18);
-        const workflow = page.locator("[data-workflow-section]");
-        await expect(workflow.getByRole("heading", { level: 2, name: "Practical file workflows" })).toBeVisible();
-        expect(await workflow.locator("a").evaluateAll(list => list.map(item => item.getAttribute("href")))).toEqual(GUIDE.map(guide => `/guide/${guide.slug}`));
-        const top = (locator: Locator) => locator.evaluate(element => element.getBoundingClientRect().top + scrollY);
-        const position = [await top(page.locator("[data-featured-task-section]")), await top(workflow), await top(page.locator("a.catalog-card").first())];
-        expect(position[0]).toBeLessThan(position[1]);
-        expect(position[1]).toBeLessThan(position[2]);
-        await workflow.getByRole("link", { name: GUIDE[2].title, exact: true }).click();
-        await expect(page).toHaveURL(/\/guide\/heic-photos-to-pdf$/);
-        await expect(page.getByRole("heading", { level: 1 })).toHaveText(GUIDE[2].title);
+        await expect(page.locator("[data-featured-task]")).toHaveCount(0);
+        await expect(page.locator("[data-workflow-section]")).toHaveCount(0);
+        await expect(page.getByRole("main").locator('a[href^="/guide"]')).toHaveCount(0);
+        await page.goto("/guide");
+        await expect(page.getByRole("main").locator('a[href^="/guide/"]')).toHaveCount(0);
+        await expect(page.getByRole("main").locator('a[href="/discover"], a[href="/workflows"]')).toHaveCount(2);
     });
-
     test("only the document and image categories link their guides, and every other category links none", async ({ page }) => {
         for (const category of CATEGORY) {
             await page.goto(`/category/${category}`);
-            const expected = GUIDE.filter(guide => guide.category === category).map(guide => `/guide/${guide.slug}`);
-            expect(await page.getByRole("main").locator('a[href^="/guide/"]').evaluateAll(list => list.map(item => item.getAttribute("href"))), category).toEqual(expected);
+            const expected = GUIDE.filter(guide => guide.category === category).map(guide => `/workflows/${guide.slug}`);
+            expect(await page.getByRole("main").locator('a[href^="/workflows/"]').evaluateAll(list => list.map(item => item.getAttribute("href"))), category).toEqual(expected);
         }
         await page.goto("/category/document");
-        await page.getByRole("main").getByRole("link", { name: /Assemble an Ordered PDF Packet/ }).click();
-        await expect(page).toHaveURL(/\/guide\/assemble-pdf-packet$/);
+        await page.getByRole("main").getByRole("link", { name: /Assemble a PDF Packet/ }).click();
+        await expect(page).toHaveURL(/\/workflows\/assemble-pdf-packet$/);
     });
 
-    test("each of the 18 tool pages links exactly its participating guides, after the guidance, and nine have none", async ({ page }) => {
+    test("each of the 18 tool pages links exactly its participating workflows directly, after the guidance, and nine have none", async ({ page }) => {
         for (const slug of TOOL) {
             await page.goto(`/tool/${slug}`);
             await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
             const section = page.locator("section[data-task-guide-link]");
-            const expected = (GUIDE_FOR_TOOL[slug] ?? []).map(value => `/guide/${value}`);
+            const expected = (GUIDE_FOR_TOOL[slug] ?? []).map(value => `/workflows/${value}`);
             await expect(section).toHaveCount(expected.length ? 1 : 0);
-            expect(await page.getByRole("main").locator('a[href^="/guide/"]').evaluateAll(list => list.map(item => item.getAttribute("href"))), slug).toEqual(expected);
+            expect(await page.getByRole("main").locator('a[href^="/workflows/"]').evaluateAll(list => list.map(item => item.getAttribute("href"))), slug).toEqual(expected);
             if (!expected.length) continue;
             await expect(section.getByRole("heading", { level: 2, name: "Use this tool in a workflow" })).toBeVisible();
             const order = await page.evaluate(() => {
@@ -162,7 +154,7 @@ test.describe("guide routes, metadata and discovery", () => {
         }
         await page.goto("/tool/merge-pdf");
         await page.locator("section[data-task-guide-link]").getByRole("link").first().click();
-        await expect(page).toHaveURL(/\/guide\/assemble-pdf-packet$/);
+        await expect(page).toHaveURL(/\/workflows\/assemble-pdf-packet$/);
         await page.goBack();
         await page.getByLabel("Choose PDFs", { exact: true }).setInputFiles(sample("v0.4.4/merge-pdf/source-001.pdf"));
         await expect(page.getByRole("list", { name: "PDF merge order" }).getByRole("listitem")).toHaveCount(1);
@@ -171,76 +163,18 @@ test.describe("guide routes, metadata and discovery", () => {
     });
 
     for (const guide of GUIDE) {
-        test(`${guide.slug}: readable structure, working links, verified sample files and no eager download`, async ({ page, request }) => {
-            const requested: string[] = [];
-            const downloaded: string[] = [];
-            page.on("request", item => requested.push(item.url()));
-            page.on("download", item => downloaded.push(item.suggestedFilename()));
-            await page.goto(`/guide/${guide.slug}`, { waitUntil: "networkidle" });
-            await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-            await page.waitForTimeout(250);
-            expect(downloaded, "nothing downloads without a visitor action").toEqual([]);
-            expect(requested.filter(url => /\/examples\//.test(url)), "no sample is fetched on load").toEqual([]);
-            expect(requested.filter(url => /pdfjs|pdfLib|qpdf|heic-to|pdf\.worker|\.wasm|\/vendor\//i.test(url)), "no tool engine loads for reading").toEqual([]);
-
-            await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
-            const article = page.getByRole("article");
-            await expect(article).toHaveCount(1);
-            for (const heading of ["Steps", "Worked examples", "How to check the result yourself", "Limits to know", "Tools used in this guide"]) await expect(article.getByRole("heading", { level: 2, name: heading })).toBeVisible();
-            const step = article.locator("ol > li");
-            expect(await step.count()).toBeGreaterThanOrEqual(4);
-            await expect(article.getByText("you select it again yourself")).toBeVisible();
-            await expect(article.locator("time")).toHaveAttribute("datetime", "2026-10-27");
+        test(`${guide.slug}: the former manual page is a permanent redirect to the working workflow, with no manual HTML served`, async ({ page, request }) => {
+            const response = await request.get(`/guide/${guide.slug}`, { maxRedirects: 0 });
+            expect(response.status()).toBe(308);
+            expect(new URL(response.headers()["location"], "http://127.0.0.1").pathname).toBe(`/workflows/${guide.slug}`);
+            expect(await response.text()).not.toContain("you select it again yourself");
+            await page.goto(`/guide/${guide.slug}`);
+            await expect(page).toHaveURL(new RegExp(`/workflows/${guide.slug}$`));
+            await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://iworkhere.space/workflows/${guide.slug}`);
             expect(await noOverflow(page)).toBe(true);
-            await expect(page.locator("ins.adsbygoogle, script[src*='adsbygoogle'], aside[aria-label*='advertising']")).toHaveCount(0);
-
-            const stepTool = await step.locator('a[href^="/tool/"]').evaluateAll(list => list.map(item => item.getAttribute("href")));
-            expect(stepTool).toEqual(guide.tool.map(slug => `/tool/${slug}`).filter(href => stepTool.includes(href)));
-            expect(new Set(stepTool).size).toBe(stepTool.length);
-
-            // The fixed header must not cover the page heading after navigation.
-            await page.evaluate(() => window.scrollTo(0, 0));
-            const clearance = await page.evaluate(() => {
-                const heading = document.querySelector("h1")!.getBoundingClientRect(), header = document.querySelector("header")!.getBoundingClientRect();
-                return heading.top - header.bottom;
-            });
-            expect(clearance).toBeGreaterThanOrEqual(-1);
-
-            // Every link resolves, every sample link serves its recorded bytes and every download link is same-origin.
-            const href = [...new Set(await article.locator("a[href]").evaluateAll(list => list.map(item => item.getAttribute("href")!)))];
-            for (const value of href) {
-                expect(value, "no empty or placeholder anchor").toMatch(/^\/(?:tool|examples)\/[a-z0-9./-]+$/);
-                const response = await request.get(value);
-                expect(response.status(), value).toBe(200);
-                if (value.startsWith("/examples/")) {
-                    const recorded = manifest.asset.find(item => `/${item.path.slice("public/".length)}` === value);
-                    expect(recorded, `${value} is a recorded example file`).toBeDefined();
-                    const body = await response.body();
-                    expect(body.length, value).toBe(recorded!.bytes);
-                    expect(createHash("sha256").update(body).digest("hex"), value).toBe(recorded!.sha256);
-                }
-            }
-            const sampleLink = article.locator("a[download]");
-            expect(await sampleLink.count()).toBeGreaterThan(0);
-            for (const item of await sampleLink.all()) await expect(item).toHaveAccessibleName(/^Download (source|result) (PDF|PNG|JPEG|WebP|HEIC): [\w.-]+ \(.*\d[\d,]* bytes\)$/);
-
-            // Keyboard: the first link in the steps is reachable and shows a focus indicator.
-            const first = step.locator("a").first();
-            await first.focus();
-            await expect(first).toBeFocused();
-            const outline = await first.evaluate(element => { const style = getComputedStyle(element); return { style: style.outlineStyle, width: parseFloat(style.outlineWidth) }; });
-            expect(outline.style).not.toBe("none");
-            expect(outline.width).toBeGreaterThan(0);
-
-            const pending = page.waitForEvent("download");
-            await sampleLink.first().click();
-            const file = await pending;
-            expect(file.suggestedFilename()).toMatch(/\.(pdf|png|jpg|heic)$/);
-            expect(page.url()).toContain(`/guide/${guide.slug}`);
         });
     }
 });
-
 /* ---- Complete workflows, operating the real tools. Every handoff is an actual browser download selected again by hand. ---- */
 
 interface Saved { file: string; name: string; bytes: Uint8Array }

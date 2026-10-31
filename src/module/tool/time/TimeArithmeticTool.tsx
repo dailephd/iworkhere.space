@@ -2,13 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { ToolComponentProp } from "../type"
+import { ToolSurface } from "@/component/tool/ToolSurface"
 import { trackEvent } from "@/module/observability"
 import { calculateTime } from "./timeArithmetic"
 
 type Operation = "add" | "subtract"
 
-const INPUT_CLASSNAME =
-    "w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+const INPUT_CLASSNAME = "tool-control"
 
 export function TimeArithmeticTool({ toolId }: ToolComponentProp) {
     const [timeA, setTimeA] = useState("")
@@ -95,6 +95,7 @@ export function TimeArithmeticTool({ toolId }: ToolComponentProp) {
 
     return (
         <div className="space-y-4">
+            <ToolSurface kind="work" aria-label="Time arithmetic" className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
                     <label htmlFor="time-a" className="text-sm text-[var(--text-muted)]">
@@ -109,12 +110,12 @@ export function TimeArithmeticTool({ toolId }: ToolComponentProp) {
                         inputMode="numeric"
                         autoComplete="off"
                         spellCheck={false}
-                        aria-describedby={leftError ? "time-a-error" : undefined}
+                        aria-describedby={leftError ? "time-a-error time-format-hint" : "time-format-hint"}
                         aria-invalid={Boolean(leftError)}
                         className={INPUT_CLASSNAME}
                     />
                     {leftError ? (
-                        <p id="time-a-error" className="text-sm text-[var(--text-muted)]">
+                        <p id="time-a-error" role="alert" data-tone="error" className="tool-feedback text-sm">
                             {leftError}
                         </p>
                     ) : null}
@@ -148,37 +149,38 @@ export function TimeArithmeticTool({ toolId }: ToolComponentProp) {
                         inputMode="numeric"
                         autoComplete="off"
                         spellCheck={false}
-                        aria-describedby={rightError ? "time-b-error" : undefined}
+                        aria-describedby={rightError ? "time-b-error time-format-hint" : "time-format-hint"}
                         aria-invalid={Boolean(rightError)}
                         className={INPUT_CLASSNAME}
                     />
                     {rightError ? (
-                        <p id="time-b-error" className="text-sm text-[var(--text-muted)]">
+                        <p id="time-b-error" role="alert" data-tone="error" className="tool-feedback text-sm">
                             {rightError}
                         </p>
                     ) : null}
                 </div>
             </div>
 
-            <p className="text-xs text-[var(--text-muted)]">
+            <p id="time-format-hint" className="text-xs text-[var(--text-muted)]">
                 Enter hours and two-digit minutes, such as 01:50, 00:20, or 120:05.
             </p>
+            </ToolSurface>
 
             {generalError ? (
                 <div
                     role="alert"
-                    className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 text-sm text-[var(--text)]"
+                    data-tone="error" className="tool-feedback text-sm"
                 >
                     {generalError}
                 </div>
             ) : null}
 
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+            <ToolSurface kind="result" aria-label="Time result">
                 <div className="text-sm text-[var(--text-muted)]">Result</div>
                 <div className="mt-2 text-2xl font-semibold text-[var(--text)]">
                     {result || "--:--"}
                 </div>
-            </div>
+            </ToolSurface>
         </div>
     )
 }

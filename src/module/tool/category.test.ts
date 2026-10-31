@@ -156,8 +156,15 @@ describe("single category identity owner", () => {
 it("migrates the public converter title and labels without accepting the historical id", () => {
     expect(getToolCategoryDefinition("converter")).toMatchObject({ id: "converter", title: "Converters", description: "Convert length and weight between units." });
     expect(getToolCategoryLabel("converter")).toBe("Converters");
-    expect(getToolCategoryLabel("developer")).toBe("Developer");
+    expect(getToolCategoryLabel("developer")).toBe("Developer Tools");
     expect(isToolCategory("everyday")).toBe(false);
+});
+
+it("labels every category with its canonical definition title, never a capitalized id", () => {
+    expect(tool_category_definition_list.map(definition => getToolCategoryLabel(definition.id))).toEqual([
+        "PDF Tools", "Text Tools", "Math Tools", "Converters", "Time Tools", "Image Tools", "Developer Tools",
+    ]);
+    for (const definition of tool_category_definition_list) expect(getToolCategoryLabel(definition.id)).toBe(definition.title);
 });
 
 it("uses plural, natural category headings and describes only supported capabilities", () => {

@@ -12,15 +12,13 @@ export const defaultNavItem: NavItem[] = [
         href: "/discover",
     },
     {
+        id: "workflows",
+        label: "Workflows",
+        href: "/workflows",
+    },
+    {
         id: "guide",
         label: "Guides",
         href: "/guide",
-    },
+    }
 ]
-
-/** About closes the primary navigation, after the registry-derived category links. */
-export const aboutNavItem: NavItem = {
-    id: "about",
-    label: "About",
-    href: "/about",
-}

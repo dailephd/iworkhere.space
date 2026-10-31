@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react"
 import type { ToolComponentProp } from "../type"
+import { ToolSurface } from "@/component/tool/ToolSurface"
 
 type RunState =
     | { ok: true; value: string }
@@ -122,7 +123,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
 
     return (
         <div className="space-y-4">
-            <div className="space-y-2">
+            <ToolSurface kind="work" aria-label="Calculator" className="space-y-2">
                 <label htmlFor="calc-expr" className="text-sm text-[var(--text-muted)]">
                     Expression
                 </label>
@@ -136,7 +137,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
                     inputMode="text"
                     autoComplete="off"
                     spellCheck={false}
-                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    className="tool-control"
                 />
 
                 <div className="grid grid-cols-4 gap-2">
@@ -145,7 +146,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
                             key={k.label}
                             type="button"
                             onClick={k.onPress}
-                            className="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] px-3 py-2 text-base text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                            className={k.label === "=" ? "tool-action-primary text-base" : "tool-action-secondary text-base"}
                         >
                             {k.label}
                         </button>
@@ -155,9 +156,9 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
                 <div className="text-xs text-[var(--text-muted)]">
                     Press Enter or &quot;=&quot; to run. Allowed: numbers, spaces, +, -, *, /, parentheses, decimal point.
                 </div>
-            </div>
+            </ToolSurface>
 
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+            <ToolSurface kind="result" aria-label="Calculator result">
                 <div className="text-sm text-[var(--text-muted)]">Result</div>
 
                 {runState == null ? (
@@ -169,11 +170,11 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
                         {runState.value}
                     </output>
                 ) : (
-                    <div role="alert" className="mt-2 text-sm text-[var(--text-muted)]">
+                    <div role="alert" data-tone="error" className="tool-feedback mt-2 text-sm">
                         {runState.error}
                     </div>
                 )}
-            </div>
+            </ToolSurface>
         </div>
     )
 }

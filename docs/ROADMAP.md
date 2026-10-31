@@ -1151,3 +1151,7 @@ Currency remains deferred until its data/freshness/cache/failure/disclosure
 contract is designed and approved. No converter expansion is implemented here.
 
 Historical status note (2026-10-27): v0.4.4 Batch 5 (four task guides, the `/guide` hub and their discovery links) is implemented locally on `feature/v0.4.4-site-quality`; the release, container gate and whole-site reconciliation remain Batch 6 work. Batch 6 verification (2026-10-27) found the container gate and one complete browser run still not green, so v0.4.4 is not release ready; see [project status](project-status.md) and the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+
+## Status note: sitewide redesign candidate (2026-10-31)
+
+The sitewide redesign (searchable 18-tool Home, working browser-local workflows, interactive Guide finder, 36 canonical URLs, seven art-directed palettes) exists only as an unreleased local candidate on `feature/homepage-colorfield-refresh`. It is not a published release and does not change the planned v0.5.0/v0.6.0 catalogs or their ordering. Earlier plan entries that mention publishing four manual task guides are historical; those guides are superseded by the workflows. Any version number, release or deployment for the candidate requires a separate decision.

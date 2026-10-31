@@ -1,5 +1,9 @@
 import path from "node:path";
 import { test, expect } from "./support/fixture";
+import { tool_category_definition_list } from "../../src/module/tool/category";
+
+// The breadcrumb category link is labelled with the canonical definition title, not a capitalized id.
+const IMAGE_CATEGORY_TITLE = tool_category_definition_list.find(definition => definition.id === "image")!.title;
 
 const imageTool = [
     { slug: "image-resizer", source: "resizer-source.jpg", input: "Choose image", action: "Resize image", result: "Resized image preview", download: "Download resized image", form: "Resize dimensions" },
@@ -17,9 +21,9 @@ for (const theme of ["light", "dark", "onedark", "system"] as const) {
             await page.goto(`/tool/${tool.slug}`);
             const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb", exact: true });
             await expect(breadcrumb.getByRole("link", { name: "Home", exact: true })).toHaveAttribute("href", "/");
-            await expect(breadcrumb.getByRole("link", { name: "Image", exact: true })).toHaveAttribute("href", "/category/image");
+            await expect(breadcrumb.getByRole("link", { name: IMAGE_CATEGORY_TITLE, exact: true })).toHaveAttribute("href", "/category/image");
             await expect(page.getByRole("region", { name: "Tool guide" })).toContainText("Site analytics and diagnostics never receive");
-            await expect(page.getByRole("region", { name: "Tool guide" }).getByRole("link")).toHaveCount(3);
+            await expect(page.getByRole("region", { name: "Tool guide" }).locator("[data-tool-related]").getByRole("link")).toHaveCount(3);
             await expect(page.getByRole("button", { name: tool.action, exact: true })).toBeDisabled();
             await page.getByLabel(tool.input, { exact: true }).setInputFiles(path.resolve(`test/fixtures/images/${tool.source}`));
             await expect(page.getByRole("button", { name: tool.action, exact: true })).toBeEnabled();
@@ -81,7 +85,7 @@ test("initial server HTML, stable public metadata and crawl endpoints", async ({
         if (imageTool.some(tool => route === `/tool/${tool.slug}`)) {
             expect(html).toContain("Supported images and limits");
             expect(html).toContain("25 MiB"); expect(html).toContain("30 megapixels");
-            expect(html).toContain("Related image tools");
+            expect(html).toContain("Related tools");
             expect(html).toContain('aria-label="Breadcrumb"');
         }
         if (route.startsWith("/tool/calculator")) expect(html).not.toContain("Supported images and limits");
@@ -89,8 +93,9 @@ test("initial server HTML, stable public metadata and crawl endpoints", async ({
     const sitemap = await request.get("/sitemap.xml");
     expect(sitemap.status()).toBe(200);
     const xml = await sitemap.text();
-    expect(xml.match(/<loc>/g)).toHaveLength(35);
+    expect(xml.match(/<loc>/g)).toHaveLength(36);
     expect(xml).toContain("https://iworkhere.space/category/document");
+    expect(xml).toContain("https://iworkhere.space/workflows");
     expect(xml).not.toMatch(/localhost|vercel\.app|<loc>[^<]*\?/);
     const robots = await request.get("/robots.txt");
     expect(robots.status()).toBe(200);

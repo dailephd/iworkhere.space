@@ -12,7 +12,8 @@ export const metadata = buildPageMetadata({
 const linkStyle = "rounded-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)]";
 
 export default function ContactPage() {
-    const { contact } = getSiteInformation();
+    // The footer Report Issues control exists only when the same flag that renders it in the root layout is on.
+    const { contact } = getSiteInformation({ reportControlVisible: process.env.NEXT_PUBLIC_SUPPORT_ENABLED === "true" });
 
     return (
         <article className="max-w-3xl space-y-8 text-text [&_p]:leading-7">

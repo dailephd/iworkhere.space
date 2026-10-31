@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { ImageSourcePanel } from "@/component/tool/image/ImageSourcePanel";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { heightFromWidth, widthFromHeight, imageResizerFilename, validateImageResizerDimension } from "./imageResizer";
 import { formatImageFileBytes as formatImageResizerBytes, IMAGE_FILE_ENCODING as IMAGE_RESIZER_ENCODING,
@@ -25,8 +26,8 @@ interface ImageResizerResult extends ImageResizerDimension {
     filename: string;
 }
 
-const SURFACE_CLASS = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
-const INPUT_CLASS = "w-full min-w-0 rounded-lg border border-input-border bg-input-bg px-3 py-2 text-text";
+const SURFACE_CLASS = toolSurfaceClassName("work", "space-y-4");
+const INPUT_CLASS = "tool-control";
 
 export function ImageResizerTool({ toolId }: ToolComponentProp) {
     const [state, setState] = useState<ImageResizerState>("idle");
@@ -149,7 +150,7 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
     const busy = state === "processing";
     return (
         <div className="min-w-0 space-y-4">
-            <p className="text-sm text-accent-secondary">Processed locally in your browser. Your image is not uploaded.</p>
+            <p className="text-sm text-text-muted">Processed locally in your browser. Your image is not uploaded.</p>
             <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(280px,320px)_minmax(0,1fr)] lg:items-start">
                 <div className="contents order-1 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
                 <div className="order-1 min-w-0 lg:order-none">
@@ -158,7 +159,7 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
                         formattedBytes: formatImageResizerBytes(source.file.size), formatLabel: IMAGE_RESIZER_ENCODING[source.format].label, previewUrl: source.url } : null} />
                 </div>
                 <form onSubmit={resize} noValidate className={`order-3 ${SURFACE_CLASS} lg:order-none`} aria-labelledby="resizer-dimension-title">
-                    <h2 id="resizer-dimension-title" className="font-semibold text-category-image">Resize dimensions</h2>
+                    <h2 id="resizer-dimension-title" className="tool-heading">Resize dimensions</h2>
                     <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-1">
                         <label className="space-y-2"><span className="block font-medium">Width</span>
                             <input type="number" min="1" step="1" value={width} onChange={event => changeWidth(event.target.value)} disabled={!source || busy} className={INPUT_CLASS} />
@@ -169,14 +170,15 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
                     </div>
                     <label className="flex items-center gap-2"><input type="checkbox" className="accent-accent" checked={locked} onChange={event => setLocked(event.target.checked)} disabled={!source || busy} />Preserve aspect ratio</label>
                     <div className="flex flex-wrap gap-3">
-                        <button type="submit" disabled={!source || busy} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">{busy && !selecting ? "Resizing…" : "Resize image"}</button>
-                        <button type="button" onClick={reset} className="material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-4 py-2">Reset</button>
+                        <button type="submit" disabled={!source || busy} className="tool-action-primary">{busy && !selecting ? "Resizing…" : "Resize image"}</button>
+                        <button type="button" onClick={reset} className="tool-action-secondary">Reset</button>
                     </div>
                     <p className="text-sm text-text-muted">The output keeps the original image format. Metadata preservation is not guaranteed.</p>
+                    {source && <p className="text-sm text-text-muted">{source.format === "png" ? "PNG output is lossless, so no quality setting applies." : `${IMAGE_RESIZER_ENCODING[source.format].label} output is re-encoded at a fixed quality of 92; this tool has no quality setting.`}</p>}
                 </form>
                 </div>
                 <div className="contents order-2 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:order-none lg:flex lg:flex-col lg:gap-4">
-                <section aria-label="Image preview and result" data-surface={result ? "result-stage" : "preview-stage"} className={`material-glass order-2 flex min-h-[300px] min-w-0 items-center justify-center overflow-hidden rounded-xl border ${result ? "border-result-border bg-result-bg" : "border-preview-border bg-preview-bg"} p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6`}>
+                <ToolSurface kind={result ? "result" : "preview"} aria-label="Image preview and result" className="order-2 flex min-h-[300px] items-center justify-center overflow-hidden p-3 sm:min-h-[380px] lg:min-h-[440px] lg:order-none lg:p-6">
                     {result ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={result.url} alt="Resized image preview" className="block max-h-[min(50vh,480px)] w-full object-contain" />
@@ -187,14 +189,14 @@ export function ImageResizerTool({ toolId }: ToolComponentProp) {
                         <p className="max-w-xs text-center text-sm text-text-muted">Choose an image to see its preview here. Your image stays in this browser.</p>
                     )}
                     {busy && <p role="status" className="sr-only">{selecting ? "Reading image…" : "Resizing image…"}</p>}
-                </section>
-                {result && source && <section data-surface="result-stage" className={`material-glass order-5 min-w-0 space-y-4 rounded-xl border border-result-border bg-result-bg p-4 lg:order-none`} aria-labelledby="resizer-result-title" aria-live="polite">
-                    <h2 id="resizer-result-title" className="font-semibold text-success">Resized image ready</h2>
+                </ToolSurface>
+                {result && source && <ToolSurface kind="result" className="order-5 space-y-4 lg:order-none" aria-labelledby="resizer-result-title" aria-live="polite">
+                    <h2 id="resizer-result-title" className="tool-heading">Resized image ready</h2>
                     <p className="text-sm">Output: {result.width} × {result.height} px · {formatImageResizerBytes(result.blob.size)} · {IMAGE_RESIZER_ENCODING[source.format].label}</p>
-                    <a href={result.url} download={result.filename} className="material-primary inline-flex min-h-11 items-center rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)]">Download resized image</a>
-                </section>}
+                    <a href={result.url} download={result.filename} className="tool-action-primary">Download resized image</a>
+                </ToolSurface>}
                 </div>
-                {error && <div role="alert" className="order-4 rounded-xl border border-danger bg-danger-soft p-4 text-danger lg:col-span-2">{error}</div>}
+                {error && <div role="alert" data-tone="error" className="tool-feedback order-4 lg:col-span-2">{error}</div>}
             </div>
         </div>
     );

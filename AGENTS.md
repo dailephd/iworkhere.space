@@ -151,7 +151,7 @@ generic lib/seo never imports guide data.
 
 ### Layout composition
 
-AppShell provides the responsive grid layout with slots for navigation, header and footer banners, and side panels. Navigation items are defined in src/app/navData.ts. The root layout.tsx wraps all pages in AppShell.
+AppShell provides the responsive grid layout with slots for navigation, header and footer banners, and side panels. Navigation items are defined in src/app/navData.ts (the five primary items only; layout.tsx derives the separate category items from getAvailableCategory() and getToolCategoryLabel, the canonical definition title, and passes them as categoryNavItem). HeaderSearch is the Search utility that focuses the existing #tool-search input. UtilityCard is a presentation-only whole-card link used by the Home catalog and must not import registry or category modules. The root layout.tsx wraps all pages in AppShell.
 
 ### URL state sharing
 
@@ -222,7 +222,7 @@ Dynamic metadata is generated from ToolDefinition.seo.
 - Use Tailwind classes for styling
 - Use only existing CSS variable tokens
 - Themes define palette; components consume semantic visual roles; category colors provide catalog identity
-- Theme switch changes color only
+- Themes may vary color, typography, spacing, shape, materials, decorative graphics and nonessential motion through the existing theme and shared presentation owners. They must preserve content and control order, route and processing contracts, theme persistence, responsive usability and all required accessibility checks. Theme changes must not steal focus, clear input/results or obscure controls. Identical geometry across different artistic themes is not required. (Supersedes the earlier "Theme switch changes color only" rule; 8V closeout 2026-10-31.)
 - Subtle shadow only
 - No surprise animations
 - Update `docs/DESIGN.md` before design or styling system changes
@@ -336,7 +336,7 @@ engine. Future tool UI, object URLs and generation state remain operation-local.
 
 ### Island/material pilot
 
-SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry stays theme-independent. See DESIGN.md for fallbacks and contrast.
+SectionIsland is presentation-only (heading, optional description, children), with no data/search/category/routing ownership. Light/Dark/System remain solid; One Dark selectively uses structural glass and restrained local neomorphic depth. Geometry may differ between artistic themes (see the Styling Rules theme rule). See DESIGN.md for fallbacks and contrast.
 
 ## Production integration policy
 
@@ -370,3 +370,13 @@ General contact and publisher content (v0.4.3): `src/module/content/` owns the t
 `src/module/contact/` owns the public general-contact contract, validation, bounded body reader, origin checks and the server-only
 Resend email sender. General contact is separate from support reporting: the support-reporting backend remains the existing v0.4.2 owner
 (`src/module/support/`). Contact message content never enters observability, and no contact database is introduced.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

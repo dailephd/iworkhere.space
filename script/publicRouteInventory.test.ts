@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import sitemap from "../src/app/sitemap";
-import { getAllTaskGuide } from "../src/module/content/taskGuide";
 import { getExpectedPublicSitemapUrls, hasExpectedPublicSitemapUrls } from "./publicRouteInventory";
 
 const origin = "https://iworkhere.space";
@@ -12,10 +11,18 @@ const guideRoute = [
 ];
 
 describe("public sitemap route inventory", () => {
-  it("expects the 35 canonical public routes, including privacy, about and contact exactly once", () => {
+  it("expects the 36 canonical public routes, including workflows, privacy, about and contact exactly once", () => {
     const expectedUrls = getExpectedPublicSitemapUrls();
 
-    expect(expectedUrls).toHaveLength(35);
+    expect(expectedUrls).toHaveLength(36);
+    expect(new Set(expectedUrls).size).toBe(36);
+    expect(expectedUrls.filter(url => url === `${origin}/workflows`)).toHaveLength(1);
+    expect(expectedUrls.filter(url => url.includes("/workflows/"))).toEqual([
+      `${origin}/workflows/prepare-image-for-upload`,
+      `${origin}/workflows/heic-photos-to-pdf`,
+      `${origin}/workflows/assemble-pdf-packet`,
+      `${origin}/workflows/pdf-pages-for-slides`,
+    ]);
     expect(expectedUrls.filter(url => url === `${origin}/privacy`)).toHaveLength(1);
     expect(expectedUrls.filter(url => url === `${origin}/about`)).toHaveLength(1);
     expect(expectedUrls.filter(url => url === `${origin}/contact`)).toHaveLength(1);
@@ -26,16 +33,12 @@ describe("public sitemap route inventory", () => {
     expect(expectedUrls).toContain(`${origin}/category/document`);
   });
 
-  it("includes the guide hub and the four task guide routes exactly once, derived from the task guide records", () => {
+  it("includes the guide hub exactly once and none of the four redirecting legacy guide routes", () => {
     const expectedUrls = getExpectedPublicSitemapUrls();
 
     expect(expectedUrls.filter(url => url === `${origin}/guide`)).toHaveLength(1);
-    for (const route of guideRoute) expect(expectedUrls.filter(url => url === `${origin}${route}`)).toHaveLength(1);
-    expect(expectedUrls.filter(url => url.startsWith(`${origin}/guide`))).toEqual([
-      `${origin}/guide`,
-      ...getAllTaskGuide().map(guide => `${origin}/guide/${guide.slug}`),
-    ]);
-    expect(getAllTaskGuide().map(guide => `/guide/${guide.slug}`)).toEqual(guideRoute);
+    for (const route of guideRoute) expect(expectedUrls.filter(url => url === `${origin}${route}`)).toHaveLength(0);
+    expect(expectedUrls.filter(url => url.startsWith(`${origin}/guide`))).toEqual([`${origin}/guide`]);
     expect(expectedUrls.some(url => /[?#]|vercel\.app|dashboard/.test(url))).toBe(false);
     expect(expectedUrls.every(url => url.startsWith(`${origin}/`) && !url.endsWith("/index"))).toBe(true);
   });
@@ -54,14 +57,21 @@ describe("public sitemap route inventory", () => {
     expect(hasExpectedPublicSitemapUrls(expectedUrls.map(url => url === `${origin}/privacy` ? `${origin}/unexpected` : url))).toBe(false);
   });
 
-  it("rejects the legacy 30-route list and any missing or replaced guide route", () => {
+  it("rejects an inventory that drops a live workflow route or adds an unknown one", () => {
+    const expectedUrls = getExpectedPublicSitemapUrls();
+
+    expect(hasExpectedPublicSitemapUrls(expectedUrls.filter(url => !url.includes("/workflows/")))).toBe(false);
+    expect(hasExpectedPublicSitemapUrls(expectedUrls.filter(url => url !== `${origin}/workflows/pdf-pages-for-slides`))).toBe(false);
+    expect(hasExpectedPublicSitemapUrls([...expectedUrls, `${origin}/workflows/unknown-workflow`])).toBe(false);
+  });
+
+  it("rejects the legacy 30-route list, a missing guide hub and any re-added redirecting guide route", () => {
     const expectedUrls = getExpectedPublicSitemapUrls();
 
     expect(hasExpectedPublicSitemapUrls(expectedUrls.filter(url => !url.includes("/guide")))).toBe(false);
     expect(hasExpectedPublicSitemapUrls(expectedUrls.filter(url => url !== `${origin}/guide`))).toBe(false);
     for (const route of guideRoute) {
-      expect(hasExpectedPublicSitemapUrls(expectedUrls.filter(url => url !== `${origin}${route}`))).toBe(false);
-      expect(hasExpectedPublicSitemapUrls(expectedUrls.map(url => url === `${origin}${route}` ? `${origin}${route}?x=1` : url))).toBe(false);
+      expect(hasExpectedPublicSitemapUrls([...expectedUrls, `${origin}${route}`])).toBe(false);
     }
     expect(hasExpectedPublicSitemapUrls(expectedUrls.map(url => url === `${origin}/discover` ? `${origin}/discover/` : url))).toBe(false);
   });

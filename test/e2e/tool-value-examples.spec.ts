@@ -51,9 +51,10 @@ test.describe("v0.4.3 and v0.4.4 tool-page worked examples", () => {
             await expect(control).toBeEnabled();
             const position = await Promise.all([control.evaluate(element => element.getBoundingClientRect().top + scrollY),
                 example.evaluate(element => element.getBoundingClientRect().top + scrollY),
-                guide(page).evaluate(element => element.getBoundingClientRect().top + scrollY)]);
+                guide(page).getByRole("heading", { name: "How to use", exact: true }).evaluate(element => element.getBoundingClientRect().top + scrollY)]);
             expect(position[0], "working tool is first").toBeLessThan(position[1]);
-            expect(position[1], "example precedes the guide").toBeLessThan(position[2]);
+            // Prompt 8 (AUD-009): How to use comes first, then the worked example, then the deeper details.
+            expect(position[2], "How to use precedes the example").toBeLessThan(position[1]);
             await expect(guide(page).getByRole("heading", { name: "How to use", exact: true })).toBeVisible();
             await expect(page.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
 
@@ -81,15 +82,14 @@ test.describe("v0.4.3 and v0.4.4 tool-page worked examples", () => {
         }
     });
 
-    test("the home page presents exactly the five original tasks, not the four added examples, and fetches no sample", async ({ page }) => {
+    test("the home page is catalog-only: it presents none of the nine examples as task cards and fetches no sample", async ({ page }) => {
         const download: string[] = [], request: string[] = [];
         page.on("download", value => download.push(value.suggestedFilename()));
         page.on("request", value => request.push(value.url()));
         await page.goto("/", { waitUntil: "networkidle" });
-        const task = page.locator("[data-featured-task]");
-        await expect(task).toHaveCount(5);
-        expect(await task.evaluateAll(element => element.map(value => value.getAttribute("data-featured-task")))).toEqual(HOME_TASK);
-        for (const slug of FEATURED.filter(value => !HOME_TASK.includes(value))) await expect(page.locator(`[data-featured-task="${slug}"]`), slug).toHaveCount(0);
+        await expect(page.locator("[data-featured-task]")).toHaveCount(0);
+        for (const slug of FEATURED) await expect(page.locator(`[data-featured-task="${slug}"]`), slug).toHaveCount(0);
+        await expect(page.getByRole("main").locator('a.catalog-card[href^="/tool/"]')).toHaveCount(18);
         await expect(page.locator('a[href^="/examples/"], img[src^="/examples/"]')).toHaveCount(0);
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         await page.waitForTimeout(300);

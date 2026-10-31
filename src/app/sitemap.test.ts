@@ -7,8 +7,8 @@ describe("public sitemap", () => {
         const urls = sitemap().map(entry => entry.url);
         expect(getAllTool()).toHaveLength(18);
         expect(getAvailableCategory()).toHaveLength(7);
-        expect(urls).toHaveLength(35);
-        expect(urls).toHaveLength(5 + getAllTool().length + getAvailableCategory().length + 1 + 4);
+        expect(urls).toHaveLength(36);
+        expect(urls).toHaveLength(5 + getAllTool().length + getAvailableCategory().length + 1 + 4 + 1);
         expect(new Set(urls).size).toBe(urls.length);
         expect(urls).toContain("https://iworkhere.space/");
         expect(urls).toContain("https://iworkhere.space/discover");
@@ -27,10 +27,20 @@ describe("public sitemap", () => {
         expect(sitemap().every(entry => Object.keys(entry).join() === "url")).toBe(true);
     });
 
-    it("lists the guide hub and exactly the four guide pages by independent slug", () => {
+    it("lists the Workflows hub once and each of the four live workflow detail routes once", () => {
         const urls = sitemap().map(entry => entry.url);
-        const expected = ["", "/assemble-pdf-packet", "/prepare-image-for-upload", "/heic-photos-to-pdf", "/pdf-pages-for-slides"].map(path => `https://iworkhere.space/guide${path}`);
-        expect(urls.filter(url => url.includes("/guide"))).toEqual(expected);
+        expect(urls.filter(url => url === "https://iworkhere.space/workflows")).toHaveLength(1);
+        expect(urls.filter(url => url.includes("/workflows/"))).toEqual([
+            "https://iworkhere.space/workflows/prepare-image-for-upload",
+            "https://iworkhere.space/workflows/heic-photos-to-pdf",
+            "https://iworkhere.space/workflows/assemble-pdf-packet",
+            "https://iworkhere.space/workflows/pdf-pages-for-slides",
+        ]);
+    });
+
+    it("lists the guide hub once and none of the four redirecting legacy guide pages", () => {
+        const urls = sitemap().map(entry => entry.url);
+        expect(urls.filter(url => url.includes("/guide"))).toEqual(["https://iworkhere.space/guide"]);
     });
 
     it("includes future registry entries without editing the sitemap", () => {

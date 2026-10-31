@@ -1,6 +1,6 @@
 import { validatePdfBytes, PdfFileError } from "./pdfFile";
 import type { ImagesToPdfSource } from "./imagesToPdf";
-import { readPdfLibRequest, readPdfLibResponse, type PdfLibFailure, type PdfLibRequest } from "./pdfLib.workerType";
+import { readPdfLibRequest, readPdfLibResponse, type PdfLibFailure, type PdfLibRequest, type PdfPacketPageRef, type PdfPacketSource } from "./pdfLib.workerType";
 export interface PdfLibOperation { promise: Promise<Uint8Array>; cancel(): void }
 export interface PdfLibSplitOperation { promise: Promise<Uint8Array[]>; cancel(): void }
 export class PdfLibProcessingError extends Error {
@@ -9,6 +9,19 @@ export class PdfLibProcessingError extends Error {
 let nextId = 0;
 export function startImagesToPdfOperation(image: readonly ImagesToPdfSource[], timeoutMs = 30_000): PdfLibOperation {
     const operation = start({ id: ++nextId, operation: "images-to-pdf", image: image.map(value => ({ bytes: value.bytes, format: value.format, width: value.width, height: value.height })) }, timeoutMs);
+    return { promise: operation.promise.then(output => output[0]), cancel: operation.cancel };
+}
+/** Copies the source bytes before transfer, so the caller's arrays are never detached. */
+export function startAssemblePdfOperation(sources: readonly PdfPacketSource[], pageOrder: readonly PdfPacketPageRef[], timeoutMs = 30_000): PdfLibOperation {
+    const request: PdfLibRequest = {
+        id: ++nextId,
+        operation: "assemble",
+        sources: sources.map(source => source.kind === "pdf"
+            ? { id: source.id, kind: source.kind, bytes: source.bytes }
+            : { id: source.id, kind: source.kind, bytes: source.bytes, width: source.width, height: source.height }),
+        pageOrder: pageOrder.map(reference => ({ sourceId: reference.sourceId, pageNumber: reference.pageNumber })),
+    };
+    const operation = start(request, timeoutMs);
     return { promise: operation.promise.then(output => output[0]), cancel: operation.cancel };
 }
 export function startPdfLibOperation(bytes: Uint8Array, timeoutMs = 30_000): PdfLibOperation {
@@ -62,6 +75,9 @@ function start(request: PdfLibRequest, timeoutMs: number): PdfLibSplitOperation 
             if (request.operation === "images-to-pdf") {
                 const image = request.image.map(value => ({ ...value, bytes: value.bytes.slice() }));
                 worker.postMessage({ ...request, image }, image.map(value => value.bytes.buffer));
+            } else if (request.operation === "assemble") {
+                const sources = request.sources.map(source => ({ ...source, bytes: source.bytes.slice() }));
+                worker.postMessage({ ...request, sources }, sources.map(source => source.bytes.buffer));
             } else if (request.operation === "merge") {
                 const input = request.input.map(bytes => bytes.slice());
                 worker.postMessage({ ...request, input }, input.map(bytes => bytes.buffer));

@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { test, expect } from "./support/fixture";
+import { tool_category_definition_list } from "../../src/module/tool/category";
 
 const baselineContexts = [
     { name: "system-light", id: "system", scheme: "light" },
@@ -48,15 +49,17 @@ for (const context of contexts) {
             if (route === "/") {
                 const islands = page.locator('[data-surface="section-island"]');
                 await expect(islands).toHaveCount(7);
-                for (const name of ["Document", "Text", "Math", "Converters", "Time", "Image", "Developer"]) {
-                    await expect(page.getByRole("region", { name: name === "Converters" ? name : `${name} tools`, exact: true })).toBeVisible();
+                // Each Home board is named with its canonical category definition title.
+                for (const definition of tool_category_definition_list) {
+                    await expect(page.getByRole("region", { name: definition.title, exact: true })).toBeVisible();
                 }
                 const islandBoxes = await islands.evaluateAll(elements => elements.map(element => {
                     const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
                     return { top: rect.top, bottom: rect.bottom, padding: style.padding, radius: style.borderRadius, border: style.borderColor, shadow: style.boxShadow };
                 }));
                 expect(islandBoxes[1].top).toBeGreaterThan(islandBoxes[0].bottom);
-                for (const field of ["padding", "radius", "border", "shadow"] as const) expect(islandBoxes[0][field]).toBe(islandBoxes[1][field]);
+                // The home boards differ by category fill and border colour (Colorfield); their geometry and material stay shared.
+                for (const field of ["padding", "radius", "shadow"] as const) expect(islandBoxes[0][field]).toBe(islandBoxes[1][field]);
                 const card = islands.first().getByRole("link").first();
                 await card.focus();
                 await expect(card).toBeFocused();
@@ -154,8 +157,8 @@ for (const context of contexts) {
             for (const pair of observations.renderedContrast) expect(pair.ratio, `rendered ${pair.text}`).toBeGreaterThanOrEqual(4.5);
             for (const pair of observations.boundaries) expect(pair.ratio, `boundary ${pair.role}`).toBeGreaterThanOrEqual(3);
             for (const pair of observations.focusContrast) expect(pair.ratio, `focus on ${pair.surface}`).toBeGreaterThanOrEqual(3);
-            if (context.name === "system-light") expect(observations.background).toBe("#f2f0e7");
-            if (context.name === "system-dark") expect(observations.background).toBe("#141e1c");
+            if (context.name === "system-light") expect(observations.background).toBe("#eee9db");
+            if (context.name === "system-dark") expect(observations.background).toBe("#10191a");
             const headerBackground = await page.getByRole("banner").evaluate(element => getComputedStyle(element).backgroundColor);
             const bodyBackground = await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor);
             expect(headerBackground).not.toBe(bodyBackground);
@@ -180,7 +183,8 @@ for (const context of contexts) {
                 });
                 expect(focus.outline).toBe("solid");
                 expect(focus.shadow).not.toBe("none");
-                await expect(page.getByText("image", { exact: true }).first()).toBeVisible();
+                // Prompt 8 (AUD-029): result badges show the canonical title, never the raw category id "image".
+                await expect(page.locator(".ds-results").getByText("Image Tools", { exact: true }).first()).toBeVisible();
 
             }
 

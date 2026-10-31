@@ -1,5 +1,13 @@
 # PROJECT STATUS
 
+## Sitewide redesign candidate (Prompts 1-8V; Prompt 9 audit) - 2026-10-31
+
+Status: IMPLEMENTED ON THE LOCAL CANDIDATE, UNRELEASED, UNCOMMITTED, NOT DEPLOYED. Branch `feature/homepage-colorfield-refresh`, application version `0.4.4`. This supersedes the 2026-10-28 Colorfield status below: Home is now the searchable 18-tool catalog without featured-task or workflow cards, `/workflows` hosts four working browser-local workflows, `/guide` is an interactive finder (legacy `/guide/<slug>` URLs redirect with HTTP 308), the sitemap lists 36 canonical URLs, and seven palettes resolve to 13 appearances with art-directed (not color-only) themes. Prompt 8V closed as PASS_WITH_NOTES (its image review was by appearance sheets, not 428 individual images). The final Prompt 9 acceptance verdict, with its run IDs and open notes, is recorded only in `.my-dev-kit-workflow/tmp/sitewide-nine-prompt/p09-report.txt`. Home category boards were restored to one column at every width on 2026-10-31 after another session had introduced two columns; the outcome of that correction is recorded in `.my-dev-kit-workflow/tmp/sitewide-nine-prompt/p09-correction-report.txt`. This entry does not claim a release, a version bump, hosted CI, container, database, Firefox or Safari validation.
+
+## Homepage Colorfield design decision — 2026-10-28
+
+Status: approved visual direction, **NOT IMPLEMENTED**. On the dedicated documentation branch `design/homepage-colorfield-20261028`, the user approved adapting the existing category-based homepage to the colorful Colorfield 03 concept. The next bounded implementation removes displayed tool/category totals, moves search and the complete icon/name/description catalog ahead of featured examples and guides, and introduces a coral introduction plus strong per-category pastel panels. This is not a new catalog release or permission to change the v0.5.0/v0.6.0 roadmap. The exact visual and validation contract is in [DESIGN.md](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28), with component boundaries in [HomeClient.md](components/HomeClient.md). The current Production homepage is unchanged until a later validated implementation and authorized deployment. Local candidate update (2026-10-28, uncommitted, not deployed): DM Sans typography, unified featured/guide cards and palette-coherent Dark homepage roles are implemented on `feature/homepage-colorfield-refresh` and await user visual review.
+
 ## v0.4.4 release source and validation — 2026-10-28
 
 Status: IMPLEMENTED AND EXACT-SHA RELEASE-PREPARATION VALIDATED. GitHub Release and Vercel Production outcomes require separate verification.

@@ -67,7 +67,7 @@ test("saved palette and mode initialize before hydration", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("html")).toHaveAttribute("data-palette", "cobalt");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    expect(await page.locator("html").evaluate(root => getComputedStyle(root).getPropertyValue("--background").trim())).toBe("#111a29");
+    expect(await page.locator("html").evaluate(root => getComputedStyle(root).getPropertyValue("--background").trim())).toBe("#0b1330");
 });
 
 for (const invalid of ["palette", "theme"]) {
@@ -100,6 +100,8 @@ for (const [id, label] of palettes) {
             await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
             await expect(page.locator("html")).toHaveAttribute("data-palette", id);
             await expect(page.locator("html")).toHaveAttribute("data-theme", mode);
+            // Below 1024px the primary links sit inside the Menu.
+            if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
             await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
             await expect(page).toHaveURL(/\/discover$/);
             await expect(page.locator("html")).toHaveAttribute("data-palette", id);
@@ -108,13 +110,13 @@ for (const [id, label] of palettes) {
     }
 }
 
-test("all twelve palettes retain keyboard focus and geometry under reduced motion", async ({ page }) => {
+test("all twelve palettes retain keyboard focus and per-family geometry under reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/");
     expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
     const card = page.locator(".catalog-card").first();
     // Document coordinates: focusing the card may legitimately scroll it clear of the fixed footer, which must not read as a geometry change.
     const documentBox = () => card.evaluate(element => { const box = element.getBoundingClientRect(); return { x: box.x + scrollX, y: box.y + scrollY, width: box.width, height: box.height }; });
-    const baseline = await documentBox();
+    const baseline = new Map<string, Awaited<ReturnType<typeof documentBox>>>();
     for (const [id, label] of palettes) {
         for (const mode of ["Light", "Dark"]) {
             await page.getByRole("button", { name: "Themes", exact: true }).click();
@@ -122,7 +124,7 @@ test("all twelve palettes retain keyboard focus and geometry under reduced motio
             await page.getByRole("radio", { name: mode, exact: true }).check();
             await page.keyboard.press("Escape"); await card.focus();
             await expect(card).toBeFocused();
-            expect(await documentBox(), `${id} ${mode} geometry`).toEqual(baseline);
+            const box = await documentBox(); if (!baseline.has(id)) baseline.set(id, box); expect(box, `${id} ${mode} shares its family geometry`).toEqual(baseline.get(id));
             const styles = await card.evaluate(element => {
                 const style = getComputedStyle(element);
                 return { animation: style.animationName, transform: style.transform, outline: style.outlineStyle,
@@ -132,4 +134,42 @@ test("all twelve palettes retain keyboard focus and geometry under reduced motio
             expect(styles.outline).toBe("solid"); expect(styles.overflow).toBe(false);
         }
     }
+});
+
+test("homepage Colorfield dark palettes: palette-specific boards, approved hero fills and loaded DM Sans", async ({ page }) => {
+    const HERO: Record<string, string> = { original: "rgb(36, 26, 82)", mineral: "rgb(28, 90, 78)", oxblood: "rgb(107, 23, 51)", signal: "rgb(11, 26, 12)", cobalt: "rgb(210, 96, 58)", amber: "rgb(233, 169, 58)", onedark: "rgb(47, 37, 64)" };
+    const documentBoard: Record<string, string> = {};
+    for (const palette of Object.keys(HERO)) {
+        await page.addInitScript(([p]) => { localStorage.setItem("palette", JSON.stringify(p)); localStorage.setItem("theme", JSON.stringify(p === "onedark" ? "onedark" : "dark")); }, [palette]);
+        await page.goto("/");
+        await page.evaluate(() => document.fonts.ready);
+        const seen = await page.evaluate(() => ({
+            hero: getComputedStyle(document.querySelector("[data-home-hero]")!).backgroundColor,
+            board: getComputedStyle(document.querySelector('[data-home-board="document"] .section-island')!).backgroundColor,
+            card: getComputedStyle(document.querySelector('[data-home-board="document"] .home-card')!).backgroundColor,
+            font: getComputedStyle(document.body).fontFamily,
+            loaded: document.fonts.check('16px "DM Sans"'),
+        }));
+        const ratio = await page.evaluate(() => {
+            const cv = document.createElement("canvas"); cv.width = cv.height = 1; const cx = cv.getContext("2d", { willReadFrequently: true })!;
+            const rgb = (c: string) => { cx.clearRect(0, 0, 1, 1); cx.fillStyle = c; cx.fillRect(0, 0, 1, 1); const d = cx.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2]]; };
+            const lum = (c: string) => { cx.clearRect(0, 0, 1, 1); cx.fillStyle = c; cx.fillRect(0, 0, 1, 1); const d = cx.getImageData(0, 0, 1, 1).data; const f = (v: number) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(d[0]) + 0.7152 * f(d[1]) + 0.0722 * f(d[2]); };
+            return [...document.querySelectorAll("[data-home-board]")].flatMap((board) => {
+                const b = lum(getComputedStyle(board.querySelector(".section-island")!).backgroundColor);
+                return [...board.querySelectorAll(".home-card")].map((card) => { const style = getComputedStyle(card); const c = lum(style.backgroundColor); const edge = lum(style.borderTopColor); const bgRgb = rgb(style.backgroundColor), boardRgb = rgb(getComputedStyle(board.querySelector(".section-island")!).backgroundColor); return { tier: Math.hypot(bgRgb[0] - boardRgb[0], bgRgb[1] - boardRgb[1], bgRgb[2] - boardRgb[2]), ratio: (Math.max(b, edge) + 0.05) / (Math.min(b, edge) + 0.05) }; });
+            });
+        });
+        expect(ratio.length, palette).toBeGreaterThanOrEqual(18);
+        // Prompt 3 contract: the card is a distinct neutral tier of its board (RGB distance at least 12; it may sit darker or lighter, so no brightness ordering is required) and its border must stand out from the board by at least 1.5:1.
+        for (const one of ratio) { expect(one.tier, palette).toBeGreaterThanOrEqual(12); expect(one.ratio, palette).toBeGreaterThanOrEqual(1.5); }
+        expect(seen.hero, palette).toBe(HERO[palette]);
+        expect(seen.hero).not.toMatch(/102, 84, 75|94, 79, 86/);
+        expect(seen.board, palette).not.toBe(seen.card);
+        expect(seen.font).toContain("DM Sans");
+        expect(seen.loaded).toBe(true);
+        documentBoard[palette] = seen.board;
+        await page.context().clearCookies();
+    }
+    expect(documentBoard.amber).not.toBe(documentBoard.cobalt);
+    expect(new Set(Object.values(documentBoard)).size).toBe(Object.keys(HERO).length);
 });

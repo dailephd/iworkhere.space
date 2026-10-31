@@ -230,6 +230,8 @@ test("source and result URLs are revoked on replacement, Reset and unmount", asy
     await expect(page.getByLabel("Width", { exact: true })).toHaveValue("");
     await expect(page.getByLabel("Preserve aspect ratio")).toBeChecked();
     await selectSource(page, "png"); await resizeTo(page); await inspectResult(page);
+    // Below 1024px the primary links are inside the Menu.
+    if ((page.viewportSize()?.width ?? 1280) < 1024) await page.getByRole("button", { name: "Menu", exact: true }).click();
     await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "All tools", exact: true }).click();
     await expect(page).toHaveURL(/\/discover$/);
     await expect.poll(async () => (await urls()).revoked.length).toBe(6);

@@ -27,6 +27,23 @@ it("presents caller-supplied source information and forwards the input ref/event
     await act(async () => root.unmount());
 });
 
+it("uses the work-panel role for its section and the input role for its file selector (P4 correction)", async () => {
+    vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+    const host = document.createElement("div"), root = createRoot(host), inputRef = createRef<HTMLInputElement>();
+    await act(async () => root.render(createElement(ImageSourcePanel, { titleId: "source-test", inputRef, onChange: vi.fn(), selecting: false, source: null })));
+    const section = host.querySelector("section")!;
+    expect(section.classList.contains("tool-work")).toBe(true);
+    expect(section.className).not.toMatch(/card-bg|card-border/);
+    expect(section.getAttribute("aria-labelledby")).toBe("source-test");
+    expect(host.querySelector("h2")?.id).toBe("source-test");
+    expect(host.querySelector("h2")?.textContent).toBe("Source image");
+    expect(host.querySelector("h2")?.classList.contains("tool-heading")).toBe(true);
+    expect(inputRef.current?.classList.contains("tool-file-input")).toBe(true);
+    expect(inputRef.current?.accept).toBe("image/jpeg,image/png,image/webp");
+    expect(host.querySelector("label")?.textContent).toContain("Choose image");
+    await act(async () => root.unmount());
+});
+
 it("can omit its inline preview while retaining source presentation", async () => {
     vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
     const host = document.createElement("div"), root = createRoot(host), inputRef = createRef<HTMLInputElement>();

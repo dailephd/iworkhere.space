@@ -68,6 +68,17 @@ describe("Image Converter local lifecycle and telemetry", () => {
         expect(revokeUrl).toHaveBeenCalledWith("blob:local-3");
     });
 
+    it("shows the quality control only for an encoding that uses it and says so for lossless PNG (AUD-039)", async () => {
+        await select();
+        expect(host.querySelector<HTMLInputElement>('input[type="range"]')).toBeNull();
+        expect(host.textContent).toContain("PNG output is lossless, so no quality setting applies.");
+        const output = host.querySelector("select")!;
+        await act(async () => { output.value = "webp"; output.dispatchEvent(new Event("change", { bubbles: true })); });
+        expect(host.querySelector<HTMLInputElement>('input[type="range"]')?.value).toBe("90");
+        expect(host.textContent).not.toContain("so no quality setting applies");
+        expect(host.textContent).toContain("Lower quality may reduce visual fidelity.");
+    });
+
     it("quality edits invalidate and revoke the previous result", async () => {
         operation.format.mockResolvedValueOnce("png"); await select(); await submit();
         const input = host.querySelector<HTMLInputElement>('input[type="range"]')!;

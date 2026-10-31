@@ -23,7 +23,9 @@ test("one header is fixed to the top, with one primary navigation and no show/hi
     await expect(page.getByRole("button", { name: /Show navigation|Hide navigation/ })).toHaveCount(0);
     await expect(page.locator("[data-header-state]")).toHaveCount(0);
     expect(await page.getByRole("banner").evaluate(element => getComputedStyle(element).position)).toBe("fixed");
-    await expect(page.getByRole("banner").getByRole("link", { name: "Search tools", exact: true })).toBeVisible();
+    await expect(page.getByRole("banner").getByRole("button", { name: "Search tools", exact: true })).toBeVisible();
+    await expect(page.getByRole("banner").getByRole("link", { name: "Search tools", exact: true })).toHaveCount(0);
+    await expect(page.getByLabel("Search", { exact: true })).toHaveCount(1);
     await expect(page.getByRole("banner").getByRole("button", { name: "Themes", exact: true })).toBeVisible();
 });
 
@@ -55,21 +57,24 @@ test("the in-flow footprint matches the rendered header height and leaves conten
     }
 });
 
-for (const width of [1280, 768, 390, 320]) {
-    test(`the footprint follows the header when navigation wraps at ${width}px and there is no horizontal scroll`, async ({ page }) => {
-        await page.setViewportSize({ width, height: 800 });
+// Supersedes the former wrapped-navigation assertions: the persistent header is one row of at most 72px at every width.
+for (const width of [1440, 1280, 1024, 768, 390, 360, 320]) {
+    test(`the header is one stable row of at most 72px with a matching footprint and no horizontal scroll at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 844 });
         await page.goto("/discover");
         await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("header")!.getBoundingClientRect().height - document.querySelector("[data-header-footprint]")!.getBoundingClientRect().height))).toBeLessThanOrEqual(1);
+        expect((await headerBox(page)).height).toBeLessThanOrEqual(72);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     });
 }
 
-test("resizing keeps the footprint in step with the wrapped header", async ({ page }) => {
+test("resizing between desktop and mobile keeps the single-row header and its footprint in step", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/discover");
     const wide = (await headerBox(page)).height;
     await page.setViewportSize({ width: 360, height: 800 });
-    await expect.poll(async () => (await headerBox(page)).height).toBeGreaterThan(wide);
+    await expect.poll(async () => (await headerBox(page)).height).toBeLessThanOrEqual(72);
+    expect(Math.abs((await headerBox(page)).height - wide)).toBeLessThanOrEqual(8);
     await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("header")!.getBoundingClientRect().height - document.querySelector("[data-header-footprint]")!.getBoundingClientRect().height))).toBeLessThanOrEqual(1);
 });
 
@@ -111,10 +116,16 @@ test("an in-page anchor target is not hidden under the fixed header", async ({ p
 
 test("keyboard focus order follows the visual order and focus stays visible", async ({ page }) => {
     await page.goto("/discover");
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Tab");
+    if ((page.viewportSize()?.width ?? 1280) < 1024) {
+        // Below 1024px the destinations live in the Menu: open it, then start the walk from the brand link.
+        await page.getByRole("button", { name: "Menu", exact: true }).click();
+        await page.getByRole("banner").getByRole("link", { name: "iworkhere.space" }).focus();
+    } else {
+        await page.keyboard.press("Tab");
+        await page.keyboard.press("Tab");
+    }
     const order = [] as string[];
-    for (let step = 0; step < 12; step += 1) {
+    for (let step = 0; step < 14; step += 1) {
         order.push(await page.evaluate(() => {
             const active = document.activeElement as HTMLElement;
             return active.closest("header") ? (active.textContent ?? "").trim() : "outside";
@@ -124,8 +135,8 @@ test("keyboard focus order follows the visual order and focus stays visible", as
     const firstOutside = order.indexOf("outside");
     expect(order.slice(0, firstOutside === -1 ? order.length : firstOutside)[0]).toContain("iworkhere");
     expect(order).toContain("Home");
-    expect(order).toContain("About");
-    expect(order.indexOf("Home")).toBeLessThan(order.indexOf("About"));
+    expect(order.indexOf("Home")).toBeLessThan(order.indexOf("All tools"));
+    expect(order).not.toContain("About");
 });
 
 test("the Themes popover opens fully inside the viewport and above page content", async ({ page }) => {

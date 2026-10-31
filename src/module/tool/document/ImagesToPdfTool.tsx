@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import type { ToolComponentProp } from "../type";
+import { toolSurfaceClassName, ToolSurface } from "@/component/tool/ToolSurface";
 import { trackEvent } from "@/module/observability";
 import { formatImageFileBytes } from "../image/imageFile";
 import { ImageFileError } from "../image/imageFile.client";
@@ -12,8 +13,8 @@ import { startImagesToPdfOperation, type PdfLibOperation } from "./pdfLib.client
 import { verifyPdfLibOutput } from "./pdfLibVerification.client";
 
 interface ImagesToPdfResult { url: string; filename: string; pageCount: number; size: number }
-const PANEL = "material-raised min-w-0 space-y-4 rounded-xl border border-panel-border bg-panel-bg p-4";
-const SECONDARY = "material-secondary min-h-11 rounded-lg border border-secondary-action-border bg-secondary-action-bg px-3 py-2 disabled:opacity-50";
+const PANEL = toolSurfaceClassName("work", "space-y-4");
+const SECONDARY = "tool-action-secondary";
 
 export function ImagesToPdfTool({ toolId }: ToolComponentProp) {
     const [item, setItem] = useState<OrderedFileItem<ImagesToPdfSource>[]>([]);
@@ -102,10 +103,10 @@ export function ImagesToPdfTool({ toolId }: ToolComponentProp) {
     }
     return <div className="min-w-0 space-y-4">
         <p className="text-sm text-text-muted">Images are read locally and the PDF is created in your browser. Source images are not uploaded for conversion.</p>
-        <section className={PANEL} aria-labelledby="images-pdf-source-title">
-            <h2 id="images-pdf-source-title" className="font-semibold text-category-document">Source images</h2>
+        <ToolSurface kind="work" className="space-y-4" aria-labelledby="images-pdf-source-title">
+            <h2 id="images-pdf-source-title" className="tool-heading">Source images</h2>
             <label htmlFor="images-pdf-source" className="block font-medium">Choose JPEG or PNG images</label>
-            <input id="images-pdf-source" ref={fileInput} type="file" multiple accept="image/jpeg,image/png,.jpg,.jpeg,.png" onChange={select} className="block w-full min-w-0 rounded-lg border border-input-border bg-input-bg p-2" />
+            <input id="images-pdf-source" ref={fileInput} type="file" multiple accept="image/jpeg,image/png,.jpg,.jpeg,.png" onChange={select} className="tool-file-input" />
             <p className="text-sm text-text-muted">1–20 JPEG/PNG images; 25 MiB combined and at most 30 megapixels per image. You can add more images after choosing the first batch.</p>
             <ol aria-label="Image page order" className="space-y-3">{item.map((value, index) => <li key={value.id} className="min-w-0 space-y-2 rounded-lg border border-panel-border p-3">
                 <p className="break-all">{index + 1}. {value.file.name}</p>
@@ -116,20 +117,20 @@ export function ImagesToPdfTool({ toolId }: ToolComponentProp) {
                     <button type="button" className={SECONDARY} aria-label={`Remove image ${index + 1}: ${value.file.name}`} onClick={() => remove(value.id)}>Remove</button>
                 </div>
             </li>)}</ol>
-        </section>
+        </ToolSurface>
         <form aria-label="Create PDF actions" onSubmit={create} className={PANEL}>
             <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={item.length < 1 || selecting || processing} className="material-primary min-h-11 rounded-lg bg-accent px-4 py-2 font-medium text-[var(--contrast)] disabled:opacity-50">Create PDF</button>
+                <button type="submit" disabled={item.length < 1 || selecting || processing} className="tool-action-primary">Create PDF</button>
                 <button type="button" className={SECONDARY} onClick={reset}>Reset</button>
             </div>
             <p className="text-sm text-text-muted">One image per page, without margins. Image pixel dimensions become PDF points. Metadata preservation is not promised.</p>
         </form>
         {(selecting || processing) && <p role="status">{selecting ? "Inspecting images…" : "Creating and verifying PDF…"}</p>}
-        {error && <p ref={alert} tabIndex={-1} role="alert" className="break-words rounded-lg border border-error-border bg-error-bg p-3 text-error-text">{error}</p>}
-        {result && <section aria-labelledby="images-pdf-result-title" className="min-w-0 space-y-3 rounded-xl border border-result-border bg-result-bg p-4">
+        {error && <p ref={alert} tabIndex={-1} role="alert" data-tone="error" className="tool-feedback break-words">{error}</p>}
+        {result && <ToolSurface kind="result" aria-labelledby="images-pdf-result-title">
             <h2 id="images-pdf-result-title" ref={resultHeading} tabIndex={-1} className="font-semibold">PDF ready</h2>
             <p role="status">{result.pageCount} pages · {formatImageFileBytes(result.size)}</p>
-            <a href={result.url} download={result.filename} className="inline-block min-h-11 rounded-lg bg-accent px-4 py-2 text-[var(--contrast)]">Download PDF</a>
-        </section>}
+            <a href={result.url} download={result.filename} className="tool-action-primary">Download PDF</a>
+        </ToolSurface>}
     </div>;
 }

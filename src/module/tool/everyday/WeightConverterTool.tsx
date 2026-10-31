@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react"
 import type { ToolComponentProp } from "../type"
+import { ToolSurface } from "@/component/tool/ToolSurface"
 import { trackEvent } from "@/module/observability"
 
 type WeightUnit = "g" | "kg" | "lb" | "oz"
@@ -61,7 +62,8 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <ToolSurface kind="work" aria-label="Weight conversion">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-end">
                 <div className="space-y-2">
                     <label htmlFor="weight-value" className="text-sm text-[var(--text-muted)]">
                         Value
@@ -71,7 +73,7 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
                         type="number"
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
-                        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2"
+                        className="tool-control"
                     />
                 </div>
 
@@ -83,7 +85,7 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
                         id="weight-from"
                         value={fromUnit}
                         onChange={(e) => setFromUnit(e.target.value as WeightUnit)}
-                        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2"
+                        className="tool-control"
                     >
                         {(Object.keys(UNIT_LABELS) as WeightUnit[]).map((u) => (
                             <option key={u} value={u}>
@@ -101,7 +103,7 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
                         id="weight-to"
                         value={toUnit}
                         onChange={(e) => setToUnit(e.target.value as WeightUnit)}
-                        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus-visible:outline focus-visible:outline-2"
+                        className="tool-control"
                     >
                         {(Object.keys(UNIT_LABELS) as WeightUnit[]).map((u) => (
                             <option key={u} value={u}>
@@ -111,19 +113,20 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
                     </select>
                 </div>
             </div>
+            </ToolSurface>
 
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+            <ToolSurface kind="result" aria-label="Weight result">
                 <div className="text-sm text-[var(--text-muted)]">Result</div>
                 {result.ok ? (
                     <div className="mt-2 text-2xl font-semibold text-[var(--text)]">
                         {result.text} <span className="text-sm font-normal text-[var(--text-muted)]">{toUnit}</span>
                     </div>
                 ) : (
-                    <div role="alert" className="mt-2 text-sm text-[var(--text)]">
+                    <div role="alert" data-tone="error" className="tool-feedback mt-2 text-sm">
                         {result.error}
                     </div>
                 )}
-            </div>
+            </ToolSurface>
         </div>
     )
 }

@@ -21,8 +21,8 @@ describe("discover page content", () => {
         expect(host.querySelectorAll("h1")).toHaveLength(1);
         expect(host.querySelector("h1")?.textContent).toBe("All tools");
         const text = host.querySelector("h1")!.parentElement!.textContent ?? "";
-        expect(text).toContain("Search for a tool by name or task, or browse by category");
-        expect(text).toContain(`shows all ${getAllTool().length} tools together`);
+        expect(text).toContain("Search by tool name or task");
+        expect(text).toContain("browse by category below");
         expect(text).not.toMatch(/everyday/i);
         expect(text).not.toContain("Browse all available utility tool by category");
     });
@@ -33,7 +33,8 @@ describe("discover page content", () => {
         const link = [...section.querySelectorAll("a")];
         expect(link.map(one => one.getAttribute("href"))).toEqual(getAvailableCategory().map(category => `/category/${category}`));
         for (const [index, category] of getAvailableCategory().entries()) {
-            expect(link[index].textContent).toBe(getToolCategoryLabel(category));
+            expect(host.querySelector(`#${link[index].getAttribute("aria-labelledby")}`)?.textContent).toBe(getToolCategoryLabel(category));
+            expect(link[index].classList.contains("ds-card")).toBe(true);
             expect(link[index].parentElement?.textContent).toContain(getToolCategoryDefinition(category).description);
         }
         expect(link.map(one => one.getAttribute("href"))).not.toContain("/category/everyday");

@@ -158,7 +158,14 @@ for (const tool of cases) {
             await page.keyboard.type("Hello World!");
             await expect(main.locator("output")).toHaveText("hello-world");
             for (const [value, expected] of [["Ready... Set / Go!", "ready-set-go"], ["Café 東京", "caf"], ["東京", ""], ["!!!", ""], ["", ""]]) {
-                await input.fill(value); await expect(main.locator("output")).toHaveText(expected);
+                await input.fill(value);
+                // An empty slug has no result element: it is explained by neutral status feedback for non-empty input and by nothing for empty input.
+                if (expected) await expect(main.locator("output")).toHaveText(expected);
+                else {
+                    await expect(main.locator("output")).toHaveCount(0);
+                    if (value) await expect(main.getByRole("status")).toContainText("No slug was generated");
+                    else await expect(main.getByRole("status")).toHaveCount(0);
+                }
             }
         } else if (tool.slug === "html-text-extractor") {
             await context.grantPermissions(["clipboard-read", "clipboard-write"]);

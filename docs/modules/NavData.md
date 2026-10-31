@@ -37,4 +37,4 @@ category. Contact Us is deliberately not a navigation item: it lives in the foot
 
 ## v0.4.4 Batch 5 primary navigation order
 
-`defaultNavItem` is Home (`/`), All tools (`/discover`) and Guides (`/guide`). `src/app/layout.tsx` appends the registry-populated categories in their existing order (document, text, math, converter, time, image, developer) and then `aboutNavItem`, so the primary navigation has 11 links and About is last. The footer and contact order are unchanged.
+`defaultNavItem` is Home (`/`), All tools (`/discover`), Workflows (`/workflows`) and Guides (`/guide`). `src/app/layout.tsx` builds the registry-populated categories (document, text, math, converter, time, image, developer) into the separate Categories disclosure. There is no `aboutNavItem`: About (`/about`) is a footer link next to Contact and Privacy (`src/component/layout/Footer.tsx`).

@@ -1,4 +1,8 @@
 import { test, expect } from "./support/fixture";
+import { tool_category_definition_list } from "../../src/module/tool/category";
+
+// Canonical visitor-facing board and chip titles come from the category definitions, not from capitalized ids.
+const DEVELOPER_TITLE = tool_category_definition_list.find(definition => definition.id === "developer")!.title;
 
 test("historical category redirects permanently and converter SEO is canonical", async ({ page, request }) => {
     const redirect = await request.get("/category/everyday", { maxRedirects: 0 });
@@ -34,7 +38,7 @@ test("homepage groups every discoverable tool exactly once and keyboard navigati
     expect([...home].sort()).toEqual([...catalog].sort());
     const section = page.getByRole("region", { name: "Converters", exact: true });
     await expect(section.locator('a[href^="/tool/"]')).toHaveCount(2);
-    await expect(page.getByRole("region", { name: "Developer tools", exact: true }).locator('a[href="/tool/qr-code-generator"]')).toHaveCount(1);
+    await expect(page.getByRole("region", { name: DEVELOPER_TITLE, exact: true }).locator('a[href="/tool/qr-code-generator"]')).toHaveCount(1);
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
     const categories = await navigation.locator('a[href^="/category/"]').evaluateAll(elements => elements.map(element => element.getAttribute("href")?.split("/").pop()));
     const islands = await main.locator('[data-surface="section-island"]').evaluateAll(elements => elements.map(element => element.getAttribute("aria-labelledby")?.replace("home-category-", "").replace("-title", "")));
@@ -73,7 +77,7 @@ for (const context of appearance) {
             return [style.getPropertyValue("--category-color").trim(), style.getPropertyValue("--category-soft").trim()];
         })).toEqual(expected);
         expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--category-everyday").trim())).toBe("");
-        const qr = page.getByRole("region", { name: "Developer tools", exact: true }).locator('a[href="/tool/qr-code-generator"]');
+        const qr = page.getByRole("region", { name: DEVELOPER_TITLE, exact: true }).locator('a[href="/tool/qr-code-generator"]');
         await expect(qr).toHaveAttribute("data-category", "developer");
         expect(await qr.evaluate(element => {
             const style = getComputedStyle(element);

@@ -16,7 +16,7 @@ describe("server guide and breadcrumb composition", () => {
             expect(html).toContain('aria-current="page"');
             if (tool.category === "document") {
                 expect(guide).toBeDefined();
-                expect(html).toContain("Related document tools");
+                expect(html).toContain("Related tools");
                 if (tool.id === "images-to-pdf") {
                     expect(html).toContain("25 MiB"); expect(html).toContain("30 megapixels");
                     expect(html).toContain("the images are not uploaded"); expect(html).toContain("PDF points");
@@ -52,7 +52,8 @@ describe("server guide and breadcrumb composition", () => {
                 expect(related.map(item => item.id)).toEqual(["slugify", "html-text-extractor"]);
                 expect(related.every(item => item.category === "text")).toBe(true);
                 for (const item of related) expect(html).toContain(`href="${item.seo.canonicalPath}"`);
-                expect(html).toContain("Related text tools");
+                expect(html).toContain("Related tools");
+                expect(html).not.toContain("Related text tools");
                 return;
             }
             if (tool.id === "qr-code-generator") {
@@ -84,8 +85,8 @@ describe("server guide and breadcrumb composition", () => {
                 return;
             }
             expect(guide).toBeDefined();
-            expect(html).toContain("Related image tools");
-            expect(html).not.toContain("Related document tools");
+            expect(html).toContain("Related tools");
+            expect(html).not.toContain("Related image tools");
             expect(Object.keys(guide!).sort()).toEqual(["instruction", "relatedToolId", "section"]);
             expect(html).toContain("25 MiB");
             expect(html).toContain("30 megapixels");
@@ -144,7 +145,7 @@ describe("calculator and time arithmetic guides", () => {
             expect(html).toContain("Interactive workspace");
             expect(html.split(">How to use</h2>")).toHaveLength(2);
             expect(guide.section.map(section => section.heading)).toEqual(want.headings);
-            for (const heading of want.headings) expect(html.split(`>${heading}</h2>`)).toHaveLength(2);
+            for (const heading of want.headings) expect(html.split(`>${heading}</h3>`)).toHaveLength(2);
             for (const text of want.instruction) expect(guide.instruction.join(" ")).toContain(text);
             for (const text of want.text) expect(html).toContain(text);
             for (const entry of related) expect(html).toContain(`href="${entry.seo.canonicalPath}"`);
@@ -163,40 +164,27 @@ describe("related-tools heading truthfulness", () => {
         return { html, related, heading: html.match(/<h2[^>]*>(Related[^<]*)<\/h2>/)?.[1] };
     }
 
-    it("labels every guided tool's related set by the related tools' own categories", () => {
+    it("uses the exact neutral heading 'Related tools' for every guided tool, whatever its category", () => {
         const guided = getAllTool().filter(tool => getToolGuide(tool.id));
         expect(guided.length).toBeGreaterThanOrEqual(12);
         for (const tool of guided) {
-            const { related, heading } = renderGuided(tool.id);
-            const categories = [...new Set(related.map(entry => entry.category))];
+            const { html, related, heading } = renderGuided(tool.id);
             expect(related.length, tool.id).toBeGreaterThan(0);
-            if (categories.length === 1) {
-                expect(heading, tool.id).toBe(`Related ${categories[0]} tools`);
-            } else {
-                expect(heading, tool.id).toBe("Related tools");
-            }
+            expect(heading, tool.id).toBe("Related tools");
+            expect(html, tool.id).not.toMatch(/Related (text|developer|image|document|converter|math|time) tools/);
         }
     });
 
-    it("says Related text tools on the JSON Formatter page, not Related developer tools", () => {
-        const tool = getAllTool().find(entry => entry.id === "json-formatter")!;
+    it("does not call the JSON Formatter related set 'text tools' or 'developer tools'", () => {
         const { html, related, heading } = renderGuided("json-formatter");
-        expect(tool.category).toBe("developer");
         expect(related.map(entry => entry.id)).toEqual(["html-text-extractor", "slugify"]);
-        expect(related.map(entry => entry.category)).toEqual(["text", "text"]);
-        expect(heading).toBe("Related text tools");
+        expect(heading).toBe("Related tools");
+        expect(html).not.toContain("Related text tools");
         expect(html).not.toContain("Related developer tools");
         for (const entry of related) expect(html).toContain(`href="${entry.seo.canonicalPath}"`);
     });
 
-    it("keeps the existing correct headings", () => {
-        expect(renderGuided("word-character-counter").heading).toBe("Related text tools");
-        expect(renderGuided("qr-code-generator").heading).toBe("Related tools");
-        for (const id of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) expect(renderGuided(id).heading, id).toBe("Related image tools");
-        for (const id of ["merge-pdf", "split-pdf", "images-to-pdf", "pdf-to-image", "compress-pdf"]) expect(renderGuided(id).heading, id).toBe("Related document tools");
-    });
-
-    it("uses the neutral heading for a mixed-category related set without naming either category", () => {
+    it("keeps the neutral heading for mixed-category related sets", () => {
         const { html, related, heading } = renderGuided("json-formatter", ["slugify", "json-formatter"]);
         expect(related.map(entry => entry.category)).toEqual(["text", "developer"]);
         expect(heading).toBe("Related tools");
@@ -204,8 +192,8 @@ describe("related-tools heading truthfulness", () => {
         expect(html).not.toContain("Related developer tools");
     });
 
-    it("uses the neutral heading when a guide has no resolvable related tools", () => {
+    it("omits the empty related section when a guide has no resolvable related tools", () => {
         const { heading } = renderGuided("json-formatter", []);
-        expect(heading).toBe("Related tools");
+        expect(heading).toBeUndefined();
     });
 });

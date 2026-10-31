@@ -20,7 +20,7 @@ export function AdSenseSlot({ placement }: AdSenseSlotProps) {
     if (!enabled) return null;
     return (
         <div aria-label={`${placement === "header" ? "Top" : "Right"} advertisement`} className="min-w-0 text-center">
-            <p className="mb-1 text-xs text-[var(--text-muted)]">Advertisement</p>
+            <p className="mb-1 text-xs text-[var(--text-muted)]">Advertisements</p>
             <ins ref={element} className={`adsbygoogle block w-full ${placement === "header" ? "min-h-[100px] sm:min-h-[90px]" : ""}`}
                 data-ad-client={ADSENSE_CLIENT} data-ad-slot={ADSENSE_SLOT[placement]}
                 data-ad-format={placement === "header" ? "horizontal" : "vertical"}

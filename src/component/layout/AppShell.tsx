@@ -7,6 +7,7 @@ import type { NavItem } from "./type"
 export interface AppShellProps {
     children: ReactNode
     navItem?: NavItem[]
+    categoryNavItem?: NavItem[]
     headerBannerSlot?: ReactNode
     footerBannerSlot?: ReactNode
     leftBannerSlot?: ReactNode
@@ -18,6 +19,7 @@ export interface AppShellProps {
 export default function AppShell({
     children,
     navItem,
+    categoryNavItem,
     headerBannerSlot,
     footerBannerSlot,
     leftBannerSlot,
@@ -41,7 +43,7 @@ export default function AppShell({
                 Skip to main content
             </a>
             <HeaderViewportControl>
-                <Header navItem={navItem ?? []} />
+                <Header navItem={navItem ?? []} categoryNavItem={categoryNavItem ?? []} />
             </HeaderViewportControl>
 
             {headerBannerSlot ? (

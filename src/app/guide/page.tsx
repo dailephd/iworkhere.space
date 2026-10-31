@@ -1,43 +1,42 @@
 import Link from "next/link";
+import { PageHeader } from "@/component/common/PageHeader";
 import { buildPageMetadata } from "@/lib/seo";
-import { getAllTaskGuide } from "@/module/content/taskGuide";
+import { getAllGuideNode } from "@/module/content/toolFinder";
+import { ToolFinderClient } from "@/module/content/ToolFinderClient";
+import type { GuideResolvedTarget } from "@/module/content/ToolFinderClient";
 import { getToolByIdList } from "@/module/tool/metadata";
+import { getOperationalWorkflow } from "@/module/workflow/registry";
 
-const HUB_TITLE = "Practical File Workflows";
-const HUB_DESCRIPTION = "Four step-by-step workflows that combine PDF and image tools in your browser: assemble a PDF packet, prepare an image for an upload, turn HEIC photos into a PDF, and make slide-ready page images.";
+const HUB_TITLE = "Find the Right Tool or Workflow";
+const HUB_DESCRIPTION = "Answer one or two short questions to find the matching browser tool or working workflow on iworkhere. The guide only points you to a page; it never opens, uploads or processes a file.";
 
 export const metadata = buildPageMetadata({ title: HUB_TITLE, description: HUB_DESCRIPTION, canonicalPath: "/guide" });
 
-export default function GuideHubPage() {
-    const guideList = getAllTaskGuide();
+/* Resolves every recommendation through the tool and workflow registries. A target the registries cannot supply is a contract violation, never silently omitted. */
+function resolveTarget(): GuideResolvedTarget[] {
+    return getAllGuideNode().flatMap((node): GuideResolvedTarget[] => {
+        if (node.kind !== "recommendation") return [];
+        if (node.target.kind === "tool") {
+            const [tool] = getToolByIdList([node.target.toolId]);
+            if (!tool) throw new Error(`Guide node ${node.id} names an unregistered tool: ${node.target.toolId}`);
+            return [{ nodeId: node.id, kind: "tool", label: tool.name, href: tool.seo.canonicalPath, rationale: node.rationale }];
+        }
+        const workflow = getOperationalWorkflow(node.target.workflowSlug);
+        if (!workflow) throw new Error(`Guide node ${node.id} names a workflow that is not operational: ${node.target.workflowSlug}`);
+        return [{ nodeId: node.id, kind: "workflow", label: workflow.title, href: workflow.canonicalPath, rationale: node.rationale }];
+    });
+}
 
+export default function GuideHubPage() {
     return (
         <div className="min-w-0 space-y-6">
-            <header className="space-y-2">
-                <h1 className="text-3xl font-semibold text-text">{HUB_TITLE}</h1>
-                <p className="text-text-muted">Some jobs need more than one tool. Each workflow below starts from a kind of file you have, names the result you can expect and the main limit, and links to the tools it uses.</p>
-                <p className="text-sm text-text-muted">The tools run separately in your browser. Whatever one tool produces, you download and then select again in the next tool. Nothing is passed along for you, and these pages create no files.</p>
-            </header>
-            <ul className="grid gap-4 sm:grid-cols-2">
-                {guideList.map(guide => {
-                    const toolList = getToolByIdList(guide.step.flatMap(step => step.toolId ? [step.toolId] : []));
-                    return (
-                        <li key={guide.slug} data-guide={guide.slug} className="min-w-0 space-y-3 rounded-xl border border-card-border bg-card-bg p-4">
-                            <h2 className="text-xl font-semibold text-text">
-                                <Link href={`/guide/${guide.slug}`} className="underline underline-offset-4 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring">{guide.title}</Link>
-                            </h2>
-                            <dl className="space-y-2 text-sm">
-                                <div><dt className="font-medium text-text">Start with</dt><dd className="text-text-muted">{guide.startingMaterial}</dd></div>
-                                <div><dt className="font-medium text-text">You end with</dt><dd className="text-text-muted">{guide.expectedOutcome}</dd></div>
-                                <div><dt className="font-medium text-text">Main limit</dt><dd className="text-text-muted">{guide.limitation[0]}</dd></div>
-                            </dl>
-                            <p className="text-sm text-text-muted">Tools:{" "}
-                                {toolList.map((tool, index) => <span key={tool.id}>{index > 0 && ", "}<Link href={tool.seo.canonicalPath} className="underline underline-offset-4">{tool.name}</Link></span>)}
-                            </p>
-                        </li>
-                    );
-                })}
-            </ul>
+            <PageHeader title={HUB_TITLE} description="Pick what you want to do and the guide recommends one browser tool or working workflow, with a link to open it.">
+                <p className="text-sm text-text-muted">This page makes no files and sends nothing anywhere. You choose your files on the tool or workflow page it points to.</p>
+            </PageHeader>
+            <ToolFinderClient node={getAllGuideNode()} resolvedTarget={resolveTarget()} />
+            <p className="text-sm text-text-muted">
+                Prefer to browse? See <Link href="/discover" className="underline underline-offset-4 hover:no-underline">all tools</Link> or the <Link href="/workflows" className="underline underline-offset-4 hover:no-underline">working workflows</Link>.
+            </p>
         </div>
     );
 }

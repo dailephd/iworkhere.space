@@ -42,8 +42,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     }
     return <AppearanceContext.Provider value={{
         preference, ready,
-        selectPalette: palette => select({ palette, mode: palette === "onedark" ? "dark" : preference.mode }),
-        selectMode: mode => select({ palette: preference.palette === "onedark" ? DEFAULT_APPEARANCE.palette : preference.palette, mode }),
+        // One Dark renders fixed dark on its own; the ordinary mode is retained, and it cannot change while One Dark is active.
+        selectPalette: palette => select({ palette, mode: preference.mode }),
+        selectMode: mode => { if (preference.palette !== "onedark") select({ palette: preference.palette, mode }); },
     }}>{children}</AppearanceContext.Provider>;
 }
 

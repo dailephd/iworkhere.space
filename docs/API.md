@@ -353,3 +353,7 @@ No silent interface changes.
 ## Diagnostic hotfix
 
 POST /api/log accepts bounded redacted messages plus optional strict client ErrorDiagnostic. It returns empty 204 after structured logging and optional fail-safe diagnostic persistence; 400 for invalid/oversized body and 403 for inconsistent origin checks. Metrics ingestion stays separate. Next onRequestError invokes the same server sink without an HTTP diagnostic route.
+
+## Browser-local processing is not an API (sitewide redesign candidate)
+
+Tool processing and the four workflows (`/workflows/*`) run in the visitor's browser through the dispatcher in `src/module/workflow/runner.client.ts` and the existing PDF, image and HEIC processors. There is no file-upload or file-processing endpoint. The only application endpoints remain those documented above (logging, metrics, maintenance and support). The `/workflows/*` and `/guide` URLs are pages, and `/guide/<slug>` for the four legacy slugs answers with HTTP 308 to `/workflows/<slug>`.

@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { measureText } from "./textMetric";
+import { ToolSurface } from "@/component/tool/ToolSurface";
 
 const UNAVAILABLE = "—";
 
@@ -26,7 +27,7 @@ export function WordCharacterCounterTool() {
     ];
 
     return (
-        <div className="flex flex-col gap-4">
+        <ToolSurface kind="work" aria-label="Word and character counter" className="flex flex-col gap-4 space-y-0">
             <div className="flex min-w-0 flex-col gap-2">
                 <label htmlFor="counter-input" className="text-sm font-medium text-[var(--text)]">
                     Text
@@ -39,17 +40,17 @@ export function WordCharacterCounterTool() {
                     placeholder="Type or paste text here..."
                     spellCheck={false}
                     aria-invalid={result.ok ? undefined : true}
-                    className="h-64 w-full resize-y rounded-xl border border-[var(--input-border)] bg-[var(--input-bg)] p-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--border)] focus:outline-none"
+                    className="tool-control h-64 resize-y text-sm"
                 />
             </div>
 
             <div role="alert" className="min-h-0">
-                {!result.ok && <p className="text-sm text-[var(--danger)]">{result.error.message}</p>}
+                {!result.ok && <p data-tone="error" className="tool-feedback text-sm">{result.error.message}</p>}
             </div>
 
             <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">
                 {metricList.map((item) => (
-                    <div key={item.label} className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3">
+                    <div key={item.label} className="tool-result min-w-0 p-3">
                         <dt className="text-sm text-[var(--text-muted)]">{item.label}</dt>
                         <dd className="text-2xl font-semibold text-[var(--text)]">{display(item.value)}</dd>
                     </div>
@@ -60,11 +61,11 @@ export function WordCharacterCounterTool() {
                 <button
                     type="button"
                     onClick={handleReset}
-                    className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--surface-alt)] focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:outline-none"
+                    className="tool-action-secondary"
                 >
                     Reset
                 </button>
             </div>
-        </div>
+        </ToolSurface>
     );
 }

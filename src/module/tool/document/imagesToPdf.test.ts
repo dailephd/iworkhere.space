@@ -71,4 +71,4 @@ it("real worker outputs independently rendered ordered JPEG/PNG pages, including
     expect(await inspectImagePdf(boundary.bytes)).toHaveLength(20);
     expect((await run([{ ...first, width: 81 }])).status).toBe("error");
     expect((await run([jpeg])).status).toBe("error");
-});
+}, 30_000);

@@ -15,7 +15,7 @@ const pdf = (name: string) => path.resolve(`test/fixtures/pdf/${name}.pdf`);
 
 test("document family: complete discovery, search, canonical SSR and related navigation", async ({ page, request }) => {
     await page.goto("/");
-    const other = page.getByRole("region", { name: "Document tools" });
+    const other = page.getByRole("region", { name: "PDF Tools", exact: true });
     for (const tool of documents) await expect(other.locator(`a[href="/tool/${tool.slug}"]`)).toHaveCount(1);
     await other.locator('a[href="/tool/merge-pdf"]').click();
     await expect(page.getByRole("heading", { level: 1, name: "Merge PDF", exact: true })).toBeVisible();
@@ -42,14 +42,14 @@ test("document family: complete discovery, search, canonical SSR and related nav
         const html = await (await request.get(`/tool/${tool.slug}`)).text();
         expect(html).toContain(`rel="canonical" href="https://iworkhere.space/tool/${tool.slug}"`);
         expect(html).toContain(`property="og:url" content="https://iworkhere.space/tool/${tool.slug}"`);
-        expect(html).toContain("How to use"); expect(html).toContain("Related document tools");
+        expect(html).toContain("How to use"); expect(html).toContain("Related tools");
         expect(html).not.toContain("noindex"); expect(html).not.toContain("Related image tools");
         titles.push(html.match(/<title>([^<]+)<\/title>/)![1]);
         descriptions.push(html.match(/name="description" content="([^"]+)"/)![1]);
     }
     expect(titles).toEqual(["Merge PDF Files Online - iworkhere", "Split PDF Pages Online - iworkhere", "Images to PDF Converter - iworkhere", "PDF to JPG and PNG Converter - iworkhere", "Compress PDF Files Online - iworkhere"]); expect(new Set(descriptions).size).toBe(5);
     const xml = await (await request.get("/sitemap.xml")).text();
-    expect(xml.match(/<loc>/g)).toHaveLength(35);
+    expect(xml.match(/<loc>/g)).toHaveLength(36); expect(xml.split("<loc>https://iworkhere.space/workflows</loc>")).toHaveLength(2);
     for (const route of [...documents.map(tool => `/tool/${tool.slug}`), "/category/document"])
         expect(xml.split(`<loc>https://iworkhere.space${route}</loc>`)).toHaveLength(2);
     expect(xml).not.toMatch(/\/api\/|dashboard|vercel\.app|<loc>[^<]*[?#]/);

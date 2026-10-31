@@ -135,7 +135,7 @@ export function getToolCategoryDefinition(category: ToolCategory): ToolCategoryD
     return definition;
 }
 
+/** The visitor-facing category label is always the canonical definition title. */
 export function getToolCategoryLabel(category: ToolCategory): string {
-    const definition = getToolCategoryDefinition(category);
-    return category === "converter" ? definition.title : category[0].toUpperCase() + category.slice(1);
+    return getToolCategoryDefinition(category).title;
 }

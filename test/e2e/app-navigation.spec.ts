@@ -1,4 +1,5 @@
 import { test, expect } from "./support/fixture";
+import { tool_category_definition_list } from "../../src/module/tool/category";
 
 test("home loads with one main landmark", async ({ page }) => {
     const response = await page.goto("/");
@@ -8,24 +9,24 @@ test("home loads with one main landmark", async ({ page }) => {
     await expect(page.getByRole("button", { name: "Themes", exact: true })).toBeEnabled();
     await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
     await expect(page.getByLabel("Search", { exact: true })).toBeVisible();
-    const categories = ["Document", "Text", "Math", "Converters", "Time", "Image", "Developer"];
+    // Canonical definition titles name each Home board and category link; the header keeps the same seven destinations in a separate list.
     const islands = page.locator('[data-surface="section-island"]');
-    await expect(islands).toHaveCount(categories.length);
-    for (const category of categories) {
-        await expect(page.getByRole("region", { name: category === "Converters" ? category : `${category} tools`, exact: true })).toBeVisible();
-        await expect(page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: category, exact: true })).toBeVisible();
+    await expect(islands).toHaveCount(tool_category_definition_list.length);
+    for (const definition of tool_category_definition_list) {
+        await expect(page.getByRole("region", { name: definition.title, exact: true })).toBeVisible();
+        await expect(page.getByRole("main").locator(`#home-categories-title ~ ul a[href="/category/${definition.id}"]`)).toHaveText(definition.title);
+        await expect(page.locator(`nav[aria-label="Primary navigation"] [data-category-nav-list] a[href="/category/${definition.id}"]`)).toHaveText(definition.title);
     }
-    await expect(page.getByRole("main").getByRole("link", { name: "All tools", exact: true })).toHaveAttribute("href", "/discover");
-    const imageSection = page.getByRole("main").locator("section").filter({ has: page.getByRole("heading", { name: "Image tools", exact: true }) });
+    await expect(page.getByRole("main").getByRole("link", { name: "All tools", exact: true })).toHaveCount(0);
+    const imageSection = page.getByRole("main").locator("section").filter({ has: page.getByRole("heading", { name: "Image Tools", exact: true }) });
     for (const slug of ["image-resizer", "image-compressor", "image-converter", "heic-converter"]) {
         await expect(imageSection.locator(`a[href="/tool/${slug}"]`)).toHaveCount(1);
     }
-    // The eighteen registry cards stay exactly once each; the five featured task links are additional entry points, not cards.
+    // The eighteen registry cards appear exactly once each; Home has no other tool entry points.
     await expect(page.getByRole("main").locator('a.catalog-card[href^="/tool/"]')).toHaveCount(18);
     await expect(page.getByRole("main").locator('a.catalog-card').filter({ hasText: /Image Resizer/ })).toHaveAttribute("href", "/tool/image-resizer");
-    await expect(page.getByRole("main").locator('[data-featured-task] a[href^="/tool/"]')).toHaveCount(5);
-    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(23);
-    await expect(page.getByRole("main").locator('[data-featured-task="image-resizer"]').getByRole("link", { name: "Image Resizer", exact: true })).toHaveAttribute("href", "/tool/image-resizer");
+    await expect(page.getByRole("main").locator('[data-featured-task]')).toHaveCount(0);
+    await expect(page.getByRole("main").locator('a[href^="/tool/"]')).toHaveCount(18);
 });
 
 test("discover exposes all eighteen registered tools and reachable routes", async ({ page }) => {
