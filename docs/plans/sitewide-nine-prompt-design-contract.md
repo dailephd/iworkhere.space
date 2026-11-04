@@ -1,5 +1,13 @@
 # Sitewide nine-prompt redesign - planned design and architecture contract
 
+> **Implementation-status addendum (2026-11-04):** This document is the frozen
+> 2026-10-29 planning baseline. The work it specifies was subsequently
+> committed and merged to `master` through PR #51 on 2026-10-31 at `f8407b8`,
+> and eight hosted workflows passed on the merged commit. The original
+> "PLANNED" and "uncommitted candidate" statements below describe the
+> historical starting point, not current source status. No new version tag,
+> GitHub Release or Production deployment is inferred.
+
 Status: PLANNED. Nothing in this document is implemented. Every behavior, route, module, component, type and test named below as planned is a future target, not a current fact. Current-state facts appear only in sections that are explicitly labelled as verified candidate evidence.
 
 Document date: 2026-10-29.
