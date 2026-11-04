@@ -3,11 +3,12 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The v0.4.4 application release contains 18 registered utilities
-across seven populated categories, nine verified worked file examples, a
-task-first homepage, improved Discover navigation and category guidance,
-publisher About and Contact pages, privacy improvements, and 35 canonical
-public routes. The header is fixed and the footer is ordinary document-flow
+At the inspected `master` commit (`f8407b8`, 2026-10-31), the application
+package is `0.4.4`; the latest verified published GitHub Release is `v0.4.3`
+(2026-10-21). The integrated source includes 18 registered utilities across
+seven populated categories, nine verified worked file examples, a searchable
+catalog homepage, four browser-local workflows, an interactive Guide finder,
+privacy improvements, and 36 canonical public routes. The header is fixed and the footer is ordinary document-flow
 content with its conditional Report Issues action. Contact uses the direct
 Resend integration
 with a sender and recipient configured externally; Production delivery was
@@ -48,16 +49,20 @@ verification requirements; source validation does not establish either. The
 [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
 the original findings and their limits. The [roadmap](docs/ROADMAP.md) retains
 the planned v0.5.0/v0.6.0 catalogs. The four original manual task guides are
-superseded on the local candidate (see below); their authored data remains
+superseded in the merged `master` source (see below); their authored data remains
 documented in [Practical File Workflows](docs/modules/TaskGuide.md), and the
 implementation history remains in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
-## Sitewide redesign (local candidate, unreleased)
+## Sitewide redesign (merged to `master`, not a numbered release)
 
-The working tree for `feature/homepage-colorfield-refresh` (version still
-`0.4.4`, uncommitted, not deployed) contains a sitewide redesign. It has not
-been released or published; its acceptance evidence is a local report, not a
-hosted CI result. Current behavior:
+The sitewide redesign was merged to `master` through PR #51 on 2026-10-31
+(commit `f8407b81356bb9481d12c1e13415fb18bc941100`), with application
+package version still `0.4.4`. All eight GitHub Actions workflows succeeded on
+that exact merged commit, including browser and container checks. No `v0.4.4`
+tag or GitHub Release was present in the 2026-11-04 release-record check;
+production deployment identity for this merged source has not been verified.
+Earlier local Prompt 9 reports remain historical candidate evidence. Current
+merged-source behavior:
 
 - Home (`/`) is the searchable catalog of the 18 individual tools in seven
   categories; it has no task, guide or workflow cards. `/discover` is the

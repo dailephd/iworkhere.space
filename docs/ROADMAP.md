@@ -4,6 +4,14 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
+**Repository checkpoint (2026-11-04):** `master` at `f8407b8` includes the
+sitewide redesign merged through PR #51 on 2026-10-31; its eight hosted
+workflow checks passed. The root package still identifies as `0.4.4`, but
+the latest verified published GitHub Release is `v0.4.3` (2026-10-21).
+The v0.4.4 release/tag and this source's Vercel Production deployment were
+not verified as completed. Neither this merge nor the redesign changes the
+frozen v0.5.0/v0.6.0 catalog scope.
+
 The current application release source is `v0.4.4`; the independent dashboard
 remains `0.1.0`. Version `v0.4.2` was the preceding published release when v0.4.3
 development began. The v0.4.3 scope is complete and merged to `master` by PR
@@ -993,9 +1001,9 @@ v0.4.1  UI and Converter updates (released 2026-10-11)
         ↓
 v0.4.2  User Feedback & Retractable Site Chrome (released 2026-10-20)
         ↓
-v0.4.3  Utility Value, Trust & Discoverability (scope complete; merged to master)
+v0.4.3  Utility Value, Trust & Discoverability (published 2026-10-21)
         ↓
-v0.4.4  Site Quality & Search Recovery (implemented; release source validated)
+v0.4.4  Site Quality & Search Recovery (source merged; no published v0.4.4 tag/Release verified)
         ↓
 v0.5.0  Developer & Text Utility Suite
         ↓
@@ -1082,9 +1090,12 @@ Where a version has unresolved planning decisions, resolve them before its imple
 ## Next planning action
 
 The complete [v0.4.4 Site Quality & Search Recovery plan](plans/v0.4.4-implementation-plan.md)
-is implemented and validated as release source. The frozen v0.5.0 catalog
-expansion is the next planned implementation version after v0.4.4 release
-integration. The [2026-10-26 quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+is implemented and validated as source. PR #49 and the later PR #51 redesign
+are merged, but the `v0.4.4` GitHub tag/Release was absent at the 2026-11-04
+check. First decide and complete or explicitly defer remaining v0.4.4 release
+and production-deployment work; do not mistake source integration for
+publication. Then inspect current owners, freeze the implementation plan for
+the unchanged nine-tool v0.5.0 catalog, and begin its first bounded batch. The [2026-10-26 quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
 remains historical evidence of the original priorities. Actual publication
 and deployment identity are recorded separately in [project status](project-status.md)
 and external release records; live advertising and AdSense review are not
@@ -1152,6 +1163,6 @@ contract is designed and approved. No converter expansion is implemented here.
 
 Historical status note (2026-10-27): v0.4.4 Batch 5 (four task guides, the `/guide` hub and their discovery links) is implemented locally on `feature/v0.4.4-site-quality`; the release, container gate and whole-site reconciliation remain Batch 6 work. Batch 6 verification (2026-10-27) found the container gate and one complete browser run still not green, so v0.4.4 is not release ready; see [project status](project-status.md) and the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
-## Status note: sitewide redesign candidate (2026-10-31)
+## Status note: sitewide redesign integrated (2026-10-31)
 
-The sitewide redesign (searchable 18-tool Home, working browser-local workflows, interactive Guide finder, 36 canonical URLs, seven art-directed palettes) exists only as an unreleased local candidate on `feature/homepage-colorfield-refresh`. It is not a published release and does not change the planned v0.5.0/v0.6.0 catalogs or their ordering. Earlier plan entries that mention publishing four manual task guides are historical; those guides are superseded by the workflows. Any version number, release or deployment for the candidate requires a separate decision.
+The sitewide redesign (searchable 18-tool Home, four working browser-local workflows, interactive Guide finder, 36 canonical URLs, seven art-directed palettes) was merged through PR #51 to `master` as `f8407b8` and passed all eight hosted workflows there. Its previous uncommitted worktree status is historical. Package metadata remains `0.4.4`; the merged redesign has no separately verified release tag or Production deployment. The planned v0.5.0/v0.6.0 catalogs and their ordering remain unchanged. Earlier v0.4.4 manual task-guide plans are historical; their routes have been superseded by the workflows and Guide finder.

@@ -50,9 +50,11 @@ production-license release gate. The generated positive fixture is within the fr
 
 ## 1. Overview
 
-The v0.4.4 application package is version 0.4.4. The previous v0.4.3
-GitHub Release was published on 2026-10-21; publication and Vercel deployment
-remain separate records. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md)
+The `master` application package is version `0.4.4`. The latest verified
+published GitHub Release remains `v0.4.3` (2026-10-21); no `v0.4.4` tag or
+GitHub Release was found on 2026-11-04. PR #51 merged the redesign to
+`master` on 2026-10-31, and its eight hosted workflows passed; Vercel
+Production deployment remains a separate, unverified identity for that source. Its [frozen five-batch plan](plans/v0.4.3-implementation-plan.md)
 preserves historical scope. [v0.4.4 Site Quality & Search Recovery](plans/v0.4.4-implementation-plan.md)
 is implemented and release-preparation validated; the unchanged v0.5.0/v0.6.0
 catalogs remain the next planned product versions.
@@ -62,9 +64,11 @@ points to the release-time `master` commit
 `90a718458e6fd2e3e80eb190cd7d55748bd1f6bb`. The subsequent v0.4.3 planning PR #35 merge commit is
 `d48e5fcf3d9015db5677d0a7410236a70979db58`; newer documentation commits
 may advance `master` without changing the numbered release tag.
-The current source contains 18 tools, seven populated categories and 30
-sitemap URLs. The older v0.4.1 inventory had 28 URLs; About and Contact are
-included in the current count. It includes homepage category sections,
+The current merged source contains 18 tools, seven populated categories and 36
+canonical sitemap URLs: five base pages, 18 tools, seven categories, the Guide
+finder, the workflows hub and four operational workflow pages. The older
+v0.4.1 inventory had 28 URLs; v0.4.3 had 30 and the pre-redesign v0.4.4
+source had 35. It includes homepage category sections,
 Calculator keyboard equals, the integrated six-palette appearance system and
 the converter category migration. See `CHANGELOG.md`, `project-status.md` and
 `ROADMAP.md`. Current category ownership is described in `modules/Category.md`;
@@ -287,7 +291,7 @@ new modules or changing layer boundaries.
 
 ### DESIGN.md
 
-**Approved direction (2026-10-28), since carried forward by the unreleased sitewide redesign candidate (Home is the 18-tool catalog without featured-task cards; see project-status.md):** [Colorfield homepage adaptation](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28) preserves the existing registry-driven catalog, makes its icon/name/description cards visually colorful, removes visitor-facing tool counts, and places the catalog above featured tasks and guides. Its implementation is separate from historical v0.4.4 and the frozen future utility catalog roadmap. See [HomeClient component contract](components/HomeClient.md).
+**Current merged presentation (PR #51, 2026-10-31):** The [original Colorfield adaptation](DESIGN.md#approved-homepage-colorfield-adaptation--2026-10-28) preceded the broader redesign. Home now contains only the searchable registry-derived 18-tool catalog in seven category boards; featured tasks and the four manual guide cards no longer render there. Operational workflows and the interactive Guide finder have separate routes. See [current project status](project-status.md) and [HomeClient](components/HomeClient.md). The v0.5.0/v0.6.0 catalogs remain planned.
 **Summary:** The canonical product design and styling contract, including
 visual identity, themes, layout, scrolling, accessibility, performance, and
 current implementation boundaries. Separates the current implemented shell from the completed, user-approved

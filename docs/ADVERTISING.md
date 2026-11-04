@@ -1,14 +1,14 @@
 # Google AdSense integration
 
-## Planned v0.4.4 review safeguards
+## v0.4.4 review safeguards (historical plan; implemented source)
 
-Status: planned on 2026-10-26. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+Status: planned on 2026-10-26, implemented in the v0.4.4 source and merged to `master`. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
 does not establish AdSense approval, runtime consent configuration or live
 serving. The [immediate implementation plan](plans/v0.4.4-implementation-plan.md)
 preserves default-off advertising and all existing informational/error-page
 exclusions.
 
-Implemented locally on 2026-10-27 (v0.4.4 Batch 3; not released or deployed):
+Implemented locally on 2026-10-27 (v0.4.4 Batch 3; since merged to `master`, without proof of a v0.4.4 GitHub Release or this source's Production deployment):
 `adsenseEnabled(flag, mode, deploymentEnvironment?)` takes an optional third
 deployment-environment argument. `AdSenseEligiblePage`, the server eligibility
 boundary, passes `process.env.VERCEL_ENV` explicitly. A supplied value other
