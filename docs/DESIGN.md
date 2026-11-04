@@ -419,7 +419,7 @@ v0.4.3 footer navigation (Batch 4, implemented): the existing single fixed, retr
 
 ## Workflow route: prepare-image-for-upload
 
-Status: IMPLEMENTED on the local candidate (Prompt 5, unreleased, uncommitted). Prompt 6 added the other three operational workflows, described in the next section; this workflow's presentation is unchanged.
+Status: implemented during Prompt 5 and merged through PR #51 on 2026-10-31. This paragraph records the Prompt 5 checkpoint; later redirects supersede the original manual-guide link. Prompt 6 added the other three operational workflows, described in the next section; this workflow's presentation is unchanged.
 
 - The route /workflows/prepare-image-for-upload is composed by a Server Component (PageHeader, breadcrumb, manual-guide link) around the client `WorkflowClient`. Processing is browser-local and in memory; nothing is uploaded or persisted.
 - Layout: one column on mobile, form beside progress from the lg breakpoint. The form uses the existing `tool-work` surface and `tool-control`, `tool-action-primary` and `tool-action-secondary` roles; progress uses `StageStepper`, a presentation-only ordered list; success uses the `tool-result` surface with `data-tone="success"`; failure uses the existing `tool-feedback` error role with `role="alert"`.
@@ -432,7 +432,7 @@ Status: IMPLEMENTED on the local candidate (Prompt 5, unreleased, uncommitted). 
 
 ## Workflow routes: HEIC photos, PDF packet and slides
 
-Status: IMPLEMENTED on the local candidate (Prompt 6, unreleased, uncommitted). The registry now holds four operational workflows and `/workflows/heic-photos-to-pdf`, `/workflows/assemble-pdf-packet` and `/workflows/pdf-pages-for-slides` are real routes composed exactly like the first (Server Component with PageHeader, breadcrumb and a manual-guide link around the client `WorkflowClient`). The manual Guides are unchanged and are not redirected. This section was written after the implementation, not before it; it records what is built and was reconciled against the captured screenshots.
+Status: implemented during Prompt 6 and merged through PR #51 on 2026-10-31. The statement below about manual Guides not redirecting was true only before Prompt 7 introduced the current HTTP 308 redirects. The registry now holds four operational workflows and `/workflows/heic-photos-to-pdf`, `/workflows/assemble-pdf-packet` and `/workflows/pdf-pages-for-slides` are real routes composed exactly like the first (Server Component with PageHeader, breadcrumb and a manual-guide link around the client `WorkflowClient`). The manual Guides are unchanged and are not redirected. This section was written after the implementation, not before it; it records what is built and was reconciled against the captured screenshots.
 
 - Presentation is shared with the first workflow and introduces no new color, shadow, animation or token: `tool-work` form surface, `tool-control`, `tool-action-primary` and `tool-action-secondary`, `StageStepper`, `tool-result` with `data-tone="success"`, `tool-feedback` for failures. Controls set their border to the existing `--text-muted` token (danger token when invalid), as the first workflow does. One column on mobile; form beside progress from the lg breakpoint.
 - Every input is chosen before the single Process action. Each form owns only its fields, ordering and request construction; the client owns running, cancelling and downloads. The Process button stays disabled, with a visible hint tied to it by `aria-describedby`, until the request is complete and valid. Nothing runs, and no success surface exists, before a real Process.
@@ -445,7 +445,7 @@ Status: IMPLEMENTED on the local candidate (Prompt 6, unreleased, uncommitted). 
 
 ## Interactive Guide finder and legacy Guide redirects
 
-Status: IMPLEMENTED on the local candidate (Prompt 7, unreleased, uncommitted). Written before implementation and reconciled below with what the browser run proved. Nothing here changes color, shadow, animation or any token.
+Status: implemented during Prompt 7 and merged through PR #51 on 2026-10-31; no separate numbered GitHub Release or deployment is implied. Written before implementation and reconciled below with what the browser run proved. Nothing here changes color, shadow, animation or any token.
 
 - /guide becomes a deterministic "Which tool or workflow should I use?" finder under the unbranded title "Find the Right Tool or Workflow". One H1 comes from the existing PageHeader. The Server Component renders the H1, the introduction, plain /discover and /workflows links that work without JavaScript, and the initial root choice group.
 - Flow: choose one of seven task families (Image, PDF, Text, Converters, Developer, Math, Time). Families with several distinct outcomes ask exactly one more question; Math and Time recommend their single tool immediately. A recommendation shows the real name, one sentence of rationale and one "Open <name>" link to the canonical /tool/* or /workflows/* path. Nothing navigates automatically.
