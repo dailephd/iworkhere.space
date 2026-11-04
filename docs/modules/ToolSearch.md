@@ -33,9 +33,13 @@ Manual review and updates are encouraged to add implementation details.
 ### Search and link contract
 
 `ToolSearch` owns the client-side query and optional tag-filter state used by
-Home and Discover. It filters only passed items by name, description, category
-and supplied tags. Results are Next.js links to `/tool/<slug>` so keyboard use,
-open-in-new-tab and browser link preview work normally. `showResultsWhenEmpty`
+Home and Discover. It uses the deterministic `toolSearchMatch.ts` matcher over passed name,
+slug, description, category label/id and tags. All meaningful query tokens
+must match; a fixed lexical-normalization list and filler-token filter support
+limited natural phrases, with weighted ranking and registry-order ties. There
+is no fuzzy matching, synonym table or second catalog. Results are Next.js
+links to `/tool/<slug>` so keyboard use, open-in-new-tab and browser link
+preview work normally. `showResultsWhenEmpty`
 and `showTagFilters` control presentation only; they do not introduce another
 catalog or search owner.
 
