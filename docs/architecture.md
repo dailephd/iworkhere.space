@@ -1,8 +1,22 @@
 # ARCHITECTURE
 
-## Planned v0.4.4 quality and task-guide extension
+## Current integrated architecture — 2026-10-31
 
-Status: planned on 2026-10-26; no source implementation is claimed here.
+`master` at `f8407b8` retains the canonical 18-tool registry and its existing
+module, component, route and metadata owners. PR #51 integrated a separate,
+explicit four-workflow registry and browser-local dispatcher under
+`src/module/workflow/`, a Guide decision graph under
+`src/module/content/toolFinder.ts`, the catalog-only homepage, and the
+36-URL sitemap. The four former manual guide detail routes now redirect to
+operational workflow pages; retained guide data is historical/relation data.
+These source changes passed all eight hosted workflows on the merged commit.
+No separate version bump, GitHub Release, or production deployment is inferred.
+The original v0.4.4 architecture plan below is dated historical intent and is
+superseded where it describes the manual guide routes and old Home composition.
+
+## Historical v0.4.4 quality and task-guide architecture — 2026-10-26
+
+Status at the 2026-10-26 planning checkpoint: planned; source was implemented later. The manual-guide routing described here was superseded by PR #51.
 The [v0.4.4 implementation plan](plans/v0.4.4-implementation-plan.md) is the
 exact behavior/path contract. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
 records the inspected baseline and distinguishes source from live observations.
@@ -625,7 +639,7 @@ registry and runtime ownership.
 
 ---
 
-## Sitewide navigation and Home composition (Prompt 2 of 9, CURRENT on the local candidate)
+## Sitewide navigation and Home composition (Prompt 2 of 9, merged to master in PR #51)
 
 - `src/app/navData.ts` owns the five primary `NavItem` definitions. `src/app/layout.tsx` derives the separate category `NavItem[]` from `getAvailableCategory()` and `getToolCategoryLabel` (now the canonical definition title) and passes both arrays to `AppShell` (`navItem`, optional `categoryNavItem`) and on to `Header`.
 - `VerticalNav` (client) keeps the nav landmark and gains optional `categoryItem`: the desktop Categories disclosure and the mobile Menu overlay are component-local state; no second routing mechanism. `HeaderSearch` (new, client, `src/component/layout/`) is the generic Search utility targeting the existing `#tool-search` input. `ToolSearch` only gains the hash-triggered focus handoff.
@@ -840,7 +854,7 @@ Status: first workflow IMPLEMENTED on the local candidate in Prompt 5; the other
 
 ### Multi-file workflows (Prompt 6)
 
-Status: IMPLEMENTED on the local candidate (unreleased, uncommitted). All four workflows are operational through the one existing dispatcher; there is no second runner, registry or route builder.
+Status: implemented in the local candidate and subsequently merged to `master` by PR #51 on 2026-10-31; no numbered release or deployment is inferred. All four workflows are operational through the one existing dispatcher; there is no second runner, registry or route builder.
 
 - `runWorkflow` dispatches on the slug to `runPrepareImage`, `runHeicToPdf`, `runPacket` or `runSlides`. The three new runs share `createRunContext`, which takes stage order and count from the registry, emits progress, turns an abort checkpoint, an `AbortError` or an aborted signal into CANCELLED, and turns every other failure into one typed `WorkflowFailure` with `outputs: []`. A run succeeds only after the final output is re-read and inspected independently of the code that wrote it.
 - HEIC photos to PDF: validate (1 to 20 files, 25 MiB each and together, JPEG quality on the existing 10 to 100 step 5 scale), inspect and convert each photo through the existing HEIC worker contract (`startHeicOperation`), measure each encoded blob from its own bytes, then place one image per page with the existing `startImagesToPdfOperation`. The PDF is re-read with the PDF.js document reader; page count and each page's size and rotation must match.
@@ -852,7 +866,7 @@ Status: IMPLEMENTED on the local candidate (unreleased, uncommitted). All four w
 
 ## Interactive Guide finder and legacy Guide redirects (Prompt 7)
 
-Status: IMPLEMENTED on the local candidate (unreleased, uncommitted).
+Status: implemented in the local candidate and subsequently merged to `master` by PR #51 on 2026-10-31; no numbered release or deployment is inferred.
 
 - `src/module/content/toolFinder.ts` is the only owner of the authored decision graph: 28 frozen nodes (the root `start`, five task questions and 22 recommendations), `GuideTarget` references by `ToolId` or `WorkflowSlug`, `getAllGuideNode` and `getGuideNode`. It stores no names, paths, categories or capabilities.
 - `src/app/guide/page.tsx` (Server Component) owns the route metadata ("Find the Right Tool or Workflow", canonical `/guide`) and resolves every recommendation: tools through `getToolByIdList` and their `seo.canonicalPath`, workflows through `getOperationalWorkflow` and `canonicalPath`. A missing or non-operational target throws; it is never silently dropped. The resolved plain data goes to `src/module/content/ToolFinderClient.tsx`.
