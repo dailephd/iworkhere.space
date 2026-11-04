@@ -6,8 +6,7 @@
 short instructions and related canonical ToolId lists. Guides currently cover
 four image tools, five document tools, the v0.4 JSON Formatter / Validator,
 Word / Character Counter and QR Code Generator, and the post-release Slugify,
-Length Converter, Weight Converter and HTML Text Extractor. In total, 16 of the
-16 of the 18 registered tools have guides; Calculator and Time Arithmetic
+Length Converter, Weight Converter and HTML Text Extractor. In total, 16 of the 18 registered tools have guides; Calculator and Time Arithmetic
 have none.
 `getToolGuide(toolId)` returns optional guide content. It defines no slug, category, component, status, or route identity. It is imported only by server composition/tests, never by a client catalog or generic lib helper. Related identities resolve through metadata.ts. Privacy prose distinguishes local processing from ordinary site asset/optional telemetry traffic. Image-family limits remain 25 MiB and 30 MP; no bulk, target-size, metadata-preservation or unsupported-format claims are introduced for that family.
 
