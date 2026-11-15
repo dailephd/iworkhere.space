@@ -121,7 +121,8 @@ describe("LengthConverterTool", () => {
         for (const call of trackEvent.mock.calls) {
             expect(call[1]).toEqual({ toolId: "length-converter", slug: "length-converter" });
         }
-        expect(trackEvent).toHaveBeenCalledWith("tool_opened", expect.anything());
+        // Page openings belong to ToolClientFrame, not the standalone tool.
+        expect(trackEvent).not.toHaveBeenCalledWith("tool_opened", expect.anything());
         expect(trackEvent).toHaveBeenCalledWith("tool_executed", expect.anything());
     });
 });

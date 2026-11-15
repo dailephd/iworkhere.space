@@ -50,10 +50,6 @@ export function WeightConverterTool({ toolId }: ToolComponentProp) {
     const [fromUnit, setFromUnit] = useState<WeightUnit>("kg")
     const [toUnit, setToUnit] = useState<WeightUnit>("lb")
 
-    useEffect(() => {
-        trackEvent("tool_opened", { toolId, slug: "weight-converter" })
-    }, [toolId])
-
     const result = useMemo(() => convert(value, fromUnit, toUnit), [value, fromUnit, toUnit])
 
     useEffect(() => {

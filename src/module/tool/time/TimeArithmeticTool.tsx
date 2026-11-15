@@ -14,17 +14,7 @@ export function TimeArithmeticTool({ toolId }: ToolComponentProp) {
     const [timeA, setTimeA] = useState("")
     const [timeB, setTimeB] = useState("")
     const [operation, setOperation] = useState<Operation>("add")
-    const hasFiredOpened = useRef(false)
     const previousTrackedResultRef = useRef("")
-
-    useEffect(() => {
-        if (hasFiredOpened.current) {
-            return
-        }
-
-        trackEvent("tool_opened", { toolId, slug: "time-arithmetic" })
-        hasFiredOpened.current = true
-    }, [toolId])
 
     const hasInteracted = timeA !== "" || timeB !== ""
 

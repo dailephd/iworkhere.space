@@ -121,7 +121,8 @@ describe("WeightConverterTool", () => {
         for (const call of trackEvent.mock.calls) {
             expect(call[1]).toEqual({ toolId: "weight-converter", slug: "weight-converter" });
         }
-        expect(trackEvent).toHaveBeenCalledWith("tool_opened", expect.anything());
+        // Page openings belong to ToolClientFrame, not the standalone tool.
+        expect(trackEvent).not.toHaveBeenCalledWith("tool_opened", expect.anything());
         expect(trackEvent).toHaveBeenCalledWith("tool_executed", expect.anything());
     });
 });

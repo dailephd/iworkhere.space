@@ -18,7 +18,7 @@ export function ToolClientFrame(prop: ToolClientFrameProp) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    // Log tool opened (client-side only)
+    // Single owner of page-open telemetry; tool components track operations only.
     useEffect(() => {
         logEvent("Tool opened", { toolId, pathname });
         trackEvent("tool_opened", { toolId, slug: pathname.split("/").pop() || "" });
