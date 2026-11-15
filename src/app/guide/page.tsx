@@ -31,7 +31,7 @@ export default function GuideHubPage() {
     return (
         <div className="min-w-0 space-y-6">
             <PageHeader title={HUB_TITLE} description="Pick what you want to do and the guide recommends one browser tool or working workflow, with a link to open it.">
-                <p className="text-sm text-text-muted">This page makes no files and sends nothing anywhere. You choose your files on the tool or workflow page it points to.</p>
+                <p className="text-sm text-text-muted">The finder only recommends a tool or workflow; it does not open or process your files. Routine site analytics still apply, as described in our <Link href="/privacy" className="underline underline-offset-4 hover:no-underline">Privacy Policy</Link>.</p>
             </PageHeader>
             <ToolFinderClient node={getAllGuideNode()} resolvedTarget={resolveTarget()} />
             <p className="text-sm text-text-muted">
