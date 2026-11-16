@@ -886,3 +886,18 @@ Status: IMPLEMENTED on the local candidate (unreleased, uncommitted).
 ## Theme ownership and variation (8V closeout, 2026-10-31)
 
 Theme ownership stays with `src/style/theme.css` (palette tokens and art-direction variables) and `src/app/global.css` (shared presentation). Themes may vary color, typography, spacing, shape, materials, decorative graphics and nonessential motion through those owners and the existing shared components. They must preserve content and control order, route and processing contracts, theme persistence, responsive usability and all required accessibility checks. Theme changes must not steal focus, clear input/results or obscure controls. Identical geometry across different artistic themes is not required. This supersedes the earlier "theme switch changes color only" rule. At 390x844 the first catalog card on Home must lie fully inside the first viewport in all 13 appearances (asserted in `test/e2e/sitewide-theme-art-direction.spec.ts`).
+
+## Aggregate reporting core (Track B B1)
+
+The independent dashboard package owns pure `aggregateQuery.ts` selection shared by
+its existing query builder and `reportingQuery.ts`. `reportingModel.ts` constructs
+and validates a versioned aggregate-only DTO; it never accepts DashboardData or
+imports UI, support queries or diagnostic loaders. `reportingHealth.ts` assesses
+explicit evidence, including uncertainty. `reportingDatabase.server.ts` is a
+server-only, credential-free executor accepting an injected transaction adapter;
+B1 has no connection factory, service application, endpoint or authentication.
+A generated identity artifact is verified against canonical tool/workflow metadata
+and static app routes by root tests, permitting standalone dashboard installs.
+Future packaging must carry this core and artifact together and retain that check.
+The public app never imports dashboard production code. No production role, OAuth,
+ChatGPT connection or deployment is implemented. See OBSERVABILITY.md.

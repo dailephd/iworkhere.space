@@ -1,0 +1,114 @@
+{
+  "tool": [
+    {
+      "id": "calculator",
+      "route": "/tool/calculator"
+    },
+    {
+      "id": "compress-pdf",
+      "route": "/tool/compress-pdf"
+    },
+    {
+      "id": "heic-converter",
+      "route": "/tool/heic-converter"
+    },
+    {
+      "id": "html-text-extractor",
+      "route": "/tool/html-text-extractor"
+    },
+    {
+      "id": "image-compressor",
+      "route": "/tool/image-compressor"
+    },
+    {
+      "id": "image-converter",
+      "route": "/tool/image-converter"
+    },
+    {
+      "id": "image-resizer",
+      "route": "/tool/image-resizer"
+    },
+    {
+      "id": "images-to-pdf",
+      "route": "/tool/images-to-pdf"
+    },
+    {
+      "id": "json-formatter",
+      "route": "/tool/json-formatter"
+    },
+    {
+      "id": "length-converter",
+      "route": "/tool/length-converter"
+    },
+    {
+      "id": "merge-pdf",
+      "route": "/tool/merge-pdf"
+    },
+    {
+      "id": "pdf-to-image",
+      "route": "/tool/pdf-to-image"
+    },
+    {
+      "id": "qr-code-generator",
+      "route": "/tool/qr-code-generator"
+    },
+    {
+      "id": "slugify",
+      "route": "/tool/slugify"
+    },
+    {
+      "id": "split-pdf",
+      "route": "/tool/split-pdf"
+    },
+    {
+      "id": "time-arithmetic",
+      "route": "/tool/time-arithmetic"
+    },
+    {
+      "id": "weight-converter",
+      "route": "/tool/weight-converter"
+    },
+    {
+      "id": "word-character-counter",
+      "route": "/tool/word-character-counter"
+    }
+  ],
+  "route": [
+    "/",
+    "/about",
+    "/category/converter",
+    "/category/developer",
+    "/category/document",
+    "/category/image",
+    "/category/math",
+    "/category/text",
+    "/category/time",
+    "/contact",
+    "/discover",
+    "/guide",
+    "/privacy",
+    "/tool/calculator",
+    "/tool/compress-pdf",
+    "/tool/heic-converter",
+    "/tool/html-text-extractor",
+    "/tool/image-compressor",
+    "/tool/image-converter",
+    "/tool/image-resizer",
+    "/tool/images-to-pdf",
+    "/tool/json-formatter",
+    "/tool/length-converter",
+    "/tool/merge-pdf",
+    "/tool/pdf-to-image",
+    "/tool/qr-code-generator",
+    "/tool/slugify",
+    "/tool/split-pdf",
+    "/tool/time-arithmetic",
+    "/tool/weight-converter",
+    "/tool/word-character-counter",
+    "/workflows",
+    "/workflows/assemble-pdf-packet",
+    "/workflows/heic-photos-to-pdf",
+    "/workflows/pdf-pages-for-slides",
+    "/workflows/prepare-image-for-upload"
+  ]
+}
