@@ -15,6 +15,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:telemetry": "playwright test --config playwright.telemetry.config.ts",
     "test:container": "tsx script/containerSmoke.ts",
     "verify": "tsx script/verify.ts",
     "observability:migrate": "tsx script/observabilityMigrate.ts",

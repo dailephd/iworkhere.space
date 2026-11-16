@@ -58,10 +58,6 @@ export function LengthConverterTool({ toolId }: ToolComponentProp) {
     const [fromUnit, setFromUnit] = useState<LengthUnit>("m")
     const [toUnit, setToUnit] = useState<LengthUnit>("ft")
 
-    useEffect(() => {
-        trackEvent("tool_opened", { toolId, slug: "length-converter" })
-    }, [toolId])
-
     const result = useMemo(() => convert(value, fromUnit, toUnit), [value, fromUnit, toUnit])
 
     useEffect(() => {
