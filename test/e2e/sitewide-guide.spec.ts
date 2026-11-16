@@ -90,6 +90,9 @@ test.describe("hub metadata, sitemap and direct links (TST-007)", () => {
             await page.goto(new URL("/guide", baseURL).toString());
             await expect(page.getByRole("heading", { level: 1, name: "Find the Right Tool or Workflow" })).toBeVisible();
             await expect(finder(page).getByRole("button")).toHaveCount(FAMILY.length);
+            await expect(page.getByText("The finder only recommends a tool or workflow; it does not open or process your files. Routine site analytics still apply, as described in our Privacy Policy.")).toBeVisible();
+            await expect(page.getByRole("main").getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "/privacy");
+            expect((await request.get("/privacy")).status()).toBe(200);
             await expect(page.getByRole("main").getByRole("link", { name: "all tools" })).toHaveAttribute("href", "/discover");
             await expect(page.getByRole("main").getByRole("link", { name: "working workflows" })).toHaveAttribute("href", "/workflows");
         } finally { await context.close(); }
