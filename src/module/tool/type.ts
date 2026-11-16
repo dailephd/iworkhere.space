@@ -53,8 +53,12 @@ export interface ToolDefinition {
 
 /* ---- Tool runtime props ---- */
 
+export interface ToolQueryOption {
+    sameDocument?: boolean;
+}
+
 export interface ToolComponentProp {
     toolId: ToolId;
     query?: Record<string, string>;
-    setQuery?: (next: Record<string, string>) => void;
+    setQuery?: (next: Record<string, string>, option?: ToolQueryOption) => void;
 }

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { expect, it, vi } from "vitest";
-interface WorkerEvent { request?: { url: string; method: string; mode: string }; respondWith?: ReturnType<typeof vi.fn>; waitUntil?: (promise: Promise<unknown>) => void }
+interface WorkerEvent { request?: { url: string; method: string; mode: string; headers?: Headers }; respondWith?: ReturnType<typeof vi.fn>; waitUntil?: (promise: Promise<unknown>) => void }
 function worker() {
     const listener = new Map<string, (event: WorkerEvent) => void>();
     const addAll = vi.fn(async () => {}), put = vi.fn(async () => {}), match = vi.fn(async (): Promise<Response | { cached: boolean }> => ({ cached: true }));
@@ -15,6 +15,22 @@ it("bypasses API/non-GET requests", () => {
         const respondWith = vi.fn(); runtime.listener.get("fetch")!({ request: { url: `https://local.test${url}`, method, mode: "same-origin" }, respondWith }); expect(respondWith).not.toHaveBeenCalled();
     }
     expect(runtime.match).not.toHaveBeenCalled(); expect(runtime.fetch).not.toHaveBeenCalled();
+});
+it.each([
+    ["/tool/calculator?expr=private-expression", {}],
+    ["/tool/calculator?_rsc=private-flight", {}],
+    ["/tool/calculator", { RSC: "1" }],
+    ["/tool/calculator", { "Next-Router-Prefetch": "1" }],
+    ["/tool/calculator", { "Next-Router-Segment-Prefetch": "/_tree" }],
+    ["/_next/data/build/tool/calculator.json", {}],
+])("never reads or writes the cache for excluded request %s with %j", (pathname, header) => {
+    const runtime = worker();
+    const respondWith = vi.fn();
+    runtime.listener.get("fetch")!({ request: { url: `https://local.test${pathname}`, method: "GET", mode: "navigate", headers: new Headers(header) }, respondWith });
+    expect(respondWith).not.toHaveBeenCalled();
+    expect(runtime.match).not.toHaveBeenCalled();
+    expect(runtime.put).not.toHaveBeenCalled();
+    expect(runtime.fetch).not.toHaveBeenCalled();
 });
 it("retains cached bootstrap body/headers without a stale response URL", async () => {
     const runtime = worker();

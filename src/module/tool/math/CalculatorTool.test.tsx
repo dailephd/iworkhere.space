@@ -168,6 +168,6 @@ describe("calculator grammar", () => {
             Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "2 * -3");
             input.dispatchEvent(new Event("input", { bubbles: true }));
         });
-        expect(setQuery).toHaveBeenLastCalledWith({ expr: "2 * -3", mode: "scientific" });
+        expect(setQuery).toHaveBeenLastCalledWith({ expr: "2 * -3", mode: "scientific" }, { sameDocument: true });
     });
 });

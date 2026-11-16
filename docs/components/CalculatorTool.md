@@ -27,6 +27,14 @@ This is the primary anchor file for the logical unit. It is the canonical refere
 <!-- section-id: notes -->
 ## Notes
 
+Calculator requests same-document query replacement through ToolClientFrame's
+existing setter. A warmed, service-worker-controlled page can edit, evaluate,
+backspace, Clear/reset with C, handle invalid expressions and repeat operations
+offline. Reconnection leaves the mounted expression/result intact. Direct online
+shared URLs and browser history still populate the expression. No query/RSC/API
+cache entry or persistent expression store is added. The expression deliberately
+remains in its shareable URL; it is excluded from observability payloads.
+
 This document was generated from the Milestone 12 merged-unit ingestion pass.
 It describes a logical unit that may span multiple source files. File-level detail is preserved in the member list above.
 Manual review and updates are encouraged to add implementation details.

@@ -30,7 +30,7 @@ export function CalculatorTool({ query, setQuery }: ToolComponentProp) {
             setQuery({
                 ...(query ?? {}),
                 expr: nextExpr,
-            })
+            }, { sameDocument: true })
         },
         [setQuery, query]
     )
