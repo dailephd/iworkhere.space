@@ -15,9 +15,36 @@ jobs:
           cache-dependency-path: reporting/package-lock.json
       - run: npm --prefix reporting ci
       - run: npm --prefix reporting run verify
+      - run: npm --prefix reporting run test:runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: reporting-test-report
+          path: reporting/test-report/
+          retention-days: 30
+
+  reporting-permission:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: reporting/package-lock.json
+      - run: npm --prefix reporting ci
+      - run: npm --prefix reporting run test:permissions
+        env:
+          REPORTING_TEST_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reporting-permission-report
           path: reporting/test-report/
           retention-days: 30

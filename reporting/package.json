@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "verify": "tsx script/verify.ts"
+    "verify": "tsx script/verify.ts",
+    "test:permissions": "tsx script/permissionSmoke.cts --docker",
+    "test:runtime": "tsx script/runtimeSmoke.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.4.0",

@@ -133,3 +133,13 @@ needed. Root Docker context and public TypeScript/lint exclude this deployment u
 - https://modelcontextprotocol.io/specification/2026-07-28
 - https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http
 - https://github.com/modelcontextprotocol/typescript-sdk (v2.4.0 package types inspected)
+
+## Hosted integration gates
+
+Reporting CI additionally runs the built production runtime with all private
+configuration absent, scans client/server bundles, and uses a disposable pinned
+PostgreSQL container for actual role grants and all seven B1 query/DTO checks.
+`npm run test:runtime` uses only loopback and no credentials.
+`npm run test:permissions` requires the CI-owned disposable container ID in
+REPORTING_TEST_POSTGRES_CONTAINER; it accepts no connection URL and must never
+be pointed at production. Reports remain unique under test-report/.
