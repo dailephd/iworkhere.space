@@ -33,6 +33,24 @@ remain `INSUFFICIENT_EVIDENCE` where independent monitoring coverage is missing.
 
 ## Ownership and contracts
 
+`/oauth/authorize` hosts Stytch Test email-code login and the official Connected
+Apps IdentityProvider consent component. Configure the Test public SDK token as
+`NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN` and enable the Frontend SDK for the exact origin
+in the Stytch Test dashboard. Missing/non-Test public tokens render an unavailable
+page. SDK session refresh must complete before consent is shown. OAuth query
+handling, code issuance and redirects remain owned by Stytch's component.
+This browser session never authorizes MCP access; the existing server token,
+introspection, audience, scope and subject checks remain mandatory. No Test
+identity is enrolled automatically. Keep production reporting OAuth settings
+unset until separately authorized. Initial tests must use isolated staging.
+
+The supplied project discovery URL currently returns
+`authorization_endpoint_not_configured_for_project`. Configure the application
+Authorization URL only after the page's SDK token/origin and login method are
+enabled. Configure `reporting:read` in Connected Apps permissions using protected
+account settings. Verify the returned issuer and full metadata before setting
+resource-server variables; no issuer is inferred from project IDs or domains.
+
 The `/mcp` Node route composes `src/lib/mcp.server.ts`. Official
 `@modelcontextprotocol/server@2.4.0` owns Streamable HTTP, initialization,
 2025 compatibility and 2026 per-request negotiation, discovery and invocation.
