@@ -253,3 +253,29 @@ authorization, production reporting role/secret, remote ChatGPT connection, live
 DB/runtime health verification or production deployment. B1 is not a working
 ChatGPT integration. Existing dashboard UI/SSO remains unchanged. Root TypeScript,
 ESLint and Docker context continue to exclude dashboard production source.
+
+## Authenticated cloud MCP service (Track B B2, local only)
+
+`reporting/` is the separate Node 24 Next.js service. Its official MCP SDK v2
+Streamable HTTP endpoint `/mcp` and public protected-resource discovery expose
+only `observability_report`. The unchanged B1 core owns all range, aggregation,
+projection, DTO and health semantics. Private adapters add verified JWT access
+tokens, per-request active RFC7662 introspection, required `reporting:read` and
+explicit server-managed subject enrollment before any reporting query. No custom
+authorization server or production test bypass exists. See reporting/README.md
+for provider claims/registration prerequisites, failure behavior and local commands.
+
+The separate `observability_reporting` role template in
+`database/observability/reporting-role.sql` grants only B1-required columns. It
+refuses existing roles or unsafe PUBLIC privileges and does not apply automatically.
+The service uses read-only RepeatableRead, SQL timeout, abort and upstream bounds;
+B1 validates the 24 KiB DTO before the 64 KiB complete MCP wire bound. Raw support,
+diagnostic and arbitrary database records cannot bypass projection. No input,
+credential or raw exception logging is introduced. Missing independent monitoring
+evidence remains INSUFFICIENT_EVIDENCE; local fixtures do not establish live health.
+
+B2 is locally implemented, not deployed. No production OAuth client, role, secret,
+Neon connection or ChatGPT link was created. The existing public app and dashboard
+UI remain unchanged, including dashboard Vercel Authentication on All Deployments.
+The reporting package installs/builds/tests independently and is excluded from
+public root TypeScript/lint and Docker context; CI uploads its unique reports.

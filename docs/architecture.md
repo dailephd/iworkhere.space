@@ -901,3 +901,14 @@ and static app routes by root tests, permitting standalone dashboard installs.
 Future packaging must carry this core and artifact together and retain that check.
 The public app never imports dashboard production code. No production role, OAuth,
 ChatGPT connection or deployment is implemented. See OBSERVABILITY.md.
+
+## Separate MCP reporting service (Track B B2, local only)
+
+`reporting/` is an independently installed/built Next.js deployment unit. Its
+server-only adapters import the existing B1 core under dashboard/src/lib by
+explicit paths; no copied models, SQL, health logic or UI dependencies. External
+OAuth JWT verification plus uncached provider introspection, required scope and
+explicit operator enrollment protect every MCP request before data access. The
+SDK owns Streamable HTTP and protocol negotiation. Private reporting credentials
+and the reader role are distinct from the protected dashboard. No production
+deployment, identity-provider provisioning or ChatGPT linking is included.

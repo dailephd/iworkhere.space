@@ -8,6 +8,7 @@ const eslintConfig = defineConfig([
   // Override default ignores of eslint-config-next.
   globalIgnores([
     "dashboard/**",
+    "reporting/**",
     // Disposable local tools/proofs are not application source.
     ".my-dev-kit-workflow/**",
     // Playwright HTML/trace reports contain generated third-party JavaScript.
