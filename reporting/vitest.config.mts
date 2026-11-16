@@ -8,4 +8,3 @@ export default defineConfig({
     resolve: { alias: { "server-only": path.resolve("node_modules/next/dist/compiled/server-only/empty.js") } },
     test: { environment: "node", include: ["src/**/*.test.{ts,tsx}"], reporters: ["default", "json", "junit"], outputFile: { json: path.join(report, "results.json"), junit: path.join(report, "results.xml") } },
 });
-

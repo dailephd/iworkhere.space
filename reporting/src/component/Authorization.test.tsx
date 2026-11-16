@@ -8,7 +8,7 @@ vi.mock("@stytch/nextjs", () => ({
     useStytchSession: () => state,
     IdentityProvider: () => <p>Consent screen</p>, StytchLogin: () => <p>Login screen</p>,
 }));
-import { Authorization } from "./authorization.client";
+import { Authorization } from "./Authorization";
 beforeEach(() => Object.assign(state, { session: null, isInitialized: true, fromCache: false }));
 const render = () => renderToStaticMarkup(<Authorization publicToken="public-token-test-fixture" />);
 it("requires sign-in before rendering consent", () => {
@@ -19,3 +19,4 @@ it("does not authorize consent from a cached or uninitialized session", () => {
     state.session = {}; state.fromCache = true; expect(render()).not.toContain("Consent screen");
     state.fromCache = false; state.isInitialized = false; expect(render()).not.toContain("Consent screen");
 });
+
