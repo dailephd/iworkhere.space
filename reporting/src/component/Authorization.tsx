@@ -13,4 +13,3 @@ export function Authorization({ publicToken }: { publicToken: string }) {
     const [stytch] = useState(() => createStytchUIClient(publicToken));
     return <main><h1>Authorize observability reporting</h1><p>Stytch Test sign-in and consent. Reporting access requires separate operator enrollment.</p><StytchProvider stytch={stytch}><Consent /></StytchProvider></main>;
 }
-
