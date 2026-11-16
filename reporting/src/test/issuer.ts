@@ -22,9 +22,9 @@ export async function fixtureIssuer(resource = "https://reporting.example/mcp") 
     const address = server.address(); if (!address || typeof address === "string") throw new Error("Fixture listen failed");
     const origin = `http://127.0.0.1:${address.port}`;
     const config: AuthConfig = { resource, issuer: origin, metadataUrl: new URL(resource).origin + "/.well-known/oauth-protected-resource", jwks: origin + "/jwks", introspection: origin + "/introspect", clientId: "fixture-reader", clientSecret: "fixture-introspection-secret", subject: ["enrolled-operator"] };
-    async function sign(claim: JWTPayload = {}) {
+    async function sign(claim: JWTPayload = {}, typ = "at+jwt") {
         const now = Math.floor(Date.now() / 1000);
-        return new SignJWT({ scope: "reporting:read", ...claim }).setProtectedHeader({ alg: "ES256", kid, typ: "at+jwt" }).setIssuer(String(claim.iss ?? config.issuer)).setAudience(claim.aud ?? config.resource).setSubject(String(claim.sub ?? "enrolled-operator")).setIssuedAt().setExpirationTime(claim.exp ?? now + 300).sign(key.privateKey);
+        return new SignJWT({ scope: "reporting:read", ...claim }).setProtectedHeader({ alg: "ES256", kid, typ }).setIssuer(String(claim.iss ?? config.issuer)).setAudience(claim.aud ?? config.resource).setSubject(String(claim.sub ?? "enrolled-operator")).setIssuedAt().setExpirationTime(claim.exp ?? now + 300).sign(key.privateKey);
     }
     return { config, state, sign,
         async rotate() { key = await generateKeyPair("ES256"); kid = "fixture-key-2"; published = [{ ...await exportJWK(key.publicKey), kid, alg: "ES256", use: "sig" }]; },

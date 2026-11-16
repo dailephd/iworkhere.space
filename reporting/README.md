@@ -44,12 +44,23 @@ introspection, audience, scope and subject checks remain mandatory. No Test
 identity is enrolled automatically. Keep production reporting OAuth settings
 unset until separately authorized. Initial tests must use isolated staging.
 
-The supplied project discovery URL currently returns
-`authorization_endpoint_not_configured_for_project`. Configure the application
+If discovery returns `authorization_endpoint_not_configured_for_project`, configure the application
 Authorization URL only after the page's SDK token/origin and login method are
 enabled. Configure `reporting:read` in Connected Apps permissions using protected
 account settings. Verify the returned issuer and full metadata before setting
 resource-server variables; no issuer is inferred from project IDs or domains.
+
+Verified Test custom-domain issuer:
+`https://detailed-airship-7820.customers.stytch.dev`. Real operator PKCE acceptance
+confirmed RS256, header `JWT`, active access-token introspection and revocation.
+`REPORTING_OAUTH_PROFILE=stytch-test` permits this header only with the verified
+issuer/JWKS/introspection endpoints and mandatory `token_type=access_token` from
+introspection. Basic client authentication, exact resource audience, current scope
+and explicit operator enrollment remain required. This Test issuer is rejected
+on Vercel production and for the production MCP resource, including metadata.
+Use a staging resource with its exact URL configured as the Connected App's
+`access_token_custom_audience`; the default project audience is insufficient.
+The first real Test token lacked that audience and was correctly not accepted.
 
 The `/mcp` Node route composes `src/lib/mcp.server.ts`. Official
 `@modelcontextprotocol/server@2.4.0` owns Streamable HTTP, initialization,

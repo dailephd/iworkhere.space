@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { generateKeyPair, SignJWT } from "jose";
-import { authenticationGate, authConfig, protectedResourceMetadata, resourceConfig } from "./auth.server";
+import { authenticationGate, authConfig, protectedResourceMetadata, resourceConfig, STYTCH_TEST_ISSUER } from "./auth.server";
 import { fixtureIssuer } from "../test/issuer";
 let issuer: Awaited<ReturnType<typeof fixtureIssuer>>;
 beforeEach(async () => { issuer = await fixtureIssuer(); });
@@ -77,4 +77,28 @@ it("uses RFC form encoding for introspection client_secret_basic credentials", a
     issuer.config.clientId = "reader: id"; issuer.config.clientSecret = "!:# +";
     expect(await status(await issuer.sign())).toBe(200);
     expect(Buffer.from(issuer.state.authorization.slice(6), "base64").toString()).toBe("reader%3A+id:%21%3A%23+%2B");
+});
+
+it("accepts Stytch JWT access tokens only with explicit profile and access-token introspection", async () => {
+    issuer.config.issuer = STYTCH_TEST_ISSUER;
+    const token = await issuer.sign({}, "JWT");
+    expect(await status(token)).toBe(401);
+    issuer.config.profile = "stytch-test";
+    expect(await status(token)).toBe(401);
+    issuer.state.override = { token_type: "id_token" }; expect(await status(token)).toBe(401);
+    issuer.state.override = { token_type: "access_token" }; expect(await status(token)).toBe(200);
+    expect(issuer.state.authorization).toContain("Basic ");
+    expect(await status(await issuer.sign({}, "id+jwt"))).toBe(401);
+    expect(await status(await issuer.sign({ aud: "project-test-fixture" }, "JWT"))).toBe(401);
+    expect(await status(await issuer.sign({ scope: "openid" }, "JWT"))).toBe(403);
+    expect(await status(await issuer.sign({ sub: "not-enrolled" }, "JWT"))).toBe(403);
+    issuer.state.active = false; expect(await status(token)).toBe(401);
+});
+
+it("confines the Stytch Test profile to its verified issuer/endpoints and staging", () => {
+    const env: NodeJS.ProcessEnv = { NODE_ENV: "production", VERCEL_ENV: "preview", REPORTING_RESOURCE_URL: "https://staging.example/mcp", REPORTING_OAUTH_ISSUER: STYTCH_TEST_ISSUER, REPORTING_OAUTH_JWKS_URL: STYTCH_TEST_ISSUER + "/.well-known/jwks.json", REPORTING_OAUTH_INTROSPECTION_URL: STYTCH_TEST_ISSUER + "/v1/oauth2/introspect", REPORTING_INTROSPECTION_CLIENT_ID: "fixture-client", REPORTING_INTROSPECTION_CLIENT_SECRET: "fixture-secret", REPORTING_ALLOWED_SUBJECTS: '["verified-subject"]', REPORTING_OAUTH_PROFILE: "stytch-test" };
+    expect(authConfig(env).profile).toBe("stytch-test");
+    for (const override of [{ VERCEL_ENV: "production" }, { REPORTING_RESOURCE_URL: "https://iworkhere-reporting.vercel.app/mcp" }, { REPORTING_OAUTH_ISSUER: "https://other.example" }, { REPORTING_OAUTH_JWKS_URL: "https://other.example/jwks" }, { REPORTING_OAUTH_INTROSPECTION_URL: "https://other.example/introspect" }, { REPORTING_INTROSPECTION_CLIENT_SECRET: "" }, { REPORTING_OAUTH_PROFILE: "unknown" }]) {
+        expect(() => authConfig({ ...env, ...override })).toThrow("configuration");
+    }
 });

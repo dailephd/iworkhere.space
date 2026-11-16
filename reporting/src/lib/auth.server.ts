@@ -1,11 +1,13 @@
 import "server-only";
 import { OAuthError, requireBearerAuth, type AuthInfo } from "@modelcontextprotocol/server";
-import { createRemoteJWKSet, customFetch, jwtVerify } from "jose";
+import { createRemoteJWKSet, customFetch, decodeProtectedHeader, jwtVerify } from "jose";
 import { boundedBytes, safeResponse, ServiceUnavailable } from "./response";
 
 export const REQUIRED_SCOPE = "reporting:read";
+export const STYTCH_TEST_ISSUER = "https://detailed-airship-7820.customers.stytch.dev";
+const PRODUCTION_RESOURCE = "https://iworkhere-reporting.vercel.app/mcp";
 export interface ResourceConfig { resource: string; issuer: string; metadataUrl: string }
-export interface AuthConfig extends ResourceConfig { jwks: string; introspection: string; clientId: string; clientSecret: string; subject: readonly string[] }
+export interface AuthConfig extends ResourceConfig { jwks: string; introspection: string; clientId: string; clientSecret: string; subject: readonly string[]; profile?: "standard" | "stytch-test" }
 function configuredUrl(value: string | undefined, production: boolean): URL {
     if (!value || value.length > 2048) throw new ServiceUnavailable("configuration");
     const url = new URL(value);
@@ -18,6 +20,7 @@ export function resourceConfig(env: NodeJS.ProcessEnv = process.env): ResourceCo
         const resource = env.REPORTING_RESOURCE_URL!, issuer = env.REPORTING_OAUTH_ISSUER!;
         const url = configuredUrl(resource, env.NODE_ENV === "production"); configuredUrl(issuer, env.NODE_ENV === "production");
         if (url.pathname !== "/mcp") throw new ServiceUnavailable("configuration");
+        if (issuer === STYTCH_TEST_ISSUER && (env.VERCEL_ENV === "production" || resource === PRODUCTION_RESOURCE)) throw new ServiceUnavailable("configuration");
         return { resource, issuer, metadataUrl: url.origin + "/.well-known/oauth-protected-resource" };
     } catch { throw new ServiceUnavailable("configuration"); }
 }
@@ -25,11 +28,14 @@ export function authConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig {
     try {
         const resource = resourceConfig(env), jwks = env.REPORTING_OAUTH_JWKS_URL!, introspection = env.REPORTING_OAUTH_INTROSPECTION_URL!;
         configuredUrl(jwks, env.NODE_ENV === "production"); configuredUrl(introspection, env.NODE_ENV === "production");
+        const profile = env.REPORTING_OAUTH_PROFILE ?? "standard";
+        if (profile !== "standard" && profile !== "stytch-test") throw new ServiceUnavailable("configuration");
+        if (profile === "stytch-test" && (resource.issuer !== STYTCH_TEST_ISSUER || jwks !== STYTCH_TEST_ISSUER + "/.well-known/jwks.json" || introspection !== STYTCH_TEST_ISSUER + "/v1/oauth2/introspect")) throw new ServiceUnavailable("configuration");
         const clientId = env.REPORTING_INTROSPECTION_CLIENT_ID, clientSecret = env.REPORTING_INTROSPECTION_CLIENT_SECRET;
         const subject: unknown = JSON.parse(env.REPORTING_ALLOWED_SUBJECTS ?? "null");
         if (!clientId || !clientSecret || clientId.length > 512 || clientSecret.length > 4096 || !Array.isArray(subject) || !subject.length || subject.length > 20
             || subject.some(item => typeof item !== "string" || item.length === 0 || item.length > 256 || /[\x00-\x20]/.test(item))) throw new ServiceUnavailable("configuration");
-        return { ...resource, jwks, introspection, clientId, clientSecret, subject };
+        return { ...resource, jwks, introspection, clientId, clientSecret, subject, profile };
     } catch { throw new ServiceUnavailable("configuration"); }
 }
 export function protectedResourceMetadata(config: ResourceConfig) {
@@ -50,7 +56,9 @@ export function authenticationGate(config: AuthConfig, fetcher: typeof fetch = f
             async verifyAccessToken(token): Promise<AuthInfo> {
                 try {
                     if (token.length > 8192) throw new OAuthError("invalid_token", "Invalid access token");
-                    const { payload } = await jwtVerify(token, keys, { algorithms: ["RS256", "ES256"], issuer: config.issuer, audience: config.resource, requiredClaims: ["iss", "aud", "exp", "sub", "iat"], typ: "at+jwt" });
+                    const typ = config.profile === "stytch-test" ? decodeProtectedHeader(token).typ : "at+jwt";
+                    if (typ !== "at+jwt" && !(config.profile === "stytch-test" && typ === "JWT")) throw new OAuthError("invalid_token", "Invalid access token");
+                    const { payload } = await jwtVerify(token, keys, { algorithms: ["RS256", "ES256"], issuer: config.issuer, audience: config.resource, requiredClaims: ["iss", "aud", "exp", "sub", "iat"], typ });
                     if (typeof payload.sub !== "string" || !payload.sub || typeof payload.exp !== "number" || !Number.isSafeInteger(payload.exp) || typeof payload.scope !== "string") throw new OAuthError("invalid_token", "Invalid access token");
                     const client = new URLSearchParams({ v: config.clientId }).toString().slice(2);
                     const secret = new URLSearchParams({ v: config.clientSecret }).toString().slice(2);
@@ -60,6 +68,9 @@ export function authenticationGate(config: AuthConfig, fetcher: typeof fetch = f
                     const state: unknown = await response.json();
                     if (typeof state !== "object" || state === null || Array.isArray(state)) throw new OAuthError("invalid_token", "Invalid access token");
                     const current = state as Record<string, unknown>;
+                    // Stytch uses JWT rather than the RFC9068 header. Require the
+                    // provider to identify it as an active access token, never an ID token.
+                    if (config.profile === "stytch-test" && current.token_type !== "access_token") throw new OAuthError("invalid_token", "Invalid access token");
                     // Bind introspection to the signed token; scope removal takes effect immediately.
                     const audience = Array.isArray(current.aud) ? current.aud : [current.aud];
                     if (current.active !== true || current.sub !== payload.sub || current.iss !== config.issuer || !audience.includes(config.resource)
