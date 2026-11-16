@@ -279,3 +279,27 @@ Neon connection or ChatGPT link was created. The existing public app and dashboa
 UI remain unchanged, including dashboard Vercel Authentication on All Deployments.
 The reporting package installs/builds/tests independently and is excluded from
 public root TypeScript/lint and Docker context; CI uploads its unique reports.
+
+## Production integration preparation (Track B B3, 2026-11-16)
+
+The B1/B2 statements above describe their batch-close state. B3 created the
+separate Vercel `iworkhere-reporting` project and applied the reviewed reporting
+role template to the existing observability database. Its production-only reader
+secret is managed by Vercel. Effective column grants, no role memberships,
+read-only defaults, query timeout and denied write/DDL/support/diagnostic
+privileges were verified through a private operator connection. All seven ranges
+passed the existing B1 DTO and B2 size boundaries with live aggregate reads.
+No telemetry records, rollups or historical analytics were modified.
+
+The reporting deployment remains fail-closed pending an approved OAuth issuer,
+introspection client and explicit subject enrollment. Existing Neon Auth has no
+OAuth-provider plugin enabled; no new tenant or OAuth client was provisioned.
+See reporting/README.md for provider compatibility and account actions. This is
+not a working ChatGPT connection. Missing independent ingestion/runtime coverage
+continues to produce `INSUFFICIENT_EVIDENCE`, even with recent rows and no gaps in
+the inspected completed-day coverage. Dashboard SSO stays enabled on all deployments.
+
+Hosted reporting CI independently installs, typechecks, lints, tests and builds
+the service, exercises the built fail-closed runtime, and verifies the exact role
+template and seven B1 query plans against isolated PostgreSQL. No production
+credentials are used by CI; complete unique report directories are uploaded.

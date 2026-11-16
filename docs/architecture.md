@@ -912,3 +912,14 @@ explicit operator enrollment protect every MCP request before data access. The
 SDK owns Streamable HTTP and protocol negotiation. Private reporting credentials
 and the reader role are distinct from the protected dashboard. No production
 deployment, identity-provider provisioning or ChatGPT linking is included.
+
+### B3 deployment boundary (2026-11-16)
+
+The separately Git-connected `iworkhere-reporting` Vercel project uses root
+`reporting/`, Node 24 and outside-root source access for the existing B1 imports.
+Its restricted reader reuses the existing production observability database;
+credentials are server-only and scoped to the reporting production environment.
+The public site and protected dashboard retain their separate projects and routes.
+The deployed service denies data access while OAuth and operator enrollment are
+unconfigured. No approved provider or live ChatGPT connection is established.
+See OBSERVABILITY.md and reporting/README.md for current activation requirements.

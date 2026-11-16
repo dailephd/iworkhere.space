@@ -1,9 +1,35 @@
 # Private aggregate MCP reporting service
 
-Track B B2 is implemented and tested locally. It is not deployed, linked to
-ChatGPT, or connected to production Neon or an OAuth provider. This package is
-a separate deployment unit from the public app and `dashboard.iworkhere.space`.
+Track B B2 is implemented and tested. B3 has created the separate Vercel project
+`iworkhere-reporting` and provisioned the restricted production Neon reader.
+OAuth configuration and operator enrollment remain unavailable; the deployed
+endpoint fails closed and is not connected to ChatGPT. This package is a
+separate deployment unit from the public app and `dashboard.iworkhere.space`.
 Keep the dashboard's Vercel Authentication on **All Deployments** unchanged.
+
+## Production activation status (2026-11-16)
+
+The intended resource is `https://iworkhere-reporting.vercel.app/mcp`.
+`REPORTING_DATABASE_URL` is a sensitive, production-only variable in that project.
+The existing observability database is reused; no database was created. Effective
+reader privileges and all seven B1 report ranges were verified through a private
+operator process. These reads do not establish authenticated MCP or ChatGPT access.
+
+The existing Neon Auth configuration has no OAuth-provider plugin enabled. No
+approved issuer, introspection client or enrolled operator subject is established.
+An account owner must identify an authorized provider and grant configuration
+access. Before activation, verify its exact issuer, resource audience, PKCE,
+registration, signing algorithm, RFC7662 claims and revocation behavior against
+the resource-server contract below. Neon Auth's documented EdDSA access tokens
+are not currently supported by this service's RS256/ES256 allowlist; selecting
+that provider requires a reviewed and tested compatibility change, plus hosted
+login and consent pages. Do not enable it merely because the schema exists.
+
+Complete provider configuration and store its secrets through Vercel, explicitly
+enroll the operator, then redeploy and run live OAuth/MCP acceptance. The operator
+must complete ChatGPT connection installation and interactive OAuth consent.
+Until then, missing configuration returns 503 without private data. Live reports
+remain `INSUFFICIENT_EVIDENCE` where independent monitoring coverage is missing.
 
 ## Ownership and contracts
 
