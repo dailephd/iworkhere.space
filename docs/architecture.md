@@ -1,5 +1,22 @@
 # ARCHITECTURE
 
+## Calculator same-document query updates (A02)
+
+ToolClientFrame remains the query synchronization owner. Its existing setQuery
+callback accepts an optional `ToolQueryOption.sameDocument` flag. Calculator
+requests this mode for expression edits and Clear/reset. The frame uses the
+Next.js-integrated native `history.replaceState` to update the current URL
+without fetching RSC data or navigating the document. `useSearchParams` remains
+the source for initial shared URLs and browser history changes. Other tools keep
+the existing `router.replace` behavior by default. No offline detector, second
+state store, registry change or service-worker cache expansion is introduced.
+
+Expressions remain intentionally shareable in the URL, never in observability
+or unrelated storage. The worker still excludes query/API/RSC/prefetch requests.
+The mounted Calculator owns expression, parser, result and error state; network
+availability cannot remove it during an edit. See the offline and history browser
+regressions in `test/e2e/calculator-offline.spec.ts`.
+
 ## Planned v0.4.4 quality and task-guide extension
 
 Status: planned on 2026-10-26; no source implementation is claimed here.

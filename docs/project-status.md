@@ -1,5 +1,14 @@
 # PROJECT STATUS
 
+## A02 Calculator offline reliability (local correction)
+
+Calculator opts into same-document URL replacement in the existing query owner,
+avoiding server/RSC navigation on expression edits. Desktop/mobile regression
+coverage exercises warmed controlled-worker offline edits, evaluation, C reset,
+invalid recovery, reconnect, online sharing/direct load and history, with cache
+and telemetry privacy assertions. A1's composed telemetry regressions remain in
+place. This correction is local and is not published to production.
+
 ## Sitewide redesign candidate (Prompts 1-8V; Prompt 9 audit) - 2026-10-31
 
 Status: IMPLEMENTED ON THE LOCAL CANDIDATE, UNRELEASED, UNCOMMITTED, NOT DEPLOYED. Branch `feature/homepage-colorfield-refresh`, application version `0.4.4`. This supersedes the 2026-10-28 Colorfield status below: Home is now the searchable 18-tool catalog without featured-task or workflow cards, `/workflows` hosts four working browser-local workflows, `/guide` is an interactive finder (legacy `/guide/<slug>` URLs redirect with HTTP 308), the sitemap lists 36 canonical URLs, and seven palettes resolve to 13 appearances with art-directed (not color-only) themes. Prompt 8V closed as PASS_WITH_NOTES (its image review was by appearance sheets, not 428 individual images). The final Prompt 9 acceptance verdict, with its run IDs and open notes, is recorded only in `.my-dev-kit-workflow/tmp/sitewide-nine-prompt/p09-report.txt`. Home category boards were restored to one column at every width on 2026-10-31 after another session had introduced two columns; the outcome of that correction is recorded in `.my-dev-kit-workflow/tmp/sitewide-nine-prompt/p09-correction-report.txt`. This entry does not claim a release, a version bump, hosted CI, container, database, Firefox or Safari validation.

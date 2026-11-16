@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { ToolComponentProp } from "@/module/tool/type";
+import type { ToolComponentProp, ToolQueryOption } from "@/module/tool/type";
 import { logEvent, captureError, trackEvent } from "@/module/observability";
 
 export interface ToolClientFrameProp {
@@ -38,7 +38,7 @@ export function ToolClientFrame(prop: ToolClientFrameProp) {
     }, [searchParams, defaultQuery]);
 
     const setQuery = useCallback(
-        (next: Record<string, string>) => {
+        (next: Record<string, string>, option?: ToolQueryOption) => {
             logEvent("Tool execution start", { toolId });
             trackEvent("tool_executed", { toolId, slug: pathname.split("/").pop() || "" });
 
@@ -57,7 +57,14 @@ export function ToolClientFrame(prop: ToolClientFrameProp) {
                 }
 
                 const qs = sp.toString();
-                router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+                const href = qs ? `${pathname}?${qs}` : pathname;
+                if (option?.sameDocument) {
+                    // Next integrates native history with useSearchParams. Local
+                    // edits must not request RSC data or replace the document offline.
+                    window.history.replaceState(null, "", href);
+                } else {
+                    router.replace(href, { scroll: false });
+                }
             } catch (e) {
                 captureError(e, { toolId, boundary: "ToolClientFrame.setQuery" });
             }
