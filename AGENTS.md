@@ -393,3 +393,5 @@ OAuth/Neon adapters. Reuse dashboard/src/lib B1 contracts; never import dashboar
 UI, support or diagnostic loaders. Run reporting verify and preserve root/Docker
 isolation. reporting.yaml is an additional independent CI gate. No production
 connection, OAuth provisioning or deployment follows from local implementation.
+
+Operational health evidence: observability persistence owns fixed attempt/outcome logs, containing only a per-operation random identifier, server timestamps and fixed operation/status values. `dashboard/src/lib/reportingMonitoring.ts` owns strict monitoring-summary construction; dashboard operator audit scripts reuse B1 database evidence and classifier. No raw provider logs or operation identifiers enter reporting DTOs. Full health still requires independent complete 24-hour coverage; dashboard/DB availability is not that evidence.

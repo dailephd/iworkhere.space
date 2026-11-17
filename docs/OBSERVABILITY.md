@@ -340,3 +340,7 @@ self-check can revoke and re-introspect the same privately held access token,
 recording only fixed booleans. Both validation flags must be removed before data
 acceptance; no token revocation occurs in normal reporting. No working Live
 ChatGPT reporting connection is claimed from compatibility evidence alone.
+
+## Operational health evidence
+
+Persistence emits fixed ingestion/maintenance attempt and terminal outcome records without metric bodies, diagnostics, request headers or secrets. The pure reporting monitoring collector reconciles these records with explicit provider coverage; it never infers complete coverage from latest timestamps or absence of errors. An operator-only read-only audit reuses B1 query/projection/classification and captures only bounded aggregate evidence. It does not grant the MCP application platform-management credentials. Vercel Hobby retains one hour of logs, so that source alone remains partial for the required 24-hour window. No paid monitoring/drain is provisioned. Empty calendar dates without retained events or aggregates are unverified history, not proof of a missed rollup; maintenance completes event-bearing days.
