@@ -212,6 +212,24 @@ linked in ChatGPT. Revoking provider authorization, removing the enrolled subjec
 reporting secret disables access. No measurement data or dashboard SSO changes are
 needed. Root Docker context and public TypeScript/lint exclude this deployment unit.
 
+## Live authorization page preparation
+
+The separate `/oauth/live/authorize` route reuses the same official Stytch UI for
+Live sign-in, configured only by `NEXT_PUBLIC_STYTCH_LIVE_PUBLIC_TOKEN`. It rejects
+Test tokens and does not fall back to the existing Test SDK setting. The existing
+Test `/oauth/authorize` route is unchanged. Without a Live public token the new
+route renders unavailable. Enable the Live Frontend SDK for the exact origin in
+protected Stytch settings before attempting login. This UI preparation does not
+verify a Live issuer, introduce a Live JWT/introspection exception, enroll an
+operator or activate production MCP access. Those require actual Live evidence.
+Live discovery verified `https://eminent-plume-9461.customers.stytch.com` against
+the public JWKS of project-live-ae041f72-d3fc-42f0-b375-196f556087a7. The Live UI
+uses that exact SDK custom base URL so authorization-response issuer identifiers
+match HTTPS discovery, rather than the legacy api.stytch.com project issuer.
+Live SDK session cookies use separate names and the `/oauth/live` path, while the
+existing Test SDK cookie settings remain unchanged. These UI sessions never
+substitute for MCP bearer-token authentication and operator authorization.
+
 ## Verified specifications
 
 - https://developers.openai.com/plugins/build/auth
