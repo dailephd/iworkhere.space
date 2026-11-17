@@ -74,7 +74,8 @@ export async function handleMcp(request: Request): Promise<Response> {
             return safeResponse(503, "configuration_unavailable");
         }
         const config = authConfig();
-        if (process.env.REPORTING_LIVE_VALIDATION_UNTIL !== undefined) return await validateLiveProviderRequest(request, config, Number(process.env.REPORTING_LIVE_VALIDATION_UNTIL));
+        if (process.env.REPORTING_LIVE_VALIDATION_UNTIL !== undefined) return await validateLiveProviderRequest(request, config, Number(process.env.REPORTING_LIVE_VALIDATION_UNTIL), fetch, undefined, process.env.REPORTING_LIVE_VALIDATION_REVOKE === "true");
+        if (process.env.REPORTING_LIVE_VALIDATION_REVOKE !== undefined) return safeResponse(503, "configuration_unavailable");
         const fixture = previewFixtureEnabled();
         return await reportingService({ config, observe: fixture ? observePreviewFixture : observe, fixture })(request);
     }

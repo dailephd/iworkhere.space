@@ -114,6 +114,10 @@ it("never falls through expired Live validation mode to tools or database access
     try {
         const response = await handleMcp(new Request("https://iworkhere-reporting.vercel.app/mcp", { method: "POST", headers: { authorization: "Bearer untrusted" } }));
         expect(response.status).toBe(503); expect(network).not.toHaveBeenCalled();
+        vi.stubEnv("REPORTING_LIVE_VALIDATION_UNTIL", undefined);
+        vi.stubEnv("REPORTING_LIVE_VALIDATION_REVOKE", "true");
+        expect((await handleMcp(new Request("https://iworkhere-reporting.vercel.app/mcp", { headers: { authorization: "Bearer untrusted" } }))).status).toBe(503);
+        expect(network).not.toHaveBeenCalled();
     } finally { network.mockRestore(); }
 });
 it("runs successful and revoked requests over real isolated local HTTP", async () => {

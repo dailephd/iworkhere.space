@@ -3,14 +3,21 @@ import { decodeJwt, exportJWK, generateKeyPair, SignJWT, type JWTPayload } from 
 import type { AuthConfig } from "../lib/auth.server";
 
 /** Test-only issuer. No production source imports this module. */
-export async function fixtureIssuer(resource = "https://reporting.example/mcp") {
-    let key = await generateKeyPair("ES256"); let kid = "fixture-key-1";
-    let published = [{ ...await exportJWK(key.publicKey), kid, alg: "ES256", use: "sig" }];
-    const state = { active: true, scope: "reporting:read", calls: 0, authorization: "", unavailable: false, override: {} as Record<string, unknown> };
+export async function fixtureIssuer(resource = "https://reporting.example/mcp", algorithm: "ES256" | "RS256" = "ES256") {
+    let key = await generateKeyPair(algorithm); let kid = "fixture-key-1";
+    let published = [{ ...await exportJWK(key.publicKey), kid, alg: algorithm, use: "sig" }];
+    const state = { active: true, scope: "reporting:read", calls: 0, authorization: "", unavailable: false, revokeCalls: 0, revokeUnavailable: false, override: {} as Record<string, unknown> };
     const server = createServer(async (request, response) => {
         if (state.unavailable) { response.writeHead(503); response.end(); return; }
         response.setHeader("Content-Type", "application/json");
         if (request.url === "/jwks") { response.end(JSON.stringify({ keys: published })); return; }
+        if (request.url === "/revoke") {
+            state.revokeCalls++;
+            if (state.revokeUnavailable) { response.writeHead(503); response.end(JSON.stringify({ error: "fixture_unavailable" })); return; }
+            const expected = "Basic " + Buffer.from(config.clientId + ":" + config.clientSecret).toString("base64");
+            if (request.method !== "POST" || request.headers.authorization !== expected) { response.writeHead(401); response.end("{}"); return; }
+            state.active = false; response.end(JSON.stringify({ status_code: 200 })); return;
+        }
         if (request.url !== "/introspect") { response.writeHead(404); response.end(); return; }
         const chunks: Buffer[] = []; for await (const chunk of request) chunks.push(Buffer.from(chunk));
         const body = new URLSearchParams(Buffer.concat(chunks).toString());
@@ -24,10 +31,10 @@ export async function fixtureIssuer(resource = "https://reporting.example/mcp") 
     const config: AuthConfig = { resource, issuer: origin, metadataUrl: new URL(resource).origin + "/.well-known/oauth-protected-resource", jwks: origin + "/jwks", introspection: origin + "/introspect", clientId: "fixture-reader", clientSecret: "fixture-introspection-secret", subject: ["enrolled-operator"] };
     async function sign(claim: JWTPayload = {}, typ = "at+jwt") {
         const now = Math.floor(Date.now() / 1000);
-        return new SignJWT({ scope: "reporting:read", ...claim }).setProtectedHeader({ alg: "ES256", kid, typ }).setIssuer(String(claim.iss ?? config.issuer)).setAudience(claim.aud ?? config.resource).setSubject(String(claim.sub ?? "enrolled-operator")).setIssuedAt().setExpirationTime(claim.exp ?? now + 300).sign(key.privateKey);
+        return new SignJWT({ scope: "reporting:read", ...claim }).setProtectedHeader({ alg: algorithm, kid, typ }).setIssuer(String(claim.iss ?? config.issuer)).setAudience(claim.aud ?? config.resource).setSubject(String(claim.sub ?? "enrolled-operator")).setIssuedAt(claim.iat ?? now).setExpirationTime(claim.exp ?? now + 300).sign(key.privateKey);
     }
     return { config, state, sign,
-        async rotate() { key = await generateKeyPair("ES256"); kid = "fixture-key-2"; published = [{ ...await exportJWK(key.publicKey), kid, alg: "ES256", use: "sig" }]; },
+        async rotate() { key = await generateKeyPair(algorithm); kid = "fixture-key-2"; published = [{ ...await exportJWK(key.publicKey), kid, alg: algorithm, use: "sig" }]; },
         close: () => new Promise<void>((resolve, reject) => { server.close(error => error ? reject(error) : resolve()); server.closeAllConnections(); }),
     };
 }

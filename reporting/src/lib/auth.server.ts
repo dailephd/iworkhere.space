@@ -2,12 +2,13 @@ import "server-only";
 import { OAuthError, requireBearerAuth, type AuthInfo } from "@modelcontextprotocol/server";
 import { createRemoteJWKSet, customFetch, decodeProtectedHeader, jwtVerify } from "jose";
 import { boundedBytes, safeResponse, ServiceUnavailable } from "./response";
+import { STYTCH_LIVE_ISSUER } from "./stytchLive";
 
 export const REQUIRED_SCOPE = "reporting:read";
 export const STYTCH_TEST_ISSUER = "https://detailed-airship-7820.customers.stytch.dev";
 const PRODUCTION_RESOURCE = "https://iworkhere-reporting.vercel.app/mcp";
 export interface ResourceConfig { resource: string; issuer: string; metadataUrl: string }
-export interface AuthConfig extends ResourceConfig { jwks: string; introspection: string; clientId: string; clientSecret: string; subject: readonly string[]; profile?: "standard" | "stytch-test" }
+export interface AuthConfig extends ResourceConfig { jwks: string; introspection: string; clientId: string; clientSecret: string; subject: readonly string[]; profile?: "standard" | "stytch-test" | "stytch-live" }
 function configuredUrl(value: string | undefined, production: boolean): URL {
     if (!value || value.length > 2048) throw new ServiceUnavailable("configuration");
     const url = new URL(value);
@@ -29,8 +30,9 @@ export function authConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig {
         const resource = resourceConfig(env), jwks = env.REPORTING_OAUTH_JWKS_URL!, introspection = env.REPORTING_OAUTH_INTROSPECTION_URL!;
         configuredUrl(jwks, env.NODE_ENV === "production"); configuredUrl(introspection, env.NODE_ENV === "production");
         const profile = env.REPORTING_OAUTH_PROFILE ?? "standard";
-        if (profile !== "standard" && profile !== "stytch-test") throw new ServiceUnavailable("configuration");
+        if (profile !== "standard" && profile !== "stytch-test" && profile !== "stytch-live") throw new ServiceUnavailable("configuration");
         if (profile === "stytch-test" && (resource.issuer !== STYTCH_TEST_ISSUER || jwks !== STYTCH_TEST_ISSUER + "/.well-known/jwks.json" || introspection !== STYTCH_TEST_ISSUER + "/v1/oauth2/introspect")) throw new ServiceUnavailable("configuration");
+        if (profile === "stytch-live" && (env.VERCEL_ENV !== "production" || resource.resource !== PRODUCTION_RESOURCE || resource.issuer !== STYTCH_LIVE_ISSUER || jwks !== STYTCH_LIVE_ISSUER + "/.well-known/jwks.json" || introspection !== STYTCH_LIVE_ISSUER + "/v1/oauth2/introspect")) throw new ServiceUnavailable("configuration");
         const slot = env.REPORTING_INTROSPECTION_CREDENTIAL_SLOT ?? "current";
         if (slot !== "current" && slot !== "next") throw new ServiceUnavailable("configuration");
         if (slot === "next" && (profile !== "stytch-test" || env.VERCEL_ENV !== "preview" || env.REPORTING_PREVIEW_FIXTURE !== "true" || env.REPORTING_DATABASE_URL)) throw new ServiceUnavailable("configuration");
@@ -60,10 +62,13 @@ export function authenticationGate(config: AuthConfig, fetcher: typeof fetch = f
             async verifyAccessToken(token): Promise<AuthInfo> {
                 try {
                     if (token.length > 8192) throw new OAuthError("invalid_token", "Invalid access token");
-                    const typ = config.profile === "stytch-test" ? decodeProtectedHeader(token).typ : "at+jwt";
-                    if (typ !== "at+jwt" && !(config.profile === "stytch-test" && typ === "JWT")) throw new OAuthError("invalid_token", "Invalid access token");
-                    const { payload } = await jwtVerify(token, keys, { algorithms: ["RS256", "ES256"], issuer: config.issuer, audience: config.resource, requiredClaims: ["iss", "aud", "exp", "sub", "iat"], typ });
+                    const live = config.profile === "stytch-live", stytch = live || config.profile === "stytch-test";
+                    if (live && (config.resource !== PRODUCTION_RESOURCE || config.issuer !== STYTCH_LIVE_ISSUER || config.jwks !== STYTCH_LIVE_ISSUER + "/.well-known/jwks.json" || config.introspection !== STYTCH_LIVE_ISSUER + "/v1/oauth2/introspect")) throw new OAuthError("invalid_token", "Invalid access token");
+                    const typ = stytch ? decodeProtectedHeader(token).typ : "at+jwt";
+                    if ((live && typ !== "JWT") || (!live && typ !== "at+jwt" && !(config.profile === "stytch-test" && typ === "JWT"))) throw new OAuthError("invalid_token", "Invalid access token");
+                    const { payload } = await jwtVerify(token, keys, { algorithms: live ? ["RS256"] : ["RS256", "ES256"], issuer: config.issuer, audience: config.resource, requiredClaims: ["iss", "aud", "exp", "sub", "iat"], typ });
                     if (typeof payload.sub !== "string" || !payload.sub || typeof payload.exp !== "number" || !Number.isSafeInteger(payload.exp) || typeof payload.scope !== "string") throw new OAuthError("invalid_token", "Invalid access token");
+                    if (live && (typeof payload.iat !== "number" || !Number.isSafeInteger(payload.iat) || payload.iat < 0 || payload.iat >= payload.exp)) throw new OAuthError("invalid_token", "Invalid access token");
                     const client = new URLSearchParams({ v: config.clientId }).toString().slice(2);
                     const secret = new URLSearchParams({ v: config.clientSecret }).toString().slice(2);
                     const basic = Buffer.from(client + ":" + secret).toString("base64");
@@ -74,11 +79,10 @@ export function authenticationGate(config: AuthConfig, fetcher: typeof fetch = f
                     const current = state as Record<string, unknown>;
                     // Stytch uses JWT rather than the RFC9068 header. Require the
                     // provider to identify it as an active access token, never an ID token.
-                    if (config.profile === "stytch-test" && current.token_type !== "access_token") throw new OAuthError("invalid_token", "Invalid access token");
+                    if (stytch && current.token_type !== "access_token") throw new OAuthError("invalid_token", "Invalid access token");
                     // Bind introspection to the signed token; scope removal takes effect immediately.
                     const audience = Array.isArray(current.aud) ? current.aud : [current.aud];
-                    const stytch = config.profile === "stytch-test";
-                    // Verified Stytch Test introspection names the confidential client,
+                    // Independently verified Stytch Test and Live introspection name the confidential client,
                     // not access_token_custom_audience. JWT resource validation above
                     // remains exact; do not accept another introspection client.
                     const audienceMatches = stytch
@@ -89,6 +93,7 @@ export function authenticationGate(config: AuthConfig, fetcher: typeof fetch = f
                     const expiryMatches = typeof current.exp === "number" && (stytch
                         ? Math.abs(current.exp - payload.exp) <= 1 && typeof current.iat === "number" && Number.isSafeInteger(current.iat)
                             && typeof payload.iat === "number" && current.iat - payload.iat === current.exp - payload.exp
+                            && (!live || current.exp >= payload.exp)
                         : current.exp <= payload.exp);
                     if (current.active !== true || current.sub !== payload.sub || current.iss !== config.issuer || !audienceMatches
                         || typeof current.exp !== "number" || !Number.isSafeInteger(current.exp) || current.exp <= Date.now() / 1000

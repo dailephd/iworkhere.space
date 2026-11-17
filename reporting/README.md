@@ -2,8 +2,9 @@
 
 Track B B2 is implemented and tested. B3 has created the separate Vercel project
 `iworkhere-reporting` and provisioned the restricted production Neon reader.
-Stytch Live discovery and a confidential OAuth client are configured; actual Live
-token acceptance and operator enrollment remain pending. Private reporting fails
+Stytch Live discovery, confidential OAuth client and explicit operator enrollment
+are configured. Signed Live compatibility evidence is verified; production tool
+acceptance remains pending. Private reporting fails
 closed and is not connected to ChatGPT. This package is a
 separate deployment unit from the public app and `dashboard.iworkhere.space`.
 Keep the dashboard's Vercel Authentication on **All Deployments** unchanged.
@@ -50,6 +51,35 @@ configuration remains closed; removing the setting requires a separate reviewed
 activation after provider evidence and the real auth profile pass validation.
 Never add tokens, subjects, raw provider responses or credentials to this evidence.
 
+For an explicit real-token revocation test, also set
+`REPORTING_LIVE_VALIDATION_REVOKE=true` inside that same window. After signature,
+enrollment and active client-bound authorization match, the probe revokes only
+the presented in-memory access token at the pinned Live provider, then immediately
+introspects that same token. It records fixed success/inactive booleans, never the
+token or provider response. It also checks the actual Live profile in memory,
+rejects the same token under an isolated empty enrollment policy, and verifies
+expiry at a simulated instant after that signed token expires. These checks
+never initialize tools or query the database, and still deny reporting. Normal requests never
+revoke tokens. Remove **both** validation settings before real reporting acceptance;
+a dangling revocation flag fails closed instead of enabling normal reporting.
+
+### Verified Live profile
+
+Real enrolled-operator Live requests independently established RS256, exact issuer
+and signed resource audience, a `JWT` header and active Basic introspection with
+`token_type=access_token`, exact current subject and configured client identity.
+Introspection named only that client in `aud`, and shifted `iat`/`exp` together by
+zero or one second forward with the same lifetime. `stytch-live` accepts only those
+observed differences: RS256/`JWT`, exact signed resource, single configured client
+introspection audience plus matching `client_id`, shifts of 0/+1 seconds and earlier
+expiration. Both scopes and explicit subject enrollment remain mandatory on every
+uncached request. The profile requires Vercel Production, the canonical reporting
+resource and pinned Live issuer/JWKS/introspection endpoints. Test credentials,
+Preview fixture/next-secret selection and arbitrary issuers cannot use it.
+
+Compatibility evidence alone is not production/ChatGPT reporting acceptance. Keep
+the deny-only gate until real revocation and required security checks pass.
+
 ## Ownership and contracts
 
 `/oauth/authorize` hosts Stytch Test email-code login and the official Connected
@@ -85,8 +115,8 @@ audience rather than the JWT's custom resource audience. The Test profile requir
 that audience and `client_id` to equal the configured confidential client. The JWT
 must still name the exact reporting resource. Introspection may shift `iat` and
 `exp` together by at most one second; the lifetime must match, both expiries must
-be valid, and authorization uses the earlier expiry. All other profiles retain
-their original resource-audience and expiry binding. This is a Test-only contract,
+be valid, and authorization uses the earlier expiry. The standard profile retains
+its original resource-audience and expiry binding. This is a Test-only contract,
 not approval for production activation or arbitrary future DCR clients.
 
 ### Protected Preview replacement acceptance
@@ -155,7 +185,8 @@ Only non-production loopback HTTP is accepted for local test issuers.
 - `REPORTING_RESOURCE_URL`: exact canonical HTTPS endpoint ending `/mcp`.
 - `REPORTING_OAUTH_ISSUER`: exact issuer identifier, including any trailing slash.
 - `REPORTING_OAUTH_JWKS_URL`: operator-trusted signing-key endpoint. Token-controlled
-  jku/x5u endpoints are never used. RS256/ES256 signed `at+jwt` access tokens only.
+  jku/x5u endpoints are never used. Standard profile: RS256/ES256 `at+jwt` access
+  tokens. The separately verified, explicitly pinned Stytch profiles are described above.
 - `REPORTING_OAUTH_INTROSPECTION_URL`: provider RFC7662 endpoint. Every request
   verifies JWT signature, issuer, audience equal to the resource, exp, nbf and
   required claims, then checks uncached active introspection with matching subject,
