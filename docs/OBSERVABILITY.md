@@ -318,8 +318,9 @@ reporting or establish a live ChatGPT connection.
 reporting application, reusing its Stytch component with a separately configured
 Live public SDK token. Test sign-in remains separate. The page fails unavailable
 without Live SDK configuration and does not enable reporting authentication. The
-canonical Live issuer has been verified. Actual token/introspection compatibility,
-RBAC and immutable operator enrollment must still pass production acceptance.
+canonical Live issuer has been verified. Actual signed Live compatibility and
+enrolled operator binding have now been observed in deny-only requests; production
+tool acceptance remains separate and incomplete.
 
 With verified public resource configuration, the MCP SDK can challenge missing
 tokens before private enrollment is complete. A separately enabled, time-bounded
@@ -329,3 +330,13 @@ signed enrolled operators; no token, subject, raw provider response or diagnosti
 data is logged. Expiration does not activate reporting. Live ChatGPT acceptance
 remains pending; previously recorded historical rollup gaps remain a separate
 finding and no historical aggregates are modified by OAuth setup.
+
+The explicit `stytch-live` profile is based on real RS256/`JWT` evidence, with
+exact signed resource, active client-bound introspection, both scopes, enrolled
+subject and equal-lifetime 0/+1-second shifts using the earlier expiry. It is
+pinned to the Live issuer/endpoints, canonical resource and Vercel Production;
+standard and Test contracts remain separate. An optional bounded validation-only
+self-check can revoke and re-introspect the same privately held access token,
+recording only fixed booleans. Both validation flags must be removed before data
+acceptance; no token revocation occurs in normal reporting. No working Live
+ChatGPT reporting connection is claimed from compatibility evidence alone.

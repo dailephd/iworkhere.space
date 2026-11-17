@@ -7,7 +7,7 @@ let issuer: Awaited<ReturnType<typeof fixtureIssuer>>;
 let localJwks: string, localIntrospection: string;
 const sink = vi.fn();
 beforeEach(async () => {
-    sink.mockReset(); issuer = await fixtureIssuer("https://iworkhere-reporting.vercel.app/mcp");
+    sink.mockReset(); issuer = await fixtureIssuer("https://iworkhere-reporting.vercel.app/mcp", "RS256");
     localJwks = issuer.config.jwks; localIntrospection = issuer.config.introspection;
     Object.assign(issuer.config, { issuer: STYTCH_LIVE_ISSUER, jwks: STYTCH_LIVE_ISSUER + "/.well-known/jwks.json", introspection: STYTCH_LIVE_ISSUER + "/v1/oauth2/introspect", profile: "standard" });
     issuer.state.override = { aud: [issuer.config.clientId], client_id: issuer.config.clientId, token_type: "access_token" };
@@ -17,6 +17,7 @@ const fetcher: typeof fetch = (input, init) => {
     const url = String(input);
     if (url === STYTCH_LIVE_ISSUER + "/.well-known/jwks.json") return fetch(localJwks, init);
     if (url === STYTCH_LIVE_ISSUER + "/v1/oauth2/introspect") return fetch(localIntrospection, init);
+    if (url === STYTCH_LIVE_ISSUER + "/v1/oauth2/revoke") return fetch(new URL("/revoke", localIntrospection), init);
     throw new Error("Unapproved provider endpoint");
 };
 async function validate(token: string, until = Date.now() + 5 * 60 * 1000) {
@@ -27,7 +28,7 @@ it("observes only signed enrolled operator facts and always denies reporting", a
     const response = await validate(token);
     expect(response.status).toBe(401); expect(response.headers.get("cache-control")).toBe("no-store");
     expect(issuer.state.calls).toBe(1); expect(issuer.state.authorization).toMatch(/^Basic /);
-    expect(sink).toHaveBeenCalledWith({ event: "reporting_live_provider_validation", schemaVersion: 1, signedEnrolledOperator: true, tokenType: "JWT", algorithm: "ES256", introspectionHTTP200: true, active: true, subjectMatches: true, issuerMatches: true, clientMatches: true, audience: "client", accessTokenType: true, reportingScope: true, issuedAtShift: 0, expirationShift: 0, equalLifetime: true });
+    expect(sink).toHaveBeenCalledWith({ event: "reporting_live_provider_validation", schemaVersion: 1, signedEnrolledOperator: true, tokenType: "JWT", algorithm: "RS256", introspectionHTTP200: true, active: true, subjectMatches: true, issuerMatches: true, clientMatches: true, audience: "client", accessTokenType: true, reportingScope: true, issuedAtShift: 0, expirationShift: 0, equalLifetime: true });
     const evidence = JSON.stringify(sink.mock.calls);
     for (const privateValue of [token, issuer.config.clientSecret, "enrolled-operator", issuer.config.clientId]) expect(evidence).not.toContain(privateValue);
 });
@@ -36,8 +37,8 @@ it.each([{ iss: "https://wrong.example" }, { aud: "https://wrong.example/mcp" },
     expect(sink).not.toHaveBeenCalled(); expect(issuer.state.calls).toBe(0);
 });
 it("does not record evidence for invalid signatures or oversized input", async () => {
-    const key = await generateKeyPair("ES256");
-    const token = await new SignJWT({ scope: "reporting:read" }).setProtectedHeader({ alg: "ES256", kid: "fixture-key-1", typ: "JWT" }).setIssuer(STYTCH_LIVE_ISSUER).setAudience(issuer.config.resource).setSubject("enrolled-operator").setIssuedAt().setExpirationTime("5m").sign(key.privateKey);
+    const key = await generateKeyPair("RS256");
+    const token = await new SignJWT({ scope: "reporting:read" }).setProtectedHeader({ alg: "RS256", kid: "fixture-key-1", typ: "JWT" }).setIssuer(STYTCH_LIVE_ISSUER).setAudience(issuer.config.resource).setSubject("enrolled-operator").setIssuedAt().setExpirationTime("5m").sign(key.privateKey);
     expect((await validate(token)).status).toBe(401); expect((await validate("x".repeat(9000))).status).toBe(401);
     expect(sink).not.toHaveBeenCalled(); expect(issuer.state.calls).toBe(0);
 });
@@ -80,4 +81,30 @@ it("refreshes signing keys without authorizing either the old or new token", asy
     await issuer.rotate(); sink.mockClear();
     expect((await validate(old)).status).toBe(401); expect(sink).not.toHaveBeenCalled();
     expect((await validate(await issuer.sign({}, "JWT"))).status).toBe(401); expect(sink).toHaveBeenCalledOnce();
+});
+it("revokes the same privately held token only in explicit validation and proves inactive state", async () => {
+    const token = await issuer.sign({}, "JWT");
+    const request = new Request(issuer.config.resource, { headers: { authorization: "Bearer " + token } });
+    const response = await validateLiveProviderRequest(request, issuer.config, Date.now() + 60000, fetcher, sink, true);
+    expect(response.status).toBe(401); expect(issuer.state.revokeCalls).toBe(1); expect(issuer.state.calls).toBe(4);
+    expect(sink).toHaveBeenLastCalledWith({ event: "reporting_live_revocation_validation", schemaVersion: 1, signedEnrolledOperator: true, activeBeforeRevocation: true, enrolledAccepted: true, unenrolledRejected: true, expirationEnforced: true, revocationHTTP200: true, introspectionHTTP200: true, inactiveAfterRevocation: true });
+    expect(JSON.stringify(sink.mock.calls)).not.toContain(token); expect(JSON.stringify(sink.mock.calls)).not.toContain(issuer.config.clientSecret);
+});
+it("never revokes by default", async () => {
+    expect((await validate(await issuer.sign({}, "JWT"))).status).toBe(401);
+    expect(issuer.state.revokeCalls).toBe(0); expect(issuer.state.active).toBe(true); expect(sink).toHaveBeenCalledOnce();
+});
+it.each([{ active: false }, { client_id: "other" }, { aud: "other" }, { sub: "other" }, { token_type: "id_token" }])("never revokes mismatched current authorization %j", async override => {
+    issuer.state.override = { ...issuer.state.override, ...override };
+    const request = new Request(issuer.config.resource, { headers: { authorization: "Bearer " + await issuer.sign({}, "JWT") } });
+    expect((await validateLiveProviderRequest(request, issuer.config, Date.now() + 60000, fetcher, sink, true)).status).toBe(401);
+    expect(issuer.state.revokeCalls).toBe(0);
+});
+it("records a failed revocation truthfully without authorizing or exposing errors", async () => {
+    issuer.state.revokeUnavailable = true;
+    const request = new Request(issuer.config.resource, { headers: { authorization: "Bearer " + await issuer.sign({}, "JWT") } });
+    const response = await validateLiveProviderRequest(request, issuer.config, Date.now() + 60000, fetcher, sink, true);
+    expect(response.status).toBe(401);
+    expect(sink).toHaveBeenLastCalledWith({ event: "reporting_live_revocation_validation", schemaVersion: 1, signedEnrolledOperator: true, activeBeforeRevocation: true, enrolledAccepted: true, unenrolledRejected: true, expirationEnforced: true, revocationHTTP200: false, introspectionHTTP200: true, inactiveAfterRevocation: false });
+    expect(await response.text()).not.toContain("fixture_unavailable");
 });

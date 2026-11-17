@@ -958,3 +958,20 @@ MCP access. It verifies only enrolled operators against the pinned Live provider
 and emits a fixed set of non-identifying compatibility facts. It never queries
 the database or returns tokens, subjects, provider responses or reports. Expired
 validation configuration stays closed; it does not activate reporting.
+
+Actual enrolled-operator Live validation established RS256, a `JWT` header,
+exact signed resource audience, active access-token introspection naming the
+configured client, and equal token lifetimes with zero/one-second forward shifts.
+The explicit `stytch-live` profile is pinned to the verified Live issuer/endpoints,
+canonical production MCP resource and Production environment. It accepts only
+these observed differences and enforces the earlier expiration. Test and standard
+profiles retain their own existing contracts; data activation remains separate.
+
+An explicit revocation self-check may be enabled only inside the existing
+time-bounded, deny-only validation path. After the signed enrolled operator and
+active client-bound token match, it revokes that same in-memory access token at
+the pinned provider and immediately introspects it again. Only fixed booleans
+are emitted, including real-token profile acceptance, rejection under an isolated
+unenrolled policy and expiry enforcement at a simulated post-expiry instant.
+No token is retained or returned. This is not an MCP tool or a
+normal reporting path, and it never accesses the observability database.

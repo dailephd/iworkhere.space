@@ -1,7 +1,7 @@
 import "server-only";
 import { OAuthError, requireBearerAuth } from "@modelcontextprotocol/server";
 import { createRemoteJWKSet, customFetch, jwtVerify } from "jose";
-import { type AuthConfig, REQUIRED_SCOPE } from "./auth.server";
+import { type AuthConfig, authenticationGate, REQUIRED_SCOPE } from "./auth.server";
 import { boundedBytes, safeResponse } from "./response";
 import { STYTCH_LIVE_ISSUER } from "./stytchLive";
 
@@ -24,11 +24,23 @@ export interface LiveProviderEvidence {
     expirationShift: number | "outside_bound";
     equalLifetime: boolean;
 }
+export interface LiveRevocationEvidence {
+    event: "reporting_live_revocation_validation";
+    schemaVersion: 1;
+    signedEnrolledOperator: true;
+    activeBeforeRevocation: true;
+    enrolledAccepted: boolean;
+    unenrolledRejected: boolean;
+    expirationEnforced: boolean;
+    revocationHTTP200: boolean;
+    introspectionHTTP200: boolean;
+    inactiveAfterRevocation: boolean;
+}
 
 /** A preactivation probe, never an authorization profile or acceptance fallback. */
 export async function validateLiveProviderRequest(request: Request, config: AuthConfig, until: number,
     fetcher: typeof fetch = fetch,
-    sink: (evidence: LiveProviderEvidence) => void = evidence => { process.stdout.write(JSON.stringify(evidence) + "\n"); }): Promise<Response> {
+    sink: (evidence: LiveProviderEvidence | LiveRevocationEvidence) => void = evidence => { process.stdout.write(JSON.stringify(evidence) + "\n"); }, revokeToken = false): Promise<Response> {
     const now = Date.now();
     if (!Number.isSafeInteger(until) || until <= now || until - now > 15 * 60 * 1000
         || config.issuer !== STYTCH_LIVE_ISSUER || config.profile !== "standard"
@@ -48,8 +60,10 @@ export async function validateLiveProviderRequest(request: Request, config: Auth
                 // Omitting typ here observes the signed header only. This path
                 // always rejects access; it cannot relax the real auth profile.
                 const { payload, protectedHeader } = await jwtVerify(token, keys, { issuer: config.issuer, audience: config.resource, algorithms: ["RS256", "ES256"], requiredClaims: ["iss", "aud", "sub", "exp", "iat"] });
+                const algorithm = protectedHeader.alg === "RS256" ? "RS256" : protectedHeader.alg === "ES256" ? "ES256" : null;
+                if (algorithm === null) throw new Error("algorithm");
                 if (typeof payload.sub !== "string" || !config.subject.includes(payload.sub)
-                    || !Number.isSafeInteger(payload.exp) || !Number.isSafeInteger(payload.iat)
+                    || typeof payload.exp !== "number" || !Number.isSafeInteger(payload.exp) || typeof payload.iat !== "number" || !Number.isSafeInteger(payload.iat)
                     || typeof payload.scope !== "string" || !payload.scope.split(" ").includes(REQUIRED_SCOPE)) throw new Error("operator");
                 const encode = (value: string) => new URLSearchParams({ v: value }).toString().slice(2);
                 const response = await safeFetch(config.introspection, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: "Basic " + Buffer.from(encode(config.clientId) + ":" + encode(config.clientSecret)).toString("base64") }, body: new URLSearchParams({ token, token_type_hint: "access_token" }) });
@@ -59,15 +73,38 @@ export async function validateLiveProviderRequest(request: Request, config: Auth
                 function shift(value: unknown, signed: unknown): number | "outside_bound" {
                     return typeof value === "number" && Number.isSafeInteger(value) && typeof signed === "number" && Math.abs(value - signed) <= 2 ? value - signed : "outside_bound";
                 }
-                sink({ event: "reporting_live_provider_validation", schemaVersion: 1, signedEnrolledOperator: true,
-                    tokenType: protectedHeader.typ === "JWT" || protectedHeader.typ === "at+jwt" ? protectedHeader.typ : "unsupported", algorithm: protectedHeader.alg as "RS256" | "ES256",
+                const evidence: LiveProviderEvidence = { event: "reporting_live_provider_validation", schemaVersion: 1, signedEnrolledOperator: true,
+                    tokenType: protectedHeader.typ === "JWT" || protectedHeader.typ === "at+jwt" ? protectedHeader.typ : "unsupported", algorithm,
                     introspectionHTTP200: response.status === 200, active: current.active === true,
                     subjectMatches: current.sub === payload.sub, issuerMatches: current.iss === config.issuer,
                     clientMatches: current.client_id === config.clientId,
                     audience: audience.length === 1 && audience[0] === config.clientId ? "client" : audience.length === 1 && audience[0] === config.resource ? "resource" : "other",
                     accessTokenType: current.token_type === "access_token", reportingScope: typeof current.scope === "string" && current.scope.split(" ").includes(REQUIRED_SCOPE),
                     issuedAtShift: shift(current.iat, payload.iat), expirationShift: shift(current.exp, payload.exp),
-                    equalLifetime: typeof current.iat === "number" && typeof current.exp === "number" && typeof payload.iat === "number" && typeof payload.exp === "number" && current.exp - current.iat === payload.exp - payload.iat });
+                    equalLifetime: typeof current.iat === "number" && typeof current.exp === "number" && typeof payload.iat === "number" && typeof payload.exp === "number" && current.exp - current.iat === payload.exp - payload.iat };
+                sink(evidence);
+                if (revokeToken && evidence.algorithm === "RS256" && evidence.tokenType === "JWT" && evidence.introspectionHTTP200 && evidence.active
+                    && evidence.subjectMatches && evidence.issuerMatches && evidence.clientMatches && evidence.audience === "client"
+                    && evidence.accessTokenType && evidence.reportingScope && evidence.equalLifetime
+                    && (evidence.issuedAtShift === 0 || evidence.issuedAtShift === 1) && evidence.expirationShift === evidence.issuedAtShift) {
+                    const liveConfig: AuthConfig = { ...config, profile: "stytch-live" };
+                    const authorizationRequest = () => new Request(config.resource, { headers: { authorization: "Bearer " + token } });
+                    const enrolled = await authenticationGate(liveConfig, safeFetch)(authorizationRequest());
+                    const unenrolled = await authenticationGate({ ...liveConfig, subject: [] }, safeFetch)(authorizationRequest());
+                    let expirationEnforced = false;
+                    try { await jwtVerify(token, keys, { issuer: config.issuer, audience: config.resource, algorithms: ["RS256"], typ: "JWT", currentDate: new Date((payload.exp + 1) * 1000) }); }
+                    catch (error) { expirationEnforced = error instanceof Error && "code" in error && error.code === "ERR_JWT_EXPIRED"; }
+                    const headers = { "Content-Type": "application/x-www-form-urlencoded", Authorization: "Basic " + Buffer.from(encode(config.clientId) + ":" + encode(config.clientSecret)).toString("base64") };
+                    const body = new URLSearchParams({ token, token_type_hint: "access_token" });
+                    const revoked = await safeFetch(STYTCH_LIVE_ISSUER + "/v1/oauth2/revoke", { method: "POST", headers, body });
+                    await revoked.arrayBuffer();
+                    const after = await safeFetch(config.introspection, { method: "POST", headers, body });
+                    const afterState: unknown = await after.json();
+                    sink({ event: "reporting_live_revocation_validation", schemaVersion: 1, signedEnrolledOperator: true, activeBeforeRevocation: true,
+                        enrolledAccepted: !(enrolled instanceof Response), unenrolledRejected: unenrolled instanceof Response && unenrolled.status === 403, expirationEnforced,
+                        revocationHTTP200: revoked.status === 200, introspectionHTTP200: after.status === 200,
+                        inactiveAfterRevocation: typeof afterState === "object" && afterState !== null && !Array.isArray(afterState) && (afterState as Record<string, unknown>).active === false });
+                }
             } catch { /* No raw provider errors or claims leave this boundary. */ }
             throw new OAuthError("invalid_token", "Reporting authorization is not activated");
         },
