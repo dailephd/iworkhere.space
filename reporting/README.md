@@ -88,6 +88,10 @@ Configure the Connected App's exact custom audience to the stable Preview branch
 introspection, discovery, seven ranges and revocation before promoting the next
 secret to the primary setting. Keep the old Stytch credential valid until that
 replacement acceptance passes; never finalize rotation based only on a build.
+Only authenticated synthetic Preview replies include a SHA-256 credential
+fingerprint header, permitting the acceptance client to prove the protected
+candidate equals the tested next secret without exporting its value. Neither
+unauthenticated replies, normal reports nor the strict DTO expose that identifier.
 
 The `/mcp` Node route composes `src/lib/mcp.server.ts`. Official
 `@modelcontextprotocol/server@2.4.0` owns Streamable HTTP, initialization,

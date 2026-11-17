@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { createHash } from "node:crypto";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { reportingFixture, reportingNow } from "../../../dashboard/src/test/reportingFixture";
 import { loadReporting } from "../../../dashboard/src/lib/reportingDatabase.server";
@@ -16,7 +17,9 @@ it("labels authenticated Preview fixture discovery and results without changing 
     async function call(method: string, params: unknown) {
         const token = await issuer.sign();
         const response = await service(new Request(issuer.config.resource, { method: "POST", headers: { Authorization: "Bearer " + token, Accept: "application/json, text/event-stream", "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) }));
+        expect(response.headers.get("X-Reporting-Credential-Fingerprint")).toBe(createHash("sha256").update(issuer.config.clientSecret).digest("hex"));
         const text = await response.text();
+        expect(text).not.toContain(issuer.config.clientSecret);
         return response.headers.get("content-type")?.includes("text/event-stream") ? JSON.parse(text.split("\n").filter(line => line.startsWith("data: ")).at(-1)!.slice(6)) : JSON.parse(text);
     }
     const listed = await call("tools/list", {});
@@ -24,6 +27,8 @@ it("labels authenticated Preview fixture discovery and results without changing 
     const called = await call("tools/call", { name: "observability_report", arguments: input });
     expect(called.result.content[0].text).toBe(FIXTURE_NOTICE);
     expect(called.result.structuredContent).toEqual(report());
+    const unauthorized = await service(new Request(issuer.config.resource, { method: "POST" }));
+    expect(unauthorized.status).toBe(401); expect(unauthorized.headers.has("X-Reporting-Credential-Fingerprint")).toBe(false);
 });
 function report() { return reportingModel(input, reportingFixture(), reportingNow); }
 async function rpc(method: string, params: unknown = {}, observe: (input: unknown) => Promise<unknown> = async () => report()) {

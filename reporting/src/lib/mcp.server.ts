@@ -1,4 +1,5 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
 import { RANGE } from "../../../dashboard/src/lib/range";
@@ -47,6 +48,9 @@ export function reportingService(option: ReportingServiceOption) {
             // SDK legacy replies may use SSE. Bound the actual complete wire body too.
             const bytes = await boundedBytes(response, MAX_MCP_BYTES);
             const headers = new Headers(response.headers); headers.set("Cache-Control", "no-store"); headers.delete("Content-Length");
+            // Authenticated synthetic Preview only: compare rotation slots without
+            // exporting the high-entropy client secret or putting it in the DTO.
+            if (option.fixture) headers.set("X-Reporting-Credential-Fingerprint", createHash("sha256").update(option.config.clientSecret).digest("hex"));
             const text = boundedProtocolText(new TextDecoder().decode(bytes), headers.get("content-type") ?? "");
             return new Response(text, { status: response.status, headers });
         } catch { return safeResponse(503, "reporting_unavailable"); }
