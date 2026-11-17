@@ -70,6 +70,29 @@ be valid, and authorization uses the earlier expiry. All other profiles retain
 their original resource-audience and expiry binding. This is a Test-only contract,
 not approval for production activation or arbitrary future DCR clients.
 
+### Protected Preview replacement acceptance
+
+Retain `REPORTING_INTROSPECTION_CLIENT_SECRET` while storing the Connected App's
+tested `next_client_secret` separately as sensitive
+`REPORTING_INTROSPECTION_CLIENT_SECRET_NEXT`, scoped to the acceptance Preview
+branch. Select `REPORTING_INTROSPECTION_CREDENTIAL_SLOT=next` and
+`REPORTING_PREVIEW_FIXTURE=true` there only. Missing candidate credentials deny
+access; there is no fallback to the old secret. The fixture mode requires the
+pinned Test issuer/profile and Vercel Preview, rejects any database credential,
+and labels MCP tool discovery and every report as synthetic. It uses B1's model
+and strict DTO over fixed aggregate rows, not dashboard diagnostic/test loaders.
+Production routes retain normal behavior and never accept this fixture mode.
+
+Configure the Connected App's exact custom audience to the stable Preview branch
+`/mcp` resource and redeploy after protected settings change. Run real PKCE OAuth,
+introspection, discovery, seven ranges and revocation before promoting the next
+secret to the primary setting. Keep the old Stytch credential valid until that
+replacement acceptance passes; never finalize rotation based only on a build.
+Only authenticated synthetic Preview replies include a SHA-256 credential
+fingerprint header, permitting the acceptance client to prove the protected
+candidate equals the tested next secret without exporting its value. Neither
+unauthenticated replies, normal reports nor the strict DTO expose that identifier.
+
 The `/mcp` Node route composes `src/lib/mcp.server.ts`. Official
 `@modelcontextprotocol/server@2.4.0` owns Streamable HTTP, initialization,
 2025 compatibility and 2026 per-request negotiation, discovery and invocation.
