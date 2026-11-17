@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { generateKeyPair, SignJWT } from "jose";
+import { decodeJwt, generateKeyPair, SignJWT } from "jose";
 import { authenticationGate, authConfig, protectedResourceMetadata, resourceConfig, STYTCH_TEST_ISSUER } from "./auth.server";
 import { fixtureIssuer } from "../test/issuer";
 let issuer: Awaited<ReturnType<typeof fixtureIssuer>>;
@@ -86,13 +86,29 @@ it("accepts Stytch JWT access tokens only with explicit profile and access-token
     issuer.config.profile = "stytch-test";
     expect(await status(token)).toBe(401);
     issuer.state.override = { token_type: "id_token" }; expect(await status(token)).toBe(401);
-    issuer.state.override = { token_type: "access_token" }; expect(await status(token)).toBe(200);
+    issuer.state.override = { token_type: "access_token", aud: [issuer.config.clientId], client_id: issuer.config.clientId }; expect(await status(token)).toBe(200);
     expect(issuer.state.authorization).toContain("Basic ");
     expect(await status(await issuer.sign({}, "id+jwt"))).toBe(401);
     expect(await status(await issuer.sign({ aud: "project-test-fixture" }, "JWT"))).toBe(401);
     expect(await status(await issuer.sign({ scope: "openid" }, "JWT"))).toBe(403);
     expect(await status(await issuer.sign({ sub: "not-enrolled" }, "JWT"))).toBe(403);
     issuer.state.active = false; expect(await status(token)).toBe(401);
+});
+
+it.each([-1, 0, 1])("binds Stytch introspection to its client and keeps the earlier expiry for offset %i", async offset => {
+    issuer.config.issuer = STYTCH_TEST_ISSUER; issuer.config.profile = "stytch-test";
+    const token = await issuer.sign({}, "JWT"), claim = decodeJwt(token);
+    issuer.state.override = { token_type: "access_token", aud: [issuer.config.clientId], client_id: issuer.config.clientId, iat: claim.iat! + offset, exp: claim.exp! + offset };
+    const result = await authorize(token);
+    expect(result).not.toBeInstanceOf(Response);
+    if (result instanceof Response) throw new Error("Expected authorized fixture");
+    expect(result.expiresAt).toBe(Math.min(claim.exp!, claim.exp! + offset));
+    for (const override of [{ aud: ["different-client"] }, { aud: [issuer.config.clientId, issuer.config.resource] }, { client_id: "different-client" }, { exp: claim.exp! + 2, iat: claim.iat! + 2 }, { iat: claim.iat! + offset + 1 }, { iat: undefined }]) {
+        const valid = issuer.state.override; issuer.state.override = { ...valid, ...override };
+        expect(await status(token)).toBe(401); issuer.state.override = valid;
+    }
+    expect(await status(await issuer.sign({ aud: issuer.config.clientId }, "JWT"))).toBe(401);
+    expect(await status(await issuer.sign({ exp: 1 }, "JWT"))).toBe(401);
 });
 
 it("confines the Stytch Test profile to its verified issuer/endpoints and staging", () => {
