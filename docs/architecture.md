@@ -941,3 +941,6 @@ authorization route and token configuration remain separate. Neither page grants
 MCP access: verified issuer-specific server authentication and explicit operator
 enrollment are still required. Missing or cross-environment SDK tokens render an
 unavailable page; preparing the Live page does not activate production reporting.
+The verified public Live domain is pinned in `reporting/src/lib/stytchLive.ts` and
+passed as the SDK custom base URL, keeping authorization responses on that issuer.
+This pin does not introduce any Live JWT or introspection compatibility exception.

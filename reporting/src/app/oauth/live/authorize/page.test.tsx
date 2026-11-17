@@ -1,5 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { Authorization } from "../../../../component/Authorization";
+import { STYTCH_LIVE_ISSUER } from "../../../../lib/stytchLive";
 import LivePage from "./page";
 import TestPage from "../../authorize/page";
 
@@ -12,7 +13,7 @@ it("composes the existing SDK owner with only the Live public token", () => {
     vi.stubEnv("NEXT_PUBLIC_STYTCH_LIVE_PUBLIC_TOKEN", "public-token-live-fixture");
     vi.stubEnv("NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN", "public-token-test-fixture");
     const live = LivePage(), test = TestPage();
-    expect(live.type).toBe(Authorization); expect(live.key).toBe("stytch-live"); expect(live.props).toEqual({ publicToken: "public-token-live-fixture", environment: "live" });
+    expect(live.type).toBe(Authorization); expect(live.key).toBe("stytch-live"); expect(live.props).toEqual({ publicToken: "public-token-live-fixture", environment: "live", customBaseUrl: STYTCH_LIVE_ISSUER });
     expect(test.type).toBe(Authorization); expect(test.props.publicToken).toBe("public-token-test-fixture");
 });
 it("does not use either environment's token as a fallback for the other", () => {

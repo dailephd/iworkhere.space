@@ -222,6 +222,13 @@ route renders unavailable. Enable the Live Frontend SDK for the exact origin in
 protected Stytch settings before attempting login. This UI preparation does not
 verify a Live issuer, introduce a Live JWT/introspection exception, enroll an
 operator or activate production MCP access. Those require actual Live evidence.
+Live discovery verified `https://eminent-plume-9461.customers.stytch.com` against
+the public JWKS of project-live-ae041f72-d3fc-42f0-b375-196f556087a7. The Live UI
+uses that exact SDK custom base URL so authorization-response issuer identifiers
+match HTTPS discovery, rather than the legacy api.stytch.com project issuer.
+Live SDK session cookies use separate names and the `/oauth/live` path, while the
+existing Test SDK cookie settings remain unchanged. These UI sessions never
+substitute for MCP bearer-token authentication and operator authorization.
 
 ## Verified specifications
 
