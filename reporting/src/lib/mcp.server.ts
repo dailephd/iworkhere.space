@@ -1,13 +1,14 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
+import { createMcpHandler, McpServer, OAuthError, requireBearerAuth } from "@modelcontextprotocol/server";
 import { z } from "zod/v4";
 import { RANGE } from "../../../dashboard/src/lib/range";
 import { reportingRequest } from "../../../dashboard/src/lib/reportingModel";
-import { authenticationGate, authConfig, resourceConfig, protectedResourceMetadata, type AuthConfig } from "./auth.server";
+import { authenticationGate, authConfig, resourceConfig, protectedResourceMetadata, REQUIRED_SCOPE, type AuthConfig } from "./auth.server";
 import { observe } from "./observability.server";
 import { boundedBytes, boundedProtocolText, MAX_MCP_BYTES, reportResult, safeResponse, unavailableResult } from "./response";
 import { FIXTURE_NOTICE, observePreviewFixture, previewFixtureEnabled } from "./previewFixture.server";
+import { validateLiveProviderRequest } from "./liveProviderValidation.server";
 
 export interface ReportingServiceOption {
     config: AuthConfig;
@@ -59,7 +60,22 @@ export function reportingService(option: ReportingServiceOption) {
 }
 export async function handleMcp(request: Request): Promise<Response> {
     try {
-        const config = authConfig(), fixture = previewFixtureEnabled();
+        const resource = resourceConfig(), received = new URL(request.url), expected = new URL(resource.resource);
+        const origin = request.headers.get("origin");
+        if (received.origin !== expected.origin || received.pathname !== expected.pathname || (origin !== null && origin !== expected.origin)) return safeResponse(403, "forbidden_origin");
+        if (!request.headers.has("authorization")) {
+            // Discovery needs no private credentials. This SDK gate can only deny;
+            // it cannot initialize tools, enroll a subject or read the database.
+            const challenge = requireBearerAuth({ requiredScopes: [REQUIRED_SCOPE], expectedResource: expected, resourceMetadataUrl: resource.metadataUrl, verifier: {
+                async verifyAccessToken() { throw new OAuthError("invalid_token", "Invalid access token"); },
+            } });
+            const result = await challenge(request);
+            if (result instanceof Response) { result.headers.set("Cache-Control", "no-store"); return result; }
+            return safeResponse(503, "configuration_unavailable");
+        }
+        const config = authConfig();
+        if (process.env.REPORTING_LIVE_VALIDATION_UNTIL !== undefined) return await validateLiveProviderRequest(request, config, Number(process.env.REPORTING_LIVE_VALIDATION_UNTIL));
+        const fixture = previewFixtureEnabled();
         return await reportingService({ config, observe: fixture ? observePreviewFixture : observe, fixture })(request);
     }
     catch { return safeResponse(503, "configuration_unavailable"); }

@@ -83,6 +83,39 @@ it("fails closed for missing configuration, invalid origin, malformed requests a
     expect((await service(new Request(issuer.config.resource, { method: "PUT", headers: { Authorization: "Bearer " + token } }))).status).toBe(405);
     expect((await service(new Request(issuer.config.resource, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json", Accept: "application/json, text/event-stream" }, body: "not JSON" }))).status).toBe(400);
 });
+it("bootstraps OAuth with public metadata and an SDK challenge before private enrollment exists", async () => {
+    vi.stubEnv("REPORTING_RESOURCE_URL", "https://service.example/mcp");
+    vi.stubEnv("REPORTING_OAUTH_ISSUER", "https://issuer.example");
+    for (const key of ["REPORTING_OAUTH_JWKS_URL", "REPORTING_OAUTH_INTROSPECTION_URL", "REPORTING_INTROSPECTION_CLIENT_ID", "REPORTING_INTROSPECTION_CLIENT_SECRET", "REPORTING_ALLOWED_SUBJECTS"]) vi.stubEnv(key, undefined);
+    const network = vi.spyOn(globalThis, "fetch");
+    try {
+        const metadata = handleMetadata();
+        expect(metadata.status).toBe(200);
+        expect(await metadata.json()).toEqual({ resource: "https://service.example/mcp", authorization_servers: ["https://issuer.example"], scopes_supported: ["reporting:read"], bearer_methods_supported: ["header"] });
+        for (const method of ["GET", "POST"]) {
+            const response = await handleMcp(new Request("https://service.example/mcp", { method }));
+            expect(response.status).toBe(401);
+            expect(response.headers.get("www-authenticate")).toContain('resource_metadata="https://service.example/.well-known/oauth-protected-resource"');
+            expect(response.headers.get("cache-control")).toBe("no-store");
+            expect(await response.text()).not.toMatch(/secret|subject|postgres|navigationCount/);
+        }
+        for (const authorization of ["", "Bearer untrusted", "Basic untrusted"]) {
+            expect((await handleMcp(new Request("https://service.example/mcp", { headers: { authorization } }))).status).toBe(503);
+        }
+        expect((await handleMcp(new Request("https://service.example/mcp", { headers: { origin: "https://evil.example" } }))).status).toBe(403);
+        expect((await handleMcp(new Request("https://evil.example/mcp"))).status).toBe(403);
+        expect(network).not.toHaveBeenCalled();
+    } finally { network.mockRestore(); }
+});
+it("never falls through expired Live validation mode to tools or database access", async () => {
+    const live = "https://eminent-plume-9461.customers.stytch.com";
+    for (const [key, value] of Object.entries({ REPORTING_RESOURCE_URL: "https://iworkhere-reporting.vercel.app/mcp", REPORTING_OAUTH_ISSUER: live, REPORTING_OAUTH_JWKS_URL: live + "/.well-known/jwks.json", REPORTING_OAUTH_INTROSPECTION_URL: live + "/v1/oauth2/introspect", REPORTING_OAUTH_PROFILE: "standard", REPORTING_INTROSPECTION_CLIENT_ID: "fixture-client", REPORTING_INTROSPECTION_CLIENT_SECRET: "fixture-secret", REPORTING_ALLOWED_SUBJECTS: '["enrolled-operator"]', REPORTING_LIVE_VALIDATION_UNTIL: "1" })) vi.stubEnv(key, value);
+    const network = vi.spyOn(globalThis, "fetch");
+    try {
+        const response = await handleMcp(new Request("https://iworkhere-reporting.vercel.app/mcp", { method: "POST", headers: { authorization: "Bearer untrusted" } }));
+        expect(response.status).toBe(503); expect(network).not.toHaveBeenCalled();
+    } finally { network.mockRestore(); }
+});
 it("runs successful and revoked requests over real isolated local HTTP", async () => {
     const observe = vi.fn(async (input: unknown) => {
         const fixture = reportingFixture();

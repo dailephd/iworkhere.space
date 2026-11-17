@@ -291,9 +291,10 @@ privileges were verified through a private operator connection. All seven ranges
 passed the existing B1 DTO and B2 size boundaries with live aggregate reads.
 No telemetry records, rollups or historical analytics were modified.
 
-The reporting deployment remains fail-closed pending an approved OAuth issuer,
-introspection client and explicit subject enrollment. Existing Neon Auth has no
-OAuth-provider plugin enabled; no new tenant or OAuth client was provisioned.
+Private reporting remains fail-closed pending actual Stytch Live token validation
+and explicit subject enrollment. The existing authorized Stytch Live issuer and a
+confidential OAuth client are configured; no new identity-provider project or
+database was provisioned. Public discovery does not grant reporting access.
 See reporting/README.md for provider compatibility and account actions. This is
 not a working ChatGPT connection. Missing independent ingestion/runtime coverage
 continues to produce `INSUFFICIENT_EVIDENCE`, even with recent rows and no gaps in
@@ -316,6 +317,15 @@ reporting or establish a live ChatGPT connection.
 `/oauth/live/authorize` prepares a separate Live login/consent page in the existing
 reporting application, reusing its Stytch component with a separately configured
 Live public SDK token. Test sign-in remains separate. The page fails unavailable
-without Live SDK configuration and does not enable reporting authentication. Live
-issuer discovery, actual token/introspection compatibility, RBAC and immutable
-operator enrollment must be verified before production OAuth activation.
+without Live SDK configuration and does not enable reporting authentication. The
+canonical Live issuer has been verified. Actual token/introspection compatibility,
+RBAC and immutable operator enrollment must still pass production acceptance.
+
+With verified public resource configuration, the MCP SDK can challenge missing
+tokens before private enrollment is complete. A separately enabled, time-bounded
+Live provider validation mode always denies reporting access and performs no
+database reads. It emits only fixed non-identifying compatibility evidence for
+signed enrolled operators; no token, subject, raw provider response or diagnostic
+data is logged. Expiration does not activate reporting. Live ChatGPT acceptance
+remains pending; previously recorded historical rollup gaps remain a separate
+finding and no historical aggregates are modified by OAuth setup.
