@@ -16,7 +16,7 @@ export async function fixtureIssuer(resource = "https://reporting.example/mcp") 
         const body = new URLSearchParams(Buffer.concat(chunks).toString());
         const claims = decodeJwt(body.get("token")!);
         state.calls++; state.authorization = request.headers.authorization ?? "";
-        response.end(JSON.stringify({ active: state.active, sub: claims.sub, aud: claims.aud, iss: claims.iss, exp: claims.exp, scope: state.scope, client_id: "fixture-chatgpt-client", ...state.override }));
+        response.end(JSON.stringify({ active: state.active, sub: claims.sub, aud: claims.aud, iss: claims.iss, exp: claims.exp, iat: claims.iat, scope: state.scope, client_id: "fixture-chatgpt-client", ...state.override }));
     });
     await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
     const address = server.address(); if (!address || typeof address === "string") throw new Error("Fixture listen failed");

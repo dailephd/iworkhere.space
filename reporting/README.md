@@ -61,6 +61,14 @@ on Vercel production and for the production MCP resource, including metadata.
 Use a staging resource with its exact URL configured as the Connected App's
 `access_token_custom_audience`; the default project audience is insufficient.
 The first real Test token lacked that audience and was correctly not accepted.
+Real Test acceptance also established that introspection returns a single client
+audience rather than the JWT's custom resource audience. The Test profile requires
+that audience and `client_id` to equal the configured confidential client. The JWT
+must still name the exact reporting resource. Introspection may shift `iat` and
+`exp` together by at most one second; the lifetime must match, both expiries must
+be valid, and authorization uses the earlier expiry. All other profiles retain
+their original resource-audience and expiry binding. This is a Test-only contract,
+not approval for production activation or arbitrary future DCR clients.
 
 The `/mcp` Node route composes `src/lib/mcp.server.ts`. Official
 `@modelcontextprotocol/server@2.4.0` owns Streamable HTTP, initialization,

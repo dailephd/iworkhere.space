@@ -73,13 +73,26 @@ export function authenticationGate(config: AuthConfig, fetcher: typeof fetch = f
                     if (config.profile === "stytch-test" && current.token_type !== "access_token") throw new OAuthError("invalid_token", "Invalid access token");
                     // Bind introspection to the signed token; scope removal takes effect immediately.
                     const audience = Array.isArray(current.aud) ? current.aud : [current.aud];
-                    if (current.active !== true || current.sub !== payload.sub || current.iss !== config.issuer || !audience.includes(config.resource)
+                    const stytch = config.profile === "stytch-test";
+                    // Verified Stytch Test introspection names the confidential client,
+                    // not access_token_custom_audience. JWT resource validation above
+                    // remains exact; do not accept another introspection client.
+                    const audienceMatches = stytch
+                        ? audience.length === 1 && audience[0] === config.clientId && current.client_id === config.clientId
+                        : audience.includes(config.resource);
+                    // Stytch's network response can shift iat/exp together by one
+                    // second. Require the same lifetime and enforce the earlier exp.
+                    const expiryMatches = typeof current.exp === "number" && (stytch
+                        ? Math.abs(current.exp - payload.exp) <= 1 && typeof current.iat === "number" && Number.isSafeInteger(current.iat)
+                            && typeof payload.iat === "number" && current.iat - payload.iat === current.exp - payload.exp
+                        : current.exp <= payload.exp);
+                    if (current.active !== true || current.sub !== payload.sub || current.iss !== config.issuer || !audienceMatches
                         || typeof current.exp !== "number" || !Number.isSafeInteger(current.exp) || current.exp <= Date.now() / 1000
-                        || current.exp > payload.exp || typeof current.scope !== "string" || typeof current.client_id !== "string" || !current.client_id
+                        || !expiryMatches || typeof current.scope !== "string" || typeof current.client_id !== "string" || !current.client_id
                         || (current.nbf !== undefined && (typeof current.nbf !== "number" || current.nbf > Date.now() / 1000))) throw new OAuthError("invalid_token", "Invalid access token");
                     const signedScopes = payload.scope.split(" ");
                     const scopes = current.scope.split(" ").filter(scope => signedScopes.includes(scope));
-                    return { token, clientId: current.client_id, scopes, expiresAt: current.exp, resource: new URL(config.resource), extra: { subject: payload.sub } };
+                    return { token, clientId: current.client_id, scopes, expiresAt: Math.min(current.exp, payload.exp), resource: new URL(config.resource), extra: { subject: payload.sub } };
                 } catch {
                     throw new OAuthError("invalid_token", "Invalid or unavailable authorization");
                 }
