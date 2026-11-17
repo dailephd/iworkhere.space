@@ -944,3 +944,11 @@ unavailable page; preparing the Live page does not activate production reporting
 The verified public Live domain is pinned in `reporting/src/lib/stytchLive.ts` and
 passed as the SDK custom base URL, keeping authorization responses on that issuer.
 This pin does not introduce any Live JWT or introspection compatibility exception.
+
+### OAuth bootstrap boundary
+
+The reporting service can publish verified public resource metadata and return
+the MCP SDK's missing-token challenge before private credential and operator
+enrollment configuration is complete. This bootstrap path cannot initialize MCP
+tools or execute reporting queries. Requests carrying authorization still require
+the complete existing authentication configuration and checks.

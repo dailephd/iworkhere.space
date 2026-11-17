@@ -28,7 +28,14 @@ login and consent pages. Do not enable it merely because the schema exists.
 Complete provider configuration and store its secrets through Vercel, explicitly
 enroll the operator, then redeploy and run live OAuth/MCP acceptance. The operator
 must complete ChatGPT connection installation and interactive OAuth consent.
-Until then, missing configuration returns 503 without private data. Live reports
+With verified public resource/issuer configuration, unauthenticated requests
+receive the SDK's 401 OAuth discovery challenge even before private credentials
+or operator enrollment exist. Public metadata remains available without those
+private settings. Requests carrying authorization still fail closed with 503
+until complete private configuration is valid; no tool or database access occurs
+in the bootstrap path.
+
+Otherwise, missing configuration returns 503 without private data. Live reports
 remain `INSUFFICIENT_EVIDENCE` where independent monitoring coverage is missing.
 
 ## Ownership and contracts
