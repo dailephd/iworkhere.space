@@ -8,6 +8,7 @@ import { authenticationGate, authConfig, resourceConfig, protectedResourceMetada
 import { observe } from "./observability.server";
 import { boundedBytes, boundedProtocolText, MAX_MCP_BYTES, reportResult, safeResponse, unavailableResult } from "./response";
 import { FIXTURE_NOTICE, observePreviewFixture, previewFixtureEnabled } from "./previewFixture.server";
+import { validateLiveProviderRequest } from "./liveProviderValidation.server";
 
 export interface ReportingServiceOption {
     config: AuthConfig;
@@ -72,7 +73,9 @@ export async function handleMcp(request: Request): Promise<Response> {
             if (result instanceof Response) { result.headers.set("Cache-Control", "no-store"); return result; }
             return safeResponse(503, "configuration_unavailable");
         }
-        const config = authConfig(), fixture = previewFixtureEnabled();
+        const config = authConfig();
+        if (process.env.REPORTING_LIVE_VALIDATION_UNTIL !== undefined) return await validateLiveProviderRequest(request, config, Number(process.env.REPORTING_LIVE_VALIDATION_UNTIL));
+        const fixture = previewFixtureEnabled();
         return await reportingService({ config, observe: fixture ? observePreviewFixture : observe, fixture })(request);
     }
     catch { return safeResponse(503, "configuration_unavailable"); }

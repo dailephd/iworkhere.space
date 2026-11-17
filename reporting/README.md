@@ -38,6 +38,18 @@ in the bootstrap path.
 Otherwise, missing configuration returns 503 without private data. Live reports
 remain `INSUFFICIENT_EVIDENCE` where independent monitoring coverage is missing.
 
+For actual Live token compatibility evidence before activation, the operator can
+set `REPORTING_LIVE_VALIDATION_UNTIL` to an epoch-millisecond deadline no more than
+15 minutes ahead. Complete private configuration and explicit operator enrollment
+are still required. This mode only accepts the pinned Live issuer, JWKS,
+introspection endpoint and canonical production resource. It checks signatures,
+issuer, resource, timestamps and enrolled subject, then emits fixed non-identifying
+compatibility facts to server output and always returns an authorization failure.
+It cannot initialize tools or query the database. Expiration or invalid mode
+configuration remains closed; removing the setting requires a separate reviewed
+activation after provider evidence and the real auth profile pass validation.
+Never add tokens, subjects, raw provider responses or credentials to this evidence.
+
 ## Ownership and contracts
 
 `/oauth/authorize` hosts Stytch Test email-code login and the official Connected

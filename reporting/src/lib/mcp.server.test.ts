@@ -107,6 +107,15 @@ it("bootstraps OAuth with public metadata and an SDK challenge before private en
         expect(network).not.toHaveBeenCalled();
     } finally { network.mockRestore(); }
 });
+it("never falls through expired Live validation mode to tools or database access", async () => {
+    const live = "https://eminent-plume-9461.customers.stytch.com";
+    for (const [key, value] of Object.entries({ REPORTING_RESOURCE_URL: "https://iworkhere-reporting.vercel.app/mcp", REPORTING_OAUTH_ISSUER: live, REPORTING_OAUTH_JWKS_URL: live + "/.well-known/jwks.json", REPORTING_OAUTH_INTROSPECTION_URL: live + "/v1/oauth2/introspect", REPORTING_OAUTH_PROFILE: "standard", REPORTING_INTROSPECTION_CLIENT_ID: "fixture-client", REPORTING_INTROSPECTION_CLIENT_SECRET: "fixture-secret", REPORTING_ALLOWED_SUBJECTS: '["enrolled-operator"]', REPORTING_LIVE_VALIDATION_UNTIL: "1" })) vi.stubEnv(key, value);
+    const network = vi.spyOn(globalThis, "fetch");
+    try {
+        const response = await handleMcp(new Request("https://iworkhere-reporting.vercel.app/mcp", { method: "POST", headers: { authorization: "Bearer untrusted" } }));
+        expect(response.status).toBe(503); expect(network).not.toHaveBeenCalled();
+    } finally { network.mockRestore(); }
+});
 it("runs successful and revoked requests over real isolated local HTTP", async () => {
     const observe = vi.fn(async (input: unknown) => {
         const fixture = reportingFixture();
