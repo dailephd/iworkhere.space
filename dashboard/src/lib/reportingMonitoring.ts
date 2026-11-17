@@ -66,6 +66,14 @@ export function collectReportingMonitoring(observedAt: string, coverageValue: Mo
     const due = new Date(observedAt); due.setUTCHours(2, 15, 0, 0);
     if (end < due.getTime() + 3_600_000) due.setUTCDate(due.getUTCDate() - 1);
     let latestMaintenance: OperationAttempt | null = null;
+    function deadlineObserved(entry: OperationAttempt): boolean {
+        // A partial/truncated query cannot prove a terminal record is absent.
+        // A trusted adapter must account for eligible provider requests as well
+        // as lifecycle messages before asserting query completeness.
+        return coverageValue?.complete === true && entry.attempt
+            && Date.parse(coverageValue.from) <= Date.parse(entry.startedAt)
+            && Date.parse(coverageValue.instrumentedFrom) <= Date.parse(entry.startedAt);
+    }
     for (const entry of attempts.values()) {
         // Terminal records independently prove an operation occurred, but a lost
         // start record prevents a claim of complete lifecycle-log coverage.
@@ -78,10 +86,10 @@ export function collectReportingMonitoring(observedAt: string, coverageValue: Mo
         if (entry.outcome?.status === "success") accepted++;
         else if (entry.outcome?.status === "failure") failed++;
         // Driver deadline is 10s; allow another 5s for terminal-log delivery.
-        else if (end - Date.parse(entry.startedAt) >= 15000) unresolved++;
+        else if (deadlineObserved(entry) && end - Date.parse(entry.startedAt) >= 15000) unresolved++;
     }
     if (latestMaintenance?.outcome) cron = latestMaintenance.outcome.status === "success" ? "succeeded" : "failed";
-    else if (latestMaintenance && end - Date.parse(latestMaintenance.startedAt) >= 75000) cron = "failed";
+    else if (latestMaintenance && deadlineObserved(latestMaintenance) && end - Date.parse(latestMaintenance.startedAt) >= 75000) cron = "failed";
     else if (complete && !latestMaintenance && due.getTime() >= start) cron = "delayed";
     const available = coverageValue ? complete ? "complete" : "partial" : "unavailable";
     return { observedAt, coverage: available, runtimeLogs: available, attempted, accepted, failed, unresolved, cron };

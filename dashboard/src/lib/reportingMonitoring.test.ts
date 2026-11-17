@@ -30,6 +30,13 @@ it("recognizes failed, unfinished and absent scheduled execution without using m
     expect(collectReportingMonitoring(now, coverage(), []).cron).toBe("delayed");
     expect(collectReportingMonitoring(now, { ...coverage(), complete: false }, []).cron).toBe("unknown");
 });
+it("does not infer stalled operations from absent outcomes in an incomplete query", () => {
+    const partial = { ...coverage(), complete: false };
+    expect(collectReportingMonitoring(now, partial, [record("attempt"), record("attempt", "maintenance", 2)])).toMatchObject({ unresolved: 0, cron: "unknown", coverage: "partial" });
+    expect(collectReportingMonitoring(now, partial, [record("attempt"), record("failure")])).toMatchObject({ failed: 1 });
+    const recentComplete = { ...coverage(), from: "2026-11-17T09:00:00.000Z" };
+    expect(collectReportingMonitoring(now, recentComplete, [record("attempt")])).toMatchObject({ unresolved: 1, coverage: "partial" });
+});
 it("does not call an outcome without its attempt complete evidence or hide an observed failure", () => {
     expect(collectReportingMonitoring(now, coverage(), [record("success")])).toMatchObject({ coverage: "partial", attempted: 1, accepted: 1 });
     expect(collectReportingMonitoring(now, coverage(), [record("failure")])).toMatchObject({ coverage: "partial", attempted: 1, failed: 1 });
