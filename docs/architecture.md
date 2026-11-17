@@ -923,3 +923,14 @@ The public site and protected dashboard retain their separate projects and route
 The deployed service denies data access while OAuth and operator enrollment are
 unconfigured. No approved provider or live ChatGPT connection is established.
 See OBSERVABILITY.md and reporting/README.md for current activation requirements.
+
+### Stytch Test Preview acceptance
+
+The reporting deployment may explicitly select an aggregate-only synthetic fixture
+in Vercel Preview with the pinned Stytch Test profile. This mode rejects database
+credentials, production environments and production resources. It reuses the B1
+model and strict DTO; MCP tool descriptions and result text identify synthetic
+data. It never imports dashboard diagnostic/test repositories. A separate next
+credential slot permits replacement acceptance while retaining the primary secret.
+Neither fixture selection nor credential selection bypasses authentication,
+scope, introspection, operator enrollment or response bounds.

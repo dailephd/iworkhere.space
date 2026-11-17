@@ -6,13 +6,15 @@ import { reportingRequest } from "../../../dashboard/src/lib/reportingModel";
 import { authenticationGate, authConfig, resourceConfig, protectedResourceMetadata, type AuthConfig } from "./auth.server";
 import { observe } from "./observability.server";
 import { boundedBytes, boundedProtocolText, MAX_MCP_BYTES, reportResult, safeResponse, unavailableResult } from "./response";
+import { FIXTURE_NOTICE, observePreviewFixture, previewFixtureEnabled } from "./previewFixture.server";
 
 export interface ReportingServiceOption {
     config: AuthConfig;
     fetcher?: typeof fetch;
     observe: (request: unknown) => Promise<unknown>;
+    fixture?: boolean;
 }
-/** Testable composition seam; production route always uses real auth and database adapters. */
+/** Authentication is mandatory; synthetic data is selected only by guarded Preview composition. */
 export function reportingService(option: ReportingServiceOption) {
     const gate = authenticationGate(option.config, option.fetcher);
     return async (request: Request): Promise<Response> => {
@@ -24,13 +26,17 @@ export function reportingService(option: ReportingServiceOption) {
         const handler = createMcpHandler(() => {
             const server = new McpServer({ name: "iworkhere-observability-reporting", version: "1.0.0" });
             server.registerTool("observability_report", {
-                title: "Observability aggregate report",
-                description: "Read-only aggregate observability events for rolling 24h, 7d, 30d, 90d, or daily 180d, calendar 1y, all history plus incomplete current UTC day. Counts are events, never unique users. No raw diagnostics or support records. UTC server receipt time. Health needs independent evidence; missing monitoring means insufficient evidence, not proven health or zero traffic. Long-range vitals are typical daily p75, not full-range p75.",
+                title: option.fixture ? "Synthetic Test observability report" : "Observability aggregate report",
+                description: (option.fixture ? FIXTURE_NOTICE + " " : "") + "Read-only aggregate observability events for rolling 24h, 7d, 30d, 90d, or daily 180d, calendar 1y, all history plus incomplete current UTC day. Counts are events, never unique users. No raw diagnostics or support records. UTC server receipt time. Health needs independent evidence; missing monitoring means insufficient evidence, not proven health or zero traffic. Long-range vitals are typical daily p75, not full-range p75.",
                 inputSchema: z.strictObject({ schemaVersion: z.literal(1), range: z.enum(RANGE) }),
                 annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
                 _meta: { securitySchemes: [{ type: "oauth2", scopes: ["reporting:read"] }] },
             }, async (input) => {
-                try { return reportResult(await option.observe(reportingRequest(input))); }
+                try {
+                    const result = reportResult(await option.observe(reportingRequest(input)));
+                    if (option.fixture) result.content.unshift({ type: "text", text: FIXTURE_NOTICE });
+                    return result;
+                }
                 catch { return unavailableResult(); }
             });
             return server;
@@ -48,7 +54,10 @@ export function reportingService(option: ReportingServiceOption) {
     };
 }
 export async function handleMcp(request: Request): Promise<Response> {
-    try { return await reportingService({ config: authConfig(), observe })(request); }
+    try {
+        const config = authConfig(), fixture = previewFixtureEnabled();
+        return await reportingService({ config, observe: fixture ? observePreviewFixture : observe, fixture })(request);
+    }
     catch { return safeResponse(503, "configuration_unavailable"); }
 }
 export function handleMetadata(): Response {

@@ -303,3 +303,12 @@ Hosted reporting CI independently installs, typechecks, lints, tests and builds
 the service, exercises the built fail-closed runtime, and verifies the exact role
 template and seven B1 query plans against isolated PostgreSQL. No production
 credentials are used by CI; complete unique report directories are uploaded.
+
+Stytch Test rotation acceptance uses an explicitly labelled synthetic aggregate
+mode in the reporting Preview only. It reuses B1 projection/validation without
+database access or dashboard diagnostic fixtures. A separate sensitive next-secret
+slot retains the primary credential until real replacement OAuth, all seven report
+ranges, revoked-token rejection and other authorization gates pass. Test fixture
+mode rejects production environments/resources and any database credential. See
+reporting/README.md for exact configuration; this does not activate production
+reporting or establish a live ChatGPT connection.

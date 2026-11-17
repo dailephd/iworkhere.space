@@ -6,10 +6,25 @@ import { reportingModel } from "../../../dashboard/src/lib/reportingModel";
 import { fixtureIssuer } from "../test/issuer";
 import { handleMcp, handleMetadata, reportingService } from "./mcp.server";
 import { PROTOCOL_VERSION_META_KEY, CLIENT_CAPABILITIES_META_KEY, CLIENT_INFO_META_KEY } from "@modelcontextprotocol/server";
+import { FIXTURE_NOTICE } from "./previewFixture.server";
 let issuer: Awaited<ReturnType<typeof fixtureIssuer>>;
 beforeEach(async () => { issuer = await fixtureIssuer(); });
 afterEach(async () => { await issuer.close(); vi.unstubAllEnvs(); });
 const input = { schemaVersion: 1, range: "24h" };
+it("labels authenticated Preview fixture discovery and results without changing the strict DTO", async () => {
+    const service = reportingService({ config: issuer.config, observe: async () => report(), fixture: true });
+    async function call(method: string, params: unknown) {
+        const token = await issuer.sign();
+        const response = await service(new Request(issuer.config.resource, { method: "POST", headers: { Authorization: "Bearer " + token, Accept: "application/json, text/event-stream", "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) }));
+        const text = await response.text();
+        return response.headers.get("content-type")?.includes("text/event-stream") ? JSON.parse(text.split("\n").filter(line => line.startsWith("data: ")).at(-1)!.slice(6)) : JSON.parse(text);
+    }
+    const listed = await call("tools/list", {});
+    expect(listed.result.tools[0].description).toContain(FIXTURE_NOTICE);
+    const called = await call("tools/call", { name: "observability_report", arguments: input });
+    expect(called.result.content[0].text).toBe(FIXTURE_NOTICE);
+    expect(called.result.structuredContent).toEqual(report());
+});
 function report() { return reportingModel(input, reportingFixture(), reportingNow); }
 async function rpc(method: string, params: unknown = {}, observe: (input: unknown) => Promise<unknown> = async () => report()) {
     const token = await issuer.sign();

@@ -31,7 +31,11 @@ export function authConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig {
         const profile = env.REPORTING_OAUTH_PROFILE ?? "standard";
         if (profile !== "standard" && profile !== "stytch-test") throw new ServiceUnavailable("configuration");
         if (profile === "stytch-test" && (resource.issuer !== STYTCH_TEST_ISSUER || jwks !== STYTCH_TEST_ISSUER + "/.well-known/jwks.json" || introspection !== STYTCH_TEST_ISSUER + "/v1/oauth2/introspect")) throw new ServiceUnavailable("configuration");
-        const clientId = env.REPORTING_INTROSPECTION_CLIENT_ID, clientSecret = env.REPORTING_INTROSPECTION_CLIENT_SECRET;
+        const slot = env.REPORTING_INTROSPECTION_CREDENTIAL_SLOT ?? "current";
+        if (slot !== "current" && slot !== "next") throw new ServiceUnavailable("configuration");
+        if (slot === "next" && (profile !== "stytch-test" || env.VERCEL_ENV !== "preview" || env.REPORTING_PREVIEW_FIXTURE !== "true" || env.REPORTING_DATABASE_URL)) throw new ServiceUnavailable("configuration");
+        const clientId = env.REPORTING_INTROSPECTION_CLIENT_ID;
+        const clientSecret = slot === "next" ? env.REPORTING_INTROSPECTION_CLIENT_SECRET_NEXT : env.REPORTING_INTROSPECTION_CLIENT_SECRET;
         const subject: unknown = JSON.parse(env.REPORTING_ALLOWED_SUBJECTS ?? "null");
         if (!clientId || !clientSecret || clientId.length > 512 || clientSecret.length > 4096 || !Array.isArray(subject) || !subject.length || subject.length > 20
             || subject.some(item => typeof item !== "string" || item.length === 0 || item.length > 256 || /[\x00-\x20]/.test(item))) throw new ServiceUnavailable("configuration");
