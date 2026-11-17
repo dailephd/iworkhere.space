@@ -312,3 +312,10 @@ ranges, revoked-token rejection and other authorization gates pass. Test fixture
 mode rejects production environments/resources and any database credential. See
 reporting/README.md for exact configuration; this does not activate production
 reporting or establish a live ChatGPT connection.
+
+`/oauth/live/authorize` prepares a separate Live login/consent page in the existing
+reporting application, reusing its Stytch component with a separately configured
+Live public SDK token. Test sign-in remains separate. The page fails unavailable
+without Live SDK configuration and does not enable reporting authentication. Live
+issuer discovery, actual token/introspection compatibility, RBAC and immutable
+operator enrollment must be verified before production OAuth activation.

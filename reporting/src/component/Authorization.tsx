@@ -9,7 +9,9 @@ function Consent() {
     return session ? <IdentityProvider /> : <StytchLogin config={{ products: [Products.otp], otpOptions: { methods: ["email"], expirationMinutes: 10 } }} />;
 }
 
-export function Authorization({ publicToken }: { publicToken: string }) {
+export interface AuthorizationProp { publicToken: string; environment?: "test" | "live" }
+
+export function Authorization({ publicToken, environment = "test" }: AuthorizationProp) {
     const [stytch] = useState(() => createStytchUIClient(publicToken));
-    return <main><h1>Authorize observability reporting</h1><p>Stytch Test sign-in and consent. Reporting access requires separate operator enrollment.</p><StytchProvider stytch={stytch}><Consent /></StytchProvider></main>;
+    return <main><h1>Authorize observability reporting</h1><p>Stytch {environment === "live" ? "Live" : "Test"} sign-in and consent. Reporting access requires separate operator enrollment.</p><StytchProvider stytch={stytch}><Consent /></StytchProvider></main>;
 }

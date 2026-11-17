@@ -934,3 +934,10 @@ data. It never imports dashboard diagnostic/test repositories. A separate next
 credential slot permits replacement acceptance while retaining the primary secret.
 Neither fixture selection nor credential selection bypasses authentication,
 scope, introspection, operator enrollment or response bounds.
+
+The reporting application's `/oauth/live/authorize` route separately composes the
+existing Stytch login/consent component using a Live public SDK token. The Test
+authorization route and token configuration remain separate. Neither page grants
+MCP access: verified issuer-specific server authentication and explicit operator
+enrollment are still required. Missing or cross-environment SDK tokens render an
+unavailable page; preparing the Live page does not activate production reporting.

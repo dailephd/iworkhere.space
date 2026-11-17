@@ -19,3 +19,8 @@ it("does not authorize consent from a cached or uninitialized session", () => {
     state.session = {}; state.fromCache = true; expect(render()).not.toContain("Consent screen");
     state.fromCache = false; state.isInitialized = false; expect(render()).not.toContain("Consent screen");
 });
+it("labels Live login without changing the mandatory session initialization checks", () => {
+    state.session = {}; state.fromCache = true;
+    const html = renderToStaticMarkup(<Authorization publicToken="public-token-live-fixture" environment="live" />);
+    expect(html).toContain("Stytch Live sign-in"); expect(html).not.toContain("Consent screen");
+});

@@ -212,6 +212,17 @@ linked in ChatGPT. Revoking provider authorization, removing the enrolled subjec
 reporting secret disables access. No measurement data or dashboard SSO changes are
 needed. Root Docker context and public TypeScript/lint exclude this deployment unit.
 
+## Live authorization page preparation
+
+The separate `/oauth/live/authorize` route reuses the same official Stytch UI for
+Live sign-in, configured only by `NEXT_PUBLIC_STYTCH_LIVE_PUBLIC_TOKEN`. It rejects
+Test tokens and does not fall back to the existing Test SDK setting. The existing
+Test `/oauth/authorize` route is unchanged. Without a Live public token the new
+route renders unavailable. Enable the Live Frontend SDK for the exact origin in
+protected Stytch settings before attempting login. This UI preparation does not
+verify a Live issuer, introduce a Live JWT/introspection exception, enroll an
+operator or activate production MCP access. Those require actual Live evidence.
+
 ## Verified specifications
 
 - https://developers.openai.com/plugins/build/auth
