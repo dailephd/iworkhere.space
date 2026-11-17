@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "verify": "tsx script/verify.ts",
+    "health:audit": "tsx script/healthAudit.ts",
     "test:visual": "tsx script/visualSmoke.ts",
     "test:runtime": "tsx script/runtimeSmoke.ts"
   },

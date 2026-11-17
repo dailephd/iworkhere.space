@@ -45,17 +45,35 @@ export function eventRecord(metric: MetricRequest): EventRecord {
 }
 
 export async function persistMetric(metric: MetricRequest): Promise<void> {
-    const sql = database();
-    const e = eventRecord(metric);
-    await sql`INSERT INTO observability.event
-        (kind, pathname, tool_id, event_name, metric_name, metric_value, metric_rating, failure_category, device_class, referrer_host, navigation_type)
-        VALUES (${e.kind}, ${e.pathname}, ${e.toolId}, ${e.eventName}, ${e.metricName}, ${e.metricValue}, ${e.metricRating}, ${e.failureCategory}, ${e.deviceClass}, ${e.referrerHost}, ${e.navigationType})`;
+    await observedOperation("ingestion", async () => {
+        const sql = database();
+        const e = eventRecord(metric);
+        await sql`INSERT INTO observability.event
+            (kind, pathname, tool_id, event_name, metric_name, metric_value, metric_rating, failure_category, device_class, referrer_host, navigation_type)
+            VALUES (${e.kind}, ${e.pathname}, ${e.toolId}, ${e.eventName}, ${e.metricName}, ${e.metricValue}, ${e.metricRating}, ${e.failureCategory}, ${e.deviceClass}, ${e.referrerHost}, ${e.navigationType})`;
+    });
 }
 
 export async function maintainObservability(): Promise<void> {
-    if (!persistenceEnabled()) throw new Error("Observability persistence is disabled");
-    await database().query("SELECT rolled_day_count, deleted_event_count FROM observability.maintain()", []);
-    await database().query("SELECT observability.prune_diagnostics()", []);
+    await observedOperation("maintenance", async () => {
+        if (!persistenceEnabled()) throw new Error("Observability persistence is disabled");
+        await database().query("SELECT rolled_day_count, deleted_event_count FROM observability.maintain()", []);
+        await database().query("SELECT observability.prune_diagnostics()", []);
+    });
+}
+
+/** Independent runtime evidence, never a metric or diagnostic payload. The
+ * random identifier correlates one operation only, never a user or session. */
+async function observedOperation(operation: "ingestion" | "maintenance", run: () => Promise<void>): Promise<void> {
+    const attemptId = crypto.randomUUID(), startedAt = new Date().toISOString();
+    function emit(status: "attempt" | "success" | "failure"): void {
+        try {
+            console.info(JSON.stringify({ source: "observability-health", schemaVersion: 1, operation, status, attemptId, startedAt, timestamp: status === "attempt" ? startedAt : new Date().toISOString() }));
+        } catch { /* Logging must not change persistence outcome. */ }
+    }
+    emit("attempt");
+    try { await run(); emit("success"); }
+    catch (error) { emit("failure"); throw error; }
 }
 
 export async function persistDiagnostic(d: ErrorDiagnostic): Promise<void> {

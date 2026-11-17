@@ -975,3 +975,15 @@ are emitted, including real-token profile acceptance, rejection under an isolate
 unenrolled policy and expiry enforcement at a simulated post-expiry instant.
 No token is retained or returned. This is not an MCP tool or a
 normal reporting path, and it never accesses the observability database.
+
+## Operational health evidence
+
+The persistence owner emits a fixed attempt/outcome protocol. The existing
+dashboard library owns strict reconciliation in reportingMonitoring.ts and provider
+projection in reportingMonitoringSource.ts. dashboard/script/healthAudit.ts reuses
+B1's read-only evidence query, validated projection and health classifier. This
+operator command stays inside the dashboard package; it never enters public Docker
+output or gives the MCP runtime platform-management credentials. There is no new
+database, schema, ingestion endpoint or production monitoring adapter. Missing
+independent coverage stays explicit. See OBSERVABILITY.md and reporting/README.md
+for the coverage limit and operator commands.

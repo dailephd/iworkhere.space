@@ -1,7 +1,7 @@
 import identity from "./reportingIdentity.json";
 import { RANGE, rangePlan, type Range } from "./range";
 import { array, count, databaseCount, invalid, measurement, member, object, ReportingUnavailable, timestamp } from "./reportingContract";
-import { assessReportingHealth, validateReportingHealth, type DatabaseEvidence, type MonitoringEvidence, type ReportingHealth } from "./reportingHealth";
+import { assessReportingHealth, validateDatabaseEvidence, validateReportingHealth, type DatabaseEvidence, type MonitoringEvidence, type ReportingHealth } from "./reportingHealth";
 
 export const MAX_REPORTING_BYTES = 24 * 1024;
 export const TOP_LIMIT = 10;
@@ -110,10 +110,10 @@ export function validateReportingResponse(value: unknown): ReportingResponse {
 export function serializeReportingResponse(value: unknown): string { return JSON.stringify(validateReportingResponse(value)); }
 
 export interface ReportingData { activity: unknown; vital: unknown; evidence: unknown }
-function evidenceFromRow(value: unknown): DatabaseEvidence {
+export function reportingDatabaseEvidence(value: unknown): DatabaseEvidence {
     const rows = array(value, 1); if (rows.length !== 1) return invalid();
     const row = object(rows[0], ["observed_at", "retained_from", "recent_event_count", "missing_completed_days", "mismatched_completed_days", "pending_grace_days", "last_raw_received", "last_rollup_day"]);
-    return { observedAt: timestamp(row.observed_at), retainedFrom: timestamp(row.retained_from), recentEventCount: databaseCount(row.recent_event_count), missingCompletedDays: databaseCount(row.missing_completed_days), mismatchedCompletedDays: databaseCount(row.mismatched_completed_days), pendingGraceDays: databaseCount(row.pending_grace_days), lastRawReceived: row.last_raw_received as string | null, lastRollupDay: row.last_rollup_day as string | null };
+    return validateDatabaseEvidence({ observedAt: timestamp(row.observed_at), retainedFrom: timestamp(row.retained_from), recentEventCount: databaseCount(row.recent_event_count), missingCompletedDays: databaseCount(row.missing_completed_days), mismatchedCompletedDays: databaseCount(row.mismatched_completed_days), pendingGraceDays: databaseCount(row.pending_grace_days), lastRawReceived: row.last_raw_received, lastRollupDay: row.last_rollup_day });
 }
 /** Project only validated aggregates. Never spread DB records or accept DashboardData. */
 export function reportingModel(requestValue: unknown, dataValue: unknown, now: Date, monitoring: MonitoringEvidence | null = null): ReportingResponse {
@@ -152,7 +152,7 @@ export function reportingModel(requestValue: unknown, dataValue: unknown, now: D
         vitalMap.set(name, { sampleCount, value: measurement(row.value) });
     }
     const vital: ReportingVital[] = VITAL_NAME.map(name => ({ name, value: vitalMap.get(name)?.value ?? null, sampleCount: vitalMap.get(name)?.sampleCount ?? 0, unit: name === "CLS" ? "unitless" : "ms", statistic: plan.source === "raw" ? "range_p75" : "typical_daily_p75" }));
-    const health = assessReportingHealth(plan.end, evidenceFromRow(data.evidence), monitoring);
+    const health = assessReportingHealth(plan.end, reportingDatabaseEvidence(data.evidence), monitoring);
     return validateReportingResponse({ schemaVersion: 1, operation: "observability_report", range: request.range, start: plan.start, end: plan.end, timezone: "UTC", source: plan.source === "raw" ? "raw" : "daily_and_current_raw",
         semantics: { clock: "server_receipt", count: "events", toolRanking: "opens_plus_executions_plus_errors", executionRanking: "executions", routeRanking: "navigations", completeness: "selected_source_only" },
         navigationCount: total.navigation, toolOpenCount: total.opens, toolExecutionCount: total.executions, clientErrorCount: total.errors,
