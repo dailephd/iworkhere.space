@@ -32,5 +32,4 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_HEALTH_COLLECTION_TOKEN }}
           OBSERVABILITY_HEALTH_COLLECTOR_DATABASE_URL: ${{ secrets.OBSERVABILITY_HEALTH_COLLECTOR_DATABASE_URL }}
-        run: |
-          npm exec --yes --package vercel@62.2.0 -- sh -c 'export VERCEL_CLI_PATH="$(command -v vercel)"; node --import tsx script/healthCollect.ts'
+        run: node --import tsx script/healthCollect.ts

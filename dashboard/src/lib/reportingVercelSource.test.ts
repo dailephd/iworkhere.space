@@ -2,7 +2,7 @@ import { expect, it, vi } from "vitest";
 import { collectWindow } from "./reportingCollector";
 import { PUBLIC_PROJECT } from "./reportingMonitoringSource";
 import { invocationCount, reconcileWindow } from "./reportingMonitoringWindow";
-import { vercelMonitoringProvider, vercelReadCommand, type VercelReadRequest } from "./reportingVercelSource";
+import { vercelMonitoringProvider, type VercelReadRequest } from "./reportingVercelSource";
 
 const window = { start: "2026-11-18T11:00:00.000Z", end: "2026-11-18T11:05:00.000Z" };
 const observed = "2026-11-18T11:20:00.000Z";
@@ -20,13 +20,7 @@ it("uses only the fixed project-scoped APIs, with no account/team discovery", as
     expect(logs).not.toMatch(/private diagnostic|support text|headers|authorization|private-query/);
     expect(read.mock.calls[0][0].path).toContain(`projectId=${PUBLIC_PROJECT}`);
     expect(read.mock.calls[1][0].body).toMatchObject({ scope: { projectIds: [PUBLIC_PROJECT] }, bucketSeconds: 300, metrics: { value: { metric: "vercel.function_invocation.count", aggregation: "count" } }, outputs: ["value"] });
-    for (const [request] of read.mock.calls) {
-        const command = vercelReadCommand(request);
-        expect(command.args).not.toContain("--scope");
-        expect(command.args).not.toContain("--token");
-        expect(command.args).toContain("--non-interactive");
-        expect(command.args.join(" ")).not.toMatch(/\/teams|\/user|--all/);
-    }
+    expect(JSON.stringify(read.mock.calls)).not.toMatch(/\/teams|\/user|--all/);
 });
 it("does not turn absent API fields into independent zero traffic", async () => {
     const provider = vercelMonitoringProvider(async () => "{}");

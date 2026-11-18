@@ -357,7 +357,7 @@ The collector uses the existing free recent Vercel counter window (queries remai
 
 After reviewed migration, apply health-role.sql as the authorized schema owner, then set its password through protected operator execution. observability_health_collector gets only CONNECT/USAGE and EXECUTE on the two bounded SECURITY DEFINER checkpoint/persistence functions; it cannot read measurement, diagnostic, support or raw health tables. Reporting and dashboard get EXECUTE only on the fixed read-only health_summary(timestamp) aggregate function, with explicit fields and no IDs. PUBLIC function execution is revoked. Dashboard future-table SELECT defaults are removed to prevent accidental operational-ID exposure; its existing five approved table grants remain. No application startup runs migrations.
 
-Create protected GitHub environment observability-health restricted to master. Set OBSERVABILITY_HEALTH_COLLECTOR_DATABASE_URL for the dedicated collector and VERCEL_HEALTH_COLLECTION_TOKEN scoped to the public project, with bounded expiry and rotation. No platform token belongs in the MCP environment. Only the master scheduled/manual job receives these secrets; PR jobs do not. The collector is Node24 with the pinned Vercel CLI62.2.0, existing Neon driver and existing dashboard package. Run npm --prefix dashboard run health:collect only through this protected environment. Failures log fixed categories only.
+Create protected GitHub environment observability-health restricted to master. Set OBSERVABILITY_HEALTH_COLLECTOR_DATABASE_URL for the dedicated collector and VERCEL_HEALTH_COLLECTION_TOKEN scoped to the public project, with bounded expiry and rotation. No platform token belongs in the MCP environment. Only the master scheduled/manual job receives these secrets; PR jobs do not. The collector uses Node24 native HTTPS fetch, the existing Neon driver and existing dashboard package. Run npm --prefix dashboard run health:collect only through this protected environment. Failures log fixed categories only.
 
 The reporting adapter performs a five-second read-only aggregate query through the existing restricted reporting reader. Missing schema/grants or invalid/unavailable summaries yield absent monitoring evidence. Valid partial summaries remain partial. The database-evidence query uses the same health observation cutoff (at most30 minutes older than analytics report end); analytics counts, ranges, UTC boundaries and Web Vital semantics are unchanged. The strict DTO optionally includes bounded health.monitoring coverage timestamps, missing-interval/failure counts and delivery delay. Operation IDs and raw records never reach MCP. The existing six-state classifier is unchanged in ownership; positive health requires actual preceding-24-hour verified coverage and maintenance evidence. New deployments must await real coverage.
 
@@ -367,10 +367,15 @@ Validation: dashboard unit tests exercise collection failures, strict projection
 
 Scheduling reference: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
 
-Project-scoped collector credentials use the fixed request-log and metrics APIs
-used by the pinned Vercel CLI62.2.0, through its generic API command. High-level
-logs/metrics commands perform broader user/team discovery and are unsuitable for
-the restricted token. The collector pins trusted API hosts, owner/project IDs,
+The collector calls the fixed request-log and metrics APIs verified against
+Vercel CLI62.2.0 directly with its supplied hosted bearer credential. It does
+not use a local CLI login, discover account/team context, or follow redirects.
+A separate fixed project metadata read diagnoses credential access, never
+monitoring coverage. Fixed status/error categories distinguish invalid/missing
+tokens from forbidden APIs; raw provider error bodies and project configuration
+are never logged. An operator-session test is not acceptance of the saved hosted
+credential. A denied project token is not authorization to substitute a broader
+account token. The collector pins trusted API hosts, owner/project IDs,
 production filters, five-minute windows, grouped counts and bounded pagination;
 it does not widen the token. Provider envelopes are reduced to existing validated
 operation/counter contracts before persistence. Missing pages, capped or truncated
