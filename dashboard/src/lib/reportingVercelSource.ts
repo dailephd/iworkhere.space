@@ -15,17 +15,74 @@ export interface VercelReadRequest {
     path: string;
     body?: Record<string, unknown>;
 }
-export interface VercelReadCommand { args: string[]; input?: string }
 export type VercelRead = (request: VercelReadRequest) => Promise<string>;
+export interface VercelAuthorizationResult {
+    source: "observability-health-source";
+    kind: "project" | "logs" | "counts";
+    status: number | null;
+    outcome: "verified" | "invalid_token" | "missing_token" | "credential_format" | "forbidden" | "unauthorized" | "plan_limit" | "unavailable" | "source_truncated";
+}
 
-/** The high-level CLI commands discover user/team context before querying a
- * project. The fixed APIs below are the same APIs used by CLI62.2.0, without
- * those broader discovery calls. Bearer credentials remain in the environment. */
-export function vercelReadCommand(request: VercelReadRequest): VercelReadCommand {
+/** Use only the supplied hosted credential, without CLI login/config discovery.
+ * Provider errors are reduced to fixed categories; their text is never logged. */
+export function vercelMonitoringRead(token: string, emit: (result: VercelAuthorizationResult) => void,
+    send: typeof fetch = fetch): { read: VercelRead; verifyProject: () => Promise<void> } {
+    if (!token || token.length > 4096 || /\s/.test(token)) {
+        emit({ source: "observability-health-source", kind: "project", status: null, outcome: token ? "credential_format" : "missing_token" });
+        return invalid();
+    }
+    async function request(kind: VercelAuthorizationResult["kind"], url: string, body?: Record<string, unknown>): Promise<string> {
+        let status: number | null = null;
+        try {
+            const response = await send(url, { method: body ? "POST" : "GET", redirect: "error",
+                headers: { Authorization: `Bearer ${token}`, ...(body ? { "Content-Type": "application/json" } : {}) },
+                ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(45000) });
+            status = response.status;
+            const reader = response.body?.getReader();
+            let bytes = 0;
+            const chunks: Uint8Array[] = [];
+            if (reader) try {
+                while (true) {
+                    const chunk = await reader.read();
+                    if (chunk.done) break;
+                    bytes += chunk.value.byteLength;
+                    if (bytes > MAX_BYTES) { await reader.cancel(); throw Error("source_truncated"); }
+                    chunks.push(chunk.value);
+                }
+            } finally { reader.releaseLock(); }
+            const text = Buffer.concat(chunks).toString("utf8");
+            if (!response.ok) {
+                let error: Record<string, unknown> = {};
+                try { error = sourceObject(sourceObject(JSON.parse(text)).error); } catch { /* Untrusted provider text is discarded. */ }
+                const outcome = error.invalidToken === true ? "invalid_token" : error.missingToken === true ? "missing_token"
+                    : status === 403 ? "forbidden" : status === 401 ? "unauthorized" : status === 402 ? "plan_limit" : "unavailable";
+                emit({ source: "observability-health-source", kind, status, outcome });
+                throw Error("classified_source_failure");
+            }
+            return text;
+        } catch (error) {
+            if (!(error instanceof Error && error.message === "classified_source_failure")) {
+                emit({ source: "observability-health-source", kind, status,
+                    outcome: error instanceof Error && error.message === "source_truncated" ? "source_truncated" : "unavailable" });
+            }
+            throw Error(error instanceof Error && error.message === "source_truncated" ? "source_truncated" : "source_unavailable");
+        }
+    }
     return {
-        args: ["api", request.path, "--non-interactive", ...(request.kind === "logs"
-            ? ["--api", "https://vercel.com"] : ["--method", "POST", "--input", "-"])],
-        ...(request.body ? { input: JSON.stringify(request.body) } : {}),
+        async verifyProject() {
+            const text = await request("project", `https://api.vercel.com/v9/projects/${PUBLIC_PROJECT}?teamId=${OWNER}`);
+            const project = sourceObject(JSON.parse(text));
+            if (project.id !== PUBLIC_PROJECT || project.accountId !== OWNER) return invalid();
+            emit({ source: "observability-health-source", kind: "project", status: 200, outcome: "verified" });
+        },
+        async read(value) {
+            const url = new URL(value.path, value.kind === "logs" ? "https://vercel.com" : "https://api.vercel.com");
+            if (value.kind === "logs") {
+                if (url.origin !== "https://vercel.com" || url.pathname !== "/api/logs/request-logs"
+                    || url.searchParams.get("projectId") !== PUBLIC_PROJECT || url.searchParams.get("ownerId") !== OWNER || value.body) return invalid();
+            } else if (value.kind !== "counts" || url.href !== `https://api.vercel.com/metrics/v1?teamId=${OWNER}` || !value.body) return invalid();
+            return request(value.kind, url.href, value.body);
+        },
     };
 }
 function sourceObject(value: unknown): Record<string, unknown> {
