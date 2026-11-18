@@ -7,7 +7,7 @@ export const MAX_REPORTING_BYTES = 24 * 1024;
 export const TOP_LIMIT = 10;
 export const VITAL_NAME = ["LCP", "INP", "CLS", "FCP", "TTFB", "FID"] as const;
 export const ERROR_CATEGORY = ["window-error", "unhandled-rejection", "tool-render-error", "unknown"] as const;
-export const LIMITATION = ["events_not_unique_users", "best_effort_telemetry", "historical_pre_a1_duplicate_opens_possible", "client_errors_not_all_server_errors", "source_counts_not_proof_of_complete_ingestion", "missing_evidence_not_zero_activity", "raw_retention_90_days", "daily_plus_incomplete_current_utc_day", "typical_daily_p75_is_unweighted_median_not_full_range_p75", "historical_rollup_completeness_unverified"] as const;
+export const LIMITATION = ["events_not_unique_users", "best_effort_telemetry", "historical_pre_a1_duplicate_opens_possible", "client_errors_not_all_server_errors", "source_counts_not_proof_of_complete_ingestion", "missing_evidence_not_zero_activity", "raw_retention_90_days", "daily_plus_incomplete_current_utc_day", "typical_daily_p75_is_unweighted_median_not_full_range_p75", "historical_rollup_completeness_unverified", "health_evidence_has_separate_observation_time"] as const;
 export interface ReportingRequest { schemaVersion: 1; range: Range }
 export interface ToolActivity { toolId: string | null; opens: number; executions: number; errors: number }
 export interface RouteActivity { route: string | null; count: number }
@@ -92,7 +92,9 @@ export function validateReportingResponse(value: unknown): ReportingResponse {
         if (vital.value !== null) measurement(vital.value);
     }
     unique(vitals, item => (item as ReportingVital).name);
-    const health = validateReportingHealth(row.health); if (health.observedAt !== end) return invalid();
+    const health = validateReportingHealth(row.health); if (health.observedAt > end || Date.parse(end)-Date.parse(health.observedAt)>1800000) return invalid();
+    if(health.monitoring?.lastCollectedAt && health.monitoring.lastCollectedAt>end) return invalid();
+    if(health.observedAt!==end && !health.monitoring) return invalid();
     const limitation = array(row.limitation, LIMITATION.length); limitation.forEach(item => member(item, LIMITATION));
     if (limitation.length !== LIMITATION.length || new Set(limitation).size !== LIMITATION.length) return invalid();
     const limited = object(row.limited, ["limit", "omittedActivityTools", "omittedExecutionTools", "omittedRoutes"]);
@@ -152,7 +154,7 @@ export function reportingModel(requestValue: unknown, dataValue: unknown, now: D
         vitalMap.set(name, { sampleCount, value: measurement(row.value) });
     }
     const vital: ReportingVital[] = VITAL_NAME.map(name => ({ name, value: vitalMap.get(name)?.value ?? null, sampleCount: vitalMap.get(name)?.sampleCount ?? 0, unit: name === "CLS" ? "unitless" : "ms", statistic: plan.source === "raw" ? "range_p75" : "typical_daily_p75" }));
-    const health = assessReportingHealth(plan.end, reportingDatabaseEvidence(data.evidence), monitoring);
+    const health = assessReportingHealth(monitoring?.observedAt ?? plan.end, reportingDatabaseEvidence(data.evidence), monitoring);
     return validateReportingResponse({ schemaVersion: 1, operation: "observability_report", range: request.range, start: plan.start, end: plan.end, timezone: "UTC", source: plan.source === "raw" ? "raw" : "daily_and_current_raw",
         semantics: { clock: "server_receipt", count: "events", toolRanking: "opens_plus_executions_plus_errors", executionRanking: "executions", routeRanking: "navigations", completeness: "selected_source_only" },
         navigationCount: total.navigation, toolOpenCount: total.opens, toolExecutionCount: total.executions, clientErrorCount: total.errors,

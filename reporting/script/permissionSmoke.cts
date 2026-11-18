@@ -7,6 +7,7 @@ import { reportingQuery } from "../../dashboard/src/lib/reportingQuery";
 import { reportingModel } from "../../dashboard/src/lib/reportingModel";
 import { rangePlan, RANGE } from "../../dashboard/src/lib/range";
 import type { Query } from "../../dashboard/src/lib/query";
+import { verifyHealthFixture } from "../../dashboard/script/healthSqlFixture";
 
 export interface PermissionFixtureDatabase {
     execute: (text: string) => Promise<void>;
@@ -62,6 +63,7 @@ export async function verifyPermissionFixture(database: PermissionFixtureDatabas
             END $$; RESET ROLE;`);
     }
     check.push("diagnostic/support/extra-column read, INSERT/UPDATE/DELETE, function and DDL denied");
+    check.push(...await verifyHealthFixture(database,root));
     return check;
 }
 export function preparedFixtureQuery(query: Query, reader: boolean): string {

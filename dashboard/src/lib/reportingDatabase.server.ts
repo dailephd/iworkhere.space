@@ -21,7 +21,7 @@ export interface ReportingReader {
 }
 export async function loadReporting(requestValue: unknown, reader: ReportingReader, now: Date, monitoring: MonitoringEvidence | null = null): Promise<ReportingResponse> {
     const request = reportingRequest(requestValue);
-    const plan = rangePlan(request.range, now), query = reportingQuery(plan);
+    const plan = rangePlan(request.range, now), query = reportingQuery(plan, monitoring?.observedAt ?? plan.end);
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {

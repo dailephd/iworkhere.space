@@ -7,7 +7,7 @@ export interface MonitoringCoverage {
     instrumentedFrom: string;
     complete: boolean;
 }
-interface OperationRecord {
+export interface OperationRecord {
     source: "observability-health";
     schemaVersion: 1;
     operation: "ingestion" | "maintenance";
@@ -22,7 +22,7 @@ interface OperationAttempt {
     attempt: boolean;
     outcome: OperationRecord | null;
 }
-function operationRecord(value: unknown): OperationRecord {
+export function operationRecord(value: unknown): OperationRecord {
     const row = object(value, ["source", "schemaVersion", "operation", "status", "attemptId", "startedAt", "timestamp"]);
     if (row.source !== "observability-health" || row.schemaVersion !== 1) return invalid();
     member(row.operation, ["ingestion", "maintenance"]); member(row.status, ["attempt", "success", "failure"]);

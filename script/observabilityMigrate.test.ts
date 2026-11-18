@@ -16,9 +16,15 @@ it("requires explicit configuration without connecting", async () => {
 it("applies migrations in order, each transaction preserving function bodies", async () => {
     vi.stubEnv("OBSERVABILITY_DATABASE_URL", "postgresql://fixture:fixture@example.invalid/db");
     await migrateObservability();
-    expect(transaction).toHaveBeenCalledTimes(2);
+    expect(transaction).toHaveBeenCalledTimes(3);
     expect(transaction.mock.calls[0][0][0].statement).toContain("CREATE SCHEMA");
     expect(transaction.mock.calls[1][0][0].statement).toContain("CREATE TABLE IF NOT EXISTS observability.error_diagnostic");
+    expect(transaction.mock.calls[2][0][0].statement).toContain("CREATE TABLE IF NOT EXISTS observability.health_epoch");
+    for (const command of transaction.mock.calls[2][0]) {
+        // Neon HTTP rejects multiple top-level commands in one prepared query.
+        expect(command.statement).not.toMatch(/;\s*\n(?:CREATE|INSERT|REVOKE|DO)\b/);
+        expect((command.statement.match(/^REVOKE /gm) ?? []).length).toBeLessThanOrEqual(1);
+    }
     expect(query.mock.calls.length).toBeGreaterThan(10);
     expect(query.mock.calls.every(call => call[1].length === 0)).toBe(true);
     expect(query.mock.calls.some(call => call[0].includes("CREATE OR REPLACE FUNCTION observability.maintain()") && call[0].includes("RETURN NEXT;"))).toBe(true);
