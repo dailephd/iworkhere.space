@@ -1,8 +1,10 @@
 # iworkhere.space operational dashboard
 
-An independent Next.js 16.3.8 / React 19.2.3 app on Node 24.x. Production reads
-the public application's ONE Neon observability database using a SELECT-only
-role. No application authentication, account model, login page or sessions exist.
+An independent Next.js 16.3.8 / React 19.2.3 app on Node 24.x. The public
+Next.js 16.4.5 update applies to the root package. [Reporting](../reporting/README.md)
+is a separate service with a narrower reader and its own OAuth boundary.
+The dashboard uses its own read-only role on the existing Neon observability
+database, including access to the fixed aggregate health summary. No application authentication, account model, login page or sessions exist.
 Vercel Authentication with All Deployments must protect this separate project.
 See [deployment setup](DEPLOYMENT.md) before exposing it.
 

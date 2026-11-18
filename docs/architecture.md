@@ -1,5 +1,17 @@
 # ARCHITECTURE
 
+## Current production boundaries — 2026-11-18
+
+The public app, private dashboard and authenticated MCP reporting are separate
+deployments from this repository. The [deployment guide](DEPLOYMENT.md) owns
+their runtime and credential boundaries. The public app owns intake. The
+dashboard uses its own read-only Neon reader behind Vercel Authentication.
+Reporting uses the shared aggregate query and DTO contracts with a narrower
+reader after Stytch Live OAuth and operator authorization. The collector has
+a separately restricted writer for operational evidence. Manual collection is
+validated; automatic health collection is deferred. See
+[observability](OBSERVABILITY.md) and [project status](project-status.md).
+
 ## Calculator same-document query updates (A02)
 
 ToolClientFrame remains the query synchronization owner. Its existing setQuery
@@ -17,7 +29,7 @@ The mounted Calculator owns expression, parser, result and error state; network
 availability cannot remove it during an edit. See the offline and history browser
 regressions in `test/e2e/calculator-offline.spec.ts`.
 
-## Planned v0.4.4 quality and task-guide extension
+## Historical v0.4.4 quality and task-guide plan
 
 Status: planned on 2026-10-26; no source implementation is claimed here.
 The [v0.4.4 implementation plan](plans/v0.4.4-implementation-plan.md) is the
@@ -100,8 +112,8 @@ The operational maintenance route uses CRON_SECRET, not application users or
 sessions. Daily cron belongs to the public Vercel project.
 
 `dashboard/` is an independently installable Next.js application deployed as a
-second Vercel project. It reads the same database with a SELECT-only production
-role. All SQL stays server-side; no dashboard code enters public navigation,
+second Vercel project. It reads the same database with its own read-only production role, including
+the fixed aggregate health summary grant. All SQL stays server-side; no dashboard code enters public navigation,
 registry, sitemap, service worker or public build. Vercel Authentication with
 All Deployments protects only the dashboard project; there is no app auth.
 
@@ -642,7 +654,7 @@ registry and runtime ownership.
 
 ---
 
-## Sitewide navigation and Home composition (Prompt 2 of 9, CURRENT on the local candidate)
+## Sitewide navigation and Home composition (Prompt 2 of 9, deployed through PR #51)
 
 - `src/app/navData.ts` owns the five primary `NavItem` definitions. `src/app/layout.tsx` derives the separate category `NavItem[]` from `getAvailableCategory()` and `getToolCategoryLabel` (now the canonical definition title) and passes both arrays to `AppShell` (`navItem`, optional `categoryNavItem`) and on to `Header`.
 - `VerticalNav` (client) keeps the nav landmark and gains optional `categoryItem`: the desktop Categories disclosure and the mobile Menu overlay are component-local state; no second routing mechanism. `HeaderSearch` (new, client, `src/component/layout/`) is the generic Search utility targeting the existing `#tool-search` input. `ToolSearch` only gains the hash-triggered focus handoff.
@@ -842,11 +854,11 @@ Status: implemented. No new structural node: the registry → metadata → route
 
 ## v0.4.4 Batch 5 implementation status (2026-10-27)
 
-The task-guide node described above is implemented locally on `feature/v0.4.4-site-quality`: `src/module/content/taskGuide.ts` ([spec](modules/TaskGuide.md)), `src/app/guide/page.tsx`, `src/app/guide/[slug]/page.tsx`, and the presentation-only `src/component/content/TaskGuidePage.tsx` ([spec](components/TaskGuidePage.md)). The home page, document and image category pages, tool pages (`taskGuideLink`), navigation and sitemap compose it as planned (35 canonical URLs, 11 navigation links). Dependency direction is unchanged: `app` routes import `module/content`, `module/tool` and the component; the component imports no module; `lib/seo` imports nothing from content. `ToolPageTemplate` takes only a type-only import of `TaskGuideLink`.
+At that checkpoint, the task-guide node had been implemented locally on `feature/v0.4.4-site-quality`: `src/module/content/taskGuide.ts` ([spec](modules/TaskGuide.md)), `src/app/guide/page.tsx`, `src/app/guide/[slug]/page.tsx`, and the presentation-only `src/component/content/TaskGuidePage.tsx` ([spec](components/TaskGuidePage.md)). The home page, document and image category pages, tool pages (`taskGuideLink`), navigation and sitemap compose it as planned (35 canonical URLs, 11 navigation links). Dependency direction is unchanged: `app` routes import `module/content`, `module/tool` and the component; the component imports no module; `lib/seo` imports nothing from content. `ToolPageTemplate` takes only a type-only import of `TaskGuideLink`.
 
 ## Workflow runtime (Prompt 5)
 
-Status: first workflow IMPLEMENTED on the local candidate in Prompt 5; the other three became operational in Prompt 6 (see "Multi-file workflows (Prompt 6)" below).
+Historical sequence: the first workflow was implemented in Prompt 5; the other three became operational in Prompt 6 (see "Multi-file workflows (Prompt 6)" below).
 
 - `src/module/workflow/type.ts` owns the frozen public contract (WorkflowSlug, WorkflowRequest, WorkflowProgress, WorkflowArtifact, WorkflowCheck, WorkflowFailure, WorkflowRunResult, WorkflowRunOption). It declares no functions.
 - `src/module/workflow/registry.ts` is the single source of workflow identity and status: exactly four slugs in a fixed order, all operational since Prompt 6. It is distinct from the tool registry.
@@ -857,7 +869,7 @@ Status: first workflow IMPLEMENTED on the local candidate in Prompt 5; the other
 
 ### Multi-file workflows (Prompt 6)
 
-Status: IMPLEMENTED on the local candidate (unreleased, uncommitted). All four workflows are operational through the one existing dispatcher; there is no second runner, registry or route builder.
+Status: deployed through PR #51. All four workflows are operational through the one existing dispatcher; there is no second runner, registry or route builder.
 
 - `runWorkflow` dispatches on the slug to `runPrepareImage`, `runHeicToPdf`, `runPacket` or `runSlides`. The three new runs share `createRunContext`, which takes stage order and count from the registry, emits progress, turns an abort checkpoint, an `AbortError` or an aborted signal into CANCELLED, and turns every other failure into one typed `WorkflowFailure` with `outputs: []`. A run succeeds only after the final output is re-read and inspected independently of the code that wrote it.
 - HEIC photos to PDF: validate (1 to 20 files, 25 MiB each and together, JPEG quality on the existing 10 to 100 step 5 scale), inspect and convert each photo through the existing HEIC worker contract (`startHeicOperation`), measure each encoded blob from its own bytes, then place one image per page with the existing `startImagesToPdfOperation`. The PDF is re-read with the PDF.js document reader; page count and each page's size and rotation must match.
@@ -869,7 +881,7 @@ Status: IMPLEMENTED on the local candidate (unreleased, uncommitted). All four w
 
 ## Interactive Guide finder and legacy Guide redirects (Prompt 7)
 
-Status: IMPLEMENTED on the local candidate (unreleased, uncommitted).
+Status: deployed through PR #51.
 
 - `src/module/content/toolFinder.ts` is the only owner of the authored decision graph: 28 frozen nodes (the root `start`, five task questions and 22 recommendations), `GuideTarget` references by `ToolId` or `WorkflowSlug`, `getAllGuideNode` and `getGuideNode`. It stores no names, paths, categories or capabilities.
 - `src/app/guide/page.tsx` (Server Component) owns the route metadata ("Find the Right Tool or Workflow", canonical `/guide`) and resolves every recommendation: tools through `getToolByIdList` and their `seo.canonicalPath`, workflows through `getOperationalWorkflow` and `canonicalPath`. A missing or non-operational target throws; it is never silently dropped. The resolved plain data goes to `src/module/content/ToolFinderClient.tsx`.
@@ -902,7 +914,7 @@ Future packaging must carry this core and artifact together and retain that chec
 The public app never imports dashboard production code. No production role, OAuth,
 ChatGPT connection or deployment is implemented. See OBSERVABILITY.md.
 
-## Separate MCP reporting service (Track B B2, local only)
+## Separate MCP reporting service (Track B B2 implementation checkpoint)
 
 `reporting/` is an independently installed/built Next.js deployment unit. Its
 server-only adapters import the existing B1 core under dashboard/src/lib by
@@ -920,9 +932,9 @@ The separately Git-connected `iworkhere-reporting` Vercel project uses root
 Its restricted reader reuses the existing production observability database;
 credentials are server-only and scoped to the reporting production environment.
 The public site and protected dashboard retain their separate projects and routes.
-The deployed service denies data access while OAuth and operator enrollment are
-unconfigured. No approved provider or live ChatGPT connection is established.
-See OBSERVABILITY.md and reporting/README.md for current activation requirements.
+At that preparation checkpoint, private data access remained disabled while
+OAuth and operator enrollment were unconfigured.
+See [observability](OBSERVABILITY.md) and the [reporting README](../reporting/README.md) for current production status.
 
 ### Stytch Test Preview acceptance
 

@@ -1,14 +1,14 @@
 # Google AdSense integration
 
-## Planned v0.4.4 review safeguards
+## v0.4.4 review safeguards
 
-Status: planned on 2026-10-26. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+Planned on 2026-10-26 and deployed with the v0.4.4 source. The [quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
 does not establish AdSense approval, runtime consent configuration or live
 serving. The [immediate implementation plan](plans/v0.4.4-implementation-plan.md)
 preserves default-off advertising and all existing informational/error-page
 exclusions.
 
-Implemented locally on 2026-10-27 (v0.4.4 Batch 3; not released or deployed):
+Implemented on 2026-10-27 as v0.4.4 Batch 3:
 `adsenseEnabled(flag, mode, deploymentEnvironment?)` takes an optional third
 deployment-environment argument. `AdSenseEligiblePage`, the server eligibility
 boundary, passes `process.env.VERCEL_ENV` explicitly. A supplied value other
@@ -21,7 +21,7 @@ their own flag check but are mounted only behind this server gate, so no
 browser-side value can override a server denial. There is no runtime, page,
 query or storage toggle. Controlled enabled tests use stubbed Google endpoints.
 
-The planned /guide hub and its four task pages remain ineligible. Correct
+The current Guide finder, workflow hub and workflow pages are ad-ineligible. The original four task-guide routes redirect to workflows. Correct
 metadata and richer content do not automatically make a route ad-eligible.
 No new slots, vendor, Auto ads activation or consent implementation is added.
 

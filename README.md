@@ -3,12 +3,11 @@
 Documentation-first utility tools built with Next.js, React, TypeScript, and
 Tailwind CSS.
 
-The v0.4.4 application release contains 18 registered utilities
-across seven populated categories, nine verified worked file examples, a
-task-first homepage, improved Discover navigation and category guidance,
-publisher About and Contact pages, privacy improvements, and 35 canonical
-public routes. The header is fixed and the footer is ordinary document-flow
-content with its conditional Report Issues action. Contact uses the direct
+The deployed application package is 0.4.4. It contains 18 registered utilities
+across seven categories, nine worked file examples, a searchable Home,
+Discover and category pages, a Guide finder, four browser-local workflows,
+and 36 canonical public routes. The header is fixed and the footer follows
+normal document flow with its conditional Report Issues action. Contact uses the direct
 Resend integration
 with a sender and recipient configured externally; Production delivery was
 verified on 2026-10-21. The v0.4.2 issue-reporting entry remains conditional on
@@ -48,16 +47,15 @@ verification requirements; source validation does not establish either. The
 [October 26 audit](docs/reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md) records
 the original findings and their limits. The [roadmap](docs/ROADMAP.md) retains
 the planned v0.5.0/v0.6.0 catalogs. The four original manual task guides are
-superseded on the local candidate (see below); their authored data remains
+superseded by the deployed refresh (see below); their authored data remains
 documented in [Practical File Workflows](docs/modules/TaskGuide.md), and the
 implementation history remains in the [implementation report](docs/reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
-## Sitewide redesign (local candidate, unreleased)
+## Production sitewide refresh
 
-The working tree for `feature/homepage-colorfield-refresh` (version still
-`0.4.4`, uncommitted, not deployed) contains a sitewide redesign. It has not
-been released or published; its acceptance evidence is a local report, not a
-hosted CI result. Current behavior:
+PR #51 integrated and deployed the sitewide refresh within package 0.4.4.
+The separately validated A3 appearance test patch remains unintegrated.
+Current production behavior:
 
 - Home (`/`) is the searchable catalog of the 18 individual tools in seven
   categories; it has no task, guide or workflow cards. `/discover` is the
@@ -77,6 +75,12 @@ hosted CI result. Current behavior:
   One Dark; System follows the operating system. Themes may differ in color,
   typography, material and decoration, but not in content, DOM semantics or
   control reachability. See [the design contract](docs/DESIGN.md).
+
+The public build uses Next.js 16.4.5. The latest published GitHub Release is
+`v0.4.3`; `v0.4.4` has no remote tag or GitHub Release. See
+[project status](docs/project-status.md#current-production-and-publication--2026-11-18)
+for the verified production and lifecycle state. The protected dashboard and
+[authenticated MCP reporting service](reporting/README.md) run separately.
 
 ## Getting Started
 
@@ -126,10 +130,7 @@ or operator database; migrations never run on startup. Local SQL validation is
 `npm run test:observability-db` with disposable Docker Postgres 17. Dashboard
 CI/verify is independent and requires no production secret. Production services and deployment settings are configured separately; see [deployment documentation](docs/DEPLOYMENT.md) for their requirements.
 
-The repository has eight GitHub Actions workflow files. Its public-app
-workflows define seven required jobs because `e2e.yaml` contains both `e2e` and
-`e2e-support`; the dashboard and observability database workflows add two more,
-for nine required jobs total:
+The six public-app validation workflows define seven jobs:
 
 - `typecheck.yaml` — `npm run typecheck`
 - `lint.yaml` — `npm run lint`
@@ -138,12 +139,11 @@ for nine required jobs total:
 - `e2e.yaml` — `e2e` runs `npm run test:e2e`; `e2e-support` selects `footer-flow.spec.ts`, `v0.4.2-integration.spec.ts` and `v0.4.3-contact-footer.spec.ts` in a support-enabled build
 - `container.yaml` — `npm run test:container` (Docker production runtime and browser gate)
 
-Separate `dashboard.yaml` and `observability-db.yaml` workflows validate the
-private dashboard and disposable PostgreSQL schema/maintenance path. The
-repository therefore has eight workflow files and nine required jobs in total; see
-[CI/CD](docs/CI_CD.md) for artifact and trigger details.
+Separate dashboard, observability database and reporting workflows add four
+validation jobs, yielding eleven jobs across nine validation workflows. The
+operational collector is a separate workflow. See [CI/CD](docs/CI_CD.md).
 
-All eight workflows run on pull requests and pushes to `main`, `master`, and
+All nine validation workflows run on pull requests and pushes to `main`, `master`, and
 `validation/**`. The validation namespace is reserved for immutable exact-SHA
 pre-release checks; see [CI/CD](docs/CI_CD.md).
 
@@ -154,7 +154,7 @@ readiness passed at the implementation SHA recorded in [CI/CD](docs/CI_CD.md).
 v0.3.0 local implementation validation is recorded in its
 [implementation report](docs/reports/V0_3_0_PDF_DOCUMENT_ESSENTIALS_IMPLEMENTATION_REPORT.md).
 
-All nine required jobs must pass for a pull request. The local aggregate
+All required validation jobs must pass for a pull request. The local aggregate
 command does not replace them.
 
 Docker is optional for local development. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)

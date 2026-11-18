@@ -1,5 +1,15 @@
 # Changelog
 
+## Deployed maintenance on package 0.4.4 — 2026-11-18
+
+- Deployed the sitewide refresh with 36 canonical URLs, four browser-local
+  workflows and an interactive Guide finder. Integrated A1, A02 and F-01.
+- Activated independent Stytch Live MCP aggregate reporting for ChatGPT.
+  Deployed durable operational evidence. Automatic health collection remains
+  deferred, with current health reported as `INSUFFICIENT_EVIDENCE`.
+- Updated the public Next.js build to 16.4.5 for GHSA-mfr8-8qww-v76h.
+  The latest published GitHub Release remains v0.4.3.
+
 ## v0.4.4 — Site Quality & Search Recovery — 2026-10-28
 
 - Restored descriptive browser titles, corrected calculator, converter and time arithmetic, added a Vercel preview advertising guard, a rewritten service worker (network-first HTML, allowlisted static cache), four more verified file examples (nine in total), the `/guide` hub with four task guides, and 35 canonical sitemap URLs.

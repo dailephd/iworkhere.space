@@ -4,8 +4,8 @@
 
 `iworkhere.space` is a documentation-first, registry-driven utility-tool platform built with Next.js, React, and TypeScript.
 
-The current application release source is `v0.4.4`; the independent dashboard
-remains `0.1.0`. Version `v0.4.2` was the preceding published release when v0.4.3
+The deployed application package is `0.4.4`; the independent dashboard
+remains `0.1.0`. The latest published GitHub Release is `v0.4.3`. Version `v0.4.2` was the preceding published release when v0.4.3
 development began. The v0.4.3 scope is complete and merged to `master` by PR
 #39 at `854477488ca5dddad9a47cc4a5036b3fba1bbf37`. Production deployment and
 Contact operation were verified separately from source integration. GitHub
@@ -894,12 +894,9 @@ Therefore:
 
 ## Theme specification debt
 
-The application currently supports four theme selections:
-
-- system
-- light
-- dark
-- onedark
+Production supports six selectable palettes in Light, Dark and System modes,
+plus fixed-dark One Dark. The [design specification](DESIGN.md) owns the
+current appearance contract.
 
 Theme implementation is functional. Theme/design documentation must remain current before future visual-system behavior changes.
 
@@ -1083,8 +1080,8 @@ Where a version has unresolved planning decisions, resolve them before its imple
 
 The complete [v0.4.4 Site Quality & Search Recovery plan](plans/v0.4.4-implementation-plan.md)
 is implemented and validated as release source. The frozen v0.5.0 catalog
-expansion is the next planned implementation version after v0.4.4 release
-integration. The [2026-10-26 quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
+expansion remains the next planned version. Its planning gate is completed
+v0.4.4 publication or an explicit publication deferral. The [2026-10-26 quality audit](reports/ADSENSE_QUALITY_AUDIT_2026-10-26.md)
 remains historical evidence of the original priorities. Actual publication
 and deployment identity are recorded separately in [project status](project-status.md)
 and external release records; live advertising and AdSense review are not
@@ -1152,6 +1149,6 @@ contract is designed and approved. No converter expansion is implemented here.
 
 Historical status note (2026-10-27): v0.4.4 Batch 5 (four task guides, the `/guide` hub and their discovery links) is implemented locally on `feature/v0.4.4-site-quality`; the release, container gate and whole-site reconciliation remain Batch 6 work. Batch 6 verification (2026-10-27) found the container gate and one complete browser run still not green, so v0.4.4 is not release ready; see [project status](project-status.md) and the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
-## Status note: sitewide redesign candidate (2026-10-31)
+## Production status of the sitewide refresh
 
-The sitewide redesign (searchable 18-tool Home, working browser-local workflows, interactive Guide finder, 36 canonical URLs, seven art-directed palettes) exists only as an unreleased local candidate on `feature/homepage-colorfield-refresh`. It is not a published release and does not change the planned v0.5.0/v0.6.0 catalogs or their ordering. Earlier plan entries that mention publishing four manual task guides are historical; those guides are superseded by the workflows. Any version number, release or deployment for the candidate requires a separate decision.
+The sitewide redesign (searchable 18-tool Home, working browser-local workflows, interactive Guide finder, 36 canonical URLs, seven art-directed palettes) shipped through PR #51 within v0.4.4. The separate A3 test patch remains unintegrated. The workflows supersede the four original manual task guides. The v0.5.0/v0.6.0 catalogs and their ordering remain as planned.

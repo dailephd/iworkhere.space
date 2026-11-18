@@ -1,17 +1,22 @@
 # Private aggregate MCP reporting service
 
-Track B B2 is implemented and tested. B3 has created the separate Vercel project
-`iworkhere-reporting` and provisioned the restricted production Neon reader.
-Stytch Live discovery, confidential OAuth client and explicit operator enrollment
-are configured. Signed Live compatibility evidence is verified; production tool
-acceptance remains pending. Private reporting fails
-closed and is not connected to ChatGPT. This package is a
-separate deployment unit from the public app and `dashboard.iworkhere.space`.
+Production reporting is live at `https://iworkhere-reporting.vercel.app/mcp`.
+The service uses the restricted reader of the existing Neon observability
+database. The service verifies Stytch Live token signatures and requires
+active introspection.
+An authorized caller needs the reporting scope and explicit operator enrollment.
+Authenticated ChatGPT reporting passed all seven ranges. This Node 24 service
+is deployed separately from the public app and `dashboard.iworkhere.space`.
+
+Durable health evidence uses a fixed, read-only aggregate summary. Manual
+collection is validated and automatic collection is deferred. Production
+reports currently return `INSUFFICIENT_EVIDENCE` for monitoring health.
+See [project status](../docs/project-status.md).
 Keep the dashboard's Vercel Authentication on **All Deployments** unchanged.
 
-## Production activation status (2026-11-17)
+## Historical pre-activation checkpoint (2026-11-17)
 
-The intended resource is `https://iworkhere-reporting.vercel.app/mcp`.
+At this checkpoint the configured resource was `https://iworkhere-reporting.vercel.app/mcp`.
 `REPORTING_DATABASE_URL` is a sensitive, production-only variable in that project.
 The existing observability database is reused; no database was created. Effective
 reader privileges and all seven B1 report ranges were verified through a private
@@ -248,7 +253,7 @@ The reporting endpoint and public discovery must be network reachable without th
 existing dashboard SSO intercepting requests; private data remains protected by
 application OAuth and enrollment. Previews must have no production credentials.
 
-Before any live connection: operator-review and apply
+For a new or replacement environment, operator-review and apply
 `../database/observability/reporting-role.sql` in isolated development first;
 inspect effective grants/PUBLIC privileges/memberships/ownership; provision the
 separate reader and server-only OAuth secrets; configure provider PKCE/resource and
@@ -257,12 +262,12 @@ privacy and least-privilege acceptance. The template intentionally rejects an ex
 role and unsafe inherited PUBLIC privileges instead of silently changing shared grants.
 No migrations or role startup provisioning. Do not reuse dashboard reader credentials.
 
-Only after separate deployment authorization should a staged endpoint be created and
-linked in ChatGPT. Revoking provider authorization, removing the enrolled subject or
+A new staging endpoint requires separate deployment authorization before
+it is linked in ChatGPT. Revoking provider authorization, removing the enrolled subject or
 reporting secret disables access. No measurement data or dashboard SSO changes are
 needed. Root Docker context and public TypeScript/lint exclude this deployment unit.
 
-## Live authorization page preparation
+## Historical Live authorization page preparation
 
 The separate `/oauth/live/authorize` route reuses the same official Stytch UI for
 Live sign-in, configured only by `NEXT_PUBLIC_STYTCH_LIVE_PUBLIC_TOKEN`. It rejects
@@ -300,9 +305,9 @@ be pointed at production. Reports remain unique under test-report/.
 
 ## Operational health diagnosis
 
-The dashboard and MCP reader see persisted Neon data. They cannot independently prove that all ingestion requests or cron executions succeeded. Dashboard operator command `npm run health:audit` performs a bounded, read-only operator audit using the B1 evidence query/projection/classifier and fixed operational runtime records. Set `VERCEL_CLI_PATH` to an existing authenticated Vercel CLI executable; supply the existing database connection through protected operator execution, never in a command argument or report. Example: from `dashboard/`: `vercel env run --environment production --project iworkhere-space --scope dailephds-projects -- npm run health:audit`. Reports go to a unique `test-report/observability-health-*/result.json`; raw logs and credentials are never saved. The audit does not inject platform credentials into the MCP service or automatically supply it monitoring evidence.
+The dashboard and MCP reader see persisted Neon data. They cannot independently prove that all ingestion requests or cron executions succeeded. The dashboard operator command `npm --prefix dashboard run health:audit` (from the repository root) performs a bounded, read-only operator audit using the B1 evidence query/projection/classifier and fixed operational runtime records. Set `VERCEL_CLI_PATH` to an existing authenticated Vercel CLI executable; supply the existing database connection through protected operator execution, never in a command argument or report. Example from the repository root: `vercel env run --environment production --project iworkhere-space --scope dailephds-projects -- npm --prefix dashboard run health:audit`. Reports go to a unique `test-report/observability-health-*/result.json`; raw logs and credentials are never saved. The audit does not inject platform credentials into the MCP service or automatically supply it monitoring evidence.
 
-The current Hobby source covers at most one hour and is always classified partial. Complete preceding-24-hour monitoring requires a separately authorized, continuously retained source and a reviewed production adapter. No new paid service, drain, storage, credential or schema is provisioned by this change. New instrumentation also needs a full coverage window before it can prove health. A database outage or unavailable log source stays explicit. The two previously flagged calendar dates have no retained raw events, daily rows or rollup markers as of the 2026-11-17 read-only audit; maintenance only marks event-bearing days, so these are not proven missing rollups and are not backfilled. Historical completeness remains unverified.
+The operator audit reads a bounded recent log window, which by itself is partial. Schema 003 and the collector now retain operational observations in Neon. Manual collection was validated. Automatic collection is deferred, so complete preceding-24-hour monitoring has not been established. A database outage or unavailable log source stays explicit. The two previously flagged calendar dates have no retained raw events, daily rows or rollup markers as of the 2026-11-17 read-only audit; maintenance only marks event-bearing days, so these are not proven missing rollups and are not backfilled. Historical completeness remains unverified.
 
 ## Durable operational evidence
 

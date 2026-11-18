@@ -7,20 +7,25 @@ production-style Docker preview.
 
 ## Requirements and commands
 
-Persistent observability uses one Neon database and two independent Vercel
-projects from the same GitHub repository:
+Persistent observability uses the existing Neon database and three independent
+Vercel projects from the same GitHub repository:
 
 ```text
 repository root  → public Vercel project → iworkhere.space
 dashboard/       → separate Vercel project → dashboard.iworkhere.space
                   Vercel Authentication / All Deployments
                   same Neon database, read-only credential
+reporting/        → separate Vercel project → iworkhere-reporting.vercel.app/mcp
+                  Stytch Live OAuth and enrolled-operator authorization
+                  same Neon database, restricted aggregate reporting reader
 ```
 
 Only the dashboard project enables Vercel Authentication → All Deployments.
-The public site remains anonymously reachable. The dashboard has no public
+The public site remains anonymously reachable. Reporting publishes discovery
+metadata and requires its own OAuth authorization for data access. See the
+[reporting README](../reporting/README.md). The dashboard has no public
 navigation or sitemap registration and includes noindex/nofollow metadata; these
-do not replace external deployment protection. No application auth is added.
+do not replace external deployment protection. The dashboard relies on Vercel Authentication.
 
 ### Public canonical-host policy
 
@@ -55,7 +60,9 @@ Follow [exact later setup](../dashboard/DEPLOYMENT.md), including
 Marketplace → Neon, writer/read-only credentials, explicit migration,
 production environment variables, daily public-project cron and mandatory
 deployment protection. No external resources or secrets are configured by code.
-Public Docker packaging excludes dashboard/ and defaults persistence false.
+Public Docker packaging excludes dashboard/ and reporting/ and defaults
+persistence to false. The current public Production build uses Next.js 16.4.5
+(PR #69). See [project status](project-status.md) for deployment identities.
 
 Install Docker Desktop on Windows, or Docker Engine with the Compose plugin on
 Linux/macOS. On Windows, `npm run docker:ready` silently checks/starts Docker
