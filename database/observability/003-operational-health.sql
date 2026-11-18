@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS observability.health_epoch (
     singleton boolean PRIMARY KEY DEFAULT true CHECK (singleton),
     activated_at timestamptz NOT NULL DEFAULT clock_timestamp()
 );
+-- statement-break
 INSERT INTO observability.health_epoch(singleton) VALUES (true) ON CONFLICT DO NOTHING;
 -- statement-break
 CREATE TABLE IF NOT EXISTS observability.health_operation (
@@ -18,6 +19,7 @@ CREATE TABLE IF NOT EXISTS observability.health_operation (
     CHECK (recorded_at >= started_at AND recorded_at <= started_at + interval '2 minutes'),
     CHECK (status <> 'attempt' OR recorded_at = started_at)
 );
+-- statement-break
 CREATE INDEX IF NOT EXISTS health_operation_started ON observability.health_operation(started_at);
 -- statement-break
 CREATE TABLE IF NOT EXISTS observability.health_collection (
@@ -38,6 +40,7 @@ CREATE TABLE IF NOT EXISTS observability.health_collection (
     CHECK (window_end=window_start+interval '5 minutes'),
     CHECK ((outcome='started')=(completed_at IS NULL))
 );
+-- statement-break
 CREATE INDEX IF NOT EXISTS health_collection_window ON observability.health_collection(window_start, completed_at DESC);
 -- statement-break
 CREATE OR REPLACE FUNCTION observability.begin_health_collection(run uuid, first_at timestamptz, last_at timestamptz)
@@ -173,10 +176,13 @@ FROM bounds CROSS JOIN totals CROSS JOIN independent_failure;
 END $$;
 -- statement-break
 REVOKE ALL ON observability.health_epoch,observability.health_operation,observability.health_collection,observability.health_verified_window FROM PUBLIC;
+-- statement-break
 REVOKE ALL ON FUNCTION observability.begin_health_collection(uuid,timestamptz,timestamptz) FROM PUBLIC;
+-- statement-break
 REVOKE ALL ON FUNCTION observability.finish_health_collection(uuid,timestamptz,text,text,integer,text,jsonb,integer,integer,integer) FROM PUBLIC;
-
+-- statement-break
 REVOKE ALL ON FUNCTION observability.health_summary(timestamptz) FROM PUBLIC;
+-- statement-break
 DO $$ BEGIN IF EXISTS(SELECT 1 FROM pg_roles WHERE rolname='observability_dashboard') THEN
     REVOKE ALL ON observability.health_epoch,observability.health_operation,observability.health_collection,observability.health_verified_window FROM observability_dashboard;
 END IF; END $$;
