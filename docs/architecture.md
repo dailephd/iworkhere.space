@@ -987,3 +987,7 @@ output or gives the MCP runtime platform-management credentials. There is no new
 database, schema, ingestion endpoint or production monitoring adapter. Missing
 independent coverage stays explicit. See OBSERVABILITY.md and reporting/README.md
 for the coverage limit and operator commands.
+
+## Durable operational health evidence
+
+The existing Neon database retains fixed operational records and collector checkpoints for seven days, separate from metrics/diagnostics/support. A restricted hosted collector reconciles Vercel request logs against independently queried invocation counts in five-minute windows, using the PR64 parser and validator. Windows require two identical observations at least five minutes apart; delivery changes revoke continuity. GitHub scheduling is best effort: skipped/failed/truncated intervals remain gaps. The public application continues emitting its existing safe records and receives no new privileged connection. Only the collector may persist evidence; reporting/dashboard readers execute a fixed aggregate-only function, never operation IDs. Health uses a bounded older common observation time for its DB and operational evidence; analytics range bounds remain current and unchanged. No startup migrations or paid service provisioning.

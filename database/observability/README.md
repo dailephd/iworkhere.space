@@ -102,3 +102,7 @@ in finally. Unique reports live at `test-report/observability-db-<RUN_ID>/`.
 ## Diagnostic hotfix
 
 error_diagnostic is created only by additive 002. Received timestamp governs strict 30-day pruning; exact boundary remains. Its UUID/fingerprint/path/tool/time fields are indexed. Bounded JSONB is diagnostic-only. Migration runner discovers explicit three-digit numbered SQL filenames in order and uses one transaction per file; never at startup. Reapply dashboard-role.sql after migration: table SELECT only, no write/DDL/ownership/functions. Existing metric retention/rollups remain unchanged.
+
+## Durable operational evidence
+
+The hosted collector, seven-day schema003 retention, fixed aggregate health function, restricted roles, protected secret provisioning, coverage/recovery rules and corrected historical findings are specified in [OBSERVABILITY.md](../../docs/OBSERVABILITY.md#durable-operational-evidence-003). Reporting uses the existing restricted reader and strict DTO. No platform token is added to the MCP runtime. Run the existing package verify and hosted PostgreSQL permission fixture; production activation requires reviewed migration and protected collector configuration. Missing coverage remains insufficient evidence.

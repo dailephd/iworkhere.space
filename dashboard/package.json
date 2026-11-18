@@ -2,7 +2,9 @@
   "name": "iworkhere-observability",
   "version": "0.1.0",
   "private": true,
-  "engines": { "node": "24.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
@@ -13,7 +15,8 @@
     "verify": "tsx script/verify.ts",
     "health:audit": "tsx script/healthAudit.ts",
     "test:visual": "tsx script/visualSmoke.ts",
-    "test:runtime": "tsx script/runtimeSmoke.ts"
+    "test:runtime": "tsx script/runtimeSmoke.ts",
+    "health:collect": "tsx script/healthCollect.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "1.1.0",

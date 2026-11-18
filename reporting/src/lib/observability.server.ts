@@ -5,6 +5,7 @@ import { reportingRequest, type ReportingResponse } from "../../../dashboard/src
 import { reportingQuery } from "../../../dashboard/src/lib/reportingQuery";
 import { rangePlan } from "../../../dashboard/src/lib/range";
 import { boundedBytes, ServiceUnavailable } from "./response";
+import { readMonitoring } from "./monitoring.server";
 
 // Module-wide immutable transport policy, never per-request mutable credentials.
 // Applies only to this independently installed service's Neon driver instance.
@@ -13,8 +14,8 @@ neonConfig.fetchFunction = async (input: Parameters<typeof fetch>[0], init?: Req
     const bytes = await boundedBytes(response, 131072);
     return new Response(bytes, { status: response.status, headers: response.headers });
 };
-export function reportingReader(url: string, requestValue: unknown, now: Date): ReportingReader {
-    const request = reportingRequest(requestValue), plan = reportingQuery(rangePlan(request.range, now));
+export function reportingReader(url: string, requestValue: unknown, now: Date, healthAt: string = now.toISOString()): ReportingReader {
+    const request = reportingRequest(requestValue), plan = reportingQuery(rangePlan(request.range, now), healthAt);
     const approved = [plan.activity, plan.vital, plan.evidence];
     return {
         async transaction(queries, option) {
@@ -39,8 +40,8 @@ export async function observe(requestValue: unknown): Promise<ReportingResponse>
     try {
         const parsed = new URL(url);
         if (!["postgres:", "postgresql:"].includes(parsed.protocol) || parsed.username !== "observability_reporting") throw new ServiceUnavailable("configuration");
-        // No monitoring collector in B2: B1 accurately describes missing evidence.
         const now = new Date();
-        return await loadReporting(request, reportingReader(url, request, now), now, null);
+        const monitoring = await readMonitoring(url, now);
+        return await loadReporting(request, reportingReader(url, request, now, monitoring?.observedAt ?? now.toISOString()), now, monitoring);
     } catch { throw new ServiceUnavailable("database"); }
 }

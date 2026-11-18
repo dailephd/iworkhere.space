@@ -15,9 +15,13 @@ GRANT CONNECT ON DATABASE :"database_name" TO observability_dashboard;
 REVOKE ALL ON SCHEMA observability FROM observability_dashboard;
 GRANT USAGE ON SCHEMA observability TO observability_dashboard;
 REVOKE ALL ON ALL TABLES IN SCHEMA observability FROM observability_dashboard;
-GRANT SELECT ON ALL TABLES IN SCHEMA observability TO observability_dashboard;
+GRANT SELECT ON observability.event,observability.daily_event,observability.daily_vital,
+    observability.rollup_day,observability.error_diagnostic TO observability_dashboard;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA observability FROM observability_dashboard;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA observability FROM observability_dashboard;
 -- Execute as the same owner that will run future migrations.
-ALTER DEFAULT PRIVILEGES IN SCHEMA observability GRANT SELECT ON TABLES TO observability_dashboard;
+ALTER DEFAULT PRIVILEGES IN SCHEMA observability REVOKE SELECT ON TABLES FROM observability_dashboard;
 ALTER DEFAULT PRIVILEGES IN SCHEMA observability REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+DO $$ BEGIN IF to_regprocedure('observability.health_summary(timestamptz)') IS NOT NULL THEN
+    GRANT EXECUTE ON FUNCTION observability.health_summary(timestamptz) TO observability_dashboard;
+END IF; END $$;

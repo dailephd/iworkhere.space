@@ -6,10 +6,12 @@ import { invalid, member, object, timestamp } from "./reportingContract";
 
 export interface ReportingQuery { activity: Query; vital: Query; evidence: Query }
 /** Private, fixed read-only statements. Inputs are a server-created canonical range plan. */
-export function reportingQuery(plan: RangePlan): ReportingQuery {
+export function reportingQuery(plan: RangePlan, healthAt: string = plan.end): ReportingQuery {
     object(plan, ["range", "source", "granularity", "start", "end", "today"]);
     const expected = rangePlan(member(plan.range, RANGE), new Date(timestamp(plan.end)));
     if (Object.keys(expected).some(key => expected[key as keyof RangePlan] !== plan[key as keyof RangePlan])) return invalid();
+    timestamp(healthAt);
+    if (healthAt > plan.end || Date.parse(plan.end)-Date.parse(healthAt)>1800000) return invalid();
     const parameter = plan.source === "raw" ? [plan.start, plan.end] : [plan.start, plan.end, plan.today];
     const toolParameter = parameter.length + 1, routeParameter = parameter.length + 2;
     const activity: Query = {
@@ -77,7 +79,7 @@ export function reportingQuery(plan: RangePlan): ReportingQuery {
             (SELECT to_char(max(received_at) AT TIME ZONE 'UTC', ${isoFormat}) FROM observability.event WHERE received_at < bounds.observed_at) AS last_raw_received,
             (SELECT to_char(max(day), 'YYYY-MM-DD') FROM observability.rollup_day WHERE day < (bounds.today AT TIME ZONE 'UTC')::date) AS last_rollup_day
             FROM bounds`,
-        parameter: [plan.end, plan.today],
+        parameter: [healthAt, healthAt.slice(0,10)+"T00:00:00.000Z"],
     };
     return { activity, vital: vitalQuery(plan), evidence };
 }
