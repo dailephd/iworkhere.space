@@ -60,6 +60,7 @@ BEGIN
     IF NOT FOUND OR final_outcome NOT IN ('complete','partial','failed') OR final_reason NOT IN ('none','source_unavailable','source_truncated','source_unreconciled','source_revised','invalid_record','delivery_failed')
        OR records IS NULL OR jsonb_typeof(records)<>'array' OR jsonb_array_length(records)>2000 OR total_requests IS NULL OR total_requests NOT BETWEEN 0 AND 1000
        OR (digest IS NOT NULL AND digest !~ '^[a-f0-9]{64}$') OR independent_failed IS NULL OR maintenance_failed IS NULL OR independent_failed<0 OR maintenance_failed<0
+       OR (independent_count IS NULL AND independent_failed+maintenance_failed<>0)
        OR (independent_count IS NOT NULL AND (independent_count NOT BETWEEN 0 AND 1000000 OR independent_failed+maintenance_failed>independent_count))
        OR (final_outcome='complete' AND (final_reason<>'none' OR digest IS NULL OR independent_count IS NULL OR independent_count<>total_requests)) THEN RAISE EXCEPTION 'Invalid collection result'; END IF;
     IF checkpoint.outcome<>'started' THEN
