@@ -1,5 +1,29 @@
 # Production observability
 
+## Current production status — 2026-11-18
+
+Application metrics and diagnostics are retained separately in the existing
+Neon observability database. The dashboard reads through its own restricted
+connection behind Vercel Authentication. The independent reporting service
+uses the narrower `observability_reporting` reader and the fixed aggregate
+health summary. Stytch Live OAuth, scope checks and explicit operator
+enrollment protect `observability_report`. Authenticated ChatGPT access
+passed for all seven ranges. See the [reporting README](../reporting/README.md).
+
+A1 (PR #53) centralized new tool-open events in `ToolClientFrame`. Older
+counts may include duplicates. A02 keeps Calculator expression updates in
+the current document, and F-01 keeps the Guide explanation accurate about
+routine site analytics. Calculator expressions and Guide input stay out of
+the telemetry payload.
+
+Schema 003 stores operational evidence and collection checkpoints separately.
+Manual collection passed. Automatic collection is **deferred, nonblocking**
+after `BLOCKED_EXTERNAL_GITHUB_SCHEDULER`. Current reporting returns
+`INSUFFICIENT_EVIDENCE`. Continuous preceding-24-hour coverage is unverified.
+October 5 and October 15, 2026 had zero retained raw events, zero daily
+samples and no completion markers. That evidence does not establish lost
+event-bearing rollups. The Track B batch snapshots below are historical.
+
 ## Ownership and activation
 
 Tools continue to call the observability facade. Existing analytics and logging provider interfaces select the sink. `NEXT_PUBLIC_OBSERVABILITY_ENABLED=true` explicitly selects network analytics and the sanitized RustLogProvider in early client instrumentation. Absent/other values retain local behavior; production mode alone never activates telemetry. The Neon dependency `@neondatabase/serverless@1.1.0` remains server-only; Vercel page-view analytics is independently gated below. Public flags are baked into the browser bundle: rebuild after changing them.
@@ -169,7 +193,7 @@ observability database, and the observability writer and dashboard roles hold no
 `support-operation` objects (`operation`, `code`). The observability dashboard pages keep `OBSERVABILITY_DASHBOARD_DATABASE_URL`;
 the `/support` pages use `SUPPORT_DASHBOARD_DATABASE_URL`. See [database/support/README.md](../database/support/README.md).
 
-## Aggregate-only reporting core (Track B B1)
+## Aggregate-only reporting core (Track B B1 checkpoint)
 
 Implemented with synthetic fixtures inside the independent dashboard package:
 
@@ -231,7 +255,7 @@ semantics, missing evidence versus zero activity, and unverified historical roll
 completeness. Selected-source totals do not assert complete telemetry. Proven gaps
 remain visible. No guessed retroactive duplicate-open correction is applied.
 
-### Required future reader permission contract (not provisioned)
+### Reader permissions at the B1 design checkpoint
 
 Separate non-owner, non-superuser, non-inheriting, no-BYPASSRLS role: CONNECT only,
 observability USAGE only, SELECT on these columns only:
@@ -254,7 +278,7 @@ DB/runtime health verification or production deployment. B1 is not a working
 ChatGPT integration. Existing dashboard UI/SSO remains unchanged. Root TypeScript,
 ESLint and Docker context continue to exclude dashboard production source.
 
-## Authenticated cloud MCP service (Track B B2, local only)
+## Authenticated cloud MCP service (Track B B2 local checkpoint)
 
 `reporting/` is the separate Node 24 Next.js service. Its official MCP SDK v2
 Streamable HTTP endpoint `/mcp` and public protected-resource discovery expose
@@ -280,7 +304,7 @@ UI remain unchanged, including dashboard Vercel Authentication on All Deployment
 The reporting package installs/builds/tests independently and is excluded from
 public root TypeScript/lint and Docker context; CI uploads its unique reports.
 
-## Production integration preparation (Track B B3, 2026-11-16)
+## Historical production integration preparation (Track B B3, 2026-11-16)
 
 The B1/B2 statements above describe their batch-close state. B3 created the
 separate Vercel `iworkhere-reporting` project and applied the reviewed reporting

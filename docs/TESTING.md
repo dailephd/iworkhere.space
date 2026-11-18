@@ -15,6 +15,14 @@ Testing validates module boundaries, not just internal logic.
 
 This protocol is mandatory for both human engineers and coding agents.
 
+For the current 0.4.4 production source, PR #69 passed the full validation
+matrix and desktop/mobile production smoke at `7cf0837`. The dashboard and
+reporting package verification commands run independently:
+`npm --prefix dashboard run verify` and `npm --prefix reporting run verify`.
+Older batch verdicts below describe the candidate tested at the time. See
+[project status](project-status.md) for the current lifecycle and production
+record.
+
 ---
 
 ## 1. Scope and Goals
@@ -659,9 +667,9 @@ Not claimed: that all 18 tool journeys have independent coverage. The existing M
 - Browser: `test/e2e/task-guides.spec.ts` runs at 1280x720 and 390x844 against the default-off production build. It checks server HTML, metadata, 404/noindex, the 35-URL sitemap, navigation, links from home, categories and all 18 tool pages, sample file bytes (SHA-256), no eager download or request, keyboard focus and overflow, and reproduces all four workflows with the real tools. Each handoff is a real browser download selected again with the file chooser, and the final files are read by independent readers (PDF.js text and raster, pdf-lib embedded filters, native image decode). Downloads are saved to a short temporary directory because the per-test output path can exceed the Windows 260-character limit.
 - The Batch 4 container gate failed twice (807 passed, one `net::ERR_NO_BUFFER_SPACE` each); it is inherited and must be rerun and resolved on the exact release candidate in Batch 6.
 
-## v0.4.4 Batch 6 - boundary evidence and whole-site gates
+## Historical v0.4.4 Batch 6 - boundary evidence and whole-site gates
 
-Status: NOT RELEASE READY. The candidate is `feature/v0.4.4-site-quality` at f846c92 plus uncommitted Batch 6 test additions. Details and run identities are in the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
+At the 2026-10-27 checkpoint, the candidate was NOT RELEASE READY. The candidate was `feature/v0.4.4-site-quality` at f846c92 plus uncommitted Batch 6 test additions. Details and run identities are in the [implementation report](reports/V0_4_4_SITE_QUALITY_IMPLEMENTATION_REPORT.md).
 
 Boundary evidence added in the existing owners (synthetic PDFs are generated in memory, never uploaded, and every produced file is read back with PDF.js text extraction, independent of the application's own verification):
 

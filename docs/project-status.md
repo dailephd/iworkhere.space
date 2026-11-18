@@ -1,15 +1,59 @@
 # PROJECT STATUS
 
-## A02 Calculator offline reliability (local correction)
+## Current production and publication — 2026-11-18
+
+The public application package and lockfile are 0.4.4. PR #49 merged the
+release source at f9b6723. PR #51 then deployed the sitewide refresh at
+f8407b8, including the searchable Home, four working browser-local workflows,
+the Guide finder and 36 canonical URLs. The historical local candidate
+checkpoints below describe how that work began.
+
+- **A1 (PR #53, c73b34d):** the tool page frame owns the tool-open event.
+  Query updates and duplicate child emissions no longer inflate new opens.
+  Historical counts were not rewritten.
+- **A02 (PR #54, a1181a0):** Calculator expression edits and Clear use
+  same-document URL replacement. Production offline and sharing checks passed.
+- **F-01 (PR #55, 216be0c):** the Guide finder recommends destinations without
+  opening or processing files. Its copy acknowledges routine site analytics
+  and links to Privacy.
+- **A3:** the isolated appearance-test patch passed validation and remains
+  unintegrated. The deployed PR #51 appearance system and the A3 patch are
+  separate changes.
+- **Security (PR #69):** public Next.js 16.4.5 is live at
+  `7cf08372f2772f53076a61d0db44819b7e12b992`. All 15 PR checks and nine
+  post-merge workflows passed. Desktop and mobile production smoke passed.
+
+The three Production deployments at that SHA are public
+`dpl_BmaBcdWEv3HPq2KtcaJbAFrMq96z`, dashboard
+`dpl_HLXQxpZcqFiiGBTx7DPjCmdBCQ7j`, and reporting
+`dpl_GDStdvTAtYhLgeLrYUTyRnixz9aU`. The protected dashboard and aggregate
+reporting service use separate readers of the existing Neon observability
+database. Stytch Live and authenticated ChatGPT reporting are operational.
+All seven ranges passed live acceptance. See [observability](OBSERVABILITY.md).
+
+Automatic operational health collection is deferred as nonblocking.
+The collector and manual execution remain available. Current health is
+`INSUFFICIENT_EVIDENCE`. October 5 and October 15 are not demonstrated
+losses of event-bearing rollups.
+
+**Version transition:** 0.4.4 is implemented, validated, merged and deployed.
+The latest published GitHub Release is v0.4.3. No v0.4.4 remote tag or
+GitHub Release was found, and no explicit publication deferral was identified.
+Existing v0.4.4 readiness and preparation evidence is candidate-specific.
+Step 8 remains gated on completing Step 7 publication or explicitly
+deferring it. For publication, refresh the Step 5/6 evidence for the intended
+candidate and obtain separate publication authorization. v0.5.0 stays future.
+
+## A02 Calculator offline reliability (historical local checkpoint)
 
 Calculator opts into same-document URL replacement in the existing query owner,
 avoiding server/RSC navigation on expression edits. Desktop/mobile regression
 coverage exercises warmed controlled-worker offline edits, evaluation, C reset,
 invalid recovery, reconnect, online sharing/direct load and history, with cache
 and telemetry privacy assertions. A1's composed telemetry regressions remain in
-place. This correction is local and is not published to production.
+place. At this checkpoint the correction was local. PR #54 subsequently merged and deployed it, as recorded above.
 
-## Sitewide redesign candidate (Prompts 1-8V; Prompt 9 audit) - 2026-10-31
+## Historical sitewide redesign candidate (Prompts 1-8V; Prompt 9 audit) - 2026-10-31
 
 Status: IMPLEMENTED ON THE LOCAL CANDIDATE, UNRELEASED, UNCOMMITTED, NOT DEPLOYED. Branch `feature/homepage-colorfield-refresh`, application version `0.4.4`. This supersedes the 2026-10-28 Colorfield status below: Home is now the searchable 18-tool catalog without featured-task or workflow cards, `/workflows` hosts four working browser-local workflows, `/guide` is an interactive finder (legacy `/guide/<slug>` URLs redirect with HTTP 308), the sitemap lists 36 canonical URLs, and seven palettes resolve to 13 appearances with art-directed (not color-only) themes. Prompt 8V closed as PASS_WITH_NOTES (its image review was by appearance sheets, not 428 individual images). The final Prompt 9 acceptance verdict, with its run IDs and open notes, is recorded only in `.my-dev-kit-workflow/tmp/sitewide-nine-prompt/p09-report.txt`. Home category boards were restored to one column at every width on 2026-10-31 after another session had introduced two columns; the outcome of that correction is recorded in `.my-dev-kit-workflow/tmp/sitewide-nine-prompt/p09-correction-report.txt`. This entry does not claim a release, a version bump, hosted CI, container, database, Firefox or Safari validation.
 

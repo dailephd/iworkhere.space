@@ -71,16 +71,16 @@ The existing SITE_URL is the single canonical origin and is exported for root me
 
 ## v0.4.4 title recovery
 
-Status: implemented in v0.4.4 Batch 1 on the local feature branch (uncommitted,
-unreleased). The 2026-10-26 user instruction requires descriptive HTML titles; [the implementation plan](../plans/v0.4.4-implementation-plan.md)
+Status: implemented in v0.4.4 Batch 1 and deployed with the v0.4.4 source. The 2026-10-26 user instruction requires descriptive HTML titles; [the implementation plan](../plans/v0.4.4-implementation-plan.md)
 owns the exact route titles and acceptance criteria.
 
 The existing buildPageMetadata owner produces each input title plus the
 single suffix " - iworkhere". Registry SEO input stays unbranded; do not add
 another title registry, duplicate root suffix or client document.title effect.
 The merge route must emit "Merge PDF Files Online - iworkhere". Category
-titles remain derived from category.ts; fixed pages and four authored guides
-use their own truthful metadata input. Not-found routes use
+titles remain derived from category.ts. Fixed pages, the Guide finder and
+working workflow pages use their own metadata input. The four original guide
+URLs redirect to their replacement workflows. Not-found routes use
 "Page Not Found - iworkhere", preserve 404/noindex and remain outside the sitemap.
 
 Preserve canonical query/hash removal, environment indexability, descriptions
