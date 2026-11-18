@@ -37,6 +37,13 @@ it("does not interpret an unavailable counter as independent zero traffic",async
     expect(finish).toHaveBeenCalledWith(expect.any(String),window,expect.objectContaining({outcome:"partial",independentRequestCount:null}));
     expect(JSON.stringify(finish.mock.calls)).not.toContain("pagination");
 });
+it("rejects malformed private log batches while retaining independent failure evidence",async()=>{
+    const finish=vi.fn(async()=>{});
+    const counter={...metric,summary:[{requestPath:"/api/metric",requestMethod:"POST",httpStatus:"503",vercel_function_invocation_count_count:1}]};
+    await collectWindow(window,{begin:async()=>{},finish},{logs:async()=>"private malformed body",counts:async()=>counter},clock);
+    expect(finish).toHaveBeenCalledWith(expect.any(String),window,expect.objectContaining({outcome:"partial",reason:"invalid_record",independentFailureCount:1,records:[]}));
+    expect(JSON.stringify(finish.mock.calls)).not.toContain("private malformed body");
+});
 it("records failed delivery after bounded retries without changing the original run",async()=>{
     const finish=vi.fn().mockRejectedValueOnce(Error("delivery")).mockRejectedValueOnce(Error("delivery")).mockResolvedValue(undefined);
     expect(await collectWindow(window,{begin:async()=>{},finish},{logs:async()=>"",counts:async()=>metric},clock)).toBe("failed");

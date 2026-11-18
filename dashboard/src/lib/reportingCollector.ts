@@ -21,7 +21,17 @@ export async function collectWindow(window: CollectionWindow, database: Collecto
         const [logs,counter]=await Promise.allSettled([provider.logs(window),provider.counts(window)]);
         let counts:Map<string,number> | null=null;
         if(counter.status==="fulfilled") { try{counts=invocationCount(counter.value,window);}catch{/* Still retain valid log evidence. */} }
-        result=reconcileWindow(window,clock().toISOString(),logs.status==="fulfilled"?logs.value:"",counts??new Map());
+        const observedAt=clock().toISOString();
+        try {
+            result=reconcileWindow(window,observedAt,logs.status==="fulfilled"?logs.value:"",counts??new Map());
+        } catch {
+            if(counts===null) throw new Error("source_unavailable");
+            // Reject the entire untrusted log batch, retaining only independently
+            // validated counters. No malformed or contradictory record is stored.
+            result=reconcileWindow(window,observedAt,"",counts);
+            result.outcome="partial";
+            result.reason="invalid_record";
+        }
         if(logs.status!=="fulfilled" || counts===null) {
             result.outcome="partial";result.reason="source_unavailable";
             if(counts===null) { result.independentRequestCount=null;result.independentFailureCount=0;result.independentMaintenanceFailureCount=0; }

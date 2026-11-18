@@ -7,7 +7,7 @@ export interface DurableOperation extends OperationRecord { httpStatus: number }
 export interface CollectionWindow { start: string; end: string }
 export interface WindowResult {
     outcome: "complete" | "partial";
-    reason: "none" | "source_truncated" | "source_unreconciled" | "source_unavailable";
+    reason: "none" | "source_truncated" | "source_unreconciled" | "source_unavailable" | "invalid_record";
     requestCount: number;
     independentRequestCount: number | null;
     independentFailureCount: number;
