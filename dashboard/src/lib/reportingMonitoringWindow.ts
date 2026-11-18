@@ -67,12 +67,19 @@ export function reconcileWindow(window: CollectionWindow, observedAt: string, lo
         if (requests.has(row.id)) { if(requests.get(row.id)!==signature) return invalid(); continue; }
         requests.set(row.id,signature);
         actual.set(key, (actual.get(key) ?? 0) + 1);
-        if (![204, 503, 500, 502, 504].includes(status)) continue;
+        const expectedMethod = row.requestPath === "/api/metric" ? "POST" : "GET";
+        const operationStatus = [204, 503, 500, 502, 504].includes(status);
+        // A rejected ingestion request is still observed traffic. Without an
+        // operation outcome it must not establish a verified idle interval.
+        if (row.requestMethod === expectedMethod && (row.requestPath === "/api/metric"
+            ? !operationStatus : status < 400 && status !== 204 || status >= 500 && !operationStatus)) complete = false;
+        if (!operationStatus) continue;
         const identity = new Set(list.map(r => r.attemptId));
         if (identity.size !== 1 || !list.some(r => r.status === "attempt")) { complete = false; continue; }
         const operation = row.requestPath === "/api/metric" ? "ingestion" : "maintenance";
         if ((status === 204 && !list.some(r => r.status === "success")) || (status === 503 && !list.some(r => r.status === "failure"))) complete = false;
         for (const record of list) {
+            if (record.status === "success" && status !== 204 || record.status === "failure" && status !== 503) return invalid();
             if (record.operation !== operation || Date.parse(record.startedAt) < start || Date.parse(record.startedAt) >= end || Date.parse(record.timestamp) >= observed) return invalid();
             const projected = { source: record.source, schemaVersion: record.schemaVersion, operation: record.operation, status: record.status,
                 attemptId: record.attemptId, startedAt: record.startedAt, timestamp: record.timestamp, httpStatus: status };

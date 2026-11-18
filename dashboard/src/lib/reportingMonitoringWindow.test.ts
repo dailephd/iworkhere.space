@@ -25,6 +25,12 @@ it("retains interrupted attempts without manufacturing a failure record",()=>{
     expect(reconcileWindow(window,now,JSON.stringify({...r,responseStatusCode:204}),counts()).outcome).toBe("partial");
 });
 it("marks truncated responses incomplete",()=>expect(reconcileWindow(window,now,Array(1000).fill(JSON.stringify(row())).join("\n"),counts()).reason).toBe("source_truncated"));
+it.each([200,302,400,401,403,429,501])("does not call unexpected ingestion HTTP%s responses verified idle traffic",status=>{
+    expect(reconcileWindow(window,now,JSON.stringify({...row(),responseStatusCode:status,logs:[]}),new Map([[`/api/metric|POST|${status}`,1]])).outcome).toBe("partial");
+});
+it("rejects operation outcomes that contradict the independently observed response",()=>{
+    expect(()=>reconcileWindow(window,now,JSON.stringify({...row(),responseStatusCode:503}),new Map([["/api/metric|POST|503",1]]))).toThrow();
+});
 it.each([{projectId:"other"},{environment:"preview"},{timestamp:"private"},{logs:[{message:JSON.stringify({...attempt,context:{support:"private"}})}]}])("rejects wrong scope, clocks and private values",value=>expect(()=>reconcileWindow(window,now,JSON.stringify({...row(),...value}),counts())).toThrow());
 it("validates independent metric metadata and fixed dimensions",()=>{
     const query={metric:"vercel.function_invocation.count",aggregation:"count",startTime:window.start,endTime:window.end,filter:"(route:/api/metric OR route:/api/observability/maintenance) AND (environment:production)",groupBy:["requestPath","requestMethod","httpStatus"],granularity:{minutes:5}};
