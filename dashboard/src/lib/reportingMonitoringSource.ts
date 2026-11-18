@@ -1,4 +1,4 @@
-const PUBLIC_PROJECT = "prj_OZIQho0P485NwArPlWTQuYfSQtNI";
+export const PUBLIC_PROJECT = "prj_OZIQho0P485NwArPlWTQuYfSQtNI";
 /** Reduce authenticated provider request logs in memory. Never return provider
  * envelopes, request identifiers, headers, diagnostic or metric-body messages. */
 export function healthRequestRows(text: string): Record<string, unknown>[] {
