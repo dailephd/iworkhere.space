@@ -366,3 +366,14 @@ Corrected history: 2026-10-05 and2026-10-15 had no retained raw events, daily sa
 Validation: dashboard unit tests exercise collection failures, strict projections and clock alignment; reporting tests cover the read-only adapter and OAuth/privacy regressions. The existing hosted reporting-permission PostgreSQL17 fixture also applies003 twice, tests complete/partial coverage, contradictions, retention and effective role denials. Local Docker absence does not waive hosted database/container gates.
 
 Scheduling reference: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
+
+Project-scoped collector credentials use the fixed request-log and metrics APIs
+used by the pinned Vercel CLI62.2.0, through its generic API command. High-level
+logs/metrics commands perform broader user/team discovery and are unsuitable for
+the restricted token. The collector pins trusted API hosts, owner/project IDs,
+production filters, five-minute windows, grouped counts and bounded pagination;
+it does not widen the token. Provider envelopes are reduced to existing validated
+operation/counter contracts before persistence. Missing pages, capped or truncated
+results, private/invalid records and inaccessible APIs remain partial/unavailable.
+Only fixed source failure categories are logged. The MCP application receives no
+platform credential and still reads only the approved Neon aggregate summary.

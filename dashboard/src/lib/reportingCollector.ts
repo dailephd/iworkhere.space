@@ -33,7 +33,9 @@ export async function collectWindow(window: CollectionWindow, database: Collecto
             result.reason="invalid_record";
         }
         if(logs.status!=="fulfilled" || counts===null) {
-            result.outcome="partial";result.reason="source_unavailable";
+            const truncated=[logs,counter].some(source=>source.status==="rejected"
+                && source.reason instanceof Error && source.reason.message==="source_truncated");
+            result.outcome="partial";result.reason=truncated ? "source_truncated" : "source_unavailable";
             if(counts===null) { result.independentRequestCount=null;result.independentFailureCount=0;result.independentMaintenanceFailureCount=0; }
         }
     } catch(error) {
