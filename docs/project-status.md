@@ -31,6 +31,12 @@ reporting service use separate readers of the existing Neon observability
 database. Stytch Live and authenticated ChatGPT reporting are operational.
 All seven ranges passed live acceptance. See [observability](OBSERVABILITY.md).
 
+- **Security (PR #70):** the independently deployed dashboard moved from
+  Next.js 16.3.8 to 16.4.5 (GHSA-673q-mjm6-r5xr and related advisories).
+  Merged as `bcdd7de5051e3fcdd86cbb37fdb85b068caaf4f1`; all PR and
+  post-merge workflows passed; dashboard `dpl_H9gkSdUqM8g1tRy2fUNLbef4xoZA`
+  is Ready and the operator confirmed authenticated Overview and Support.
+
 Automatic operational health collection is deferred as nonblocking.
 The collector and manual execution remain available. Current health is
 `INSUFFICIENT_EVIDENCE`. October 5 and October 15 are not demonstrated
@@ -629,7 +635,7 @@ runtime validation does not resolve the separate HEIC license or release gate.
 
 - Folder structure defined (four-layer: app, module, component, lib)
 - Next.js 16 App Router with React 19, TypeScript 5, Tailwind CSS v4
-- Root and dashboard Next.js / eslint-config-next dependency contract: 16.3.8;
+- Root and dashboard Next.js / eslint-config-next dependency contract: 16.4.5;
   React and React DOM remain 19.2.3.
 - PWA icons created
 - manifest.webmanifest created

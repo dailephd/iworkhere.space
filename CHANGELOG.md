@@ -9,6 +9,8 @@
   deferred, with current health reported as `INSUFFICIENT_EVIDENCE`.
 - Updated the public Next.js build to 16.4.5 for GHSA-mfr8-8qww-v76h.
   The latest published GitHub Release remains v0.4.3.
+- Updated the dashboard to Next.js 16.4.5 for GHSA-673q-mjm6-r5xr and related
+  advisories (PR #70).
 
 ## v0.4.4 — Site Quality & Search Recovery — 2026-10-28
 
